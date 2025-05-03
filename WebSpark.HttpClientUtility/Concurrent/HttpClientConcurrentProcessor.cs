@@ -4,24 +4,37 @@ using WebSpark.HttpClientUtility.RequestResult;
 namespace WebSpark.HttpClientUtility.Concurrent;
 
 /// <summary>
-/// Represents a concurrent processor that processes tasks in parallel.
+/// Provides functionality for processing multiple HTTP requests concurrently with throttling and progress tracking.
 /// </summary>
 /// <remarks>
-/// Initializes a new instance of the <see cref="ConcurrentProcessor{T}"/> class.
+/// The HttpClientConcurrentProcessor allows batch processing of HTTP requests in parallel while:
+/// - Controlling the maximum degree of parallelism
+/// - Tracking progress and duration of individual requests
+/// - Preserving request metadata through the concurrent execution
+/// - Managing cancellation and error handling across all concurrent operations
+/// 
+/// This processor inherits from the generic ConcurrentProcessor&lt;T&gt; and specializes it
+/// for HTTP client operations using HttpRequestResult for tracking request/response data.
 /// </remarks>
-/// <remarks>
-/// Initializes a new instance of the <see cref="HttpClientConcurrentProcessor"/> class.
-/// </remarks>
-/// <param name="taskDataFactory">The factory function to create task data.</param>
-/// <param name="service">The HttpClientService instance.</param>
+/// <param name="taskDataFactory">Factory function to create task data models with specific request details.</param>
+/// <param name="service">The HTTP request service used to execute individual requests.</param>
 public class HttpClientConcurrentProcessor(Func<int, HttpClientConcurrentModel> taskDataFactory, IHttpRequestResultService service) : ConcurrentProcessor<HttpClientConcurrentModel>(taskDataFactory)
 {
+    private readonly IHttpRequestResultService service = service ?? throw new ArgumentNullException(nameof(service));
 
     /// <summary>
-    /// Gets the next task data based on the current task data.
+    /// Gets the next task data based on the current task data for request chaining.
     /// </summary>
-    /// <param name="taskData">The current task data.</param>
-    /// <returns>The next task data or null if there are no more tasks.</returns>
+    /// <param name="taskData">The current task data containing request information.</param>
+    /// <returns>
+    /// A new HttpClientConcurrentModel with an incremented TaskId if the maximum task count hasn't been reached,
+    /// or null if there are no more tasks to process.
+    /// </returns>
+    /// <remarks>
+    /// This method enables sequential task enumeration for batch processing. It creates
+    /// the next task in the sequence until MaxTaskCount is reached, allowing controlled
+    /// parallel processing of a finite set of tasks.
+    /// </remarks>
     protected override HttpClientConcurrentModel? GetNextTaskData(HttpClientConcurrentModel taskData)
     {
         if (taskData.TaskId < MaxTaskCount)
@@ -32,11 +45,24 @@ public class HttpClientConcurrentProcessor(Func<int, HttpClientConcurrentModel> 
     }
 
     /// <summary>
-    /// Processes the task asynchronously.
+    /// Processes a single HTTP request asynchronously as part of the concurrent operation.
     /// </summary>
-    /// <param name="taskData">The task data.</param>
-    /// <param name="ct">The cancellation token.</param>
-    /// <returns>The result of the task.</returns>
+    /// <param name="taskData">The task data containing the HTTP request to process.</param>
+    /// <param name="ct">Cancellation token to cancel the operation.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation, with the result containing
+    /// the processed HttpClientConcurrentModel with request results and timing information.
+    /// </returns>
+    /// <remarks>
+    /// This method:
+    /// 1. Measures the duration of the HTTP request
+    /// 2. Executes the HTTP request using the provided service
+    /// 3. Captures the response in the task data model
+    /// 4. Records performance metrics
+    /// 
+    /// The processed task data includes the complete HTTP response and timing information,
+    /// which can be used for reporting, logging, or further processing.
+    /// </remarks>
     protected override async Task<HttpClientConcurrentModel> ProcessAsync(
         HttpClientConcurrentModel taskData,
         CancellationToken ct = default)

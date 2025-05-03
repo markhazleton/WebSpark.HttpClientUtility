@@ -3,9 +3,17 @@ using Microsoft.Extensions.Primitives;
 using System.Collections.Concurrent;
 
 namespace WebSpark.HttpClientUtility.MemoryCache;
+
 /// <summary>
-/// Memory cache manager
+/// Provides advanced management capabilities for memory caching operations.
 /// </summary>
+/// <remarks>
+/// This class extends the basic IMemoryCache functionality with additional features:
+/// - Tracking of all cached keys
+/// - Global cache clear capabilities
+/// - Automatic cleanup of expired entries
+/// - Atomic operations with locking
+/// </remarks>
 /// <param name="cache">The memory cache implementation</param>
 public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisposable
 {
@@ -32,7 +40,7 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     }
 
     /// <summary>
-    /// Post eviction
+    /// Post eviction callback that maintains the keys dictionary when items are removed from cache.
     /// </summary>
     /// <param name="key">Key of cached item</param>
     /// <param name="value">Value of cached item</param>
@@ -66,6 +74,7 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     /// Create entry options for item of memory cache
     /// </summary>
     /// <param name="cacheTime">Cache time</param>
+    /// <returns>Configured MemoryCacheEntryOptions</returns>
     protected MemoryCacheEntryOptions GetMemoryCacheEntryOptions(TimeSpan cacheTime)
     {
         var options = new MemoryCacheEntryOptions()
@@ -106,6 +115,10 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     /// <summary>
     /// Clear all cache data
     /// </summary>
+    /// <remarks>
+    /// This method will remove all items from the cache and reset the cancellation token
+    /// to ensure any cached items using the token will be invalidated.
+    /// </remarks>
     public virtual void Clear()
     {
         foreach (var key in _allKeys.Keys.ToList())
@@ -122,8 +135,11 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     }
 
     /// <summary>
-    /// Dispose cache manager
+    /// Dispose cache manager and release resources
     /// </summary>
+    /// <remarks>
+    /// This method disposes the cancellation token source used for cache invalidation.
+    /// </remarks>
     public virtual void Dispose()
     {
         _cancellationTokenSource?.Dispose();
@@ -135,8 +151,12 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     /// <typeparam name="T">Type of cached item</typeparam>
     /// <param name="key">Cache key</param>
     /// <param name="acquire">Function to load item if it's not in the cache yet</param>
-    /// <param name="cacheTime">Cache time in minutes; pass 0 to not cache; pass null to use the default time</param>
+    /// <param name="cacheTime">Cache time in minutes; pass 0 to not cache; pass null to use the default time (30 minutes)</param>
     /// <returns>The cached value associated with the specified key</returns>
+    /// <remarks>
+    /// This method implements the "get or add" pattern, where an item is retrieved from cache if available,
+    /// or created using the provided factory method and added to the cache if not available.
+    /// </remarks>
     public virtual T Get<T>(string key, Func<T> acquire, int? cacheTime = null)
     {
         // item already is in cache, so return it
@@ -154,9 +174,13 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     }
 
     /// <summary>
-    /// Get All Keys
+    /// Get All Keys currently in the cache
     /// </summary>
-    /// <returns></returns>
+    /// <returns>A list of all cache keys</returns>
+    /// <remarks>
+    /// This method returns all keys tracked by the cache manager, which may include
+    /// keys that have been marked for removal but not yet removed.
+    /// </remarks>
     public IList<string> GetKeys() => _allKeys.Keys.ToList();
 
     /// <summary>
@@ -176,6 +200,11 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     /// <param name="expirationTime">The time after which the lock will automatically expire</param>
     /// <param name="action">Action to be performed with locking</param>
     /// <returns>True if lock was acquired and action was performed; otherwise false</returns>
+    /// <remarks>
+    /// This method implements a simple in-memory lock using the cache itself.
+    /// It's useful for coordinating access to resources across multiple processes or threads.
+    /// The lock automatically expires after the specified time to prevent deadlocks.
+    /// </remarks>
     public bool PerformActionWithLock(string key, TimeSpan expirationTime, Action action)
     {
         // ensure that lock is acquired
@@ -202,6 +231,9 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     /// Removes the value with the specified key from the cache
     /// </summary>
     /// <param name="key">Key of cached item</param>
+    /// <remarks>
+    /// This method removes the item from both the underlying cache and the tracking dictionary.
+    /// </remarks>
     public virtual void Remove(string key)
     {
         cache.Remove(RemoveKey(key));
@@ -213,6 +245,10 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     /// <param name="key">Key of cached item</param>
     /// <param name="data">Value for caching</param>
     /// <param name="cacheTimeMinutes">Cache time in minutes</param>
+    /// <remarks>
+    /// This method adds an item to the cache with the specified expiration time in minutes.
+    /// It also adds the key to the tracking dictionary for management purposes.
+    /// </remarks>
     public virtual void Set(string key, object data, int cacheTimeMinutes)
     {
         if (data is not null)

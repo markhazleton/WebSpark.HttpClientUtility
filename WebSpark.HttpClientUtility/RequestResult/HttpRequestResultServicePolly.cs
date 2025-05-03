@@ -13,7 +13,14 @@ namespace WebSpark.HttpClientUtility.RequestResult;
 /// </summary>
 /// <remarks>
 /// This service adds resilience patterns (retry and circuit breaker) with standardized logging
-/// and error handling to HTTP requests.
+/// and error handling to HTTP requests. It implements the decorator pattern around IHttpRequestResultService
+/// to add Polly resilience capabilities without changing the underlying service.
+/// 
+/// Key resilience patterns implemented:
+/// - Retry pattern: Automatically retry failed requests with configurable attempts and delays
+/// - Circuit breaker pattern: Temporarily block requests when failure threshold is exceeded
+/// - Correlation IDs: Track requests through retry attempts for observability
+/// - Rich logging: Detailed logging of policy events and retries
 /// </remarks>
 public class HttpRequestResultServicePolly : IHttpRequestResultService
 {
@@ -27,9 +34,15 @@ public class HttpRequestResultServicePolly : IHttpRequestResultService
     /// <summary>
     /// Initializes a new instance of the HttpRequestResultServicePolly class.
     /// </summary>
-    /// <param name="logger">The logger.</param>
-    /// <param name="service">The underlying HttpClientService.</param>
-    /// <param name="options">The HttpRequestResultPollyOptions.</param>
+    /// <param name="logger">The logger for capturing diagnostic information.</param>
+    /// <param name="service">The underlying HttpClientService to be wrapped.</param>
+    /// <param name="options">Configuration options for Polly resilience policies.</param>
+    /// <exception cref="ArgumentNullException">Thrown when any required parameter is null.</exception>
+    /// <remarks>
+    /// This constructor configures the retry and circuit breaker policies based on the provided options.
+    /// The retry policy will retry failed requests with the configured delay between attempts.
+    /// The circuit breaker will open after a threshold of failures, blocking subsequent requests.
+    /// </remarks>
     public HttpRequestResultServicePolly(
         ILogger<HttpRequestResultServicePolly>? logger,
         IHttpRequestResultService? service,
@@ -85,6 +98,13 @@ public class HttpRequestResultServicePolly : IHttpRequestResultService
     /// <summary>
     /// Handles circuit breaking events with standardized logging.
     /// </summary>
+    /// <param name="exception">The exception that triggered the circuit to break.</param>
+    /// <param name="duration">The time period for which the circuit will remain open.</param>
+    /// <remarks>
+    /// This method is called when the circuit breaker transitions to the open state after
+    /// reaching the failure threshold. It logs detailed information about the circuit break
+    /// event and adds it to the error list for diagnostic purposes.
+    /// </remarks>
     private void OnCircuitBreak(Exception exception, TimeSpan duration)
     {
         var correlationId = Guid.NewGuid().ToString();
@@ -117,6 +137,11 @@ public class HttpRequestResultServicePolly : IHttpRequestResultService
     /// <summary>
     /// Handles circuit reset events with standardized logging.
     /// </summary>
+    /// <remarks>
+    /// This method is called when the circuit breaker transitions from open to half-open
+    /// or from half-open to closed state. It logs information about the circuit reset event
+    /// and adds it to the error list for diagnostic purposes.
+    /// </remarks>
     private void OnCircuitReset()
     {
         var correlationId = Guid.NewGuid().ToString();
@@ -143,6 +168,9 @@ public class HttpRequestResultServicePolly : IHttpRequestResultService
     /// 1. Circuit breaker pattern prevents cascading failures when a service is unavailable
     /// 2. Retry pattern handles transient failures with exponential backoff
     /// 3. All exceptions and policy events are logged with correlation IDs for traceability
+    /// 
+    /// The method wraps the inner service call with Polly policies and maintains a consistent
+    /// correlation ID throughout the whole request lifecycle for observability.
     /// </remarks>
     public async Task<HttpRequestResult<T>> HttpSendRequestResultAsync<T>(
         HttpRequestResult<T> statusCall,
@@ -178,12 +206,14 @@ public class HttpRequestResultServicePolly : IHttpRequestResultService
         {
             // Execute the request with the circuit breaker and retry policies
             statusCall = await _circuitBreakerPolicy
-                .ExecuteAsync(ctx => _service.HttpSendRequestResultAsync(
-                    statusCall,
-                    memberName,
-                    filePath,
-                    lineNumber,
-                    ct),
+                .ExecuteAsync(ctx => _retryPolicy.ExecuteAsync(
+                    innerCtx => _service.HttpSendRequestResultAsync(
+                        statusCall,
+                        memberName,
+                        filePath,
+                        lineNumber,
+                        ct),
+                    pollyContext),
                 pollyContext)
                 .ConfigureAwait(false);
         }

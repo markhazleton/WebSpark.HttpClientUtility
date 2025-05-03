@@ -36,6 +36,18 @@ jobs:
         id: gitversion # Set an id to reference the output
         uses: gittools/actions/gitversion/execute@v1.1.1
 
+      # Display GitVersion outputs for debugging
+      - name: Display GitVersion outputs
+        run: |
+          echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"
+          echo "NuGetVersion: ${{ steps.gitversion.outputs.nuGetVersion }}"
+          echo "NuGetVersionV2: ${{ steps.gitversion.outputs.nuGetVersionV2 }}"
+          echo "FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"
+          echo "Major: ${{ steps.gitversion.outputs.major }}"
+          echo "Minor: ${{ steps.gitversion.outputs.minor }}"
+          echo "Patch: ${{ steps.gitversion.outputs.patch }}"
+          echo "PreReleaseTag: ${{ steps.gitversion.outputs.preReleaseTag }}"
+
       - name: Restore dependencies
         run: dotnet restore WebSpark.HttpClientUtility.sln
 
@@ -44,8 +56,8 @@ jobs:
         run: dotnet build WebSpark.HttpClientUtility.sln --configuration Release --no-restore /p:Version=${{ steps.gitversion.outputs.assemblySemVer }}
 
       - name: Pack NuGet package
-        # Use the NuGetVersion output from GitVersion for the package version
-        run: dotnet pack WebSpark.HttpClientUtility/WebSpark.HttpClientUtility.csproj --configuration Release --no-build --output ./nupkg /p:PackageVersion=${{ steps.gitversion.outputs.nuGetVersionV2 }}
+        # Use the semVer output from GitVersion for the package version
+        run: dotnet pack WebSpark.HttpClientUtility/WebSpark.HttpClientUtility.csproj --configuration Release --no-build --output ./nupkg /p:PackageVersion=${{ steps.gitversion.outputs.semVer }}
 
       - name: Publish NuGet package
         # This step assumes you have configured a secret named NUGET_API_KEY in your repository settings

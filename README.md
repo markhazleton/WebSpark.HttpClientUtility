@@ -240,21 +240,430 @@ public class MyData
 
 If you registered the `HttpRequestResultServicePolly` decorator (as shown in the DI setup) and configured `HttpRequestResultPollyOptions`, the retry and/or circuit breaker policies will be automatically applied whenever you call `_requestService.HttpSendRequestResultAsync`. No extra code is needed in your service method!
 
-### 4. Using Caching
-
-If you registered the `HttpRequestResultServiceCache` decorator and `IMemoryCache` (as shown in the DI setup), simply set the `CacheDurationMinutes` property on your `HttpRequestResult` object for GET requests.
+Here's a complete example configuring and using Polly resilience:
 
 ```csharp
-var request = new HttpRequestResult<MyData>
+// In Program.cs or Startup.cs
+services.AddScoped<IHttpRequestResultService>(provider =>
 {
-    RequestPath = $"https://api.example.com/data/{id}",
-    RequestMethod = HttpMethod.Get,
-    CacheDurationMinutes = 10 // Cache the result for 10 minutes
-};
+    IHttpRequestResultService service = provider.GetRequiredService<HttpRequestResultService>();
+    
+    // Configure Polly options with progressive retry delay and circuit breaker
+    var pollyOptions = new HttpRequestResultPollyOptions
+    {
+        MaxRetryAttempts = 3,
+        RetryDelay = TimeSpan.FromSeconds(1),      // Base delay for first retry
+        RetryStrategy = RetryStrategy.Exponential, // Each subsequent retry will wait longer
+        EnableCircuitBreaker = true,
+        CircuitBreakerThreshold = 5,               // Open circuit after 5 consecutive failures
+        CircuitBreakerDuration = TimeSpan.FromSeconds(30)  // Keep circuit open for 30 seconds
+    };
+    
+    // Add the Polly decorator with the configured options
+    service = new HttpRequestResultServicePolly(
+        provider.GetRequiredService<ILogger<HttpRequestResultServicePolly>>(),
+        service,
+        pollyOptions
+    );
+    
+    return service;
+});
 
-var result = await _requestService.HttpSendRequestResultAsync(request);
-// If a valid, non-expired cached result exists for this exact RequestPath,
-// it will be returned instantly without making an actual HTTP call.
+// In your service class:
+public async Task<WeatherForecast?> GetWeatherWithResilience(string city)
+{
+    var request = new HttpRequestResult<WeatherForecast>
+    {
+        RequestPath = $"https://api.weather.example.com/forecast/{city}",
+        RequestMethod = HttpMethod.Get,
+        // You can check if the circuit is open before making a request
+        IsDebugEnabled = true // Enable detailed logging of retries and circuit breaker events
+    };
+    
+    var result = await _requestService.HttpSendRequestResultAsync(request);
+    
+    // The result includes information about retries and circuit breaker state
+    if (result.IsSuccessStatusCode)
+    {
+        _logger.LogInformation(
+            "Weather data retrieved after {RetryCount} retries. Circuit state: {CircuitState}",
+            result.RequestContext.TryGetValue("RetryCount", out var retryCount) ? retryCount : 0,
+            result.RequestContext.TryGetValue("FinalCircuitState", out var state) ? state : "Unknown");
+        
+        return result.ResponseResults;
+    }
+    
+    return null;
+}
+```
+
+### 4. Using Caching
+
+Configure and use the caching decorator to avoid redundant API calls and improve performance:
+
+```csharp
+// In Program.cs or Startup.cs
+services.AddMemoryCache(); // Register IMemoryCache
+
+services.AddScoped<IHttpRequestResultService>(provider =>
+{
+    IHttpRequestResultService service = provider.GetRequiredService<HttpRequestResultService>();
+    
+    // Add caching decorator
+    service = new HttpRequestResultServiceCache(
+        provider.GetRequiredService<ILogger<HttpRequestResultServiceCache>>(),
+        service,
+        provider.GetRequiredService<IMemoryCache>()
+    );
+    
+    return service;
+});
+
+// In your service class:
+public async Task<ProductDetails?> GetProductDetailsWithCaching(string productId)
+{
+    var request = new HttpRequestResult<ProductDetails>
+    {
+        RequestPath = $"https://api.example.com/products/{productId}",
+        RequestMethod = HttpMethod.Get,
+        CacheDurationMinutes = 15 // Cache product details for 15 minutes
+    };
+    
+    var result = await _requestService.HttpSendRequestResultAsync(request);
+    
+    if (result.IsSuccessStatusCode)
+    {
+        // Check if this was a cache hit
+        bool isCacheHit = result.RequestContext.TryGetValue("CacheHit", out var cacheHit) && 
+                          cacheHit is bool hitBool && hitBool;
+        
+        string source = isCacheHit ? "cache" : "API";
+        _logger.LogInformation("Product details retrieved from {Source}", source);
+        
+        if (isCacheHit && result.RequestContext.TryGetValue("CacheAge", out var age))
+        {
+            _logger.LogDebug("Cache entry age: {Age}", age);
+        }
+        
+        return result.ResponseResults;
+    }
+    
+    return null;
+}
+```
+
+### 5. Using Concurrent HTTP Requests
+
+Process multiple HTTP requests in parallel with controlled concurrency:
+
+```csharp
+// In Program.cs or Startup.cs
+services.AddScoped<HttpClientConcurrentProcessor>();
+
+// In your service class:
+public class ProductService
+{
+    private readonly HttpClientConcurrentProcessor _concurrentProcessor;
+    private readonly ILogger<ProductService> _logger;
+    
+    public ProductService(
+        HttpClientConcurrentProcessor concurrentProcessor,
+        ILogger<ProductService> logger)
+    {
+        _concurrentProcessor = concurrentProcessor;
+        _logger = logger;
+    }
+    
+    public async Task<IEnumerable<ProductPrice>> GetPricesForProductsAsync(
+        IEnumerable<string> productIds,
+        CancellationToken cancellationToken = default)
+    {
+        // Configure the concurrent processor
+        _concurrentProcessor.MaxTaskCount = productIds.Count();
+        _concurrentProcessor.MaxDegreeOfParallelism = 5; // Process 5 requests at a time
+        
+        // Create a factory function for generating the request tasks
+        Func<int, HttpClientConcurrentModel> taskFactory = taskId =>
+        {
+            string productId = productIds.ElementAt(taskId - 1); // taskId is 1-based
+            return new HttpClientConcurrentModel(
+                taskId,
+                $"https://api.example.com/products/{productId}/price"
+            );
+        };
+        
+        // Set the task factory and start processing
+        _concurrentProcessor.SetTaskDataFactory(taskFactory);
+        var results = await _concurrentProcessor.ProcessAllAsync(cancellationToken);
+        
+        // Transform the results
+        var prices = new List<ProductPrice>();
+        foreach (var result in results)
+        {
+            if (result.StatusCall.IsSuccessStatusCode && result.StatusCall.ResponseResults != null)
+            {
+                prices.Add(new ProductPrice
+                {
+                    ProductId = productIds.ElementAt(result.TaskId - 1),
+                    Price = result.StatusCall.ResponseResults.Price,
+                    Currency = result.StatusCall.ResponseResults.Currency
+                });
+                
+                _logger.LogInformation(
+                    "Fetched price for product {ProductId} in {Duration}ms",
+                    productIds.ElementAt(result.TaskId - 1),
+                    result.DurationMS);
+            }
+            else
+            {
+                _logger.LogWarning(
+                    "Failed to fetch price for product {ProductId}: {Status} {Error}",
+                    productIds.ElementAt(result.TaskId - 1),
+                    result.StatusCall.StatusCode,
+                    string.Join(", ", result.StatusCall.ErrorList));
+            }
+        }
+        
+        return prices;
+    }
+}
+
+public class ProductPrice
+{
+    public string ProductId { get; set; } = string.Empty;
+    public decimal Price { get; set; }
+    public string Currency { get; set; } = "USD";
+}
+```
+
+### 6. Using the FireAndForgetUtility for Background Tasks
+
+Execute non-critical operations without blocking the main request thread:
+
+```csharp
+// In Program.cs or Startup.cs
+services.AddSingleton<FireAndForgetUtility>();
+
+// In your service class:
+public class NotificationService
+{
+    private readonly IHttpRequestResultService _requestService;
+    private readonly FireAndForgetUtility _fireAndForget;
+    private readonly ILogger<NotificationService> _logger;
+    
+    public NotificationService(
+        IHttpRequestResultService requestService,
+        FireAndForgetUtility fireAndForget,
+        ILogger<NotificationService> logger)
+    {
+        _requestService = requestService;
+        _fireAndForget = fireAndForget;
+        _logger = logger;
+    }
+    
+    public void SendNotificationInBackground(string userId, string message)
+    {
+        // Define the task that will run in the background
+        async Task SendNotificationAsync()
+        {
+            try
+            {
+                var notification = new NotificationModel
+                {
+                    UserId = userId,
+                    Message = message,
+                    Timestamp = DateTime.UtcNow
+                };
+                
+                var request = new HttpRequestResult<string>
+                {
+                    RequestPath = "https://api.notifications.example.com/send",
+                    RequestMethod = HttpMethod.Post,
+                    Payload = notification
+                };
+                
+                var result = await _requestService.HttpSendRequestResultAsync(request);
+                
+                if (!result.IsSuccessStatusCode)
+                {
+                    _logger.LogWarning(
+                        "Failed to send notification to user {UserId}: {Status}",
+                        userId,
+                        result.StatusCode);
+                }
+            }
+            catch (Exception ex)
+            {
+                // The FireAndForgetUtility will already log this exception,
+                // but you can add additional error handling here if needed
+            }
+        }
+        
+        // Fire and forget the notification task
+        _fireAndForget.SafeFireAndForget(
+            SendNotificationAsync(),
+            $"Send notification to user {userId}");
+        
+        _logger.LogInformation(
+            "Notification to user {UserId} queued for background delivery",
+            userId);
+    }
+}
+
+public class NotificationModel
+{
+    public string UserId { get; set; } = string.Empty;
+    public string Message { get; set; } = string.Empty;
+    public DateTime Timestamp { get; set; }
+}
+```
+
+### 7. Using CurlCommandSaver for Debugging
+
+Generate cURL commands for requests to assist with debugging:
+
+```csharp
+// In your service class:
+public class ApiDebugService
+{
+    private readonly IHttpRequestResultService _requestService;
+    private readonly ILogger<ApiDebugService> _logger;
+    
+    public ApiDebugService(
+        IHttpRequestResultService requestService,
+        ILogger<ApiDebugService> logger)
+    {
+        _requestService = requestService;
+        _logger = logger;
+    }
+    
+    public async Task<ProductDetails?> GetProductWithCurlDebug(string productId)
+    {
+        var request = new HttpRequestResult<ProductDetails>
+        {
+            RequestPath = $"https://api.example.com/products/{productId}",
+            RequestMethod = HttpMethod.Get,
+            RequestHeaders = new Dictionary<string, string> 
+            { 
+                { "X-API-Key", "your-api-key" },
+                { "Accept", "application/json" }
+            }
+        };
+        
+        // Generate and save curl command before making the request
+        var curlCommand = CurlCommandSaver.GenerateCurlCommand(
+            request.RequestPath,
+            request.RequestMethod,
+            request.RequestHeaders);
+        
+        // Save to a temporary file for debugging
+        string debugFilePath = Path.Combine(Path.GetTempPath(), $"curl-debug-{Guid.NewGuid()}.txt");
+        await File.WriteAllTextAsync(debugFilePath, curlCommand);
+        
+        _logger.LogDebug("cURL command for debugging saved to {FilePath}", debugFilePath);
+        
+        // Make the actual request
+        var result = await _requestService.HttpSendRequestResultAsync(request);
+        
+        // Add the cURL command to the result context for reference
+        result.RequestContext["CurlCommand"] = curlCommand;
+        
+        if (result.IsSuccessStatusCode)
+        {
+            return result.ResponseResults;
+        }
+        else
+        {
+            _logger.LogError(
+                "Request failed. For debugging, you can use the cURL command saved at {FilePath}",
+                debugFilePath);
+            return null;
+        }
+    }
+}
+```
+
+### 8. Azure Integration Example
+
+When working with Azure services, you can leverage the library's features for resilience and telemetry:
+
+```csharp
+using Azure.Identity;
+using WebSpark.HttpClientUtility.RequestResult;
+
+public class AzureStorageService
+{
+    private readonly IHttpRequestResultService _requestService;
+    private readonly ILogger<AzureStorageService> _logger;
+    private readonly string _storageAccountName;
+    
+    public AzureStorageService(
+        IHttpRequestResultService requestService,
+        ILogger<AzureStorageService> logger,
+        IConfiguration configuration)
+    {
+        _requestService = requestService;
+        _logger = logger;
+        _storageAccountName = configuration["Azure:StorageAccountName"];
+    }
+    
+    public async Task<IEnumerable<BlobMetadata>> ListBlobsAsync(string containerName)
+    {
+        // Get token for Azure Storage
+        var credential = new DefaultAzureCredential();
+        var token = await credential.GetTokenAsync(
+            new Azure.Core.TokenRequestContext(new[] { "https://storage.azure.com/.default" }));
+        
+        // Prepare the request with proper auth headers
+        var request = new HttpRequestResult<BlobListResponse>
+        {
+            RequestPath = $"https://{_storageAccountName}.blob.core.windows.net/{containerName}?restype=container&comp=list",
+            RequestMethod = HttpMethod.Get,
+            RequestHeaders = new Dictionary<string, string>
+            {
+                { "Authorization", $"Bearer {token.Token}" },
+                { "x-ms-version", "2020-10-02" }
+            },
+            CacheDurationMinutes = 5,  // Cache for 5 minutes
+            Retries = 3  // Retry up to 3 times on failure
+        };
+        
+        // Execute the request with built-in resilience
+        var result = await _requestService.HttpSendRequestResultAsync(request);
+        
+        if (result.IsSuccessStatusCode && result.ResponseResults?.Blobs?.Items != null)
+        {
+            return result.ResponseResults.Blobs.Items;
+        }
+        
+        _logger.LogError(
+            "Failed to list blobs in container {Container}: {Status} {Error}",
+            containerName,
+            result.StatusCode,
+            string.Join(", ", result.ErrorList));
+            
+        return Array.Empty<BlobMetadata>();
+    }
+}
+
+// Response models
+public class BlobListResponse
+{
+    public BlobItems? Blobs { get; set; }
+}
+
+public class BlobItems
+{
+    public List<BlobMetadata> Items { get; set; } = new();
+}
+
+public class BlobMetadata
+{
+    public string Name { get; set; } = string.Empty;
+    public string Url { get; set; } = string.Empty;
+    public long Size { get; set; }
+    public string ContentType { get; set; } = string.Empty;
+}
 ```
 
 ## Ideal Use Cases
