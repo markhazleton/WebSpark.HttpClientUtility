@@ -18,6 +18,7 @@ This library provides a comprehensive solution for common challenges faced when 
 * **Improve Performance:** Implement response caching with minimal effort via the caching decorator to reduce latency and load on external services.
 * **Boost Observability:** Gain crucial insights with built-in telemetry (request timing) and structured logging, featuring correlation IDs for easy request tracing.
 * **Simplify Concurrency:** Efficiently manage and execute multiple outbound HTTP requests in parallel with the dedicated concurrent processor.
+* **Web Crawling Capabilities:** Build powerful web crawlers with configurable options, sitemap generation, robots.txt compliance, and SignalR integration for real-time progress updates.
 * **Promote Best Practices:** Encourages a structured, testable, and maintainable approach to HTTP communication in .NET, aligning with modern software design principles.
 * **Flexible & Extensible:** Designed with interfaces and decorators for easy customization and extension.
 
@@ -29,6 +30,7 @@ This library provides a comprehensive solution for common challenges faced when 
 * **Effortless Response Caching:** Decorate with `HttpRequestResultServiceCache` for automatic in-memory caching of HTTP responses based on configurable durations.
 * **Automatic Basic Telemetry:** `HttpClientServiceTelemetry` and `HttpRequestResultServiceTelemetry` wrappers capture request duration out-of-the-box for performance monitoring.
 * **Efficient Concurrent Processing:** `HttpClientConcurrentProcessor` utility for managing and executing parallel HTTP requests effectively.
+* **Web Crawling Engine:** `ISiteCrawler` interface with implementations including `SiteCrawler` and `SimpleSiteCrawler` for efficient crawling of websites, sitemap generation, and more.
 * **Standardized & Rich Logging:** Utilities (`LoggingUtility`, `ErrorHandlingUtility`) provide correlation IDs, automatic URL sanitization (for security), and structured context for better diagnostics and easier debugging in logs.
 * **Flexible JSON Serialization:** Choose between `System.Text.Json` (`SystemJsonStringConverter`) and `Newtonsoft.Json` (`NewtonsoftJsonStringConverter`) via the `IStringConverter` abstraction.
 * **Safe Background Tasks:** `FireAndForgetUtility` for safely executing non-critical background tasks (like logging or notifications) without awaiting them and potentially blocking request threads.
@@ -666,11 +668,162 @@ public class BlobMetadata
 }
 ```
 
+### 9. Using Web Crawler
+
+The library includes a powerful web crawler with configurable options, real-time updates via SignalR, and sitemap generation:
+
+```csharp
+// In Program.cs or Startup.cs
+services.AddHttpClient();
+services.AddMemoryCache();
+services.AddSingleton<IStringConverter, SystemJsonStringConverter>();
+
+// Register crawler services
+services.AddHttpClientCrawler();
+
+// In your service class:
+public class WebCrawlerService
+{
+    private readonly ISiteCrawler _crawler;
+    private readonly ILogger<WebCrawlerService> _logger;
+    
+    public WebCrawlerService(
+        ISiteCrawler crawler,
+        ILogger<WebCrawlerService> logger)
+    {
+        _crawler = crawler;
+        _logger = logger;
+    }
+    
+    public async Task<CrawlDomainViewModel> CrawlWebsiteAsync(
+        string startUrl,
+        int maxPages = 100,
+        int maxDepth = 3,
+        bool respectRobotsTxt = true,
+        CancellationToken cancellationToken = default)
+    {
+        // Configure crawler options
+        var options = new CrawlerOptions
+        {
+            MaxPages = maxPages,
+            MaxDepth = maxDepth,
+            RespectRobotsTxt = respectRobotsTxt,
+            RequestDelayMs = 200, // Be polite with 200ms between requests
+            UserAgent = "WebSpark.HttpClientUtility.Crawler/1.0.4 (+https://yoursite.com/bot)",
+            MaxConcurrentRequests = 5,
+            FollowExternalLinks = false, // Only crawl links on the same domain
+            TimeoutSeconds = 30,
+            ValidateHtml = true,
+            GenerateSitemap = true
+        };
+        
+        _logger.LogInformation(
+            "Starting crawl of {Url} with max {MaxPages} pages and depth {MaxDepth}",
+            startUrl, maxPages, maxDepth);
+        
+        var result = await _crawler.CrawlAsync(startUrl, options, cancellationToken);
+        
+        _logger.LogInformation(
+            "Crawl completed: {PageCount} pages crawled. Sitemap generated with {SitemapSize} bytes",
+            result.CrawlResults.Count,
+            result.Sitemap?.Length ?? 0);
+            
+        return result;
+    }
+    
+    public string GetSitemapUrlsAsText(CrawlDomainViewModel crawlResult)
+    {
+        if (string.IsNullOrEmpty(crawlResult.Sitemap))
+        {
+            return "No sitemap generated";
+        }
+        
+        // Extract URLs from the sitemap XML
+        var document = new XmlDocument();
+        document.LoadXml(crawlResult.Sitemap);
+        
+        var urlNodes = document.SelectNodes("//url/loc");
+        if (urlNodes == null)
+        {
+            return "No URLs found in sitemap";
+        }
+        
+        var urls = new StringBuilder();
+        foreach (XmlNode node in urlNodes)
+        {
+            urls.AppendLine(node.InnerText);
+        }
+        
+        return urls.ToString();
+    }
+}
+```
+
+The `SimpleSiteCrawler` implementation offers additional features:
+
+```csharp
+// In Program.cs or Startup.cs
+services.AddHttpClient();
+services.AddScoped<SimpleSiteCrawler>();
+
+// In your service class:
+public class AdvancedCrawlerService
+{
+    private readonly SimpleSiteCrawler _crawler;
+    private readonly ILogger<AdvancedCrawlerService> _logger;
+    
+    public AdvancedCrawlerService(
+        SimpleSiteCrawler crawler,
+        ILogger<AdvancedCrawlerService> logger)
+    {
+        _crawler = crawler;
+        _logger = logger;
+    }
+    
+    public async Task<string> ArchiveWebsiteAsync(
+        string startUrl,
+        string outputDirectory,
+        CancellationToken cancellationToken = default)
+    {
+        var options = new CrawlerOptions
+        {
+            MaxPages = 1000,
+            MaxDepth = 5,
+            RespectRobotsTxt = true,
+            SavePagesToDisk = true, // Enable saving pages to disk
+            OutputDirectory = outputDirectory,
+            AdaptiveRateLimit = true, // Automatically adjust request rate based on server response
+            OptimizeMemoryUsage = true, // Enable for large crawls
+            IncludePatterns = new List<string> { @"\.html$", @"\.aspx$", @"/$" }, // Only HTML pages
+            ExcludePatterns = new List<string> { @"/login", @"/logout", @"/admin" } // Skip sensitive areas
+        };
+        
+        _logger.LogInformation(
+            "Starting website archival of {Url} to {Directory}",
+            startUrl, outputDirectory);
+            
+        var result = await _crawler.CrawlAsync(startUrl, options, cancellationToken);
+        
+        // Extract performance metrics
+        var successCount = result.CrawlResults.Count(r => r.StatusCode == HttpStatusCode.OK);
+        var errorCount = result.CrawlResults.Count - successCount;
+        
+        _logger.LogInformation(
+            "Archival completed: {SuccessCount} pages saved, {ErrorCount} errors",
+            successCount, errorCount);
+            
+        return Path.Combine(outputDirectory, "index.html");
+    }
+}
+```
+
 ## Ideal Use Cases
 
 * Building robust API clients for internal or external services.
 * Simplifying HTTP interactions in microservices.
 * Adding resilience and caching to existing applications with minimal refactoring.
+* Creating web crawlers for content indexing, site analysis, or data gathering.
+* Generating sitemaps for SEO optimization.
 * Any .NET application that needs to make reliable and observable HTTP calls.
 
 ## Contributing
