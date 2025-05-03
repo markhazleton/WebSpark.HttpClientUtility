@@ -243,7 +243,7 @@ public class HttpRequestResultService(
             _logger.LogDebug(
                 "Sending HTTP {Method} request to {Url} [CorrelationId: {CorrelationId}]",
                 request.Method.Method,
-                LoggingUtility.SanitizeUrl(request.RequestUri.ToString()),
+                LoggingUtility.SanitizeUrl(request.RequestUri?.ToString() ?? string.Empty),
                 httpSendResults.CorrelationId);
 
             HttpResponseMessage? response = await _httpClient.SendAsync(request, ct).ConfigureAwait(false);
@@ -256,7 +256,7 @@ public class HttpRequestResultService(
 
                 _logger.LogWarning(
                     "Request redirected from {OriginalUrl} to {NewUrl} [CorrelationId: {CorrelationId}]",
-                    LoggingUtility.SanitizeUrl(request.RequestUri.ToString()),
+                    LoggingUtility.SanitizeUrl(request.RequestUri?.ToString() ?? string.Empty),
                     LoggingUtility.SanitizeUrl(response?.RequestMessage?.RequestUri?.ToString() ?? "unknown"),
                     httpSendResults.CorrelationId);
             }
@@ -291,10 +291,10 @@ public class HttpRequestResultService(
     /// <param name="httpSendResults">The HTTP request results object.</param>
     /// <param name="ct">The cancellation token.</param>
     /// <returns>An HTTP request result with appropriate error information.</returns>
-    private async Task<HttpRequestResult<T>> HandleExceptionAsync<T>(
-        Exception exception,
-        HttpRequestResult<T> httpSendResults,
-        CancellationToken ct)
+    private Task<HttpRequestResult<T>> HandleExceptionAsync<T>(
+    Exception exception,
+    HttpRequestResult<T> httpSendResults,
+    CancellationToken ct)
     {
         // Get operation context for logging
         string operationName = $"HTTP {httpSendResults.RequestMethod.Method} {httpSendResults.SafeRequestPath}";
@@ -349,6 +349,7 @@ public class HttpRequestResultService(
                 break;
         }
 
-        return httpSendResults;
+        // Return a completed task with the modified httpSendResults
+        return Task.FromResult(httpSendResults);
     }
 }

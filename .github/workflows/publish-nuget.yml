@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           # Use the SDK version that supports your target frameworks
-          dotnet-version: '9.0.x' # Changed from 8.x to 9.0.x
+          dotnet-version: "9.0.x" # Changed from 8.x to 9.0.x
 
       # Install GitVersion tool
       - name: Install GitVersion

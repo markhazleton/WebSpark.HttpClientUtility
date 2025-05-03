@@ -166,7 +166,7 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     /// <returns>True if item already is in cache; otherwise false</returns>
     public virtual bool IsSet(string key)
     {
-        return cache.TryGetValue(key, out object _);
+        return cache.TryGetValue(key, out object? _); // Use nullable object type to address CS8601
     }
 
     /// <summary>

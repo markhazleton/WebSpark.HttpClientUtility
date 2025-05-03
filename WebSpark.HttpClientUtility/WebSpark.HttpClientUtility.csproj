@@ -53,11 +53,11 @@
     <!-- Update dependencies to latest stable versions (as of May 2025 - adjust if needed) -->
     <PackageReference Include="CsvHelper" Version="33.0.1" />
     <PackageReference Include="Markdig" Version="0.41.1" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" /> <!--
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.4" /> <!--
     Stable version for .NET 8 -->
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Polly" Version="8.4.1" /> <!-- Latest stable Polly 8 -->
-    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" /> <!-- Stable version for
+    <PackageReference Include="Polly" Version="8.5.2" /> <!-- Latest stable Polly 8 -->
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.4" /> <!-- Stable version for
     .NET 8 -->
     <!-- SourceLink Package -->
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
@@ -65,7 +65,7 @@
 
   <ItemGroup>
     <!-- GitVersion Tool -->
-    <PackageReference Include="GitVersion.MsBuild" Version="5.*">
+    <PackageReference Include="GitVersion.MsBuild" Version="6.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
