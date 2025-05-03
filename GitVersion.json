@@ -10,7 +10,7 @@
   "commits-since-version-source-padding": 0,
   "tag-pre-release-weight": 0,
   "increment": "Patch",
-  "continuous-delivery-fallback-tag": "ci",
+  "continuous-delivery-fallback-tag": "preview",
   "tag-prefix": "v",
   "branches": {
     "main": {
