@@ -3,9 +3,6 @@ name: Publish HttpClientUtility NuGet Package
 on:
   push:
     branches: [main] # Trigger on pushes to the main branch
-    # Alternatively, trigger on tags for releases:
-    # tags:
-    #   - 'v*.*.*'
 
 jobs:
   build-and-publish:
@@ -16,50 +13,20 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Required for GitVersion to analyze history
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          # Use the SDK version that supports your target frameworks
           dotnet-version: "9.0.x" # Changed from 8.x to 9.0.x
-
-      # Install GitVersion tool
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v1.1.1
-        with:
-          versionSpec: "5.x" # Use GitVersion 5.x
-
-      # Determine version using GitVersion
-      - name: Determine Version
-        id: gitversion # Set an id to reference the output
-        uses: gittools/actions/gitversion/execute@v1.1.1
-
-      # Display GitVersion outputs for debugging
-      - name: Display GitVersion outputs
-        run: |
-          echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"
-          echo "NuGetVersion: ${{ steps.gitversion.outputs.nuGetVersion }}"
-          echo "NuGetVersionV2: ${{ steps.gitversion.outputs.nuGetVersionV2 }}"
-          echo "FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"
-          echo "Major: ${{ steps.gitversion.outputs.major }}"
-          echo "Minor: ${{ steps.gitversion.outputs.minor }}"
-          echo "Patch: ${{ steps.gitversion.outputs.patch }}"
-          echo "PreReleaseTag: ${{ steps.gitversion.outputs.preReleaseTag }}"
 
       - name: Restore dependencies
         run: dotnet restore WebSpark.HttpClientUtility.sln
 
       - name: Build solution
-        # Pass GitVersion variables to the build
-        run: dotnet build WebSpark.HttpClientUtility.sln --configuration Release --no-restore /p:Version=${{ steps.gitversion.outputs.assemblySemVer }}
+        run: dotnet build WebSpark.HttpClientUtility.sln --configuration Release --no-restore
 
       - name: Pack NuGet package
-        # Use the nuGetVersionV2 output from GitVersion for the package version
-        run: dotnet pack WebSpark.HttpClientUtility/WebSpark.HttpClientUtility.csproj --configuration Release --no-build --output ./nupkg /p:PackageVersion=${{ steps.gitversion.outputs.nuGetVersionV2 }}
+        run: dotnet pack WebSpark.HttpClientUtility/WebSpark.HttpClientUtility.csproj --configuration Release --no-build --output ./nupkg
 
       - name: Publish NuGet package
-        # This step assumes you have configured a secret named NUGET_API_KEY in your repository settings
-        # Go to Repository Settings -> Secrets and variables -> Actions -> New repository secret
         run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json

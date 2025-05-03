@@ -8,8 +8,8 @@
     <!-- NuGet Package Properties -->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>WebSpark.HttpClientUtility</PackageId>
-    <!-- Use Semantic Versioning - Provided by GitVersion -->
-    <!-- <Version>1.1.0</Version> -->
+    <!-- Fixed version number -->
+    <Version>1.0.3</Version>
     <Authors>MarkHazleton</Authors>
     <Company>MarkHazleton</Company>
     <Description>A utility library for simplifying HttpClient usage in .NET applications, including
@@ -61,14 +61,6 @@
     .NET 8 -->
     <!-- SourceLink Package -->
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- GitVersion Tool -->
-    <PackageReference Include="GitVersion.MsBuild" Version="6.3.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
 </Project>
