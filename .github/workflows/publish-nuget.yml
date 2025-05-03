@@ -1,0 +1,53 @@
+name: Publish HttpClientUtility NuGet Package
+
+on:
+  push:
+    branches: [main] # Trigger on pushes to the main branch
+    # Alternatively, trigger on tags for releases:
+    # tags:
+    #   - 'v*.*.*'
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # Needed to check out the repository
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required for GitVersion to analyze history
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          # Use the LTS version or a version compatible with your project targets
+          dotnet-version: "8.x"
+
+      # Install GitVersion tool
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v1.1.1
+        with:
+          versionSpec: "5.x" # Use GitVersion 5.x
+
+      # Determine version using GitVersion
+      - name: Determine Version
+        id: gitversion # Set an id to reference the output
+        uses: gittools/actions/gitversion/execute@v1.1.1
+
+      - name: Restore dependencies
+        run: dotnet restore WebSpark.HttpClientUtility.sln
+
+      - name: Build solution
+        # Pass GitVersion variables to the build
+        run: dotnet build WebSpark.HttpClientUtility.sln --configuration Release --no-restore /p:Version=${{ steps.gitversion.outputs.assemblySemVer }}
+
+      - name: Pack NuGet package
+        # Use the NuGetVersion output from GitVersion for the package version
+        run: dotnet pack WebSpark.HttpClientUtility/WebSpark.HttpClientUtility.csproj --configuration Release --no-build --output ./nupkg /p:PackageVersion=${{ steps.gitversion.outputs.nuGetVersionV2 }}
+
+      - name: Publish NuGet package
+        # This step assumes you have configured a secret named NUGET_API_KEY in your repository settings
+        # Go to Repository Settings -> Secrets and variables -> Actions -> New repository secret
+        run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json

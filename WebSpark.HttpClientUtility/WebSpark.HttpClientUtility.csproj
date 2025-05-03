@@ -1,38 +1,74 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <!-- Target both .NET 8 and .NET 9 -->
+    <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <!-- NuGet Package Properties -->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>WebSpark.HttpClientUtility</PackageId>
-    <Version>1.0.0</Version>
+    <!-- Use Semantic Versioning - Provided by GitVersion -->
+    <!-- <Version>1.1.0</Version> -->
     <Authors>MarkHazleton</Authors>
     <Company>MarkHazleton</Company>
     <Description>A utility library for simplifying HttpClient usage in .NET applications, including
       features for telemetry, caching, Polly integration, and concurrent requests.</Description>
-    <PackageTags>httpclient;utility;web;api;rest;polly;cache;telemetry;concurrent</PackageTags>
+    <PackageTags>httpclient;utility;web;api;rest;polly;cache;telemetry;concurrent;dotnet;aspnetcore</PackageTags> <!--
+    Added more tags -->
     <RepositoryUrl>https://github.com/MarkHazleton/HttpClientUtility</RepositoryUrl>
     <PackageProjectUrl>https://github.com/MarkHazleton/HttpClientUtility</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <!-- Add Package Icon -->
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
+
   <PropertyGroup>
-    <Deterministic>false</Deterministic>
-    <SourceRevisionId>build$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</SourceRevisionId>
-    <AssemblyVersion>9.$([System.DateTime]::UtcNow.ToString(yyMM)).$([System.DateTime]::UtcNow.ToString(ddHH)).$([System.DateTime]::UtcNow.ToString(mmss))</AssemblyVersion>
+    <!-- Enable Deterministic Builds -->
+    <Deterministic>true</Deterministic>
+    <!-- Remove custom AssemblyVersion generation -->
+    <!--
+    <SourceRevisionId>build$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</SourceRevisionId> -->
+    <!--
+    <AssemblyVersion>9.$([System.DateTime]::UtcNow.ToString(yyMM)).$([System.DateTime]::UtcNow.ToString(ddHH)).$([System.DateTime]::UtcNow.ToString(mmss))</AssemblyVersion> -->
   </PropertyGroup>
+
+  <!-- SourceLink Configuration -->
+  <PropertyGroup>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
   <ItemGroup>
     <!-- Include README.md in the package -->
     <None Include="..\README.md" Pack="true" PackagePath="\" />
+    <!-- Include Icon in the package (assuming it's in an 'images' folder at the project root) -->
+    <None Include="images\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
+
   <ItemGroup>
+    <!-- Update dependencies to latest stable versions (as of May 2025 - adjust if needed) -->
     <PackageReference Include="CsvHelper" Version="33.0.1" />
     <PackageReference Include="Markdig" Version="0.41.1" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" /> <!--
+    Stable version for .NET 8 -->
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Polly" Version="8.5.2" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.4" />
+    <PackageReference Include="Polly" Version="8.4.1" /> <!-- Latest stable Polly 8 -->
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" /> <!-- Stable version for
+    .NET 8 -->
+    <!-- SourceLink Package -->
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
+
+  <ItemGroup>
+    <!-- GitVersion Tool -->
+    <PackageReference Include="GitVersion.MsBuild" Version="5.*">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
 </Project>

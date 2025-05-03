@@ -1,0 +1,65 @@
+{
+  "mode": "ContinuousDelivery",
+  "next-version": "3.1.1",
+  "major-version-bump-message": "^(breaking|major):",
+  "minor-version-bump-message": "^(feature|minor):",
+  "patch-version-bump-message": "^(fix|patch):",
+  "no-bump-message": "^(none|skip):",
+  "legacy-semver-padding": 0,
+  "build-metadata-padding": 0,
+  "commits-since-version-source-padding": 0,
+  "tag-pre-release-weight": 0,
+  "increment": "Patch",
+  "continuous-delivery-fallback-tag": "ci",
+  "tag-prefix": "v",
+  "branches": {
+    "main": {
+      "regex": "^master$|^main$",
+      "tag": "",
+      "increment": "Patch",
+      "prevent-increment-of-merged-branch-version": true,
+      "track-merge-target": false,
+      "tracks-release-branches": false,
+      "is-release-branch": true
+    },
+    "develop": {
+      "regex": "^dev(elop)?(ment)?$",
+      "tag": "beta",
+      "increment": "Minor",
+      "prevent-increment-of-merged-branch-version": false,
+      "track-merge-target": true,
+      "tracks-release-branches": true,
+      "is-release-branch": false
+    },
+    "feature": {
+      "regex": "^features?[/-]",
+      "tag": "alpha.{BranchName}",
+      "increment": "Inherit",
+      "prevent-increment-of-merged-branch-version": false,
+      "track-merge-target": false,
+      "tracks-release-branches": false,
+      "is-release-branch": false
+    },
+    "release": {
+      "regex": "^releases?[/-]",
+      "tag": "rc",
+      "increment": "None",
+      "prevent-increment-of-merged-branch-version": true,
+      "track-merge-target": false,
+      "tracks-release-branches": false,
+      "is-release-branch": true
+    },
+    "hotfix": {
+      "regex": "^hotfix(es)?[/-]",
+      "tag": "hotfix",
+      "increment": "Patch",
+      "prevent-increment-of-merged-branch-version": false,
+      "track-merge-target": false,
+      "tracks-release-branches": false,
+      "is-release-branch": false
+    }
+  },
+  "ignore": {
+    "sha": []
+  }
+}
