@@ -56,8 +56,8 @@ jobs:
         run: dotnet build WebSpark.HttpClientUtility.sln --configuration Release --no-restore /p:Version=${{ steps.gitversion.outputs.assemblySemVer }}
 
       - name: Pack NuGet package
-        # Use the semVer output from GitVersion for the package version
-        run: dotnet pack WebSpark.HttpClientUtility/WebSpark.HttpClientUtility.csproj --configuration Release --no-build --output ./nupkg /p:PackageVersion=${{ steps.gitversion.outputs.semVer }}
+        # Use the nuGetVersionV2 output from GitVersion for the package version
+        run: dotnet pack WebSpark.HttpClientUtility/WebSpark.HttpClientUtility.csproj --configuration Release --no-build --output ./nupkg /p:PackageVersion=${{ steps.gitversion.outputs.nuGetVersionV2 }}
 
       - name: Publish NuGet package
         # This step assumes you have configured a secret named NUGET_API_KEY in your repository settings

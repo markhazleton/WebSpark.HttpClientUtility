@@ -1,5 +1,5 @@
 {
-  "mode": "ContinuousDelivery",
+  "mode": "Mainline",
   "next-version": "1.0.3",
   "major-version-bump-message": "^(breaking|major):",
   "minor-version-bump-message": "^(feature|minor):",
