@@ -1,9 +1,9 @@
-﻿using WebSpark.HttpClientUtility.RequestResult;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Net;
 using System.Xml.Linq;
+using WebSpark.HttpClientUtility.RequestResult;
 
 namespace WebSpark.HttpClientUtility.Crawler;
 

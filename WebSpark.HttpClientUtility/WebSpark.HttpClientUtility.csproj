@@ -8,8 +8,8 @@
 		<!-- NuGet Package Properties -->
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>WebSpark.HttpClientUtility</PackageId>
-		<!-- Incremented version number from 1.0.3 to 1.0.4 -->
-		<Version>1.0.4</Version>
+		<Version>1.0.5</Version>
+		<Deterministic>true</Deterministic>
 		<Authors>MarkHazleton</Authors>
 		<Company>MarkHazleton</Company>
 		<Description>
@@ -24,13 +24,6 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageIcon>icon.png</PackageIcon>
-	</PropertyGroup>
-
-	<PropertyGroup>
-		<Deterministic>true</Deterministic>
-	</PropertyGroup>
-
-	<PropertyGroup>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<IncludeSymbols>true</IncludeSymbols>
