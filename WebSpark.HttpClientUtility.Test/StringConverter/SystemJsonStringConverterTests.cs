@@ -1,9 +1,9 @@
 ﻿using WebSpark.HttpClientUtility.StringConverter;
 
-namespace HttpClientUtility.Test;
+namespace WebSpark.HttpClientUtility.Test.StringConverter;
 
 [TestClass]
-public class NewtonsoftJsonStringConverterTests
+public class SystemJsonStringConverterTests
 {
     /// <summary>
     /// Test Model
@@ -22,7 +22,7 @@ public class NewtonsoftJsonStringConverterTests
     public void ConvertFromModel_WithValidModel_ReturnsValidJsonString()
     {
         // Arrange
-        var converter = new NewtonsoftJsonStringConverter();
+        var converter = new SystemJsonStringConverter();
         TestModel testModel = new("Test", 123);
 
         // Act
@@ -38,7 +38,7 @@ public class NewtonsoftJsonStringConverterTests
     public void ConvertFromString_WithValidJsonString_ReturnsValidModel()
     {
         // Arrange
-        var converter = new NewtonsoftJsonStringConverter();
+        var converter = new SystemJsonStringConverter();
         var jsonString = "{\"Name\":\"Test\",\"Value\":123}";
 
         // Act
@@ -55,7 +55,7 @@ public class NewtonsoftJsonStringConverterTests
     public void ConvertFromString_WithNullOrWhitespace_ThrowsArgumentException()
     {
         // Arrange
-        var converter = new NewtonsoftJsonStringConverter();
+        var converter = new SystemJsonStringConverter();
         string jsonString = " ";
 
         // Act
@@ -69,7 +69,7 @@ public class NewtonsoftJsonStringConverterTests
     public void ConvertFromString_WithInvalidJsonString_ThrowsInvalidOperationException()
     {
         // Arrange
-        var converter = new NewtonsoftJsonStringConverter();
+        var converter = new SystemJsonStringConverter();
         var jsonString = "{\"Invalid\":\"Json\""; // Deliberately malformed JSON
 
         // Act
