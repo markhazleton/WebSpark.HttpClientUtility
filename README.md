@@ -3,38 +3,63 @@
 ![WebSpark.HttpClientUtility Logo](https://raw.githubusercontent.com/MarkHazleton/HttpClientUtility/main/WebSpark.HttpClientUtility/images/icon.png)
 
 [![NuGet Version](https://img.shields.io/nuget/v/WebSpark.HttpClientUtility.svg)](https://www.nuget.org/packages/WebSpark.HttpClientUtility/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/WebSpark.HttpClientUtility.svg)](https://www.nuget.org/packages/WebSpark.HttpClientUtility/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-<!-- Add build status badge once CI/CD is set up -->
-<!-- [![Build Status](https://dev.azure.com/your-org/your-project/_apis/build/status/your-pipeline?branchName=main)](https://dev.azure.com/your-org/your-project/_build/latest?definitionId=your-pipeline&branchName=main) -->
+[![Build Status](https://github.com/MarkHazleton/HttpClientUtility/actions/workflows/publish-nuget.yml/badge.svg)](https://github.com/MarkHazleton/HttpClientUtility/actions/workflows/publish-nuget.yml)
+
+## 📦 Quick Links
+
+- **[NuGet Package](https://www.nuget.org/packages/WebSpark.HttpClientUtility)**: Download and install the package
+- **[GitHub Repository](https://github.com/markhazleton/httpclientutility)**: Source code, issue tracking, and contributions
+- **[Changelog](https://github.com/markhazleton/httpclientutility/blob/main/CHANGELOG.md)**: Version history and updates
 
 **Tired of boilerplate code and manual handling of resilience, caching, and telemetry for `HttpClient` in your .NET applications?** WebSpark.HttpClientUtility is a powerful yet easy-to-use library designed to streamline your HTTP interactions, making them more robust, observable, and maintainable. Build reliable API clients faster with built-in support for Polly resilience, response caching, concurrent requests, and standardized logging.
 
 This library provides a comprehensive solution for common challenges faced when working with `HttpClient` in modern .NET (including .NET 8, .NET 9 and ASP.NET Core) applications.
 
+## 📑 Table of Contents
+
+- [Why Choose WebSpark.HttpClientUtility?](#why-choose-websparkhttpclientutility)
+- [Key Features](#key-features)
+- [Installation](#installation)
+- [Getting Started](#getting-started)
+  - [Dependency Injection Setup](#1-dependency-injection-setup)
+  - [Basic Usage](#2-basic-usage-ihttprequestresultservice)
+  - [Using Resilience (Polly)](#3-using-resilience-polly)
+  - [Using Caching](#4-using-caching)
+  - [Using Concurrent HTTP Requests](#5-using-concurrent-http-requests)
+  - [Using FireAndForgetUtility](#6-using-the-fireandforgetutility-for-background-tasks)
+  - [Using CurlCommandSaver](#7-using-curlcommandsaver-for-debugging)
+  - [Azure Integration Example](#8-azure-integration-example)
+  - [Using Web Crawler](#9-using-web-crawler)
+- [Ideal Use Cases](#ideal-use-cases)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Why Choose WebSpark.HttpClientUtility?
 
-* **Reduce Boilerplate:** Abstract away common patterns for request setup, response handling, serialization, and error management. Focus on your application logic, not HTTP plumbing.
-* **Enhance Resilience:** Easily integrate industry-standard Polly policies (like retries and circuit breakers) using simple decorators, making your application more fault-tolerant.
-* **Improve Performance:** Implement response caching with minimal effort via the caching decorator to reduce latency and load on external services.
-* **Boost Observability:** Gain crucial insights with built-in telemetry (request timing) and structured logging, featuring correlation IDs for easy request tracing.
-* **Simplify Concurrency:** Efficiently manage and execute multiple outbound HTTP requests in parallel with the dedicated concurrent processor.
-* **Web Crawling Capabilities:** Build powerful web crawlers with configurable options, sitemap generation, robots.txt compliance, and SignalR integration for real-time progress updates.
-* **Promote Best Practices:** Encourages a structured, testable, and maintainable approach to HTTP communication in .NET, aligning with modern software design principles.
-* **Flexible & Extensible:** Designed with interfaces and decorators for easy customization and extension.
+- **Reduce Boilerplate:** Abstract away common patterns for request setup, response handling, serialization, and error management. Focus on your application logic, not HTTP plumbing.
+- **Enhance Resilience:** Easily integrate industry-standard Polly policies (like retries and circuit breakers) using simple decorators, making your application more fault-tolerant.
+- **Improve Performance:** Implement response caching with minimal effort via the caching decorator to reduce latency and load on external services.
+- **Boost Observability:** Gain crucial insights with built-in telemetry (request timing) and structured logging, featuring correlation IDs for easy request tracing.
+- **Simplify Concurrency:** Efficiently manage and execute multiple outbound HTTP requests in parallel with the dedicated concurrent processor.
+- **Web Crawling Capabilities:** Build powerful web crawlers with configurable options, sitemap generation, robots.txt compliance, and SignalR integration for real-time progress updates.
+- **Promote Best Practices:** Encourages a structured, testable, and maintainable approach to HTTP communication in .NET, aligning with modern software design principles.
+- **Flexible & Extensible:** Designed with interfaces and decorators for easy customization and extension.
 
 ## Key Features
 
-* **Simplified HTTP Client Operations:** Intuitive `IHttpClientService` and `HttpRequestResultService` for clean GET, POST, PUT, DELETE requests.
-* **Structured & Informative Results:** `HttpRequestResult<T>` encapsulates response data, status codes, timing, errors, and correlation IDs in a single, easy-to-use object.
-* **Seamless Polly Integration:** Add resilience patterns (retries, circuit breakers) via the `HttpRequestResultServicePolly` decorator without complex manual setup.
-* **Effortless Response Caching:** Decorate with `HttpRequestResultServiceCache` for automatic in-memory caching of HTTP responses based on configurable durations.
-* **Automatic Basic Telemetry:** `HttpClientServiceTelemetry` and `HttpRequestResultServiceTelemetry` wrappers capture request duration out-of-the-box for performance monitoring.
-* **Efficient Concurrent Processing:** `HttpClientConcurrentProcessor` utility for managing and executing parallel HTTP requests effectively.
-* **Web Crawling Engine:** `ISiteCrawler` interface with implementations including `SiteCrawler` and `SimpleSiteCrawler` for efficient crawling of websites, sitemap generation, and more.
-* **Standardized & Rich Logging:** Utilities (`LoggingUtility`, `ErrorHandlingUtility`) provide correlation IDs, automatic URL sanitization (for security), and structured context for better diagnostics and easier debugging in logs.
-* **Flexible JSON Serialization:** Choose between `System.Text.Json` (`SystemJsonStringConverter`) and `Newtonsoft.Json` (`NewtonsoftJsonStringConverter`) via the `IStringConverter` abstraction.
-* **Safe Background Tasks:** `FireAndForgetUtility` for safely executing non-critical background tasks (like logging or notifications) without awaiting them and potentially blocking request threads.
-* **Easy Debugging:** Option to save requests as cURL commands using `CurlCommandSaver` for simple reproduction and testing outside your application.
+- **Simplified HTTP Client Operations:** Intuitive `IHttpClientService` and `HttpRequestResultService` for clean GET, POST, PUT, DELETE requests.
+- **Structured & Informative Results:** `HttpRequestResult<T>` encapsulates response data, status codes, timing, errors, and correlation IDs in a single, easy-to-use object.
+- **Seamless Polly Integration:** Add resilience patterns (retries, circuit breakers) via the `HttpRequestResultServicePolly` decorator without complex manual setup.
+- **Effortless Response Caching:** Decorate with `HttpRequestResultServiceCache` for automatic in-memory caching of HTTP responses based on configurable durations.
+- **Automatic Basic Telemetry:** `HttpClientServiceTelemetry` and `HttpRequestResultServiceTelemetry` wrappers capture request duration out-of-the-box for performance monitoring.
+- **Efficient Concurrent Processing:** `HttpClientConcurrentProcessor` utility for managing and executing parallel HTTP requests effectively.
+- **Web Crawling Engine:** `ISiteCrawler` interface with implementations including `SiteCrawler` and `SimpleSiteCrawler` for efficient crawling of websites, sitemap generation, and more.
+- **Standardized & Rich Logging:** Utilities (`LoggingUtility`, `ErrorHandlingUtility`) provide correlation IDs, automatic URL sanitization (for security), and structured context for better diagnostics and easier debugging in logs.
+- **Flexible JSON Serialization:** Choose between `System.Text.Json` (`SystemJsonStringConverter`) and `Newtonsoft.Json` (`NewtonsoftJsonStringConverter`) via the `IStringConverter` abstraction.
+- **Safe Background Tasks:** `FireAndForgetUtility` for safely executing non-critical background tasks (like logging or notifications) without awaiting them and potentially blocking request threads.
+- **Easy Debugging:** Option to save requests as cURL commands using `CurlCommandSaver` for simple reproduction and testing outside your application.
 
 ## Installation
 
@@ -138,8 +163,8 @@ services.AddScoped<IHttpRequestResultService>(provider =>
 // --- End of service configuration ---
 ```
 
-* **Important:** Ensure you register `services.AddHttpClient()` and `services.AddMemoryCache()` (if using caching) *before* the factory that registers `IHttpRequestResultService`.
-* Adjust the registration lifetimes (`Scoped`, `Singleton`, `Transient`) based on your application's needs. `Scoped` is generally a good default for services involved in a web request.
+- **Important:** Ensure you register `services.AddHttpClient()` and `services.AddMemoryCache()` (if using caching) *before* the factory that registers `IHttpRequestResultService`.
+- Adjust the registration lifetimes (`Scoped`, `Singleton`, `Transient`) based on your application's needs. `Scoped` is generally a good default for services involved in a web request.
 
 ### 2. Basic Usage (`IHttpRequestResultService`)
 
@@ -819,12 +844,12 @@ public class AdvancedCrawlerService
 
 ## Ideal Use Cases
 
-* Building robust API clients for internal or external services.
-* Simplifying HTTP interactions in microservices.
-* Adding resilience and caching to existing applications with minimal refactoring.
-* Creating web crawlers for content indexing, site analysis, or data gathering.
-* Generating sitemaps for SEO optimization.
-* Any .NET application that needs to make reliable and observable HTTP calls.
+- Building robust API clients for internal or external services.
+- Simplifying HTTP interactions in microservices.
+- Adding resilience and caching to existing applications with minimal refactoring.
+- Creating web crawlers for content indexing, site analysis, or data gathering.
+- Generating sitemaps for SEO optimization.
+- Any .NET application that needs to make reliable and observable HTTP calls.
 
 ## Contributing
 

@@ -3,9 +3,12 @@ name: Publish HttpClientUtility NuGet Package
 on:
   push:
     branches: [main] # Trigger on pushes to the main branch
+  pull_request:
+    branches: [main] # Also run on PRs to main for validation
+  workflow_dispatch: # Allow manual triggering
 
 jobs:
-  build-and-publish:
+  build-test-publish:
     runs-on: ubuntu-latest
     permissions:
       contents: read # Needed to check out the repository
@@ -13,11 +16,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required for GitVersion
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "9.0.x" # Changed from 8.x to 9.0.x
+          dotnet-version: |
+            8.0.x
+            9.0.x
 
       - name: Restore dependencies
         run: dotnet restore WebSpark.HttpClientUtility.sln
@@ -25,8 +32,60 @@ jobs:
       - name: Build solution
         run: dotnet build WebSpark.HttpClientUtility.sln --configuration Release --no-restore
 
+      - name: Run tests
+        run: dotnet test WebSpark.HttpClientUtility.sln --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage" --results-directory ./TestResults
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure() # run this step even if previous step failed
+        with:
+          name: .NET Tests # Name of the check run which will be created
+          path: "**/TestResults/*.trx" # Path to test results
+          reporter: dotnet-trx # Format of test results
+          fail-on-error: false # Do not fail the workflow run if tests fail
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: ./TestResults
+          if-no-files-found: warn
+
+      - name: Generate code coverage report
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.2.4
+        with:
+          reports: "./TestResults/**/coverage.cobertura.xml"
+          targetdir: "./CoverageReport"
+          reporttypes: "HtmlInline;Cobertura;Badges"
+          verbosity: "Info"
+
+      - name: Upload coverage report artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: ./CoverageReport
+          if-no-files-found: warn
+
       - name: Pack NuGet package
         run: dotnet pack WebSpark.HttpClientUtility/WebSpark.HttpClientUtility.csproj --configuration Release --no-build --output ./nupkg
 
+      - name: Upload NuGet package artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: nuget-packages
+          path: ./nupkg
+          if-no-files-found: error
+
+      # Only publish on pushes to main, not PRs
       - name: Publish NuGet package
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+
+      # Create GitHub Release with CHANGELOG information
+      - name: Create GitHub Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ./nupkg/*
+          body_path: CHANGELOG.md
+          token: ${{ secrets.GITHUB_TOKEN }}
