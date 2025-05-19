@@ -45,7 +45,7 @@ jobs:
           fail-on-error: false # Do not fail the workflow run if tests fail
 
       - name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: ./TestResults
@@ -60,7 +60,7 @@ jobs:
           verbosity: "Info"
 
       - name: Upload coverage report artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: ./CoverageReport
@@ -70,7 +70,7 @@ jobs:
         run: dotnet pack WebSpark.HttpClientUtility/WebSpark.HttpClientUtility.csproj --configuration Release --no-build --output ./nupkg
 
       - name: Upload NuGet package artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: nuget-packages
           path: ./nupkg
