@@ -8,7 +8,7 @@
 		<!-- NuGet Package Properties -->
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>WebSpark.HttpClientUtility</PackageId>
-		<Version>1.0.7</Version>
+		<Version>1.0.8</Version>
 		<Deterministic>true</Deterministic>
 		<Authors>MarkHazleton</Authors>
 		<Company>MarkHazleton</Company>
@@ -21,6 +21,7 @@
 			crawling.
 		</Description>
 		<PackageReleaseNotes>
+			1.0.8 - See CHANGELOG.md for details. Maintenance, bug fixes, and test improvements.
 			1.0.7 - Added support for .NET 8.0, improved caching and telemetry features, enhanced
 			documentation
 			1.0.6 - Added support for .NET 9.0, improved web crawling capabilities, enhanced SignalR
@@ -47,6 +48,13 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<!-- Source Link: Enables debugging the source through the NuGet Package -->
 		<ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>C:\GitHub\MarkHazleton\HttpClientUtility\HttpClientUtility.snk</AssemblyOriginatorKeyFile>
+		<PublicSign Condition="'$(OS)' == 'Windows_NT'">false</PublicSign>
+		<PublicSign Condition="'$(OS)' != 'Windows_NT'">true</PublicSign>
+		<EnableStrongNaming>true</EnableStrongNaming>
+		<DelaySign>false</DelaySign>
+		<!-- Strong name signing enabled -->
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -60,10 +68,10 @@
 		<PackageReference Include="HtmlAgilityPack" Version="1.12.1" />
 		<PackageReference Include="Markdig" Version="0.41.1" />
 		<PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
-		<PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="9.0.4" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="9.0.5" />
 		<PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.0" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.4" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.4" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.5" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.5" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Polly" Version="8.5.2" />

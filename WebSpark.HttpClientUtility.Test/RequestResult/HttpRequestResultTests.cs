@@ -26,7 +26,7 @@ public class Product
 [TestClass]
 public class HttpRequestResultTests
 {
-    private MockRepository mockRepository;
+    private MockRepository? mockRepository;
 
     [TestInitialize]
     public void TestInitialize()
@@ -464,8 +464,8 @@ public class HttpRequestResultTests
             It.IsAny<Microsoft.Extensions.Logging.LogLevel>(),
             It.IsAny<Microsoft.Extensions.Logging.EventId>(),
             It.IsAny<It.IsAnyType>(),
-            It.IsAny<Exception>(),
-            It.IsAny<Func<It.IsAnyType, Exception, string>>()
+            It.IsAny<Exception?>(),
+            It.IsAny<Func<It.IsAnyType, Exception?, string>>()
         ));
 
         // Act - This should not throw
@@ -476,8 +476,8 @@ public class HttpRequestResultTests
             It.IsAny<Microsoft.Extensions.Logging.LogLevel>(),
             It.IsAny<Microsoft.Extensions.Logging.EventId>(),
             It.IsAny<It.IsAnyType>(),
-            It.IsAny<Exception>(),
-            It.IsAny<Func<It.IsAnyType, Exception, string>>()
+            It.IsAny<Exception?>(),
+            It.IsAny<Func<It.IsAnyType, Exception?, string>>()
         ), Times.Once);
     }
 
@@ -504,8 +504,8 @@ public class HttpRequestResultTests
             It.IsAny<Microsoft.Extensions.Logging.LogLevel>(),
             It.IsAny<Microsoft.Extensions.Logging.EventId>(),
             It.IsAny<It.IsAnyType>(),
-            It.IsAny<Exception>(),
-            It.IsAny<Func<It.IsAnyType, Exception, string>>()
+            It.IsAny<Exception?>(),
+            It.IsAny<Func<It.IsAnyType, Exception?, string>>()
         ), Times.Never);
     }
 

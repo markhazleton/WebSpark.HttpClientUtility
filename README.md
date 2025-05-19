@@ -1,5 +1,12 @@
 # WebSpark.HttpClientUtility: Robust & Simplified .NET HttpClient Wrapper
 
+> **v1.0.8 released!**
+>
+> **What's new:**
+>
+> - Maintenance release with bug fixes and test improvements.
+> - See [CHANGELOG.md](https://github.com/markhazleton/httpclientutility/blob/main/CHANGELOG.md) for full details.
+
 ![WebSpark.HttpClientUtility Logo](https://raw.githubusercontent.com/MarkHazleton/HttpClientUtility/main/WebSpark.HttpClientUtility/images/icon.png)
 
 [![NuGet Version](https://img.shields.io/nuget/v/WebSpark.HttpClientUtility.svg)](https://www.nuget.org/packages/WebSpark.HttpClientUtility/)
