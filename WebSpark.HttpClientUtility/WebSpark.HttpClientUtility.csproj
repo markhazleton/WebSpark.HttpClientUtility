@@ -49,7 +49,7 @@
 		<!-- Source Link: Enables debugging the source through the NuGet Package -->
 		<ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
 		<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>C:\GitHub\MarkHazleton\HttpClientUtility\HttpClientUtility.snk</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>../HttpClientUtility.snk</AssemblyOriginatorKeyFile>
 		<PublicSign Condition="'$(OS)' == 'Windows_NT'">false</PublicSign>
 		<PublicSign Condition="'$(OS)' != 'Windows_NT'">true</PublicSign>
 		<EnableStrongNaming>true</EnableStrongNaming>
