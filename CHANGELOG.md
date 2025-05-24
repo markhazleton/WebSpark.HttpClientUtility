@@ -5,6 +5,39 @@ All notable changes to WebSpark.HttpClientUtility will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.10] - 2025-05-24
+
+### Added
+
+- **Streaming Support**: Implemented comprehensive streaming functionality for large HTTP responses with configurable thresholds
+- **OpenTelemetry Integration**: Added full OpenTelemetry support with multiple exporters (Console, Jaeger, OTLP, InMemory)
+- **OpenTelemetry Test Suite**: Complete MSTest-based integration tests for OpenTelemetry functionality
+- **StreamingHelper**: New utility class for efficient processing of large responses over configurable size thresholds
+
+### Improved
+
+- **Build Stability**: Fixed all compilation errors and warnings for both .NET 8.0 and .NET 9.0 targets
+- **Resource Management**: Completed comprehensive audit of IDisposable usage and resource cleanup patterns
+- **Test Framework Consistency**: Standardized all tests to use MSTest framework instead of mixed frameworks
+- **Memory Efficiency**: Enhanced processing of large HTTP responses through streaming implementation
+- **HttpRequestMessagePoolPolicy**: Fixed .NET compatibility issues with HttpVersion and HttpRequestOptions
+
+### Fixed
+
+- **Compilation Errors**: Resolved HttpVersion reference issues in HttpRequestMessagePoolPolicy.cs
+- **Duplicate Dispose**: Fixed duplicate Dispose method implementation in MemoryCacheManager.cs
+- **Empty StreamingHelper**: Replaced empty StreamingHelper.cs file with complete implementation
+- **Nullable Reference Warnings**: Fixed nullable reference warnings in test files
+- **Package Dependencies**: Added missing OpenTelemetry exporter packages for complete telemetry support
+
+### Technical Improvements
+
+- **HttpRequestResultService**: Integrated StreamingHelper for efficient large response processing
+- **Configuration Support**: Added streaming threshold configuration support (10MB default)
+- **Async Patterns**: Proper async/await patterns with ConfigureAwait(false) throughout streaming implementation
+- **Error Handling**: Maintained proper error handling and logging patterns in streaming functionality
+- **Test Coverage**: All 75+ tests passing with comprehensive coverage of new features
+
 ## [1.0.9] - 2025-05-19
 
 - Latest release.

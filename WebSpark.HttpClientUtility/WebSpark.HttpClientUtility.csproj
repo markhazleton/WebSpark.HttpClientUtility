@@ -8,7 +8,7 @@
 		<!-- NuGet Package Properties -->
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>WebSpark.HttpClientUtility</PackageId>
-		<Version>1.0.9</Version>
+		<Version>1.0.10</Version>
 		<Deterministic>true</Deterministic>
 		<Authors>MarkHazleton</Authors>
 		<Company>MarkHazleton</Company>
@@ -21,20 +21,20 @@
 			crawling.
 		</Description>
 		<PackageReleaseNotes>
+			1.0.10 - Major improvements: Streaming support for large responses, OpenTelemetry
+			integration, resource cleanup audit, MSTest framework consistency, build stability
+			fixes.
+			1.0.9 - See CHANGELOG.md for details. Maintenance, bug fixes, and test improvements.
 			1.0.8 - See CHANGELOG.md for details. Maintenance, bug fixes, and test improvements.
 			1.0.7 - Added support for .NET 8.0, improved caching and telemetry features, enhanced
 			documentation
 			1.0.6 - Added support for .NET 9.0, improved web crawling capabilities, enhanced SignalR
 			integration
 			1.0.5 - Bug fixes and performance improvements for concurrent processing
-			1.0.4 - Added support for robots.txt parsing and improved sitemap generation
-			1.0.3 - Enhanced telemetry with request duration tracking
-			1.0.2 - Added support for Polly resilience patterns
-			1.0.1 - Initial release with core functionality
 		</PackageReleaseNotes>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<PackageTags>
-			httpclient;utility;web;api;rest;polly;cache;telemetry;concurrent;dotnet;aspnetcore;crawler;sitemap;http-resilience;retry;circuit-breaker;caching;curl;fire-and-forget
+			httpclient;utility;web;api;rest;polly;cache;telemetry;concurrent;dotnet;aspnetcore;crawler;sitemap;http-resilience;retry;circuit-breaker;caching;curl;fire-and-forget;opentelemetry;streaming;observability;tracing
 		</PackageTags>
 		<RepositoryUrl>https://github.com/MarkHazleton/HttpClientUtility</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
@@ -62,7 +62,6 @@
 		<None Include="images\icon.png" Pack="true" PackagePath="\" />
 		<None Include="Documentation\*.md" Pack="true" PackagePath="docs\" />
 	</ItemGroup>
-
 	<ItemGroup>
 		<PackageReference Include="CsvHelper" Version="33.0.1" />
 		<PackageReference Include="HtmlAgilityPack" Version="1.12.1" />
@@ -74,6 +73,13 @@
 		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.5" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="OpenTelemetry" Version="1.12.0" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.12.0" />
+		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.12.0" />
+		<PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.12.0" />
+		<PackageReference Include="OpenTelemetry.Exporter.Jaeger" Version="1.5.1" />
+		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.12.0" />
+		<PackageReference Include="OpenTelemetry.Exporter.InMemory" Version="1.12.0" />
 		<PackageReference Include="Polly" Version="8.5.2" />
 	</ItemGroup>
 

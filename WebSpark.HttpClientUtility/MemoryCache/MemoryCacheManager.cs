@@ -125,24 +125,11 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
         {
             cache.Remove(key);
         }
-        _allKeys.Clear();
-
-        // Safely dispose the old token source
+        _allKeys.Clear();        // Safely dispose the old token source
         var oldTokenSource = _cancellationTokenSource;
         _cancellationTokenSource = new CancellationTokenSource();
         oldTokenSource.Cancel();
         oldTokenSource.Dispose();
-    }
-
-    /// <summary>
-    /// Dispose cache manager and release resources
-    /// </summary>
-    /// <remarks>
-    /// This method disposes the cancellation token source used for cache invalidation.
-    /// </remarks>
-    public virtual void Dispose()
-    {
-        _cancellationTokenSource?.Dispose();
     }
 
     /// <summary>
@@ -247,13 +234,34 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     /// <param name="cacheTimeMinutes">Cache time in minutes</param>
     /// <remarks>
     /// This method adds an item to the cache with the specified expiration time in minutes.
-    /// It also adds the key to the tracking dictionary for management purposes.
-    /// </remarks>
+    /// It also adds the key to the tracking dictionary for management purposes.    /// </remarks>
     public virtual void Set(string key, object data, int cacheTimeMinutes)
     {
         if (data is not null)
         {
             cache.Set(AddKey(key), data, GetMemoryCacheEntryOptions(TimeSpan.FromMinutes(cacheTimeMinutes)));
+        }
+    }
+
+    /// <summary>
+    /// Disposes of the MemoryCacheManager and cleans up resources.
+    /// </summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Protected implementation of Dispose pattern.
+    /// </summary>
+    /// <param name="disposing">true if called from Dispose(); false if called from finalizer</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Net;
+using WebSpark.HttpClientUtility.Authentication;
 using WebSpark.HttpClientUtility.Utilities.Logging;
 
 namespace WebSpark.HttpClientUtility.RequestResult;
@@ -7,6 +8,7 @@ namespace WebSpark.HttpClientUtility.RequestResult;
 
 /// <summary>
 /// Abstract base class implementing template method pattern for HTTP requests.
+/// Enhanced with authentication support while maintaining backward compatibility.
 /// </summary>
 public abstract class HttpRequestResultBase : IRequestInfo, IResultInfo, IErrorInfo
 {

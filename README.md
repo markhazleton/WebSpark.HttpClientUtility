@@ -1,10 +1,14 @@
 # WebSpark.HttpClientUtility: Robust & Simplified .NET HttpClient Wrapper
 
-> **v1.0.8 released!**
+> **v1.0.10 released!**
 >
 > **What's new:**
 >
-> - Maintenance release with bug fixes and test improvements.
+> - **Streaming Support**: Comprehensive streaming functionality for large HTTP responses
+> - **OpenTelemetry Integration**: Full OpenTelemetry support with multiple exporters
+> - **Build Stability**: Fixed all compilation errors for .NET 8.0 and .NET 9.0
+> - **Resource Management**: Completed comprehensive resource cleanup audit
+> - **Test Framework**: Standardized all tests to MSTest framework
 > - See [CHANGELOG.md](https://github.com/markhazleton/httpclientutility/blob/main/CHANGELOG.md) for full details.
 
 ![WebSpark.HttpClientUtility Logo](https://raw.githubusercontent.com/MarkHazleton/HttpClientUtility/main/WebSpark.HttpClientUtility/images/icon.png)
@@ -57,6 +61,8 @@ This library provides a comprehensive solution for common challenges faced when 
 ## Key Features
 
 - **Simplified HTTP Client Operations:** Intuitive `IHttpClientService` and `HttpRequestResultService` for clean GET, POST, PUT, DELETE requests.
+- **Streaming Support for Large Responses:** Efficient handling of large HTTP responses with configurable streaming thresholds to optimize memory usage.
+- **OpenTelemetry Integration:** Complete OpenTelemetry support with multiple exporters (Console, Jaeger, OTLP, InMemory) for comprehensive observability.
 - **Structured & Informative Results:** `HttpRequestResult<T>` encapsulates response data, status codes, timing, errors, and correlation IDs in a single, easy-to-use object.
 - **Seamless Polly Integration:** Add resilience patterns (retries, circuit breakers) via the `HttpRequestResultServicePolly` decorator without complex manual setup.
 - **Effortless Response Caching:** Decorate with `HttpRequestResultServiceCache` for automatic in-memory caching of HTTP responses based on configurable durations.
@@ -67,6 +73,7 @@ This library provides a comprehensive solution for common challenges faced when 
 - **Flexible JSON Serialization:** Choose between `System.Text.Json` (`SystemJsonStringConverter`) and `Newtonsoft.Json` (`NewtonsoftJsonStringConverter`) via the `IStringConverter` abstraction.
 - **Safe Background Tasks:** `FireAndForgetUtility` for safely executing non-critical background tasks (like logging or notifications) without awaiting them and potentially blocking request threads.
 - **Easy Debugging:** Option to save requests as cURL commands using `CurlCommandSaver` for simple reproduction and testing outside your application.
+- **Comprehensive Resource Management:** Audited and optimized IDisposable usage throughout the library for proper resource cleanup.
 
 ## Installation
 
@@ -847,6 +854,66 @@ public class AdvancedCrawlerService
         return Path.Combine(outputDirectory, "index.html");
     }
 }
+```
+
+## New Features in v1.0.10
+
+### OpenTelemetry Integration
+
+The library now includes comprehensive OpenTelemetry support for observability:
+
+```csharp
+// Add OpenTelemetry with multiple exporters
+services.AddOpenTelemetry()
+    .WithTracing(builder =>
+    {
+        builder
+            .SetResourceBuilder(ResourceBuilder.CreateDefault()
+                .AddService("MyApp", "1.0.0"))
+            .AddSource("MyApp")
+            .AddHttpClientInstrumentation()
+            .AddConsoleExporter()
+            .AddOtlpExporter(options =>
+            {
+                options.Endpoint = new Uri("http://localhost:4317");
+                options.Protocol = OtlpExportProtocol.Grpc;
+            });
+    });
+```
+
+### Streaming Support for Large Responses
+
+Efficiently handle large HTTP responses with automatic streaming:
+
+```csharp
+// Configure streaming threshold (default: 10MB)
+services.Configure<HttpClientOptions>(options =>
+{
+    options.StreamingThreshold = 5 * 1024 * 1024; // 5MB threshold
+});
+
+// The HttpRequestResultService automatically uses streaming for large responses
+var result = await httpRequestResultService.GetAsync<MyLargeDataModel>(
+    "https://api.example.com/large-dataset");
+
+if (result.IsSuccess)
+{
+    // Large response handled efficiently with streaming
+    var data = result.ResponseObject;
+}
+```
+
+### Enhanced Resource Management
+
+All IDisposable resources are now properly managed with comprehensive cleanup:
+
+```csharp
+// Automatic resource cleanup in background tasks
+await FireAndForgetUtility.ExecuteAsync(async () =>
+{
+    // Long-running background operation
+    // Resources are automatically cleaned up
+});
 ```
 
 ## Ideal Use Cases

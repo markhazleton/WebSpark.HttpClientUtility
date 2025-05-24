@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using WebSpark.HttpClientUtility.CurlService;
+using WebSpark.HttpClientUtility.Streaming;
 using WebSpark.HttpClientUtility.Utilities.Logging;
 
 namespace WebSpark.HttpClientUtility.RequestResult;
@@ -26,6 +27,8 @@ public class HttpRequestResultService(
     private readonly HttpClient _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
     private readonly ILogger<HttpRequestResultService> _logger = _logger ?? throw new ArgumentNullException(nameof(_logger));
     private readonly CurlCommandSaver curlCommandSaver = new(_logger, _configuration);
+    // Streaming configuration
+    private readonly long _streamingThreshold = _configuration?.GetValue<long>("HttpClient:StreamingThreshold") ?? 10 * 1024 * 1024; // 10 MB default
 
     private async Task<HttpRequestResult<T>> ProcessHttpResponseAsync<T>(HttpResponseMessage? response, HttpRequestResult<T> httpSendResults, CancellationToken ct)
     {
@@ -37,7 +40,6 @@ public class HttpRequestResultService(
         }
 
         httpSendResults.StatusCode = response.StatusCode;
-        string callResult = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
 
         // Log response details
         LoggingUtility.LogRequestCompletion(
@@ -46,54 +48,53 @@ public class HttpRequestResultService(
             httpSendResults.RequestPath,
             (int)response.StatusCode,
             httpSendResults.ElapsedMilliseconds,
-            httpSendResults.CorrelationId);
-
-        if (typeof(T) == typeof(string))
+            httpSendResults.CorrelationId);        // Use StreamingHelper for efficient processing of large responses
+        try
         {
-            httpSendResults.ResponseResults = (T)(object)callResult;
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString,
+                IgnoreReadOnlyFields = true,
+                AllowTrailingCommas = true,
+                ReadCommentHandling = JsonCommentHandling.Skip,
+                MaxDepth = 32,
+            };
+
+            // Use StreamingHelper to process the response efficiently
+            httpSendResults.ResponseResults = await StreamingHelper.ProcessResponseAsync<T>(
+                response,
+                _streamingThreshold,
+                jsonOptions,
+                _logger,
+                httpSendResults.CorrelationId,
+                ct).ConfigureAwait(false);
+
+            if (httpSendResults.ResponseResults == null)
+            {
+                httpSendResults.AddError("Failed to deserialize response to expected type");
+            }
         }
-        else
+        catch (JsonException ex)
         {
-            try
+            // Create rich context for this exception
+            var contextData = new Dictionary<string, object>
             {
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                    NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString,
-                    IgnoreReadOnlyFields = true,
-                    AllowTrailingCommas = true,
-                    ReadCommentHandling = JsonCommentHandling.Skip,
-                    MaxDepth = 32,
-                };
+                ["ResponseStatusCode"] = response.StatusCode,
+                ["ResponseContentLength"] = response.Content.Headers.ContentLength ?? 0,
+                ["ExpectedType"] = typeof(T).Name
+            };
 
-                httpSendResults.ResponseResults = JsonSerializer.Deserialize<T>(callResult, options);
+            // Log with rich context
+            ErrorHandlingUtility.LogException(
+                ex,
+                _logger,
+                "JSON Deserialization",
+                httpSendResults.CorrelationId,
+                contextData);
 
-                if (httpSendResults.ResponseResults == null)
-                {
-                    httpSendResults.AddError("Failed to deserialize response to expected type");
-                }
-            }
-            catch (JsonException ex)
-            {
-                // Create rich context for this exception
-                var contextData = new Dictionary<string, object>
-                {
-                    ["ResponseStatusCode"] = response.StatusCode,
-                    ["ResponseContentLength"] = callResult?.Length ?? 0,
-                    ["ExpectedType"] = typeof(T).Name
-                };
-
-                // Log with rich context
-                ErrorHandlingUtility.LogException(
-                    ex,
-                    _logger,
-                    "JSON Deserialization",
-                    httpSendResults.CorrelationId,
-                    contextData);
-
-                // Add to error list with context
-                httpSendResults.ProcessException(ex, "Failed to deserialize response");
-            }
+            // Add to error list with context
+            httpSendResults.ProcessException(ex, "Failed to deserialize response");
         }
 
         return httpSendResults;

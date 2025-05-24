@@ -1,4 +1,6 @@
-﻿namespace WebSpark.HttpClientUtility.RequestResult;
+﻿using WebSpark.HttpClientUtility.Authentication;
+
+namespace WebSpark.HttpClientUtility.RequestResult;
 
 /// <summary>
 /// Concrete class for HTTP requests with specific response type.
@@ -7,7 +9,7 @@
 /// <remarks>
 /// This class extends the base HttpRequestResultBase by adding strong typing for the response data.
 /// It encapsulates all information about an HTTP request and its response, including status codes,
-/// timing information, error details, and the typed response content.
+/// timing information, error details, authentication providers, and the typed response content.
 /// </remarks>
 public class HttpRequestResult<T> : HttpRequestResultBase
 {
@@ -19,6 +21,16 @@ public class HttpRequestResult<T> : HttpRequestResultBase
     /// after a successful request. If the request fails, this will be the default value for type T.
     /// </remarks>
     public T? ResponseResults { get; set; }
+
+    /// <summary>
+    /// Gets or sets the authentication provider to use for this request.
+    /// </summary>
+    /// <remarks>
+    /// If set, this provider will be used to add authentication headers to the request.
+    /// This allows for per-request authentication configuration while maintaining backward compatibility.
+    /// If not set, any existing RequestHeaders will be used as-is.
+    /// </remarks>
+    public IAuthenticationProvider? AuthenticationProvider { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the HttpRequestResult class with default values.
