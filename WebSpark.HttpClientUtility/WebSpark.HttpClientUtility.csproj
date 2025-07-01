@@ -21,7 +21,10 @@
 			crawling.
 		</Description>
 		<PackageReleaseNotes>
-			1.1.0 - Breaking changes: Removed deprecated OpenTelemetry.Exporter.Jaeger package in favor of modern OTLP exporter. Updated OpenTelemetry configuration API to use OTLP-only approach (supports Jaeger, Zipkin, and other OTLP-compatible systems). Build stability improvements and code cleanup.
+			1.1.0 - Breaking changes: Removed deprecated OpenTelemetry.Exporter.Jaeger package in
+			favor of modern OTLP exporter. Updated OpenTelemetry configuration API to use OTLP-only
+			approach (supports Jaeger, Zipkin, and other OTLP-compatible systems). Build stability
+			improvements and code cleanup.
 			1.0.10 - Major improvements: Streaming support for large responses, OpenTelemetry
 			integration, resource cleanup audit, MSTest framework consistency, build stability
 			fixes.
