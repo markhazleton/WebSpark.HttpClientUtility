@@ -5,6 +5,32 @@ All notable changes to WebSpark.HttpClientUtility will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-07-01
+
+### Breaking Changes
+
+- **OpenTelemetry Modernization**: Removed deprecated `OpenTelemetry.Exporter.Jaeger` package in favor of the modern OTLP exporter
+- **API Changes**: Updated `AddWebSparkOpenTelemetryWithExporters` method signature:
+  - Removed `jaegerEndpoint` parameter
+  - Kept `otlpEndpoint` parameter (supports Jaeger, Zipkin, and other OTLP-compatible systems)
+
+### Improved
+
+- **Modern OpenTelemetry**: Migrated to OTLP (OpenTelemetry Protocol) exporter which provides better compatibility
+- **Reduced Dependencies**: Eliminated deprecated package dependencies for a cleaner dependency tree
+- **Enhanced Documentation**: Updated OpenTelemetry configuration documentation to reflect OTLP-first approach
+- **Build Stability**: Resolved compilation issues related to deprecated Jaeger exporter
+
+### Technical Details
+
+- **OTLP Support**: The OTLP exporter supports multiple tracing backends including:
+  - Jaeger (via OTLP endpoint)
+  - Zipkin (via OTLP endpoint)
+  - Other OTLP-compatible systems
+  - Cloud-native observability platforms
+- **Configuration**: Simplified configuration with single `otlpEndpoint` parameter that works with all supported backends
+- **Future-Proof**: Using the recommended modern approach for OpenTelemetry exporters
+
 ## [1.0.10] - 2025-05-24
 
 ### Added

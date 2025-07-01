@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Logging;
-using System.Security;
 
 namespace WebSpark.HttpClientUtility.Authentication;
 

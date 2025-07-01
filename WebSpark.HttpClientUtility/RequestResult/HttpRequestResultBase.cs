@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Net;
-using WebSpark.HttpClientUtility.Authentication;
 using WebSpark.HttpClientUtility.Utilities.Logging;
 
 namespace WebSpark.HttpClientUtility.RequestResult;

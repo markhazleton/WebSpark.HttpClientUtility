@@ -1,9 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using OpenTelemetry.Instrumentation.Http;
 using WebSpark.HttpClientUtility.ClientService;
 using WebSpark.HttpClientUtility.RequestResult;
 
@@ -47,7 +45,7 @@ public static class OpenTelemetryServiceCollectionExtensions
                         options.FilterHttpRequestMessage = (request) =>
                         {
                             // Filter out health checks and other noise
-                            var uri = request.RequestUri?.ToString() ?? "";
+                            var uri = request.RequestUri?.ToString() ?? string.Empty;
                             return !uri.Contains("/health") && !uri.Contains("/ping");
                         };
                         options.EnrichWithHttpRequestMessage = (activity, request) =>
@@ -128,13 +126,11 @@ public static class OpenTelemetryServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The service collection to configure.</param>
     /// <param name="environment">The hosting environment for conditional configuration.</param>
-    /// <param name="jaegerEndpoint">Optional Jaeger endpoint for distributed tracing.</param>
-    /// <param name="otlpEndpoint">Optional OTLP endpoint for OpenTelemetry Protocol export.</param>
+    /// <param name="otlpEndpoint">Optional OTLP endpoint for OpenTelemetry Protocol export (supports Jaeger, Zipkin, and other OTLP-compatible systems).</param>
     /// <returns>The service collection for method chaining.</returns>
     public static IServiceCollection AddWebSparkOpenTelemetryWithExporters(
         this IServiceCollection services,
         IHostEnvironment environment,
-        string? jaegerEndpoint = null,
         string? otlpEndpoint = null)
     {
         services.AddWebSparkOpenTelemetry(tracerBuilder =>
@@ -145,21 +141,14 @@ public static class OpenTelemetryServiceCollectionExtensions
                 tracerBuilder.AddConsoleExporter();
             }
 
-            // Add Jaeger exporter if endpoint is provided
-            if (!string.IsNullOrEmpty(jaegerEndpoint))
-            {
-                tracerBuilder.AddJaegerExporter(options =>
-                {
-                    options.Endpoint = new Uri(jaegerEndpoint);
-                });
-            }
-
             // Add OTLP exporter if endpoint is provided
+            // OTLP supports multiple backends including Jaeger, Zipkin, and others
             if (!string.IsNullOrEmpty(otlpEndpoint))
             {
                 tracerBuilder.AddOtlpExporter(options =>
                 {
                     options.Endpoint = new Uri(otlpEndpoint);
+                    // Additional configuration can be added here for headers, timeout, etc.
                 });
             }
 

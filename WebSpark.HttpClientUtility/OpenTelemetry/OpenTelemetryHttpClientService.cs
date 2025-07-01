@@ -1,6 +1,4 @@
 using Microsoft.Extensions.Logging;
-using OpenTelemetry;
-using OpenTelemetry.Trace;
 using System.Diagnostics;
 using System.Net;
 using WebSpark.HttpClientUtility.ClientService;

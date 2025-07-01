@@ -1,6 +1,5 @@
 using Microsoft.Extensions.ObjectPool;
 using System;
-using System.Net.Http;
 
 namespace WebSpark.HttpClientUtility.ObjectPool;
 

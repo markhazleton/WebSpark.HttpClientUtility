@@ -1,8 +1,4 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.ObjectPool;
-using OpenTelemetry;
-using OpenTelemetry.Trace;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using WebSpark.HttpClientUtility.RequestResult;

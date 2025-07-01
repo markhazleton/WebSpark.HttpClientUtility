@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using WebSpark.HttpClientUtility.MemoryCache;
 
