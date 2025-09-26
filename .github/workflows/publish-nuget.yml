@@ -13,7 +13,7 @@ jobs:
   build-test-publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read # Needed to check out the repository
+      contents: write # Needed to create GitHub releases
       checks: write # Needed for dorny/test-reporter to create check runs
 
     steps:
