@@ -5,6 +5,30 @@ All notable changes to WebSpark.HttpClientUtility will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2025-01-25
+
+### Improved
+
+- **Dependency Updates**: Updated all NuGet package dependencies to their latest stable versions for improved compatibility and security
+- **Package Maintenance**: Comprehensive maintenance release focusing on keeping dependencies current
+- **Security Enhancements**: Leveraged security improvements and bug fixes from updated package versions
+- **Compatibility Improvements**: Enhanced compatibility with latest .NET ecosystem packages
+- **Stability Improvements**: General stability improvements from dependency updates
+
+### Technical Details
+
+- **Updated Dependencies**: All PackageReference entries updated to latest stable versions
+- **Target Frameworks**: Continues to support both .NET 8.0 and .NET 9.0
+- **Backward Compatibility**: No breaking API changes; maintains full backward compatibility
+- **Build Process**: Verified successful compilation and testing across all target frameworks
+
+### Package Updates
+
+- All NuGet dependencies refreshed to latest stable versions
+- Security patches included through updated dependencies
+- Performance improvements inherited from updated packages
+- Enhanced ecosystem compatibility
+
 ## [1.1.0] - 2025-07-01
 
 ### Breaking Changes
