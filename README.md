@@ -1,14 +1,12 @@
 # WebSpark.HttpClientUtility: Robust & Simplified .NET HttpClient Wrapper
 
-> **v1.0.10 released!**
+> **v1.2.0 released!**
 >
 > **What's new:**
 >
-> - **Streaming Support**: Comprehensive streaming functionality for large HTTP responses
-> - **OpenTelemetry Integration**: Full OpenTelemetry support with multiple exporters
-> - **Build Stability**: Fixed all compilation errors for .NET 8.0 and .NET 9.0
-> - **Resource Management**: Completed comprehensive resource cleanup audit
-> - **Test Framework**: Standardized all tests to MSTest framework
+> - **Updated Dependencies**: All NuGet package dependencies updated to their latest stable versions
+> - **Improved Compatibility**: Enhanced compatibility and security with latest package versions
+> - **Maintenance Release**: Stability improvements and dependency updates
 > - See [CHANGELOG.md](https://github.com/markhazleton/httpclientutility/blob/main/CHANGELOG.md) for full details.
 
 ![WebSpark.HttpClientUtility Logo](https://raw.githubusercontent.com/MarkHazleton/HttpClientUtility/main/WebSpark.HttpClientUtility/images/icon.png)
@@ -704,97 +702,6 @@ public class BlobMetadata
     public string Url { get; set; } = string.Empty;
     public long Size { get; set; }
     public string ContentType { get; set; } = string.Empty;
-}
-```
-
-### 9. Using Web Crawler
-
-The library includes a powerful web crawler with configurable options, real-time updates via SignalR, and sitemap generation:
-
-```csharp
-// In Program.cs or Startup.cs
-services.AddHttpClient();
-services.AddMemoryCache();
-services.AddSingleton<IStringConverter, SystemJsonStringConverter>();
-
-// Register crawler services
-services.AddHttpClientCrawler();
-
-// In your service class:
-public class WebCrawlerService
-{
-    private readonly ISiteCrawler _crawler;
-    private readonly ILogger<WebCrawlerService> _logger;
-    
-    public WebCrawlerService(
-        ISiteCrawler crawler,
-        ILogger<WebCrawlerService> logger)
-    {
-        _crawler = crawler;
-        _logger = logger;
-    }
-    
-    public async Task<CrawlDomainViewModel> CrawlWebsiteAsync(
-        string startUrl,
-        int maxPages = 100,
-        int maxDepth = 3,
-        bool respectRobotsTxt = true,
-        CancellationToken cancellationToken = default)
-    {
-        // Configure crawler options
-        var options = new CrawlerOptions
-        {
-            MaxPages = maxPages,
-            MaxDepth = maxDepth,
-            RespectRobotsTxt = respectRobotsTxt,
-            RequestDelayMs = 200, // Be polite with 200ms between requests
-            UserAgent = "WebSpark.HttpClientUtility.Crawler/1.0.4 (+https://yoursite.com/bot)",
-            MaxConcurrentRequests = 5,
-            FollowExternalLinks = false, // Only crawl links on the same domain
-            TimeoutSeconds = 30,
-            ValidateHtml = true,
-            GenerateSitemap = true
-        };
-        
-        _logger.LogInformation(
-            "Starting crawl of {Url} with max {MaxPages} pages and depth {MaxDepth}",
-            startUrl, maxPages, maxDepth);
-        
-        var result = await _crawler.CrawlAsync(startUrl, options, cancellationToken);
-        
-        _logger.LogInformation(
-            "Crawl completed: {PageCount} pages crawled. Sitemap generated with {SitemapSize} bytes",
-            result.CrawlResults.Count,
-            result.Sitemap?.Length ?? 0);
-            
-        return result;
-    }
-    
-    public string GetSitemapUrlsAsText(CrawlDomainViewModel crawlResult)
-    {
-        if (string.IsNullOrEmpty(crawlResult.Sitemap))
-        {
-            return "No sitemap generated";
-        }
-        
-        // Extract URLs from the sitemap XML
-        var document = new XmlDocument();
-        document.LoadXml(crawlResult.Sitemap);
-        
-        var urlNodes = document.SelectNodes("//url/loc");
-        if (urlNodes == null)
-        {
-            return "No URLs found in sitemap";
-        }
-        
-        var urls = new StringBuilder();
-        foreach (XmlNode node in urlNodes)
-        {
-            urls.AppendLine(node.InnerText);
-        }
-        
-        return urls.ToString();
-    }
 }
 ```
 

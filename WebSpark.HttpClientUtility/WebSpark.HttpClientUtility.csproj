@@ -8,7 +8,7 @@
 		<!-- NuGet Package Properties -->
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>WebSpark.HttpClientUtility</PackageId>
-		<Version>1.1.0</Version>
+		<Version>1.2.0</Version>
 		<Deterministic>true</Deterministic>
 		<Authors>MarkHazleton</Authors>
 		<Company>MarkHazleton</Company>
@@ -21,6 +21,7 @@
 			crawling.
 		</Description>
 		<PackageReleaseNotes>
+			1.2.0 - Updated all NuGet package dependencies to their latest stable versions for improved compatibility and security. Maintenance release with dependency updates and stability improvements.
 			1.1.0 - Breaking changes: Removed deprecated OpenTelemetry.Exporter.Jaeger package in
 			favor of modern OTLP exporter. Updated OpenTelemetry configuration API to use OTLP-only
 			approach (supports Jaeger, Zipkin, and other OTLP-compatible systems). Build stability
@@ -68,22 +69,22 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="CsvHelper" Version="33.1.0" />
-		<PackageReference Include="HtmlAgilityPack" Version="1.12.1" />
-		<PackageReference Include="Markdig" Version="0.41.3" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.12.3" />
+		<PackageReference Include="Markdig" Version="0.42.0" />
 		<PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
-		<PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="9.0.6" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="9.0.9" />
 		<PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.0" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.6" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.6" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.9" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 		<PackageReference Include="OpenTelemetry" Version="1.12.0" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.12.0" />
 		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.12.0" />
 		<PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.12.0" />
 		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.12.0" />
 		<PackageReference Include="OpenTelemetry.Exporter.InMemory" Version="1.12.0" />
-		<PackageReference Include="Polly" Version="8.6.1" />
+		<PackageReference Include="Polly" Version="8.6.4" />
 	</ItemGroup>
 
 </Project>
