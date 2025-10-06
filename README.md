@@ -1,12 +1,13 @@
 # WebSpark.HttpClientUtility: Robust & Simplified .NET HttpClient Wrapper
 
-> **v1.2.0 released!**
+> **v1.3.0 released!**
 >
 > **What's new:**
 >
-> - **Updated Dependencies**: All NuGet package dependencies updated to their latest stable versions
-> - **Improved Compatibility**: Enhanced compatibility and security with latest package versions
-> - **Maintenance Release**: Stability improvements and dependency updates
+> - **Target .NET 9 Only**: Now exclusively targets .NET 9 for optimal performance and modern features
+> - **Comprehensive Test Coverage**: Added 75+ new tests across authentication, object pooling, streaming, and utilities  
+> - **Zero Build Warnings**: Clean codebase with modern MSTest patterns and nullable reference types
+> - **Updated Dependencies**: Latest NuGet packages for enhanced security and compatibility
 > - See [CHANGELOG.md](https://github.com/markhazleton/httpclientutility/blob/main/CHANGELOG.md) for full details.
 
 ![WebSpark.HttpClientUtility Logo](https://raw.githubusercontent.com/MarkHazleton/HttpClientUtility/main/WebSpark.HttpClientUtility/images/icon.png)
@@ -15,6 +16,7 @@
 [![NuGet Downloads](https://img.shields.io/nuget/dt/WebSpark.HttpClientUtility.svg)](https://www.nuget.org/packages/WebSpark.HttpClientUtility/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://github.com/MarkHazleton/HttpClientUtility/actions/workflows/publish-nuget.yml/badge.svg)](https://github.com/MarkHazleton/HttpClientUtility/actions/workflows/publish-nuget.yml)
+[![.NET 9](https://img.shields.io/badge/.NET-9-blue.svg)](https://dotnet.microsoft.com/download/dotnet/9.0)
 
 ## 📦 Quick Links
 
@@ -24,7 +26,7 @@
 
 **Tired of boilerplate code and manual handling of resilience, caching, and telemetry for `HttpClient` in your .NET applications?** WebSpark.HttpClientUtility is a powerful yet easy-to-use library designed to streamline your HTTP interactions, making them more robust, observable, and maintainable. Build reliable API clients faster with built-in support for Polly resilience, response caching, concurrent requests, and standardized logging.
 
-This library provides a comprehensive solution for common challenges faced when working with `HttpClient` in modern .NET (including .NET 8, .NET 9 and ASP.NET Core) applications.
+This library provides a comprehensive solution for common challenges faced when working with `HttpClient` in modern .NET 9 applications.
 
 ## 📑 Table of Contents
 

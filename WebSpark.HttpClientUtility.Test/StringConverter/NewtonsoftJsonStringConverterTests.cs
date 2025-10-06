@@ -51,7 +51,6 @@ public class NewtonsoftJsonStringConverterTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void ConvertFromString_WithNullOrWhitespace_ThrowsArgumentException()
     {
         // Arrange
@@ -59,13 +58,12 @@ public class NewtonsoftJsonStringConverterTests
         string jsonString = " ";
 
         // Act
-        converter.ConvertFromString<dynamic>(jsonString);
+        Assert.ThrowsExactly<ArgumentException>(() => converter.ConvertFromString<dynamic>(jsonString));
 
         // Assert is handled by ExpectedException
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void ConvertFromString_WithInvalidJsonString_ThrowsInvalidOperationException()
     {
         // Arrange
@@ -73,7 +71,7 @@ public class NewtonsoftJsonStringConverterTests
         var jsonString = "{\"Invalid\":\"Json\""; // Deliberately malformed JSON
 
         // Act
-        converter.ConvertFromString<dynamic>(jsonString);
+        Assert.ThrowsExactly<InvalidOperationException>(() => converter.ConvertFromString<dynamic>(jsonString));
 
         // Assert is handled by ExpectedException
     }

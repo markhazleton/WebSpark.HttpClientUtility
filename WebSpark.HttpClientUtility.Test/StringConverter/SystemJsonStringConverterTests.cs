@@ -51,31 +51,25 @@ public class SystemJsonStringConverterTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void ConvertFromString_WithNullOrWhitespace_ThrowsArgumentException()
     {
         // Arrange
         var converter = new SystemJsonStringConverter();
         string jsonString = " ";
 
-        // Act
-        converter.ConvertFromString<dynamic>(jsonString);
-
-        // Assert is handled by ExpectedException
+        // Act & Assert
+        Assert.ThrowsExactly<ArgumentException>(() => converter.ConvertFromString<dynamic>(jsonString));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void ConvertFromString_WithInvalidJsonString_ThrowsInvalidOperationException()
     {
         // Arrange
         var converter = new SystemJsonStringConverter();
         var jsonString = "{\"Invalid\":\"Json\""; // Deliberately malformed JSON
 
-        // Act
-        converter.ConvertFromString<dynamic>(jsonString);
-
-        // Assert is handled by ExpectedException
+        // Act & Assert
+        Assert.ThrowsExactly<InvalidOperationException>(() => converter.ConvertFromString<dynamic>(jsonString));
     }
 
 

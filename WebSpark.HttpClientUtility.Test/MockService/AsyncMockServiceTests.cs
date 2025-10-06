@@ -33,7 +33,7 @@ namespace WebSpark.HttpClientUtility.Test.MockService
             await Task.Delay(500);
             cts.Cancel();
 
-            await Assert.ThrowsExceptionAsync<TaskCanceledException>(() => task);
+            await Assert.ThrowsExactlyAsync<TaskCanceledException>(() => task);
             stopwatch.Stop();
 
             // Verify it was cancelled relatively quickly (should be less than 2 seconds)
@@ -48,7 +48,7 @@ namespace WebSpark.HttpClientUtility.Test.MockService
             cts.Cancel();
 
             // Act & Assert
-            await Assert.ThrowsExceptionAsync<OperationCanceledException>(
+            await Assert.ThrowsExactlyAsync<OperationCanceledException>(
                 () => AsyncMockService.ExampleMethodAsync(cts.Token));
         }
 
@@ -100,7 +100,7 @@ namespace WebSpark.HttpClientUtility.Test.MockService
             cts.Cancel();
 
             // Assert
-            await Assert.ThrowsExceptionAsync<TaskCanceledException>(() => task);
+            await Assert.ThrowsExactlyAsync<TaskCanceledException>(() => task);
         }
 
         [TestMethod]
@@ -208,7 +208,7 @@ namespace WebSpark.HttpClientUtility.Test.MockService
             cts.Cancel();
 
             // Assert
-            await Assert.ThrowsExceptionAsync<TaskCanceledException>(() => task);
+            await Assert.ThrowsExactlyAsync<TaskCanceledException>(() => task);
         }
 
         [TestMethod]
@@ -234,7 +234,7 @@ namespace WebSpark.HttpClientUtility.Test.MockService
             cts.Cancel();
 
             // Act & Assert
-            await Assert.ThrowsExceptionAsync<TaskCanceledException>(
+            await Assert.ThrowsExactlyAsync<TaskCanceledException>(
                 () => _asyncMockService.LongRunningOperationWithCancellationTokenAsync(loop, cts.Token));
         }
 
@@ -270,7 +270,7 @@ namespace WebSpark.HttpClientUtility.Test.MockService
             using var cts = new CancellationTokenSource();
 
             // Act & Assert
-            await Assert.ThrowsExceptionAsync<Exception>(
+            await Assert.ThrowsExactlyAsync<Exception>(
                 () => AsyncMockService.LongRunningTask(taskName, delay, iterations, throwEx, _mockLogger.Object, cts.Token));
 
             // Verify exception was logged
@@ -298,7 +298,7 @@ namespace WebSpark.HttpClientUtility.Test.MockService
             cts.Cancel();
 
             // Assert
-            await Assert.ThrowsExceptionAsync<TaskCanceledException>(() => task);
+            await Assert.ThrowsExactlyAsync<TaskCanceledException>(() => task);
 
             // Verify cancellation was logged
             _mockLogger.Verify(x => x.TrackEvent(
@@ -322,7 +322,7 @@ namespace WebSpark.HttpClientUtility.Test.MockService
 
             // Act & Assert
             // The method can throw either TaskCanceledException or TimeoutException depending on timing
-            var exception = await Assert.ThrowsExceptionAsync<TaskCanceledException>(() => task);
+            var exception = await Assert.ThrowsExactlyAsync<TaskCanceledException>(() => task);
 
             // Verify that some form of cancellation logging occurred
             _mockLogger.Verify(x => x.TrackEvent(
@@ -379,7 +379,7 @@ namespace WebSpark.HttpClientUtility.Test.MockService
             using var cts = new CancellationTokenSource();
 
             // Act & Assert
-            var exception = await Assert.ThrowsExceptionAsync<Exception>(
+            var exception = await Assert.ThrowsExactlyAsync<Exception>(
                 () => AsyncMockService.PerformTaskAsync(taskName, delay, throwEx, cts.Token));
 
             Assert.IsTrue(exception.Message.Contains("TestPerformTaskException PerformTaskAsync Exception"));
@@ -401,7 +401,7 @@ namespace WebSpark.HttpClientUtility.Test.MockService
             cts.Cancel();
 
             // Assert
-            await Assert.ThrowsExceptionAsync<TaskCanceledException>(() => task);
+            await Assert.ThrowsExactlyAsync<TaskCanceledException>(() => task);
         }
 
         [TestMethod]

@@ -82,13 +82,10 @@ namespace WebSpark.HttpClientUtility.Test.CurlService
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void Constructor_WithMissingCsvOutputFolder_ThrowsArgumentException()
         {
-            // Arrange & Act
-            var curlCommandSaver = CreateCurlCommandSaver(configureValidFolder: false);
-
-            // Assert is handled by ExpectedException attribute
+            // Act & Assert
+            Assert.ThrowsExactly<ArgumentException>(() => CreateCurlCommandSaver(configureValidFolder: false));
         }
 
         [TestMethod]
