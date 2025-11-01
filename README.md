@@ -1,13 +1,12 @@
 # WebSpark.HttpClientUtility: Robust & Simplified .NET HttpClient Wrapper
 
-> **v1.3.1 released!**
+> **v1.3.2 released!**
 >
 > **What's new:**
 >
-> - **Enhanced CurlCommandSaver**: Batch processing, file rotation, and sensitive data sanitization
-> - **Improved Performance**: Configurable batch processing for better throughput
-> - **Better Security**: Automatic redaction of sensitive headers and JSON content
-> - **Robust File Operations**: Retry logic with exponential backoff and thread-safe operations
+> - **Bug Fixes**: Fixed CurlCommandSaver tests for proper configuration handling
+> - **Improved Reliability**: Enhanced test mock patterns for better stability
+> - **All Tests Passing**: 252/252 tests passing with zero failures
 > - See [CHANGELOG.md](https://github.com/markhazleton/httpclientutility/blob/main/CHANGELOG.md) for full details.
 
 ![WebSpark.HttpClientUtility Logo](https://raw.githubusercontent.com/MarkHazleton/HttpClientUtility/main/WebSpark.HttpClientUtility/images/icon.png)

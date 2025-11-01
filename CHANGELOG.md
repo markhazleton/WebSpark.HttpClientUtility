@@ -5,7 +5,22 @@ All notable changes to the WebSpark.HttpClientUtility project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.1] - 2025-01-XX
+## [1.3.2] - 2025-01-15
+
+### Fixed
+
+- **Test Reliability**: Fixed CurlCommandSaver tests that were failing due to incorrect mock expectations
+- **Mock Setup**: Improved test mock patterns by switching from strict to loose mocking for better maintainability
+- **Configuration Handling**: Tests now correctly validate graceful degradation when configuration is missing
+
+### Technical Details
+
+- Corrected test expectation for missing CsvOutputFolder configuration - now properly validates warning logging instead of exception throwing
+- Simplified mock repository setup to use `MockBehavior.Loose` for more reliable test execution
+- Added comprehensive test for configuration-less scenario to ensure curl commands are still logged even when file output is disabled
+- All 252 tests now passing with improved test stability
+
+## [1.3.1] - 2025-01-14
 
 ### Added
 

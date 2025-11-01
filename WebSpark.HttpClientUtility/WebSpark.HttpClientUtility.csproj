@@ -11,7 +11,7 @@
 		<!-- NuGet Package Properties -->
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>WebSpark.HttpClientUtility</PackageId>
-		<Version>1.3.1</Version>
+		<Version>1.3.2</Version>
 		<Deterministic>true</Deterministic>
 		<Authors>MarkHazleton</Authors>
 		<Company>MarkHazleton</Company>
@@ -24,16 +24,10 @@
 			crawling.
 		</Description>
 		<PackageReleaseNotes>
+			1.3.2 - Bug fixes: Fixed CurlCommandSaver tests for proper configuration handling. Improved test reliability and mock setup patterns.
 			1.3.1 - Enhanced CurlCommandSaver with batch processing, file rotation, sensitive data sanitization, and improved error handling with retry logic. Added comprehensive configuration options and better resource management.
 			1.3.0 - Major update: Target only .NET 9 production for improved performance and modern features. Removed .NET 8 support to focus on latest stable .NET version. Updated test coverage with 75+ new tests across authentication providers, object pooling, streaming, and utility classes.
 			1.2.0 - Updated all NuGet package dependencies to their latest stable versions for improved compatibility and security. Maintenance release with dependency updates and stability improvements.
-			1.1.0 - Breaking changes: Removed deprecated OpenTelemetry.Exporter.Jaeger package in
-			favor of modern OTLP exporter. Updated OpenTelemetry configuration API to use OTLP-only
-			approach (supports Jaeger, Zipkin, and other OTLP-compatible systems). Build stability
-			improvements and code cleanup.
-			1.0.10 - Major improvements: Streaming support for large responses, OpenTelemetry
-			integration, resource cleanup audit, MSTest framework consistency, build stability
-			fixes.
 		</PackageReleaseNotes>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<PackageTags>
