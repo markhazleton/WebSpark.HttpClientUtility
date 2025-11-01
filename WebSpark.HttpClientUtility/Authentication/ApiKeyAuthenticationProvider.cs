@@ -1,5 +1,5 @@
-using Microsoft.Extensions.Logging;
 using System.Security;
+using Microsoft.Extensions.Logging;
 
 namespace WebSpark.HttpClientUtility.Authentication;
 
@@ -33,10 +33,14 @@ public class ApiKeyAuthenticationProvider : IAuthenticationProvider
         string? headerValuePrefix = null)
     {
         if (string.IsNullOrWhiteSpace(apiKey))
+        {
             throw new ArgumentException("API key cannot be null or empty.", nameof(apiKey));
+        }
 
         if (string.IsNullOrWhiteSpace(headerName))
+        {
             throw new ArgumentException("Header name cannot be null or empty.", nameof(headerName));
+        }
 
         _apiKey = apiKey;
         _headerName = headerName;

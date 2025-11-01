@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
 using System.Net;
+using Microsoft.Extensions.Logging;
 using WebSpark.HttpClientUtility.Utilities.Logging;
 
 namespace WebSpark.HttpClientUtility.RequestResult;
@@ -142,7 +142,9 @@ public abstract class HttpRequestResultBase : IRequestInfo, IResultInfo, IErrorI
     {
         // Only log detailed request information at Debug level
         if (!logger.IsEnabled(LogLevel.Debug))
+        {
             return;
+        }
 
         var methodName = RequestMethod?.Method ?? "Unknown";
 

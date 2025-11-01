@@ -1,5 +1,5 @@
-using Microsoft.Extensions.ObjectPool;
 using System.Text;
+using Microsoft.Extensions.ObjectPool;
 
 namespace WebSpark.HttpClientUtility.ObjectPool;
 
@@ -40,11 +40,15 @@ public class StringBuilderPoolPolicy : IPooledObjectPolicy<StringBuilder>
     public bool Return(StringBuilder obj)
     {
         if (obj == null)
+        {
             return false;
+        }
 
         // Don't return to pool if capacity has grown too large
         if (obj.Capacity > _maxCapacity)
+        {
             return false;
+        }
 
         // Clear the content but keep the capacity for reuse
         obj.Clear();

@@ -1,6 +1,5 @@
-﻿using Moq;
-using System;
 using System.Net;
+using Moq;
 using WebSpark.HttpClientUtility.RequestResult;
 
 namespace WebSpark.HttpClientUtility.Test.RequestResult;
@@ -27,7 +26,7 @@ public class HttpRequestResultTests
     [TestInitialize]
     public void TestInitialize()
     {
-        this.mockRepository = new MockRepository(MockBehavior.Strict);
+        mockRepository = new MockRepository(MockBehavior.Strict);
     }
 
     [TestMethod]

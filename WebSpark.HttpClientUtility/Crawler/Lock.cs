@@ -87,7 +87,10 @@ public class Lock
         /// </summary>
         public void Dispose()
         {
-            if (_disposed) return;
+            if (_disposed)
+            {
+                return;
+            }
 
             _semaphore.Release();
             _disposed = true;

@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Logging;
 
 namespace WebSpark.HttpClientUtility.RequestResult;
 

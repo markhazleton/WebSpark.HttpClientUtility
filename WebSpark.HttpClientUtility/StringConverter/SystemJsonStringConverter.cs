@@ -1,4 +1,3 @@
-using System;
 using System.Text.Json;
 
 namespace WebSpark.HttpClientUtility.StringConverter;
@@ -44,7 +43,9 @@ public class SystemJsonStringConverter(JsonSerializerOptions? options = null) : 
     public T ConvertFromString<T>(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
+        {
             throw new ArgumentException("Value cannot be null or whitespace.", nameof(value));
+        }
 
         try
         {

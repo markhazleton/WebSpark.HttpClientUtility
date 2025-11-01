@@ -1,6 +1,6 @@
-using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Runtime.ExceptionServices;
+using Microsoft.Extensions.Logging;
 
 namespace WebSpark.HttpClientUtility.Utilities.Logging;
 
@@ -220,7 +220,9 @@ public static class ErrorHandlingUtility
 
             // If a fallback result was provided, return it
             if (fallbackResult != null)
+            {
                 return fallbackResult;
+            }
 
             // Otherwise, rethrow the enriched exception
             throw EnrichException(ex, $"Error in {operationName}", contextData);

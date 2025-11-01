@@ -1,5 +1,5 @@
-using Microsoft.Extensions.Logging;
 using System.Security;
+using Microsoft.Extensions.Logging;
 
 namespace WebSpark.HttpClientUtility.Authentication;
 
@@ -27,7 +27,9 @@ public class BearerTokenAuthenticationProvider : IAuthenticationProvider
     public BearerTokenAuthenticationProvider(string token, ILogger<BearerTokenAuthenticationProvider> logger)
     {
         if (string.IsNullOrWhiteSpace(token))
+        {
             throw new ArgumentException("Bearer token cannot be null or empty.", nameof(token));
+        }
 
         _currentToken = token;
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));

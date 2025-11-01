@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 using WebSpark.HttpClientUtility.Utilities.Logging;
 
 namespace WebSpark.HttpClientUtility.FireAndForget;

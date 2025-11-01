@@ -1,4 +1,4 @@
-﻿namespace WebSpark.HttpClientUtility.MockService;
+namespace WebSpark.HttpClientUtility.MockService;
 /// <summary>
 /// Mock Results
 /// </summary>

@@ -1,4 +1,3 @@
-using Microsoft.Extensions.ObjectPool;
 using System.Text;
 using WebSpark.HttpClientUtility.ObjectPool;
 
@@ -254,7 +253,7 @@ public class ObjectPoolPolicyTests
             // Arrange
             var policy = new StringBuilderPoolPolicy(256, 1024);
             var sb = new StringBuilder(256);
-            
+
             // Grow the StringBuilder beyond max capacity
             var largeString = new string('x', 2000);
             sb.Append(largeString);
@@ -275,9 +274,9 @@ public class ObjectPoolPolicyTests
             // Act
             var sb1 = policy.Create();
             sb1.Append("test content");
-            
+
             var returnResult = policy.Return(sb1);
-            
+
             var sb2 = policy.Create();
 
             // Assert

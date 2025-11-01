@@ -1,4 +1,4 @@
-﻿namespace WebSpark.HttpClientUtility.Concurrent;
+namespace WebSpark.HttpClientUtility.Concurrent;
 
 /// <summary>
 /// Features of the HttpClientUtility.

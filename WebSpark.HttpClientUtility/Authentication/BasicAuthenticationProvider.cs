@@ -1,5 +1,5 @@
-using Microsoft.Extensions.Logging;
 using System.Security;
+using Microsoft.Extensions.Logging;
 
 namespace WebSpark.HttpClientUtility.Authentication;
 
@@ -30,10 +30,14 @@ public class BasicAuthenticationProvider : IAuthenticationProvider
     public BasicAuthenticationProvider(string username, string password, ILogger<BasicAuthenticationProvider> logger)
     {
         if (string.IsNullOrWhiteSpace(username))
+        {
             throw new ArgumentException("Username cannot be null or empty.", nameof(username));
+        }
 
         if (string.IsNullOrWhiteSpace(password))
+        {
             throw new ArgumentException("Password cannot be null or empty.", nameof(password));
+        }
 
         _username = username;
         _password = password;

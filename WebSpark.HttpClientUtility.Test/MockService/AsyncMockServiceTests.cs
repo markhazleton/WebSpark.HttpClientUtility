@@ -1,5 +1,5 @@
-﻿using Moq;
 using System.Diagnostics;
+using Moq;
 using WebSpark.HttpClientUtility.MockService;
 
 namespace WebSpark.HttpClientUtility.Test.MockService

@@ -1,5 +1,3 @@
-using WebSpark.HttpClientUtility;
-
 namespace WebSpark.HttpClientUtility.Test.QueryString;
 
 [TestClass]

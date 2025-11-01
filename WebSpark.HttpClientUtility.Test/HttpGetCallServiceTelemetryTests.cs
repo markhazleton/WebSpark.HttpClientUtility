@@ -1,4 +1,4 @@
-﻿namespace HttpClientDecorator.Tests;
+namespace HttpClientDecorator.Tests;
 
 [TestClass]
 public class HttpGetCallServiceTelemetryTests

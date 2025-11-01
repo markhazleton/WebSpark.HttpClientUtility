@@ -1,5 +1,4 @@
 using System.Net;
-using WebSpark.HttpClientUtility;
 
 namespace WebSpark.HttpClientUtility.Test.HttpResponse;
 

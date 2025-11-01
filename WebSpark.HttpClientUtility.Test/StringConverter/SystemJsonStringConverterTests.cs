@@ -1,4 +1,4 @@
-﻿using WebSpark.HttpClientUtility.StringConverter;
+using WebSpark.HttpClientUtility.StringConverter;
 
 namespace WebSpark.HttpClientUtility.Test.StringConverter;
 

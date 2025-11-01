@@ -1,4 +1,4 @@
-﻿namespace WebSpark.HttpClientUtility.RequestResult;
+namespace WebSpark.HttpClientUtility.RequestResult;
 
 /// <summary>
 /// Interface representing error information for HTTP requests.

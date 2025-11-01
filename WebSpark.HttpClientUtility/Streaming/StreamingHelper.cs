@@ -1,5 +1,5 @@
-using Microsoft.Extensions.Logging;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 
 namespace WebSpark.HttpClientUtility.Streaming;
 
@@ -145,7 +145,9 @@ public static class StreamingHelper
     public static string TruncateForLogging(string content, int maxLength = 500)
     {
         if (string.IsNullOrEmpty(content) || content.Length <= maxLength)
+        {
             return content;
+        }
 
         return content[..maxLength] + "... [truncated]";
     }

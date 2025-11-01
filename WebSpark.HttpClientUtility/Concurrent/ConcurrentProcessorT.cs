@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 
 namespace WebSpark.HttpClientUtility.Concurrent;
 
@@ -105,6 +105,13 @@ public abstract class ConcurrentProcessor<T>(Func<int, T> taskDataFactory) where
         MaxTaskCount = maxTaskCount;
         MaxConcurrency = maxConcurrency;
         SemaphoreSlim semaphore = new(MaxConcurrency, MaxConcurrency);
+
+        // Handle the edge case where maxTaskCount is 0 or negative
+        if (maxTaskCount <= 0)
+        {
+            return new List<T>();
+        }
+
         var taskData = taskDataFactory(1);
         List<T> results = [];
         while (taskData is not null)
@@ -113,7 +120,7 @@ public abstract class ConcurrentProcessor<T>(Func<int, T> taskDataFactory) where
             Task<T> task = ManageProcessAsync(taskData.TaskId, tasks.Count, semaphoreWait, semaphore, ct);
             tasks.Add(task);
 
-            taskData = GetNextTaskData(taskDataFactory(taskData.TaskId));
+            taskData = GetNextTaskData(taskData);
 
             if (tasks.Count >= MaxConcurrency)
             {
@@ -130,4 +137,3 @@ public abstract class ConcurrentProcessor<T>(Func<int, T> taskDataFactory) where
         return results;
     }
 }
-

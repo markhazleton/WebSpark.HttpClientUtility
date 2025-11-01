@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 
 namespace WebSpark.HttpClientUtility.MockService;
 
@@ -44,8 +44,9 @@ public class AsyncMockService : IAsyncMockService
                 // Check if a cancellation is requested, if yes,
                 // throw a TaskCanceledException.
                 if (cancellationToken.IsCancellationRequested)
+                {
                     throw new TaskCanceledException(task);
-
+                }
 
                 cancellationToken.ThrowIfCancellationRequested();
 

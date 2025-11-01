@@ -1,12 +1,10 @@
-﻿using CsvHelper;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Concurrent;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using CsvHelper;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace WebSpark.HttpClientUtility.CurlService;
 
@@ -289,7 +287,9 @@ public class CurlCommandSaver : IDisposable
     private string SanitizeJson(string json)
     {
         if (string.IsNullOrEmpty(json) || !json.Contains("\""))
+        {
             return json;
+        }
 
         try
         {
@@ -324,7 +324,9 @@ public class CurlCommandSaver : IDisposable
     private async Task ProcessBatchAsync()
     {
         if (_pendingRecords.IsEmpty)
+        {
             return;
+        }
 
         var recordsToProcess = new List<CurlCommandRecord>();
 
@@ -335,7 +337,9 @@ public class CurlCommandSaver : IDisposable
         }
 
         if (recordsToProcess.Count == 0)
+        {
             return;
+        }
 
         try
         {
@@ -355,7 +359,9 @@ public class CurlCommandSaver : IDisposable
     private async Task SaveRecordsBatchToCsvWithRetryAsync(List<CurlCommandRecord> records)
     {
         if (records == null || records.Count == 0)
+        {
             return;
+        }
 
         int retryCount = 0;
         bool succeeded = false;
@@ -431,7 +437,9 @@ public class CurlCommandSaver : IDisposable
         try
         {
             if (!File.Exists(_csvFilePath))
+            {
                 return;
+            }
 
             var fileInfo = new FileInfo(_csvFilePath);
             if (fileInfo.Length >= _options.MaxFileSize)
@@ -484,7 +492,9 @@ public class CurlCommandSaver : IDisposable
     protected virtual void Dispose(bool disposing)
     {
         if (_disposed)
+        {
             return;
+        }
 
         if (disposing)
         {

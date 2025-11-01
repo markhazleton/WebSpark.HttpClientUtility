@@ -1,6 +1,6 @@
+using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System.Text.Json;
 using WebSpark.HttpClientUtility.Streaming;
 
 namespace WebSpark.HttpClientUtility.Test.Streaming;
@@ -84,7 +84,7 @@ public class StreamingHelperTests
         var json = JsonSerializer.Serialize(testObject);
         var response = new HttpResponseMessage();
         response.Content = new StringContent(json);
-        
+
         // Set content length to be larger than threshold
         var largeSize = 2048;
         response.Content.Headers.ContentLength = largeSize;
@@ -164,7 +164,7 @@ public class StreamingHelperTests
         var json = JsonSerializer.Serialize(testObject);
         var response = new HttpResponseMessage();
         response.Content = new StringContent(json);
-        
+
         // Don't set content length (will be null)
         response.Content.Headers.ContentLength = null;
 

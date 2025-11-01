@@ -1,5 +1,4 @@
 using Newtonsoft.Json;
-using System;
 
 namespace WebSpark.HttpClientUtility.StringConverter;
 
@@ -25,7 +24,9 @@ public class NewtonsoftJsonStringConverter(JsonSerializerSettings? settings = nu
     public T ConvertFromString<T>(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
+        {
             throw new ArgumentException("Value cannot be null or whitespace.", nameof(value));
+        }
 
         try
         {

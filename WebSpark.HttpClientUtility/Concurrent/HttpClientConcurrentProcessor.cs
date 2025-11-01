@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using WebSpark.HttpClientUtility.RequestResult;
 
 namespace WebSpark.HttpClientUtility.Concurrent;
@@ -41,7 +41,10 @@ public class HttpClientConcurrentProcessor(Func<int, HttpClientConcurrentModel> 
         {
             return new HttpClientConcurrentModel(taskData.TaskId + 1, taskData.StatusCall.RequestPath);
         }
-        else return null;
+        else
+        {
+            return null;
+        }
     }
 
     /// <summary>

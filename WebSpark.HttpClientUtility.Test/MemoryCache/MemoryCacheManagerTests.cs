@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using System;
+using Microsoft.Extensions.Caching.Memory;
 using WebSpark.HttpClientUtility.MemoryCache;
 
 namespace WebSpark.HttpClientUtility.Test.MemoryCache;
@@ -12,18 +11,18 @@ public class MemoryCacheManagerTests
     [TestInitialize]
     public void TestInitialize()
     {
-        this.memoryCache = new Microsoft.Extensions.Caching.Memory.MemoryCache(new Microsoft.Extensions.Caching.Memory.MemoryCacheOptions());
+        memoryCache = new Microsoft.Extensions.Caching.Memory.MemoryCache(new Microsoft.Extensions.Caching.Memory.MemoryCacheOptions());
     }
 
     private MemoryCacheManager CreateManager()
     {
-        return new MemoryCacheManager(this.memoryCache);
+        return new MemoryCacheManager(memoryCache);
     }
 
     [TestCleanup]
     public void TestCleanup()
     {
-        this.memoryCache.Dispose();
+        memoryCache.Dispose();
     }
 
     [TestMethod]

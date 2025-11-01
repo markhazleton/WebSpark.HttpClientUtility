@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.CircuitBreaker;
 using Polly.Retry;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using WebSpark.HttpClientUtility.Utilities.Logging;
 
 namespace WebSpark.HttpClientUtility.RequestResult;

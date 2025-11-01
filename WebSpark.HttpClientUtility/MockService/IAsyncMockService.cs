@@ -1,4 +1,4 @@
-﻿namespace WebSpark.HttpClientUtility.MockService;
+namespace WebSpark.HttpClientUtility.MockService;
 
 /// <summary>
 /// Interface for mock asynchronous operations, primarily used for testing and demonstration purposes.

@@ -1,4 +1,4 @@
-﻿namespace WebSpark.HttpClientUtility.Crawler;
+namespace WebSpark.HttpClientUtility.Crawler;
 
 /// <summary>
 /// Interface for web crawlers with configurable options

@@ -1,4 +1,4 @@
-﻿namespace WebSpark.HttpClientUtility.MemoryCache;
+namespace WebSpark.HttpClientUtility.MemoryCache;
 
 /// <summary>
 /// Interface for memory cache management operations.

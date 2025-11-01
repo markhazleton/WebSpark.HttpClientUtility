@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging;
 using Moq;
-using System.Security;
 using WebSpark.HttpClientUtility.Authentication;
 
 namespace WebSpark.HttpClientUtility.Test.Authentication;
@@ -167,7 +166,7 @@ public class AuthenticationProviderTests
         // Assert
         Assert.IsTrue(headers.ContainsKey("Authorization"));
         Assert.IsTrue(headers["Authorization"].StartsWith("Basic "));
-        
+
         // Verify the base64 encoding is correct
         var expectedCredentials = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes("testuser:testpass"));
         Assert.AreEqual($"Basic {expectedCredentials}", headers["Authorization"]);
@@ -332,7 +331,7 @@ public class AuthenticationProviderTests
         // Act & Assert
         foreach (var provider in providers)
         {
-            await Assert.ThrowsExactlyAsync<ArgumentNullException>(() => 
+            await Assert.ThrowsExactlyAsync<ArgumentNullException>(() =>
                 provider.AddAuthenticationAsync(null!));
         }
     }

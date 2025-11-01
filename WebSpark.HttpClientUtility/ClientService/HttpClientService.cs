@@ -1,8 +1,8 @@
-using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using WebSpark.HttpClientUtility.StringConverter;
 using WebSpark.HttpClientUtility.Utilities.Logging;
 

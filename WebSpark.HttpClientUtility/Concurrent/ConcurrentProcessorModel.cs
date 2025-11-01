@@ -1,4 +1,4 @@
-﻿namespace WebSpark.HttpClientUtility.Concurrent;
+namespace WebSpark.HttpClientUtility.Concurrent;
 
 /// <summary>
 /// Represents a model for concurrent processing tasks.

@@ -21,7 +21,9 @@ public class HttpResponseContent<T>
         StatusCode = statusCode;
         IsSuccess = isSuccess;
         if (isSuccess)
+        {
             Content = content;
+        }
 
         ErrorMessage = !isSuccess ? errorMessage : null;
         CorrelationId = Guid.NewGuid().ToString();

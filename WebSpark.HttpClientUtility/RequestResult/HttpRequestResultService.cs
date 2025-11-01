@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using WebSpark.HttpClientUtility.CurlService;
 using WebSpark.HttpClientUtility.Streaming;
 using WebSpark.HttpClientUtility.Utilities.Logging;
@@ -214,7 +214,9 @@ public class HttpRequestResultService(
             {
                 // Skip correlation ID in the curl command for brevity
                 if (header.Key.Equals("X-Correlation-ID", StringComparison.OrdinalIgnoreCase))
+                {
                     continue;
+                }
 
                 curlCommand.Append(" -H '").Append(header.Key).Append(": ").Append(string.Join(",", header.Value)).Append("'");
             }

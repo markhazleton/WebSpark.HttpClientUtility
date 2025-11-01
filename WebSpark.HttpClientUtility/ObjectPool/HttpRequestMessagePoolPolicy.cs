@@ -1,5 +1,4 @@
 using Microsoft.Extensions.ObjectPool;
-using System;
 
 namespace WebSpark.HttpClientUtility.ObjectPool;
 
@@ -26,7 +25,9 @@ public class HttpRequestMessagePoolPolicy : IPooledObjectPolicy<HttpRequestMessa
     public bool Return(HttpRequestMessage obj)
     {
         if (obj == null)
+        {
             return false;
+        }
 
         try
         {

@@ -1,4 +1,4 @@
-﻿namespace WebSpark.HttpClientUtility.MockService
+namespace WebSpark.HttpClientUtility.MockService
 {
     /// <summary>
     /// Interface for a common logging service that can track events and exceptions.

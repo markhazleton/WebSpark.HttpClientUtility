@@ -1,5 +1,5 @@
-using Microsoft.Extensions.Logging;
 using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace WebSpark.HttpClientUtility.Utilities.Logging;
 
@@ -16,7 +16,9 @@ public static class LoggingUtility
     public static string SanitizeUrl(string url)
     {
         if (string.IsNullOrEmpty(url))
+        {
             return url;
+        }
 
         try
         {
@@ -24,7 +26,9 @@ public static class LoggingUtility
 
             // If no query parameters, return as is
             if (string.IsNullOrEmpty(uri.Query))
+            {
                 return url;
+            }
 
             // Parse query string
             var query = uri.Query.TrimStart('?').Split('&');
@@ -34,11 +38,15 @@ public static class LoggingUtility
             foreach (var param in query)
             {
                 if (string.IsNullOrEmpty(param))
+                {
                     continue;
+                }
 
                 var keyValue = param.Split('=');
                 if (keyValue.Length < 2)
+                {
                     continue;
+                }
 
                 var key = keyValue[0];
 
@@ -46,7 +54,9 @@ public static class LoggingUtility
                 if (IsSensitiveParameter(key))
                 {
                     if (!isFirst)
+                    {
                         sanitizedQuery.Append('&');
+                    }
 
                     sanitizedQuery.Append(key).Append("=***REDACTED***");
                     isFirst = false;
@@ -54,7 +64,9 @@ public static class LoggingUtility
                 else
                 {
                     if (!isFirst)
+                    {
                         sanitizedQuery.Append('&');
+                    }
 
                     sanitizedQuery.Append(param);
                     isFirst = false;
@@ -64,7 +76,9 @@ public static class LoggingUtility
             // Rebuild the URL with the sanitized query
             var sanitizedUrl = $"{uri.Scheme}://{uri.Authority}{uri.AbsolutePath}";
             if (sanitizedQuery.Length > 0)
+            {
                 sanitizedUrl += $"?{sanitizedQuery}";
+            }
 
             return sanitizedUrl;
         }

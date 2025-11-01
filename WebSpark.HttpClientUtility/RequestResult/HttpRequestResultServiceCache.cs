@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using WebSpark.HttpClientUtility.Utilities.Logging;
 
 namespace WebSpark.HttpClientUtility.RequestResult;

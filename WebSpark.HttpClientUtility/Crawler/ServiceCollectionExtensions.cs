@@ -1,4 +1,9 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
+using WebSpark.HttpClientUtility.RequestResult;
+using WebSpark.HttpClientUtility.StringConverter;
 
 namespace WebSpark.HttpClientUtility.Crawler;
 
@@ -16,6 +21,40 @@ public static class ServiceCollectionExtensions
     {
         // Register SignalR hub
         services.AddSignalR();
+
+        // Register HttpClient factory if not already registered
+        services.AddHttpClient();
+
+        // Register logging if not already registered
+        services.AddLogging();
+
+        // Register a default IConfiguration if not already registered
+        // Provide default configuration values for CurlCommandSaver
+        services.TryAddSingleton<IConfiguration>(_ =>
+        {
+            var configData = new Dictionary<string, string?>
+            {
+                ["CsvOutputFolder"] = Path.Combine(Path.GetTempPath(), "curl_commands"),
+                ["CsvFileName"] = "curl_commands"
+            };
+            return new ConfigurationBuilder()
+                .AddInMemoryCollection(configData)
+                .Build();
+        });
+
+        // Register default string converter if not already registered
+        services.TryAddSingleton<IStringConverter, SystemJsonStringConverter>();
+
+        // Register HttpRequestResultService if not already registered
+        // Use a factory to provide HttpClient from the HttpClientFactory
+        services.TryAddScoped<IHttpRequestResultService>(provider =>
+        {
+            var logger = provider.GetRequiredService<ILogger<HttpRequestResultService>>();
+            var configuration = provider.GetRequiredService<IConfiguration>();
+            var httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
+            var httpClient = httpClientFactory.CreateClient();
+            return new HttpRequestResultService(logger, configuration, httpClient);
+        });
 
         // Register the crawlers
         services.AddTransient<ISiteCrawler, SiteCrawler>();

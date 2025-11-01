@@ -1,4 +1,4 @@
-﻿using WebSpark.HttpClientUtility.Authentication;
+using WebSpark.HttpClientUtility.Authentication;
 
 namespace WebSpark.HttpClientUtility.RequestResult;
 

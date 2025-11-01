@@ -1,4 +1,4 @@
-﻿using WebSpark.HttpClientUtility.RequestResult;
+using WebSpark.HttpClientUtility.RequestResult;
 
 namespace WebSpark.HttpClientUtility.Concurrent;
 

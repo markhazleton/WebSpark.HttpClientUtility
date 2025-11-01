@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Logging;
-using System.Net;
 using WebSpark.HttpClientUtility.MockService;
 
 namespace WebSpark.HttpClientUtility.Test.MockService;
@@ -145,7 +144,7 @@ public class MockServiceUtilityTests
 
             // Assert
             Assert.IsNotNull(scope);
-            
+
             // Should not throw when disposed
             scope.Dispose();
         }

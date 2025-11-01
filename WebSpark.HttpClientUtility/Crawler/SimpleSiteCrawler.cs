@@ -1,10 +1,10 @@
-﻿using HtmlAgilityPack;
-using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Net;
 using System.Xml;
 using System.Xml.Linq;
+using HtmlAgilityPack;
+using Microsoft.Extensions.Logging;
 
 namespace WebSpark.HttpClientUtility.Crawler;
 

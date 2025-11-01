@@ -4,6 +4,7 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using WebSpark.HttpClientUtility.ClientService;
 using WebSpark.HttpClientUtility.RequestResult;
+using WebSpark.HttpClientUtility.StringConverter;
 
 namespace WebSpark.HttpClientUtility.OpenTelemetry;
 
@@ -82,16 +83,18 @@ public static class OpenTelemetryServiceCollectionExtensions
     public static IServiceCollection AddWebSparkHttpRequestResultServiceWithOpenTelemetry(
         this IServiceCollection services)
     {
-        // Register the base service
-        services.AddScoped<HttpRequestResultService>();
-
-        // Register the OpenTelemetry wrapper as the main interface
+        // Register the OpenTelemetry wrapper as the interface implementation
+        // The base service will be created inline within the wrapper factory
         services.AddScoped<IHttpRequestResultService>(provider =>
         {
-            var baseService = provider.GetRequiredService<HttpRequestResultService>();
-            var logger = provider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<OpenTelemetryHttpRequestResultService>>();
+            var logger = provider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<HttpRequestResultService>>();
+            var configuration = provider.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>();
+            var httpClient = provider.GetRequiredService<HttpClient>();
 
-            return new OpenTelemetryHttpRequestResultService(baseService, logger);
+            var baseService = new HttpRequestResultService(logger, configuration, httpClient);
+            var wrapperLogger = provider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<OpenTelemetryHttpRequestResultService>>();
+
+            return new OpenTelemetryHttpRequestResultService(baseService, wrapperLogger);
         });
 
         return services;
@@ -106,16 +109,18 @@ public static class OpenTelemetryServiceCollectionExtensions
     public static IServiceCollection AddWebSparkHttpClientServiceWithOpenTelemetry(
         this IServiceCollection services)
     {
-        // Register the base service
-        services.AddScoped<HttpClientService>();
-
-        // Register the OpenTelemetry wrapper as the main interface
+        // Register the OpenTelemetry wrapper as the interface implementation
+        // The base service will be created inline within the wrapper factory
         services.AddScoped<IHttpClientService>(provider =>
         {
-            var baseService = provider.GetRequiredService<HttpClientService>();
-            var logger = provider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<OpenTelemetryHttpClientService>>();
+            var httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
+            var stringConverter = provider.GetRequiredService<IStringConverter>();
+            var logger = provider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<HttpClientService>>();
 
-            return new OpenTelemetryHttpClientService(baseService, logger);
+            var baseService = new HttpClientService(httpClientFactory, stringConverter, logger);
+            var wrapperLogger = provider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<OpenTelemetryHttpClientService>>();
+
+            return new OpenTelemetryHttpClientService(baseService, wrapperLogger);
         });
 
         return services;

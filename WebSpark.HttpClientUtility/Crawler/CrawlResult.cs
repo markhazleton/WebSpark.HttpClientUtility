@@ -1,4 +1,4 @@
-﻿using HtmlAgilityPack;
+using HtmlAgilityPack;
 using WebSpark.HttpClientUtility.RequestResult;
 
 namespace WebSpark.HttpClientUtility.Crawler;

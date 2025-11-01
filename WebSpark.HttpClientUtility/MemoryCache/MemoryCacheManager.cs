@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Primitives;
 using System.Collections.Concurrent;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Primitives;
 
 namespace WebSpark.HttpClientUtility.MemoryCache;
 
@@ -50,7 +50,9 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     {
         // if cached item just changed, then do nothing
         if (reason == EvictionReason.Replaced)
+        {
             return;
+        }
 
         // try to remove all keys marked as not existing
         ClearKeys();
@@ -108,8 +110,10 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     {
         // try to remove key from dictionary
         if (!_allKeys.TryRemove(key, out _))
+        {
             // if not possible to remove key from dictionary, then try to mark key as not existing in cache
             _allKeys.TryUpdate(key, false, true);
+        }
     }
 
     /// <summary>
@@ -148,14 +152,18 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     {
         // item already is in cache, so return it
         if (cache.TryGetValue(key, out T? value) && value is not null)
+        {
             return value;
+        }
 
         // or create it using passed function
         var result = acquire();
 
         // and set in cache (if cache time is defined)
         if ((cacheTime ?? 30) > 0 && result is not null)
+        {
             Set(key, result, cacheTime ?? 30);
+        }
 
         return result;
     }
@@ -196,7 +204,9 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     {
         // ensure that lock is acquired
         if (!_allKeys.TryAdd(key, true))
+        {
             return false;
+        }
 
         try
         {

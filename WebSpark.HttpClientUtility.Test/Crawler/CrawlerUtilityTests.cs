@@ -162,7 +162,7 @@ public class CrawlerUtilityTests
         {
             // The constructor calls base(crawlResponse) first, which causes NullReferenceException
             // before the explicit null check can be performed
-            
+
             // Act & Assert
             Assert.ThrowsExactly<NullReferenceException>(() => new CrawlResult(null!));
         }
@@ -190,7 +190,7 @@ public class CrawlerUtilityTests
         public void Constructor_WithParameters_NullRequestPath_ThrowsArgumentNullException()
         {
             // Act & Assert
-            Assert.ThrowsExactly<ArgumentNullException>(() => 
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
                 new CrawlResult(null!, "found", 1, 1));
         }
 
@@ -198,7 +198,7 @@ public class CrawlerUtilityTests
         public void Constructor_WithParameters_NullFoundUrl_ThrowsArgumentNullException()
         {
             // Act & Assert
-            Assert.ThrowsExactly<ArgumentNullException>(() => 
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
                 new CrawlResult("request", null!, 1, 1));
         }
 

@@ -106,7 +106,7 @@ public class FireAndForgetUtilityTests
         // These cancellation timing tests are complex due to async nature
         // For coverage purposes, let's just verify the method doesn't throw
         // and that basic logging occurs
-        
+
         // Arrange
         var cts = new CancellationTokenSource();
         cts.Cancel(); // Cancel immediately
@@ -114,7 +114,7 @@ public class FireAndForgetUtilityTests
 
         // Act & Assert - Should not throw
         _utility.SafeFireAndForget(task, "TestOperation", cts.Token);
-        
+
         // Verify start was logged
         _mockLogger.Verify(
             x => x.Log(
@@ -235,9 +235,9 @@ public class FireAndForgetUtilityTests
             await Task.Delay(50);
             taskCompletedSignal.SetResult(true);
             throw exception;
-            #pragma warning disable CS0162 // Unreachable code detected
+#pragma warning disable CS0162 // Unreachable code detected
             return "Never reached";
-            #pragma warning restore CS0162 // Unreachable code detected
+#pragma warning restore CS0162 // Unreachable code detected
         });
 
         // Act
@@ -268,7 +268,7 @@ public class FireAndForgetUtilityTests
 
         // Act & Assert - Should not throw
         _utility.SafeFireAndForget(task, "TestGenericCancel", cts.Token);
-        
+
         // Verify start was logged
         _mockLogger.Verify(
             x => x.Log(

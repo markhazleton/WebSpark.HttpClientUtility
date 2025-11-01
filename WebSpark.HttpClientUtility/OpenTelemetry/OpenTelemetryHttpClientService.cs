@@ -1,6 +1,6 @@
-using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Net;
+using Microsoft.Extensions.Logging;
 using WebSpark.HttpClientUtility.ClientService;
 
 namespace WebSpark.HttpClientUtility.OpenTelemetry;
