@@ -1,4 +1,6 @@
 # 🎉 Release v1.3.1 - Ready to Publish!
+Testing and packaging for version 1.3.1 of WebSpark.HttpClientUtility is complete. You are now ready to publish the package to NuGet.org.
+
 
 ## ✅ All Changes Applied Successfully
 

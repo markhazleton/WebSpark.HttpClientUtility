@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Configure HttpClientUtility services
+// Configure HttpClientUtility services (From NuGet package)
 builder.Services.AddHttpClient();
 
 // Register JSON converter
