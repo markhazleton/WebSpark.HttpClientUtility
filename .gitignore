@@ -404,3 +404,11 @@ CoverageReport/
 coverage-*/
 build_output.txt
 artifacts/
+
+# Auto-generated test files (should not be committed)
+**/Properties/
+
+# Test coverage tools output
+TestResults/
+*.trx
+*.runsettings.user
