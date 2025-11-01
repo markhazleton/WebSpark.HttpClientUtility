@@ -1,0 +1,112 @@
+@{
+  ViewData["Title"] = "Basic HTTP Operations";
+}
+
+<div class="container mt-4">
+    <div class="row">
+   <div class="col-lg-12">
+ <h1>🌐 Basic HTTP Operations</h1>
+ <p class="lead">Demonstrates IHttpClientService for simple, type-safe HTTP requests with automatic JSON serialization</p>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+   <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+      <div class="card-header bg-primary text-white">
+     <h5 class="mb-0">GET Request</h5>
+  </div>
+       <div class="card-body">
+    <p>Fetch a joke from the Joke API using a simple GET request</p>
+       <form action="/BasicHttp/Get" method="get">
+      <div class="mb-3">
+ <label class="form-label">Category</label>
+        <select name="category" class="form-select">
+       <option value="Programming">Programming</option>
+      <option value="Misc">Miscellaneous</option>
+      <option value="Dark">Dark</option>
+     <option value="Pun">Pun</option>
+       <option value="Spooky">Spooky</option>
+        <option value="Any">Any</option>
+  </select>
+    </div>
+        <button type="submit" class="btn btn-primary w-100">
+    <i class="bi bi-play-circle"></i> Execute GET Request
+      </button>
+    </form>
+    </div>
+    </div>
+       </div>
+
+   <div class="col-md-6">
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-success text-white">
+   <h5 class="mb-0">POST Request</h5>
+  </div>
+      <div class="card-body">
+       <p>Submit data using a POST request (demo purposes - endpoint may not exist)</p>
+     <form action="/BasicHttp/Post" method="get">
+     <button type="submit" class="btn btn-success w-100">
+        <i class="bi bi-play-circle"></i> Execute POST Request
+      </button>
+    </form>
+       </div>
+  </div>
+   </div>
+    </div>
+
+    <!-- Code Examples -->
+ <div class="row mt-4">
+        <div class="col-lg-12">
+ <div class="card">
+     <div class="card-header">
+        <h5 class="mb-0">📝 Code Examples</h5>
+     </div>
+ <div class="card-body">
+   <h6>GET Request Example</h6>
+      <pre class="bg-dark text-light p-3 rounded"><code>// Simple GET request with type-safe response
+var requestUri = new Uri("https://v2.jokeapi.dev/joke/Programming?safe-mode");
+var result = await _httpClientService.GetAsync&lt;JokeResponse&gt;(requestUri, CancellationToken.None);
+
+if (result.IsSuccessStatusCode)
+{
+    var joke = result.Content;
+    Console.WriteLine($"Joke: {joke.FullJoke}");
+}</code></pre>
+
+    <h6 class="mt-4">POST Request Example</h6>
+       <pre class="bg-dark text-light p-3 rounded"><code>// POST request with payload
+var requestUri = new Uri("https://api.example.com/jokes");
+var payload = new { joke = "Why do programmers prefer dark mode?", category = "Programming" };
+
+var result = await _httpClientService.PostAsync&lt;object, JokeResponse&gt;(
+    requestUri,
+payload,
+    CancellationToken.None
+);
+
+if (result.IsSuccessStatusCode)
+{
+    Console.WriteLine($"Submitted successfully! ID: {result.Content.Id}");
+}</code></pre>
+        </div>
+     </div>
+        </div>
+    </div>
+
+    <!-- Benefits -->
+    <div class="row mt-4">
+  <div class="col-lg-12">
+  <div class="alert alert-info">
+      <h5><i class="bi bi-info-circle"></i> Key Benefits</h5>
+    <ul>
+     <li><strong>Type Safety:</strong> Generic methods ensure compile-time type checking</li>
+    <li><strong>Automatic Serialization:</strong> No manual JSON handling required</li>
+       <li><strong>Simple API:</strong> Clean, intuitive methods for all HTTP verbs</li>
+         <li><strong>Factory Pattern:</strong> Proper HttpClient lifecycle management via IHttpClientFactory</li>
+        <li><strong>Cancellation Support:</strong> Built-in cancellation token support</li>
+       </ul>
+   </div>
+ </div>
+    </div>
+</div>

@@ -1,35 +1,37 @@
 # Changelog
 
-All notable changes to WebSpark.HttpClientUtility will be documented in this file.
+All notable changes to the WebSpark.HttpClientUtility project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.0] - 2025-01-25
+## [1.3.1] - 2025-01-XX
+
+### Added
+
+- **CurlCommandSaver Enhancements**: Comprehensive improvements to the CurlCommandSaver functionality
+  - **Batch Processing**: Added configurable batch processing for improved performance when saving multiple cURL commands
+  - **File Rotation**: Automatic file rotation based on configurable maximum file size (default: 10MB)
+  - **Sensitive Data Sanitization**: Automatic redaction of sensitive headers (Authorization, API keys, tokens) and JSON content
+  - **Retry Logic**: Built-in retry mechanism with exponential backoff for file operations
+  - **Configuration Options**: New `CurlCommandSaverOptions` class with comprehensive configuration properties
+- **Improved Resource Management**: Enhanced disposal patterns in CurlCommandSaver with proper cleanup of timers and pending records
 
 ### Improved
 
-- **Dependency Updates**: Updated all NuGet package dependencies to their latest stable versions for improved compatibility and security
-- **Package Maintenance**: Comprehensive maintenance release focusing on keeping dependencies current
-- **Security Enhancements**: Leveraged security improvements and bug fixes from updated package versions
-- **Compatibility Improvements**: Enhanced compatibility with latest .NET ecosystem packages
-- **Stability Improvements**: General stability improvements from dependency updates
+- **CurlCommandSaver Performance**: Batch processing can handle up to 100 commands per batch with configurable flush intervals
+- **Error Handling**: More robust error handling with detailed logging for file operations
+- **File Operations**: Thread-safe file operations using SemaphoreSlim for concurrent access protection
+- **Logging**: Enhanced logging with correlation IDs and detailed operation metrics
 
 ### Technical Details
 
-- **Updated Dependencies**: All PackageReference entries updated to latest stable versions
-- **Target Frameworks**: Continues to support both .NET 8.0 and .NET 9.0
-- **Backward Compatibility**: No breaking API changes; maintains full backward compatibility
-- **Build Process**: Verified successful compilation and testing across all target frameworks
+- **Configuration Support**: Full support for configuration via IConfiguration with fallback to defaults
+- **Batch Processing Timer**: Configurable timer-based batch flushing (default: 5 seconds)
+- **Sensitive Headers List**: Configurable list of headers to redact (Authorization, Api-Key, X-Api-Key, Password, Token)
+- **File Rotation**: Timestamp-based file naming for rotated files (yyyyMMdd_HHmmss format)
 
-### Package Updates
-
-- All NuGet dependencies refreshed to latest stable versions
-- Security patches included through updated dependencies
-- Performance improvements inherited from updated packages
-- Enhanced ecosystem compatibility
-
-## [1.1.0] - 2025-07-01
+## [1.3.0] - 2025-07-01
 
 ### Breaking Changes
 

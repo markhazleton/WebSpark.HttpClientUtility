@@ -1,0 +1,151 @@
+@{
+    ViewData["Title"] = "Request Result Pattern";
+}
+
+<div class="container mt-4">
+    <div class="row">
+   <div class="col-lg-12">
+      <h1>📊 Request Result Pattern</h1>
+<p class="lead">Rich HTTP responses with correlation IDs, timing metrics, caller information, and comprehensive error tracking</p>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+<div class="col-md-6">
+   <div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+       <h5 class="mb-0">Basic Request with Context</h5>
+        </div>
+     <div class="card-body">
+     <p>Get a joke with full request context, correlation ID, and timing metrics</p>
+     <form action="/RequestResult/BasicRequest" method="get">
+        <div class="mb-3">
+  <label class="form-label">Category</label>
+        <select name="category" class="form-select">
+<option value="Programming">Programming</option>
+     <option value="Misc">Miscellaneous</option>
+ <option value="Pun">Pun</option>
+  </select>
+        </div>
+    <button type="submit" class="btn btn-primary w-100">
+       <i class="bi bi-play-circle"></i> Execute with Context
+      </button>
+   </form>
+  </div>
+  </div>
+        </div>
+
+  <div class="col-md-6">
+ <div class="card shadow-sm mb-4">
+    <div class="card-header bg-success text-white">
+    <h5 class="mb-0">Request with Custom Headers</h5>
+    </div>
+     <div class="card-body">
+    <p>Demonstrates adding custom headers to HTTP requests</p>
+      <form action="/RequestResult/WithHeaders" method="get">
+      <button type="submit" class="btn btn-success w-100">
+       <i class="bi bi-play-circle"></i> Execute with Headers
+     </button>
+       </form>
+      </div>
+    </div>
+ </div>
+    </div>
+
+ <!-- Features -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
+     <div class="card">
+   <div class="card-header">
+       <h5 class="mb-0">🎯 HttpRequestResult Features</h5>
+        </div>
+       <div class="card-body">
+      <div class="row">
+     <div class="col-md-6">
+   <h6>Context Information</h6>
+      <ul>
+ <li>Correlation ID for request tracking</li>
+   <li>Request duration in milliseconds</li>
+  <li>Caller member name</li>
+  <li>Caller file path</li>
+<li>Caller line number</li>
+      <li>Request/Response timestamps</li>
+    </ul>
+      </div>
+       <div class="col-md-6">
+        <h6>Error Handling</h6>
+      <ul>
+       <li>Comprehensive error list</li>
+<li>HTTP status code</li>
+      <li>Success/failure indicators</li>
+   <li>Request context dictionary</li>
+         <li>Detailed exception information</li>
+   <li>Structured logging integration</li>
+ </ul>
+     </div>
+  </div>
+     </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Code Example -->
+    <div class="row mt-4">
+   <div class="col-lg-12">
+     <div class="card">
+   <div class="card-header">
+       <h5 class="mb-0">📝 Code Example</h5>
+        </div>
+    <div class="card-body">
+     <pre class="bg-dark text-light p-3 rounded"><code>// Create request with full context
+var request = new HttpRequestResult&lt;JokeResponse&gt;
+{
+    RequestPath = "https://v2.jokeapi.dev/joke/Programming?safe-mode",
+ RequestMethod = HttpMethod.Get,
+    IsDebugEnabled = true, // Enable detailed logging
+    RequestHeaders = new Dictionary&lt;string, string&gt;
+    {
+        ["X-Custom-Header"] = "MyValue"
+}
+};
+
+// Execute request
+var result = await _requestResultService.HttpSendRequestResultAsync(request);
+
+// Access rich context
+Console.WriteLine($"Correlation ID: {result.CorrelationId}");
+Console.WriteLine($"Duration: {result.RequestDurationMilliseconds}ms");
+Console.WriteLine($"Called from: {result.CallerMemberName} at line {result.CallerLineNumber}");
+Console.WriteLine($"Status: {result.StatusCode}");
+
+if (result.IsSuccessStatusCode)
+{
+    var joke = result.ResponseResults;
+    Console.WriteLine($"Joke: {joke.FullJoke}");
+}
+else
+{
+   Console.WriteLine($"Errors: {string.Join(", ", result.ErrorList)}");
+}</code></pre>
+     </div>
+    </div>
+ </div>
+    </div>
+
+    <!-- Benefits -->
+    <div class="row mt-4">
+ <div class="col-lg-12">
+ <div class="alert alert-info">
+       <h5><i class="bi bi-lightbulb"></i> Why Use HttpRequestResult?</h5>
+     <ul class="mb-0">
+      <li><strong>Debugging:</strong> Correlation IDs make tracking requests across logs easy</li>
+     <li><strong>Performance Monitoring:</strong> Built-in timing helps identify bottlenecks</li>
+   <li><strong>Error Handling:</strong> Comprehensive error information for better debugging</li>
+   <li><strong>Observability:</strong> Caller information helps understand request origins</li>
+   <li><strong>Context Propagation:</strong> Pass additional context through requests</li>
+      <li><strong>Testing:</strong> Rich result objects make unit testing easier</li>
+        </ul>
+   </div>
+ </div>
+    </div>
+</div>

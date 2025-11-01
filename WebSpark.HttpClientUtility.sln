@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36025.13
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11123.170 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSpark.HttpClientUtility", "WebSpark.HttpClientUtility\WebSpark.HttpClientUtility.csproj", "{AED43BB9-0F0B-EC76-8628-B202961E683D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSpark.HttpClientUtility.Test", "WebSpark.HttpClientUtility.Test\WebSpark.HttpClientUtility.Test.csproj", "{C9203F61-FF55-0649-BDC2-7A175CE22679}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSpark.HttpClientUtility.Web", "WebSpark.HttpClientUtility.Web\WebSpark.HttpClientUtility.Web.csproj", "{444134FB-D540-6586-09B0-EA70B2752C30}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{C9203F61-FF55-0649-BDC2-7A175CE22679}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9203F61-FF55-0649-BDC2-7A175CE22679}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9203F61-FF55-0649-BDC2-7A175CE22679}.Release|Any CPU.Build.0 = Release|Any CPU
+		{444134FB-D540-6586-09B0-EA70B2752C30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{444134FB-D540-6586-09B0-EA70B2752C30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{444134FB-D540-6586-09B0-EA70B2752C30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{444134FB-D540-6586-09B0-EA70B2752C30}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,13 +1,13 @@
 # WebSpark.HttpClientUtility: Robust & Simplified .NET HttpClient Wrapper
 
-> **v1.3.0 released!**
+> **v1.3.1 released!**
 >
 > **What's new:**
 >
-> - **Target .NET 9 Only**: Now exclusively targets .NET 9 for optimal performance and modern features
-> - **Comprehensive Test Coverage**: Added 75+ new tests across authentication, object pooling, streaming, and utilities  
-> - **Zero Build Warnings**: Clean codebase with modern MSTest patterns and nullable reference types
-> - **Updated Dependencies**: Latest NuGet packages for enhanced security and compatibility
+> - **Enhanced CurlCommandSaver**: Batch processing, file rotation, and sensitive data sanitization
+> - **Improved Performance**: Configurable batch processing for better throughput
+> - **Better Security**: Automatic redaction of sensitive headers and JSON content
+> - **Robust File Operations**: Retry logic with exponential backoff and thread-safe operations
 > - See [CHANGELOG.md](https://github.com/markhazleton/httpclientutility/blob/main/CHANGELOG.md) for full details.
 
 ![WebSpark.HttpClientUtility Logo](https://raw.githubusercontent.com/MarkHazleton/HttpClientUtility/main/WebSpark.HttpClientUtility/images/icon.png)

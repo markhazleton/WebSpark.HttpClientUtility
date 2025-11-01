@@ -1,0 +1,738 @@
+@{
+    ViewData["Title"] = "Configuration & Logging";
+}
+
+<div class="container mt-4">
+    <div class="row">
+   <div class="col-lg-12">
+  <h1>⚙️ Configuration & Logging</h1>
+          <p class="lead">Comprehensive guide to configuring WebSpark.HttpClientUtility with advanced logging and monitoring options</p>
+        </div>
+    </div>
+
+    <!-- Quick Navigation -->
+    <div class="row mt-4">
+      <div class="col-lg-12">
+     <div class="card bg-light">
+        <div class="card-body">
+                 <h5>Quick Navigation</h5>
+   <div class="row">
+       <div class="col-md-6">
+     <ul>
+           <li><a href="#appsettings">appsettings.json Configuration</a></li>
+                <li><a href="#di-setup">Dependency Injection Setup</a></li>
+                  <li><a href="#logging">Logging Configuration</a></li>
+          <li><a href="#curl-logging">cURL Command Logging</a></li>
+  </ul>
+   </div>
+    <div class="col-md-6">
+   <ul>
+                <li><a href="#telemetry">Telemetry & OpenTelemetry</a></li>
+      <li><a href="#decorators">Decorator Chain</a></li>
+            <li><a href="#environment">Environment-Specific Settings</a></li>
+      <li><a href="#best-practices">Best Practices</a></li>
+            </ul>
+                 </div>
+           </div>
+       </div>
+    </div>
+    </div>
+    </div>
+
+    <!-- appsettings.json Configuration -->
+    <div class="row mt-4" id="appsettings">
+        <div class="col-lg-12">
+  <div class="card">
+        <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">📄 appsettings.json Configuration</h4>
+        </div>
+                <div class="card-body">
+      <p>Complete configuration example with all available options:</p>
+     <pre class="bg-dark text-light p-3 rounded"><code>{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning",
+      "WebSpark.HttpClientUtility": "Debug"
+    }
+  },
+  
+  // cURL Command Logging Configuration
+  "CsvOutputFolder": "C:\\Logs\\CurlCommands",
+  "CsvFileName": "http_requests",
+  "CurlCommandSaver": {
+    "UseBatchProcessing": true,
+    "BatchSize": 100,
+    "BatchFlushIntervalMs": 5000,
+ "MaxFileSize": 10485760,  // 10MB
+    "MaxRetries": 3,
+    "RetryDelayMs": 200,
+    "SanitizeSensitiveInfo": true,
+ "SensitiveHeaders": [
+      "Authorization",
+      "Api-Key",
+      "X-Api-Key",
+      "Password",
+      "Token",
+      "Cookie"
+    ]
+  },
+
+  // HTTP Client Configuration
+  "HttpClient": {
+    "Timeout": "00:00:30",  // 30 seconds
+ "MaxRetries": 3,
+    "RetryDelayMs": 1000
+  },
+  
+  // Polly Resilience Configuration
+  "PollyOptions": {
+    "MaxRetryAttempts": 3,
+    "RetryDelaySeconds": 1,
+    "RetryStrategy": "Exponential",
+    "EnableCircuitBreaker": true,
+    "CircuitBreakerThreshold": 5,
+    "CircuitBreakerDurationSeconds": 30
+  },
+  
+  // Cache Configuration
+  "CacheOptions": {
+    "DefaultDurationMinutes": 5,
+    "MaxCacheSizeMB": 100
+  },
+  
+  // OpenTelemetry Configuration
+  "OpenTelemetry": {
+    "ServiceName": "WebSpark.HttpClientUtility.Demo",
+    "ServiceVersion": "1.3.0",
+    "ConsoleExporter": true,
+    "JaegerExporter": false,
+    "JaegerEndpoint": "http://localhost:14268",
+    "OtlpExporter": false,
+    "OtlpEndpoint": "http://localhost:4317"
+  }
+}</code></pre>
+        </div>
+            </div>
+    </div>
+    </div>
+
+    <!-- Dependency Injection Setup -->
+ <div class="row mt-4" id="di-setup">
+        <div class="col-lg-12">
+     <div class="card">
+     <div class="card-header bg-success text-white">
+         <h4 class="mb-0">💉 Complete Dependency Injection Setup</h4>
+                </div>
+ <div class="card-body">
+   <p>Full Program.cs configuration with all features enabled:</p>
+   <pre class="bg-dark text-light p-3 rounded"><code>using Microsoft.Extensions.Caching.Memory;
+using WebSpark.HttpClientUtility.ClientService;
+using WebSpark.HttpClientUtility.RequestResult;
+using WebSpark.HttpClientUtility.StringConverter;
+using WebSpark.HttpClientUtility.CurlService;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// === Core Services ===
+builder.Services.AddHttpClient();
+builder.Services.AddMemoryCache();
+builder.Services.AddControllersWithViews();
+
+// === JSON Serialization ===
+builder.Services.AddSingleton&lt;IStringConverter, SystemJsonStringConverter&gt;();
+// Or use Newtonsoft.Json:
+// builder.Services.AddSingleton&lt;IStringConverter, NewtonsoftJsonStringConverter&gt;();
+
+// === Basic HTTP Client Service ===
+builder.Services.AddScoped&lt;IHttpClientService, HttpClientService&gt;();
+
+// === HttpRequestResult Service with Full Decorator Chain ===
+builder.Services.AddScoped&lt;HttpRequestResultService&gt;(); // Base service
+
+builder.Services.AddScoped&lt;IHttpRequestResultService&gt;(provider =&gt;
+{
+    // Start with base service
+    IHttpRequestResultService service = 
+        provider.GetRequiredService&lt;HttpRequestResultService&gt;();
+    
+    // Layer 1: Add Caching (optional)
+    if (builder.Configuration.GetValue&lt;bool&gt;("Features:EnableCaching", true))
+    {
+    service = new HttpRequestResultServiceCache(
+          provider.GetRequiredService&lt;ILogger&lt;HttpRequestResultServiceCache&gt;&gt;(),
+         service,
+            provider.GetRequiredService&lt;IMemoryCache&gt;()
+        );
+    }
+    
+    // Layer 2: Add Polly Resilience (optional)
+    if (builder.Configuration.GetValue&lt;bool&gt;("Features:EnablePolly", true))
+    {
+        var pollyOptions = new HttpRequestResultPollyOptions
+      {
+            MaxRetryAttempts = builder.Configuration.GetValue&lt;int&gt;("PollyOptions:MaxRetryAttempts", 3),
+            RetryDelay = TimeSpan.FromSeconds(
+              builder.Configuration.GetValue&lt;int&gt;("PollyOptions:RetryDelaySeconds", 1)),
+            EnableCircuitBreaker = builder.Configuration.GetValue&lt;bool&gt;(
+                "PollyOptions:EnableCircuitBreaker", true),
+  CircuitBreakerThreshold = builder.Configuration.GetValue&lt;int&gt;(
+      "PollyOptions:CircuitBreakerThreshold", 5),
+       CircuitBreakerDuration = TimeSpan.FromSeconds(
+      builder.Configuration.GetValue&lt;int&gt;("PollyOptions:CircuitBreakerDurationSeconds", 30))
+        };
+        
+     service = new HttpRequestResultServicePolly(
+        provider.GetRequiredService&lt;ILogger&lt;HttpRequestResultServicePolly&gt;&gt;(),
+       service,
+     pollyOptions
+        );
+}
+    
+    // Layer 3: Add Telemetry (outermost layer - always enabled)
+    service = new HttpRequestResultServiceTelemetry(
+        provider.GetRequiredService&lt;ILogger&lt;HttpRequestResultServiceTelemetry&gt;&gt;(),
+        service
+    );
+    
+    return service;
+});
+
+// === cURL Command Logging (optional) ===
+if (!string.IsNullOrWhiteSpace(builder.Configuration["CsvOutputFolder"]))
+{
+    builder.Services.AddSingleton&lt;CurlCommandSaver&gt;(provider =&gt;
+        new CurlCommandSaver(
+        provider.GetRequiredService&lt;ILogger&lt;CurlCommandSaver&gt;&gt;(),
+            builder.Configuration
+ )
+    );
+}
+
+// === OpenTelemetry (optional) ===
+if (builder.Configuration.GetValue&lt;bool&gt;("OpenTelemetry:Enabled", false))
+{
+    builder.Services.AddOpenTelemetry()
+        .WithTracing(tracerBuilder =&gt;
+        {
+    tracerBuilder
+  .SetResourceBuilder(ResourceBuilder.CreateDefault()
+        .AddService(
+         builder.Configuration["OpenTelemetry:ServiceName"] ?? "MyApp",
+     builder.Configuration["OpenTelemetry:ServiceVersion"] ?? "1.0.0"))
+     .AddSource("WebSpark.HttpClientUtility")
+  .AddHttpClientInstrumentation()
+     .AddAspNetCoreInstrumentation();
+ 
+            if (builder.Configuration.GetValue&lt;bool&gt;("OpenTelemetry:ConsoleExporter", false))
+  {
+        tracerBuilder.AddConsoleExporter();
+  }
+ 
+      if (builder.Configuration.GetValue&lt;bool&gt;("OpenTelemetry:JaegerExporter", false))
+  {
+         tracerBuilder.AddJaegerExporter(options =&gt;
+         {
+  options.AgentHost = builder.Configuration["OpenTelemetry:JaegerHost"] ?? "localhost";
+       options.AgentPort = builder.Configuration.GetValue&lt;int&gt;("OpenTelemetry:JaegerPort", 6831);
+    });
+            }
+  });
+}
+
+var app = builder.Build();
+
+// Configure middleware...
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseAuthorization();
+app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.Run();</code></pre>
+          </div>
+      </div>
+        </div>
+    </div>
+
+    <!-- Logging Configuration -->
+    <div class="row mt-4" id="logging">
+        <div class="col-lg-12">
+<div class="card">
+     <div class="card-header bg-info text-white">
+          <h4 class="mb-0">📝 Logging Configuration</h4>
+       </div>
+           <div class="card-body">
+     <h5>Log Levels Explained</h5>
+        <table class="table table-striped">
+  <thead>
+           <tr>
+     <th>Level</th>
+        <th>Use Case</th>
+         <th>Performance Impact</th>
+    <th>Recommended For</th>
+  </tr>
+         </thead>
+   <tbody>
+        <tr>
+        <td><code>Trace</code></td>
+ <td>Extremely detailed debugging</td>
+     <td>High</td>
+      <td>Development only</td>
+        </tr>
+<tr>
+          <td><code>Debug</code></td>
+     <td>Detailed diagnostic information</td>
+           <td>Medium-High</td>
+          <td>Development, troubleshooting</td>
+      </tr>
+     <tr class="table-success">
+    <td><code>Information</code></td>
+    <td>General flow of application</td>
+    <td>Low</td>
+         <td>Production (recommended)</td>
+       </tr>
+       <tr>
+              <td><code>Warning</code></td>
+<td>Unusual but handled situations</td>
+   <td>Very Low</td>
+         <td>Production (critical services)</td>
+       </tr>
+           <tr>
+  <td><code>Error</code></td>
+        <td>Errors and exceptions</td>
+     <td>Minimal</td>
+                 <td>Always enabled</td>
+      </tr>
+        <tr>
+       <td><code>Critical</code></td>
+      <td>Critical failures</td>
+             <td>Minimal</td>
+    <td>Always enabled</td>
+     </tr>
+            </tbody>
+           </table>
+
+  <h5 class="mt-4">Example Logging Configuration</h5>
+         <pre class="bg-dark text-light p-3 rounded"><code>{
+  "Logging": {
+    "LogLevel": {
+      // Default for all namespaces
+      "Default": "Information",
+      
+      // Reduce noise from Microsoft libraries
+      "Microsoft": "Warning",
+      "Microsoft.AspNetCore": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information",
+      
+ // Enable detailed logging for HttpClientUtility
+    "WebSpark.HttpClientUtility": "Debug",
+      "WebSpark.HttpClientUtility.RequestResult": "Debug",
+      "WebSpark.HttpClientUtility.ClientService": "Information",
+      "WebSpark.HttpClientUtility.CurlService": "Information",
+    
+      // External services
+   "System.Net.Http.HttpClient": "Warning"
+  },
+    
+ // File logging provider (optional - requires Serilog or similar)
+    "File": {
+ "Path": "Logs/app-.log",
+      "RollingInterval": "Day",
+      "RetainedFileCountLimit": 30,
+    "OutputTemplate": "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {SourceContext} {Message:lj}{NewLine}{Exception}"
+    }
+  }
+}</code></pre>
+
+     <h5 class="mt-4">Structured Logging Example</h5>
+  <pre class="bg-dark text-light p-3 rounded"><code>// All HttpClientUtility logs include structured data:
+// - CorrelationId: Unique request identifier
+// - RequestPath: URL being requested
+// - RequestMethod: HTTP method (GET, POST, etc.)
+// - Duration: Request duration in milliseconds
+// - StatusCode: HTTP status code
+// - CallerMemberName: Method that made the request
+// - CallerFilePath: File where request originated
+// - CallerLineNumber: Line number of the request
+
+// Example log output:
+// [2025-01-08 10:30:45.123 -05:00] [INF] WebSpark.HttpClientUtility.RequestResult.HttpRequestResultService 
+// HTTP Request: GET https://v2.jokeapi.dev/joke/Programming?safe-mode
+// CorrelationId: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+// Duration: 245ms
+// StatusCode: 200
+// CallerMemberName: GetJokeAsync
+// CallerFilePath: C:\Projects\MyApp\Services\JokeService.cs
+// CallerLineNumber: 42</code></pre>
+       </div>
+          </div>
+        </div>
+    </div>
+
+    <!-- cURL Command Logging -->
+    <div class="row mt-4" id="curl-logging">
+      <div class="col-lg-12">
+            <div class="card">
+           <div class="card-header bg-warning text-dark">
+       <h4 class="mb-0">🐚 cURL Command Logging Configuration</h4>
+         </div>
+        <div class="card-body">
+     <div class="alert alert-info">
+    <strong>Note:</strong> cURL command logging is <strong>optional</strong>. If <code>CsvOutputFolder</code> 
+   is not configured, the feature is automatically disabled with no impact on application performance.
+    </div>
+
+         <h5>Configuration Options</h5>
+           <pre class="bg-dark text-light p-3 rounded"><code>{
+// === Required (Feature is disabled if not set) ===
+  "CsvOutputFolder": "C:\\Logs\\CurlCommands",    // Where to save CSV files
+  
+  // === Optional Settings ===
+  "CsvFileName": "http_requests",        // Base filename (default: "curl_commands")
+
+  "CurlCommandSaver": {
+    // Batch Processing (improves performance for high-volume scenarios)
+    "UseBatchProcessing": true,             // Enable batch mode (default: true)
+ "BatchSize": 100,       // Records per batch (default: 100)
+    "BatchFlushIntervalMs": 5000,                // Flush interval in ms (default: 5000)
+    
+  // File Management
+    "MaxFileSize": 10485760,           // 10MB - rotate when reached (default: 10MB)
+    "MaxRetries": 3,        // Retry attempts for file operations (default: 3)
+    "RetryDelayMs": 200,     // Delay between retries (default: 200ms)
+    
+    // Security &amp; Privacy
+    "SanitizeSensitiveInfo": true,   // Redact sensitive data (default: true)
+    "SensitiveHeaders": [               // Headers to redact
+      "Authorization",
+      "Api-Key",
+      "X-Api-Key",
+      "Password",
+      "Token",
+   "Cookie",
+      "X-Auth-Token",
+      "Access-Token"
+    ]
+  }
+}</code></pre>
+
+<h5 class="mt-4">CSV Output Format</h5>
+           <p>Each HTTP request is logged as a row with the following columns:</p>
+    <table class="table table-sm">
+   <thead>
+       <tr>
+          <th>Column</th>
+        <th>Description</th>
+  <th>Example</th>
+          </tr>
+     </thead>
+    <tbody>
+          <tr>
+    <td><code>Timestamp</code></td>
+  <td>When the request was made</td>
+  <td>2025-01-08T10:30:45.1234567Z</td>
+ </tr>
+ <tr>
+       <td><code>CurlCommand</code></td>
+             <td>Complete cURL command</td>
+           <td>curl -X POST "https://api.example.com/data" -H "Content-Type: application/json" -d '{"id":1}'</td>
+         </tr>
+                 <tr>
+              <td><code>RequestPath</code></td>
+     <td>Full URL</td>
+         <td>https://api.example.com/data</td>
+           </tr>
+         <tr>
+          <td><code>RequestMethod</code></td>
+        <td>HTTP method</td>
+            <td>POST</td>
+        </tr>
+            <tr>
+        <td><code>CallingMethod</code></td>
+   <td>Method that made the request</td>
+         <td>ProcessDataAsync</td>
+      </tr>
+  <tr>
+        <td><code>CallingFile</code></td>
+               <td>Source file path</td>
+         <td>C:\Projects\MyApp\Services\DataService.cs</td>
+       </tr>
+           <tr>
+      <td><code>CallingLineNumber</code></td>
+          <td>Line number in source file</td>
+         <td>142</td>
+ </tr>
+      </tbody>
+            </table>
+
+      <h5 class="mt-4">File Rotation</h5>
+     <p>When a CSV file reaches <code>MaxFileSize</code>, it's automatically rotated:</p>
+               <pre class="bg-light p-2"><code>// Original file
+http_requests.csv
+
+// After rotation (timestamp appended)
+http_requests_20250108_103045.csv
+http_requests.csv  ← New file starts</code></pre>
+
+  <h5 class="mt-4">Performance Impact</h5>
+     <div class="alert alert-success">
+         <h6>Minimal Performance Impact</h6>
+     <ul class="mb-0">
+  <li><strong>Batch Processing:</strong> Records queued in memory, written in batches</li>
+       <li><strong>Async Operations:</strong> File I/O doesn't block request threads</li>
+        <li><strong>Automatic Throttling:</strong> Batch size limits memory usage</li>
+    <li><strong>Error Isolation:</strong> File logging errors don't affect application</li>
+             </ul>
+      </div>
+
+         <h5 class="mt-4">Disabling cURL Logging</h5>
+   <p>To disable, simply remove or comment out the <code>CsvOutputFolder</code> setting:</p>
+        <pre class="bg-dark text-light p-3 rounded"><code>{
+  // "CsvOutputFolder": "C:\\Logs\\CurlCommands",  ← Commented out or removed
+  
+  // The application will log a warning and continue without file logging:
+  // [WARN] CsvOutputFolder is not configured. cURL commands will not be saved to file.
+}</code></pre>
+     </div>
+         </div>
+        </div>
+    </div>
+
+    <!-- OpenTelemetry Configuration -->
+    <div class="row mt-4" id="telemetry">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+    <h4 class="mb-0">📊 OpenTelemetry Configuration</h4>
+            </div>
+    <div class="card-body">
+        <p>For comprehensive distributed tracing and observability:</p>
+       <pre class="bg-dark text-light p-3 rounded"><code>// Install required packages:
+// dotnet add package OpenTelemetry.Extensions.Hosting
+// dotnet add package OpenTelemetry.Instrumentation.AspNetCore
+// dotnet add package OpenTelemetry.Instrumentation.Http
+// dotnet add package OpenTelemetry.Exporter.Console     // For console output
+// dotnet add package OpenTelemetry.Exporter.Jaeger   // For Jaeger
+// dotnet add package OpenTelemetry.Exporter.OpenTelemetryProtocol  // For OTLP
+
+builder.Services.AddOpenTelemetry()
+  .WithTracing(tracerBuilder =&gt;
+  {
+        tracerBuilder
+// Set service information
+            .SetResourceBuilder(ResourceBuilder.CreateDefault()
+                .AddService("MyApplication", "1.0.0"))
+            
+            // Add instrumentation
+            .AddSource("WebSpark.HttpClientUtility")
+        .AddHttpClientInstrumentation(options =&gt;
+{
+            // Enrich with additional data
+           options.EnrichWithHttpRequestMessage = (activity, request) =&gt;
+    {
+        activity.SetTag("http.request.header.correlation_id", 
+         request.Headers.GetValues("X-Correlation-ID").FirstOrDefault());
+             };
+          options.EnrichWithHttpResponseMessage = (activity, response) =&gt;
+                {
+            activity.SetTag("http.response.status_code", (int)response.StatusCode);
+           };
+       })
+ .AddAspNetCoreInstrumentation()
+            
+            // Choose exporters
+            .AddConsoleExporter()  // Development
+      .AddJaegerExporter(options =&gt;  // Production
+   {
+options.AgentHost = "localhost";
+     options.AgentPort = 6831;
+})
+            .AddOtlpExporter(options =&gt;  // OTLP-compatible backends (Grafana, etc.)
+            {
+                options.Endpoint = new Uri("http://localhost:4317");
+   });
+    });</code></pre>
+</div>
+       </div>
+        </div>
+    </div>
+
+  <!-- Decorator Chain -->
+    <div class="row mt-4" id="decorators">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+  <h4 class="mb-0">🔗 Understanding the Decorator Chain</h4>
+       </div>
+     <div class="card-body">
+   <p>The decorator pattern allows you to add features without modifying core code:</p>
+   <div class="text-center mb-4">
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8IS0tIEJhc2UgLS0+CiAgPHJlY3QgeD0iNTAiIHk9IjIyMCIgd2lkdGg9IjEyMCIgaGVpZ2h0PSI2MCIgZmlsbD0iIzY2N2VlYSIgcng9IjUiLz4KICA8dGV4dCB4PSIxMTAiIHk9IjI1NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnQtc2l6ZT0iMTQiPkJhc2UgU2VydmljZTwvdGV4dD4KICAKICA8IS0tIENhY2hlIC0tPgogIDxyZWN0IHg9IjIwMCIgeT0iMTcwIiB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiBmaWxsPSIjMTdhMmI4IiByeD0iNSIvPgogIDx0ZXh0IHg9IjI2MCIgeT0iMjA1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxNCI+Q2FjaGU8L3RleHQ+CiAgCiAgPCEtLSBQb2xseSAtLT4KICA8cmVjdCB4PSIzNTAiIHk9IjEyMCIgd2lkdGg9IjEyMCIgaGVpZ2h0PSI2MCIgZmlsbD0iI2ZmYzEwNyIgcng9IjUiLz4KICA8dGV4dCB4PSI0MTAiIHk9IjE1NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iYmxhY2siIGZvbnQtc2l6ZT0iMTQiPlBvbGx5PC90ZXh0PgogIAogIDwhLS0gVGVsZW1ldHJ5IC0tPgogIDxyZWN0IHg9IjUwMCIgeT0iNzAiIHdpZHRoPSIxMjAiIGhlaWdodD0iNjAiIGZpbGw9IiMyOGE3NDUiIHJ4PSI1Ii8+CiAgPHRleHQgeD0iNTYwIiB5PSIxMDUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjE0Ij5UZWxlbWV0cnk8L3RleHQ+CiAgCiAgPCEtLSBBcnJvd3MgLS0+CiAgPGxpbmUgeDE9IjE3MCIgeTE9IjI1MCIgeDI9IjIwMCIgeTI9IjIwMCIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2Fycm93KSIvPgogIDxsaW5lIHgxPSIzMjAiIHkxPSIyMDAiIHgyPSIzNTAiIHkyPSIxNTAiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIgbWFya2VyLWVuZD0idXJsKCNhcnJvdykiLz4KICA8bGluZSB4MT0iNDcwIiB5MT0iMTUwIiB4Mj0iNTAwIiB5Mj0iMTAwIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjYXJyb3cpIi8+CiAgCiAgPCEtLSBBcnJvdyBtYXJrZXIgLS0+CiAgPGRlZnM+CiAgICA8bWFya2VyIGlkPSJhcnJvdyIgbWFya2VyV2lkdGg9IjEwIiBtYXJrZXJIZWlnaHQ9IjEwIiByZWZYPSI1IiByZWZZPSI1IiBvcmllbnQ9ImF1dG8iPgogICAgICA8cGF0aCBkPSJNIDAgMCBMIDEwIDUgTCAwIDEwIHoiIGZpbGw9ImJsYWNrIi8+CiAgICA8L21hcmtlcj4KICA8L2RlZnM+Cjwvc3ZnPg==" alt="Decorator Chain Flow" class="img-fluid" />
+       </div>
+
+               <h5>Order Matters!</h5>
+    <p>The recommended order is: <strong>Base → Cache → Polly → Telemetry</strong></p>
+           <table class="table table-bordered">
+  <thead>
+             <tr>
+                 <th>Layer</th>
+   <th>Purpose</th>
+        <th>Position</th>
+        <th>Why This Order?</th>
+          </tr>
+      </thead>
+   <tbody>
+   <tr>
+       <td><strong>Base Service</strong></td>
+          <td>Core HTTP functionality</td>
+       <td>Innermost (1st)</td>
+         <td>The foundation that actually makes HTTP calls</td>
+             </tr>
+     <tr>
+  <td><strong>Cache</strong></td>
+          <td>Response caching</td>
+<td>2nd</td>
+             <td>Check cache before retrying or measuring</td>
+     </tr>
+      <tr>
+   <td><strong>Polly</strong></td>
+        <td>Retries & circuit breaker</td>
+       <td>3rd</td>
+        <td>Retry failed requests, but use cache if available</td>
+  </tr>
+              <tr>
+    <td><strong>Telemetry</strong></td>
+            <td>Monitoring & tracing</td>
+       <td>Outermost (4th)</td>
+       <td>Measure total time including retries and caching</td>
+    </tr>
+          </tbody>
+  </table>
+
+ <div class="alert alert-warning">
+     <strong>Common Mistake:</strong> Putting Telemetry before Cache means cache hits won't be measured correctly!
+      </div>
+</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Environment-Specific Settings -->
+    <div class="row mt-4" id="environment">
+     <div class="col-lg-12">
+        <div class="card">
+    <div class="card-header bg-danger text-white">
+        <h4 class="mb-0">🌍 Environment-Specific Configuration</h4>
+    </div>
+    <div class="card-body">
+          <p>Use different settings for Development, Staging, and Production:</p>
+                
+    <h5>File Structure</h5>
+        <pre class="bg-light p-2"><code>appsettings.json    ← Base settings (all environments)
+appsettings.Development.json          ← Development overrides
+appsettings.Staging.json   ← Staging overrides
+appsettings.Production.json           ← Production overrides</code></pre>
+
+          <h5 class="mt-3">appsettings.Development.json</h5>
+       <pre class="bg-dark text-light p-3 rounded"><code>{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Debug",
+      "WebSpark.HttpClientUtility": "Trace"  // Maximum detail for development
+  }
+  },
+  "CsvOutputFolder": "C:\\Dev\\Logs", // Local dev folder
+  "CurlCommandSaver": {
+    "UseBatchProcessing": false,              // Immediate writes for debugging
+    "SanitizeSensitiveInfo": false            // Full data in development
+  },
+  "OpenTelemetry": {
+    "ConsoleExporter": true,      // Console output for easy viewing
+    "JaegerExporter": false
+  }
+}</code></pre>
+
+           <h5 class="mt-3">appsettings.Production.json</h5>
+         <pre class="bg-dark text-light p-3 rounded"><code>{
+  "Logging": {
+    "LogLevel": {
+"Default": "Information",
+      "WebSpark.HttpClientUtility": "Information"  // Less noise in production
+    }
+  },
+  "CsvOutputFolder": "/var/log/myapp/curl",      // Production log path
+  "CurlCommandSaver": {
+    "UseBatchProcessing": true,       // Better performance
+    "BatchSize": 1000,         // Larger batches
+    "SanitizeSensitiveInfo": true        // Always sanitize in production!
+  },
+  "OpenTelemetry": {
+    "ConsoleExporter": false,
+    "JaegerExporter": true,  // Send to Jaeger/Grafana
+    "OtlpExporter": true
+  }
+}</code></pre>
+         </div>
+            </div>
+        </div>
+</div>
+
+    <!-- Best Practices -->
+    <div class="row mt-4 mb-5" id="best-practices">
+        <div class="col-lg-12">
+            <div class="card border-success">
+              <div class="card-header bg-success text-white">
+        <h4 class="mb-0">✅ Configuration Best Practices</h4>
+                </div>
+    <div class="card-body">
+                <div class="row">
+        <div class="col-md-6">
+            <h5>✅ Do</h5>
+         <ul>
+  <li>Use <strong>Information</strong> log level in production</li>
+             <li>Always enable <strong>SanitizeSensitiveInfo</strong> in production</li>
+       <li>Use <strong>batch processing</strong> for high-volume scenarios</li>
+          <li>Configure <strong>file rotation</strong> to prevent disk space issues</li>
+         <li>Use <strong>environment-specific</strong> configuration files</li>
+               <li>Store secrets in <strong>Azure Key Vault</strong> or environment variables</li>
+       <li>Enable <strong>structured logging</strong> for better querying</li>
+   <li>Set appropriate <strong>log retention</strong> policies</li>
+<li>Use <strong>correlation IDs</strong> to trace requests</li>
+       <li>Monitor <strong>log file sizes</strong> and disk usage</li>
+       </ul>
+      </div>
+         <div class="col-md-6">
+   <h5>❌ Don't</h5>
+<ul>
+      <li>Use <strong>Trace</strong> or <strong>Debug</strong> in production</li>
+              <li>Log sensitive data (passwords, tokens) unredacted</li>
+<li>Disable <strong>SanitizeSensitiveInfo</strong> in production</li>
+            <li>Store credentials in <strong>appsettings.json</strong></li>
+    <li>Ignore <strong>log rotation</strong> - fills disk!</li>
+      <li>Use synchronous file I/O for logging</li>
+              <li>Log every single HTTP request in high-traffic apps</li>
+   <li>Forget to test logging configuration in lower environments</li>
+     <li>Mix development and production configurations</li>
+   <li>Commit <strong>appsettings.Production.json</strong> with secrets</li>
+       </ul>
+ </div>
+   </div>
+
+         <div class="alert alert-info mt-4">
+    <h5><i class="bi bi-lightbulb"></i> Pro Tips</h5>
+     <ul class="mb-0">
+   <li><strong>Start Simple:</strong> Begin with just Information logging and add detail as needed</li>
+          <li><strong>Use Correlation IDs:</strong> Every request automatically gets a unique ID for tracking</li>
+     <li><strong>Monitor Performance:</strong> Watch for logging overhead in high-traffic scenarios</li>
+<li><strong>Archive Logs:</strong> Move old log files to cold storage or delete after retention period</li>
+        <li><strong>Test Configuration:</strong> Validate logging works in each environment before deploying</li>
+       </ul>
+    </div>
+       </div>
+ </div>
+        </div>
+    </div>
+</div>

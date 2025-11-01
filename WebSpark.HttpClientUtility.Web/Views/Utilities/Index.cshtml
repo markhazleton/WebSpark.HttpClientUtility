@@ -1,0 +1,252 @@
+@{
+    ViewData["Title"] = "Utilities & Tools";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1>🔧 Utilities & Tools</h1>
+            <p class="lead">Helpful utilities for background tasks, debugging, and productivity enhancements</p>
+    </div>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="row mt-4">
+  <div class="col-md-6">
+            <div class="card shadow-sm mb-4 h-100">
+                <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">🔥 FireAndForget Utility</h5>
+  </div>
+              <div class="card-body">
+ <p><strong>Execute non-critical background tasks without blocking your main thread.</strong></p>
+ <ul>
+ <li>Safe task execution with automatic error handling</li>
+      <li>No need to await - truly fire-and-forget</li>
+ <li>Built-in logging for troubleshooting</li>
+         <li>Perfect for notifications, logging, analytics</li>
+ </ul>
+   </div>
+  </div>
+  </div>
+
+ <div class="col-md-6">
+      <div class="card shadow-sm mb-4 h-100">
+    <div class="card-header bg-success text-white">
+     <h5 class="mb-0">🐚 cURL Command Generator</h5>
+      </div>
+         <div class="card-body">
+       <p><strong>Generate cURL commands from your HTTP requests for debugging.</strong></p>
+      <ul>
+            <li>Recreate requests outside your application</li>
+       <li>Share with team members for collaboration</li>
+     <li>Test APIs from command line</li>
+   <li>Includes headers and request body</li>
+       </ul>
+                </div>
+        </div>
+        </div>
+    </div>
+
+ <!-- Code Examples -->
+    <div class="row mt-4">
+  <div class="col-lg-12">
+            <div class="card">
+    <div class="card-header">
+     <h5 class="mb-0">📝 Code Examples</h5>
+                </div>
+      <div class="card-body">
+     <h6>FireAndForget Utility</h6>
+              <pre class="bg-dark text-light p-3 rounded"><code>// Register the utility in Program.cs
+builder.Services.AddSingleton&lt;FireAndForgetUtility&gt;();
+
+// Use in your service
+public class MyService
+{
+    private readonly FireAndForgetUtility _fireAndForget;
+    
+    public MyService(FireAndForgetUtility fireAndForget)
+    {
+        _fireAndForget = fireAndForget;
+    }
+    
+    public void ProcessOrder(Order order)
+    {
+      // Critical: Save the order (awaited)
+   await SaveOrderToDatabase(order);
+   
+        // Non-critical: Send confirmation email (fire-and-forget)
+        _fireAndForget.SafeFireAndForget(
+      SendConfirmationEmailAsync(order.Email),
+     $"Send confirmation email for order {order.Id}");
+      
+        // Non-critical: Update analytics (fire-and-forget)
+        _fireAndForget.SafeFireAndForget(
+      UpdateAnalyticsAsync(order),
+            $"Update analytics for order {order.Id}");
+        
+    // Return immediately without waiting for emails or analytics
+        return Ok();
+    }
+    
+    private async Task SendConfirmationEmailAsync(string email)
+ {
+        // Email sending logic
+        await _emailService.SendAsync(email, "Order Confirmed");
+    }
+    
+    private async Task UpdateAnalyticsAsync(Order order)
+    {
+        // Analytics update logic
+        await _analyticsService.TrackOrderAsync(order);
+    }
+}</code></pre>
+
+  <h6 class="mt-4">cURL Command Generator</h6>
+   <pre class="bg-dark text-light p-3 rounded"><code>using WebSpark.HttpClientUtility.Utilities;
+
+// Generate cURL command from request
+var curlCommand = CurlCommandSaver.GenerateCurlCommand(
+    requestPath: "https://api.example.com/orders",
+    method: HttpMethod.Post,
+    headers: new Dictionary&lt;string, string&gt;
+    {
+{ "Authorization", "Bearer token123" },
+     { "Content-Type", "application/json" }
+    },
+    body: "{\"productId\": 42, \"quantity\": 1}"
+);
+
+// Output: curl -X POST "https://api.example.com/orders" \
+//   -H "Authorization: Bearer token123" \
+//   -H "Content-Type: application/json" \
+//   -d "{\"productId\": 42, \"quantity\": 1}"
+
+// Save to file for later use
+await File.WriteAllTextAsync("debug-request.sh", curlCommand);
+
+// Or log it for debugging
+_logger.LogDebug("Request as cURL: {CurlCommand}", curlCommand);</code></pre>
+
+         <h6 class="mt-4">Query String Builder</h6>
+    <pre class="bg-dark text-light p-3 rounded"><code>// Build complex query strings easily
+var queryParams = new Dictionary&lt;string, string&gt;
+{
+    { "category", "electronics" },
+    { "minPrice", "100" },
+    { "maxPrice", "500" },
+    { "sortBy", "price" },
+  { "order", "desc" }
+};
+
+// Convert to query string
+var queryString = string.Join("&amp;", 
+    queryParams.Select(kvp => $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value)}"));
+
+var url = $"https://api.example.com/products?{queryString}";
+// Result: https://api.example.com/products?category=electronics&amp;minPrice=100&amp;maxPrice=500&amp;sortBy=price&amp;order=desc</code></pre>
+    </div>
+          </div>
+        </div>
+    </div>
+
+    <!-- Use Cases -->
+    <div class="row mt-4">
+     <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+     <h5 class="mb-0">🎯 Common Use Cases</h5>
+       </div>
+                <div class="card-body">
+      <div class="row">
+           <div class="col-md-6">
+           <h6>FireAndForget Perfect For:</h6>
+      <ul>
+         <li>📧 Sending email notifications</li>
+         <li>📊 Updating analytics/metrics</li>
+       <li>📝 Logging to external services</li>
+        <li>🔔 Pushing notifications</li>
+    <li>🔄 Cache warming</li>
+        <li>🧹 Background cleanup tasks</li>
+          </ul>
+           </div>
+  <div class="col-md-6">
+    <h6>cURL Generator Perfect For:</h6>
+         <ul>
+        <li>🐛 Debugging API issues</li>
+       <li>🤝 Sharing requests with teammates</li>
+                  <li>📖 Documentation generation</li>
+ <li>🧪 Testing outside the application</li>
+    <li>🔍 Reproducing production issues</li>
+             <li>📋 Support ticket details</li>
+  </ul>
+ </div>
+          </div>
+       </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Best Practices -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
+<div class="alert alert-info">
+<h5><i class="bi bi-lightbulb"></i> Best Practices</h5>
+     <div class="row">
+            <div class="col-md-6">
+ <h6>FireAndForget ✅ Do</h6>
+          <ul>
+          <li>Use for truly non-critical operations</li>
+              <li>Provide descriptive task names</li>
+             <li>Implement proper error handling in tasks</li>
+     <li>Consider idempotency</li>
+     <li>Monitor background task failures</li>
+                </ul>
+            </div>
+<div class="col-md-6">
+     <h6>FireAndForget ❌ Don't</h6>
+            <ul>
+          <li>Use for critical business logic</li>
+       <li>Rely on immediate execution</li>
+     <li>Store results for later use</li>
+       <li>Use for transaction-dependent operations</li>
+   <li>Forget about monitoring/logging</li>
+  </ul>
+    </div>
+    </div>
+   </div>
+        </div>
+    </div>
+
+    <!-- Additional Features -->
+  <div class="row mt-4">
+        <div class="col-lg-12">
+    <div class="card">
+<div class="card-header">
+          <h5 class="mb-0">✨ Additional Utilities</h5>
+       </div>
+    <div class="card-body">
+      <h6>URL Sanitization</h6>
+    <p>Automatically sanitize URLs before logging to prevent sensitive data exposure:</p>
+          <pre class="bg-light p-2"><code>// Removes query parameters, credentials, and sensitive data
+var safeUrl = LoggingUtility.SanitizeUrl("https://user:pass@api.com/data?apiKey=secret");
+// Result: "https://api.com/data"</code></pre>
+
+     <h6 class="mt-3">Error Handling Utilities</h6>
+          <p>Enrich exceptions with context for better debugging:</p>
+      <pre class="bg-light p-2"><code>var context = new Dictionary&lt;string, object&gt;
+{
+    ["UserId"] = userId,
+    ["RequestPath"] = requestPath,
+    ["CorrelationId"] = correlationId
+};
+
+var enrichedException = ErrorHandlingUtility.EnrichException(
+    exception,
+    "Failed to process user request",
+    context
+);</code></pre>
+  </div>
+            </div>
+        </div>
+    </div>
+</div>

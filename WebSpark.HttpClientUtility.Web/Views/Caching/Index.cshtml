@@ -1,0 +1,179 @@
+@{
+    ViewData["Title"] = "Response Caching";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-12">
+ <h1>⚡ Response Caching</h1>
+ <p class="lead">Automatic HTTP response caching with configurable TTL to reduce API calls and improve performance</p>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+   <div class="col-md-12">
+     <div class="card shadow-sm mb-4">
+   <div class="card-header bg-info text-white">
+<h5 class="mb-0">Cached Request Demo</h5>
+     </div>
+  <div class="card-body">
+    <p>This request will be cached for 5 minutes. Run it multiple times to see the performance improvement!</p>
+      <form action="/Caching/CachedRequest" method="get">
+     <div class="row">
+     <div class="col-md-6">
+   <label class="form-label">Category</label>
+ <select name="category" class="form-select">
+        <option value="Programming">Programming</option>
+    <option value="Misc">Miscellaneous</option>
+        <option value="Pun">Pun</option>
+     </select>
+    </div>
+        <div class="col-md-6 d-flex align-items-end">
+       <button type="submit" class="btn btn-info w-100">
+      <i class="bi bi-play-circle"></i> Execute Cached Request
+       </button>
+ </div>
+  </div>
+    </form>
+      <div class="alert alert-warning mt-3">
+  <i class="bi bi-info-circle"></i> <strong>Tip:</strong> Click the button multiple times to see caching in action. 
+       The first request will hit the API, subsequent requests will return instantly from cache!
+       </div>
+      </div>
+     </div>
+ </div>
+    </div>
+
+    <!-- How It Works -->
+    <div class="row mt-4">
+ <div class="col-lg-12">
+       <div class="card">
+  <div class="card-header">
+    <h5 class="mb-0">🔧 How It Works</h5>
+  </div>
+      <div class="card-body">
+       <ol>
+     <li><strong>First Request:</strong> When you make a request with caching enabled, it fetches from the API and stores the response in memory</li>
+       <li><strong>Cache Key:</strong> A unique key is generated based on the request URL and method</li>
+       <li><strong>Subsequent Requests:</strong> Future requests with the same key return instantly from cache</li>
+      <li><strong>TTL Expiration:</strong> After the specified duration (e.g., 5 minutes), the cache entry expires</li>
+       <li><strong>Auto Refresh:</strong> Next request after expiration fetches fresh data and updates the cache</li>
+ </ol>
+ </div>
+  </div>
+ </div>
+    </div>
+
+    <!-- Code Example -->
+ <div class="row mt-4">
+        <div class="col-lg-12">
+   <div class="card">
+  <div class="card-header">
+      <h5 class="mb-0">📝 Code Example</h5>
+       </div>
+<div class="card-body">
+        <h6>Configuration in Program.cs</h6>
+    <pre class="bg-dark text-light p-3 rounded"><code>// Add Memory Cache
+builder.Services.AddMemoryCache();
+
+// Add caching decorator to the service chain
+builder.Services.AddScoped&lt;IHttpRequestResultService&gt;(provider =>
+{
+    IHttpRequestResultService service = provider.GetRequiredService&lt;HttpRequestResultService&gt;();
+    
+    // Wrap with caching decorator
+    service = new HttpRequestResultServiceCache(
+  provider.GetRequiredService&lt;ILogger&lt;HttpRequestResultServiceCache&gt;&gt;(),
+        service,
+     provider.GetRequiredService&lt;IMemoryCache&gt;()
+    );
+    
+    return service;
+});</code></pre>
+
+       <h6 class="mt-4">Usage in Application Code</h6>
+   <pre class="bg-dark text-light p-3 rounded"><code>// Create request with caching enabled
+var request = new HttpRequestResult&lt;JokeResponse&gt;
+{
+    RequestPath = "https://v2.jokeapi.dev/joke/Programming?safe-mode",
+    RequestMethod = HttpMethod.Get,
+CacheDurationMinutes = 5 // Cache for 5 minutes
+};
+
+var result = await _requestResultService.HttpSendRequestResultAsync(request);
+
+// Check if response came from cache
+var isCacheHit = result.RequestContext.TryGetValue("CacheHit", out var hit) && (bool)hit;
+
+if (isCacheHit)
+{
+    Console.WriteLine($"✓ Response from cache! (Age: {result.RequestContext["CacheAge"]})");
+}
+else
+{
+    Console.WriteLine("↻ Fresh response from API, now cached");
+}</code></pre>
+     </div>
+        </div>
+ </div>
+    </div>
+
+    <!-- Benefits -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
+       <div class="alert alert-success">
+      <h5><i class="bi bi-check-circle"></i> Benefits of Caching</h5>
+       <div class="row">
+      <div class="col-md-6">
+   <ul>
+   <li><strong>Reduced Latency:</strong> Near-instant responses from cache</li>
+        <li><strong>Lower API Costs:</strong> Fewer API calls = lower costs</li>
+  <li><strong>Better Performance:</strong> Faster page loads and better UX</li>
+       </ul>
+     </div>
+   <div class="col-md-6">
+    <ul>
+        <li><strong>Reduced Load:</strong> Less stress on external APIs</li>
+       <li><strong>Rate Limit Protection:</strong> Stay within API rate limits</li>
+      <li><strong>Offline Capability:</strong> Serve cached data even if API is down</li>
+</ul>
+     </div>
+   </div>
+</div>
+  </div>
+    </div>
+
+    <!-- Performance Comparison -->
+    <div class="row mt-4">
+     <div class="col-lg-12">
+   <div class="card border-primary">
+        <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">📊 Expected Performance</h5>
+      </div>
+       <div class="card-body">
+      <table class="table table-striped">
+       <thead>
+       <tr>
+     <th>Request Type</th>
+        <th>Typical Duration</th>
+     <th>Improvement</th>
+       </tr>
+    </thead>
+       <tbody>
+  <tr>
+     <td><strong>First Request (API)</strong></td>
+     <td>200-500ms</td>
+     <td>Baseline</td>
+   </tr>
+       <tr class="table-success">
+       <td><strong>Cached Request</strong></td>
+       <td>1-5ms</td>
+      <td><span class="badge bg-success">99% faster! ⚡</span></td>
+      </tr>
+       </tbody>
+  </table>
+ </div>
+   </div>
+   </div>
+    </div>
+</div>

@@ -1,0 +1,322 @@
+@{
+    ViewData["Title"] = "Telemetry & Observability";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-12">
+      <h1>📈 Telemetry & Observability</h1>
+    <p class="lead">OpenTelemetry integration for comprehensive monitoring, distributed tracing, and correlation tracking</p>
+ </div>
+    </div>
+
+    <!-- Live Demos -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+ <div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+           <h5 class="mb-0">Request with Telemetry</h5>
+     </div>
+         <div class="card-body">
+           <p>Execute a request with automatic telemetry tracking including duration, correlation IDs, and context</p>
+   <form action="/Telemetry/WithTelemetry" method="get">
+<div class="mb-3">
+       <label class="form-label">Category</label>
+     <select name="category" class="form-select">
+   <option value="Programming">Programming</option>
+           <option value="Misc">Miscellaneous</option>
+            <option value="Dark">Dark</option>
+       <option value="Pun">Pun</option>
+          <option value="Any">Any</option>
+         </select>
+       </div>
+            <button type="submit" class="btn btn-primary w-100">
+       <i class="bi bi-play-circle"></i> Execute with Telemetry
+    </button>
+         </form>
+  </div>
+        </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+            <div class="card-header bg-success text-white">
+         <h5 class="mb-0">Correlation Tracking</h5>
+     </div>
+              <div class="card-body">
+              <p>Demonstrate correlation ID tracking across multiple requests and services</p>
+           <form action="/Telemetry/CorrelationTracking" method="get">
+       <button type="submit" class="btn btn-success w-100">
+     <i class="bi bi-play-circle"></i> Track Correlation IDs
+             </button>
+        </form>
+  </div>
+    </div>
+        </div>
+    </div>
+
+    <!-- Features Overview -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
+    <div class="card">
+        <div class="card-header">
+    <h5 class="mb-0">🔍 Observability Features</h5>
+        </div>
+   <div class="card-body">
+    <div class="row">
+              <div class="col-md-6">
+         <h6>📊 Built-in Metrics</h6>
+       <ul>
+         <li><strong>Request Duration:</strong> Automatic timing for every request</li>
+               <li><strong>Correlation IDs:</strong> Unique ID per request for tracing</li>
+  <li><strong>Status Tracking:</strong> HTTP status codes and success/failure</li>
+          <li><strong>Error Details:</strong> Comprehensive error information</li>
+     </ul>
+     </div>
+        <div class="col-md-6">
+       <h6>🔗 OpenTelemetry Integration</h6>
+              <ul>
+            <li><strong>Distributed Tracing:</strong> Track requests across services</li>
+      <li><strong>Multiple Exporters:</strong> Console, Jaeger, OTLP support</li>
+      <li><strong>Activity Context:</strong> Automatic context propagation</li>
+         <li><strong>Metrics Export:</strong> Standard OpenTelemetry metrics</li>
+  </ul>
+              </div>
+        </div>
+    </div>
+     </div>
+     </div>
+    </div>
+
+    <!-- Code Examples -->
+  <div class="row mt-4">
+        <div class="col-lg-12">
+          <div class="card">
+ <div class="card-header">
+ <h5 class="mb-0">📝 Configuration & Usage</h5>
+        </div>
+         <div class="card-body">
+     <h6>Configure OpenTelemetry in Program.cs</h6>
+           <pre class="bg-dark text-light p-3 rounded"><code>using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using WebSpark.HttpClientUtility.RequestResult;
+
+// Add OpenTelemetry with tracing
+builder.Services.AddOpenTelemetry()
+  .WithTracing(tracerBuilder =>
+  {
+        tracerBuilder
+    .SetResourceBuilder(ResourceBuilder.CreateDefault()
+    .AddService("WebSpark.HttpClientUtility.Demo", "1.0.0"))
+     .AddSource("WebSpark.HttpClientUtility")
+    .AddHttpClientInstrumentation()
+            .AddAspNetCoreInstrumentation()
+            .AddConsoleExporter();  // For dev/debugging
+            // .AddJaegerExporter();   // For Jaeger
+  // .AddOtlpExporter(); // For OTLP-compatible backends
+ });
+
+// Register the telemetry decorator
+builder.Services.AddScoped&lt;IHttpRequestResultService&gt;(provider =>
+{
+    IHttpRequestResultService service = 
+        provider.GetRequiredService&lt;HttpRequestResultService&gt;();
+    
+    // Wrap with telemetry decorator (outermost layer)
+    service = new HttpRequestResultServiceTelemetry(
+        provider.GetRequiredService&lt;ILogger&lt;HttpRequestResultServiceTelemetry&gt;&gt;(),
+        service
+    );
+    
+    return service;
+});</code></pre>
+
+ <h6 class="mt-4">Using Telemetry in Your Service</h6>
+       <pre class="bg-dark text-light p-3 rounded"><code>public class MyApiService
+{
+    private readonly IHttpRequestResultService _requestService;
+    private readonly ILogger&lt;MyApiService&gt; _logger;
+    
+    public async Task&lt;MyData?&gt; GetDataWithTelemetryAsync(string id)
+    {
+      // Create request with debug enabled for detailed logging
+var request = new HttpRequestResult&lt;MyData&gt;
+        {
+      RequestPath = $"https://api.example.com/data/{id}",
+   RequestMethod = HttpMethod.Get,
+  IsDebugEnabled = true  // Enable detailed telemetry
+      };
+   
+        // Execute - telemetry is automatic
+    var result = await _requestService.HttpSendRequestResultAsync(request);
+        
+// Access telemetry data
+        _logger.LogInformation(
+            "Request completed: CorrelationId={CorrelationId}, " +
+        "Duration={Duration}ms, Status={Status}",
+ result.CorrelationId,
+            result.RequestDurationMilliseconds,
+ result.StatusCode);
+        
+     // Additional context is available in RequestContext dictionary
+      if (result.RequestContext.TryGetValue("ActivityId", out var activityId))
+        {
+     _logger.LogDebug("Activity ID: {ActivityId}", activityId);
+     }
+        
+    return result.ResponseResults;
+    }
+}</code></pre>
+
+     <h6 class="mt-4">Querying Telemetry Data</h6>
+          <pre class="bg-dark text-light p-3 rounded"><code>// Example: Search logs by correlation ID
+// All logs for a request share the same correlation ID
+// In your logging platform (e.g., Application Insights, Elasticsearch):
+
+{
+  "timestamp": "2025-01-08T10:30:45.123Z",
+  "level": "Information",
+  "message": "HTTP Request: GET https://v2.jokeapi.dev/joke/Programming",
+  "correlationId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "requestDuration": 245,
+  "statusCode": 200
+}
+
+// Track the entire request flow using the correlation ID:
+// 1. Request initiated
+// 2. External API call
+// 3. Response received
+// 4. Data processed
+// 5. Response returned
+
+// All these steps will have the same correlation ID</code></pre>
+   </div>
+         </div>
+        </div>
+    </div>
+
+    <!-- Telemetry Data Overview -->
+    <div class="row mt-4">
+      <div class="col-lg-12">
+         <div class="card">
+    <div class="card-header">
+    <h5 class="mb-0">📋 Telemetry Data Captured</h5>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped">
+          <thead>
+        <tr>
+   <th>Metric</th>
+  <th>Description</th>
+         <th>Use Case</th>
+     </tr>
+   </thead>
+                <tbody>
+    <tr>
+     <td><code>CorrelationId</code></td>
+    <td>Unique identifier for each request</td>
+      <td>Trace requests across services and logs</td>
+                  </tr>
+           <tr>
+ <td><code>RequestDurationMilliseconds</code></td>
+             <td>Total time taken for the request</td>
+       <td>Performance monitoring and SLA tracking</td>
+                </tr>
+           <tr>
+  <td><code>RequestStartTimestamp</code></td>
+        <td>When the request started</td>
+            <td>Time-based analysis and ordering</td>
+        </tr>
+       <tr>
+        <td><code>StatusCode</code></td>
+          <td>HTTP status code returned</td>
+       <td>Success rate monitoring</td>
+                 </tr>
+     <tr>
+    <td><code>ErrorList</code></td>
+            <td>Collection of errors encountered</td>
+  <td>Error analysis and debugging</td>
+        </tr>
+ <tr>
+            <td><code>RequestContext</code></td>
+     <td>Dictionary of additional context data</td>
+             <td>Custom metrics and context propagation</td>
+   </tr>
+     <tr>
+          <td><code>Retries</code></td>
+              <td>Number of retry attempts (with Polly)</td>
+              <td>Reliability metrics</td>
+         </tr>
+     </tbody>
+              </table>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Benefits -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
+<div class="alert alert-info">
+                <h5><i class="bi bi-info-circle"></i> Key Benefits</h5>
+    <ul>
+   <li><strong>Automatic Tracking:</strong> No manual instrumentation required - telemetry is built-in</li>
+           <li><strong>Correlation IDs:</strong> Trace requests across distributed systems effortlessly</li>
+            <li><strong>Performance Insights:</strong> Identify slow requests and optimize bottlenecks</li>
+       <li><strong>Error Tracking:</strong> Comprehensive error information with context</li>
+        <li><strong>OpenTelemetry Standard:</strong> Industry-standard observability framework</li>
+              <li><strong>Multiple Exporters:</strong> Send telemetry to your preferred backend</li>
+         <li><strong>Production Ready:</strong> Minimal overhead with maximum visibility</li>
+        </ul>
+  </div>
+        </div>
+    </div>
+
+    <!-- Integration Examples -->
+<div class="row mt-4">
+        <div class="col-lg-12">
+            <div class="card">
+  <div class="card-header">
+          <h5 class="mb-0">🔗 Integration Options</h5>
+        </div>
+       <div class="card-body">
+    <div class="row">
+                  <div class="col-md-4">
+          <h6>Console Exporter</h6>
+      <p class="text-muted">Great for development and debugging</p>
+            <pre class="bg-light p-2"><code>.AddConsoleExporter()</code></pre>
+           </div>
+          <div class="col-md-4">
+   <h6>Jaeger</h6>
+        <p class="text-muted">Popular open-source distributed tracing</p>
+   <pre class="bg-light p-2"><code>.AddJaegerExporter()</code></pre>
+                 </div>
+              <div class="col-md-4">
+      <h6>OTLP</h6>
+      <p class="text-muted">OpenTelemetry Protocol for any backend</p>
+                <pre class="bg-light p-2"><code>.AddOtlpExporter()</code></pre>
+      </div>
+              </div>
+             <hr />
+ <div class="row mt-3">
+      <div class="col-md-4">
+      <h6>Application Insights</h6>
+           <p class="text-muted">Azure's application monitoring service</p>
+       <pre class="bg-light p-2"><code>.AddApplicationInsights()</code></pre>
+             </div>
+       <div class="col-md-4">
+       <h6>Zipkin</h6>
+  <p class="text-muted">Distributed tracing system</p>
+         <pre class="bg-light p-2"><code>.AddZipkinExporter()</code></pre>
+  </div>
+            <div class="col-md-4">
+       <h6>Custom</h6>
+   <p class="text-muted">Build your own exporter</p>
+      <pre class="bg-light p-2"><code>.AddProcessor(custom)</code></pre>
+  </div>
+     </div>
+  </div>
+            </div>
+        </div>
+    </div>
+</div>

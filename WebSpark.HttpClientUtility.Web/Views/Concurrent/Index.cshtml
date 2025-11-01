@@ -1,0 +1,189 @@
+@{
+    ViewData["Title"] = "Concurrent Processing";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-12">
+ <h1>🚀 Concurrent Processing</h1>
+  <p class="lead">Execute multiple HTTP requests in parallel with controlled concurrency for maximum performance</p>
+        </div>
+    </div>
+
+  <div class="row mt-4">
+   <div class="col-md-12">
+   <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+     <h5 class="mb-0">Parallel Requests Demo</h5>
+     </div>
+        <div class="card-body">
+     <p>Fetch multiple jokes concurrently and see the time savings compared to sequential requests</p>
+      <form action="/Concurrent/ParallelRequests" method="get">
+<div class="row">
+  <div class="col-md-6">
+     <label class="form-label">Number of Concurrent Requests</label>
+        <select name="count" class="form-select">
+  <option value="3">3 requests</option>
+        <option value="5" selected>5 requests</option>
+     <option value="10">10 requests</option>
+       </select>
+    </div>
+        <div class="col-md-6 d-flex align-items-end">
+       <button type="submit" class="btn btn-primary w-100">
+      <i class="bi bi-lightning"></i> Execute Parallel Requests
+     </button>
+   </div>
+       </div>
+  </form>
+  </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Performance Comparison -->
+    <div class="row mt-4">
+ <div class="col-lg-12">
+     <div class="card border-success">
+   <div class="card-header bg-success text-white">
+      <h5 class="mb-0">📊 Performance Comparison</h5>
+        </div>
+ <div class="card-body">
+      <table class="table table-striped">
+  <thead>
+    <tr>
+        <th>Execution Method</th>
+       <th>5 Requests</th>
+      <th>10 Requests</th>
+       <th>Benefit</th>
+     </tr>
+  </thead>
+     <tbody>
+        <tr>
+      <td><strong>Sequential (One at a time)</strong></td>
+      <td>~1000ms</td>
+       <td>~2000ms</td>
+ <td>-</td>
+    </tr>
+      <tr class="table-success">
+     <td><strong>Concurrent (Parallel)</strong></td>
+     <td>~250ms</td>
+      <td>~400ms</td>
+       <td><span class="badge bg-success">75-80% faster! 🚀</span></td>
+</tr>
+     </tbody>
+   </table>
+        <p class="text-muted mb-0">
+      <small><i class="bi bi-info-circle"></i> Actual times may vary based on network latency and API response times</small>
+     </p>
+    </div>
+  </div>
+        </div>
+    </div>
+
+    <!-- Code Example -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
+   <div class="card">
+       <div class="card-header">
+        <h5 class="mb-0">📝 Code Example</h5>
+  </div>
+     <div class="card-body">
+      <h6>Using Task.WhenAll for Concurrent Requests</h6>
+    <pre class="bg-dark text-light p-3 rounded"><code>// Define categories to fetch
+var categories = new[] { "Programming", "Misc", "Dark", "Pun", "Spooky" };
+
+// Create tasks for each request
+var tasks = categories.Select(category =>
+{
+    var request = new HttpRequestResult&lt;JokeResponse&gt;
+    {
+        RequestPath = $"https://v2.jokeapi.dev/joke/{category}?safe-mode",
+RequestMethod = HttpMethod.Get
+    };
+    return _requestResultService.HttpSendRequestResultAsync(request);
+}).ToList();
+
+// Execute all requests concurrently
+var stopwatch = Stopwatch.StartNew();
+var results = await Task.WhenAll(tasks);
+stopwatch.Stop();
+
+// Process results
+var jokes = results
+    .Where(r => r.IsSuccessStatusCode)
+ .Select(r => r.ResponseResults)
+    .ToList();
+
+Console.WriteLine($"Fetched {jokes.Count} jokes in {stopwatch.ElapsedMilliseconds}ms");
+Console.WriteLine($"Average time per request: {results.Average(r => r.RequestDurationMilliseconds)}ms");</code></pre>
+     </div>
+    </div>
+ </div>
+    </div>
+
+<!-- Best Practices -->
+    <div class="row mt-4">
+   <div class="col-lg-12">
+     <div class="alert alert-info">
+   <h5><i class="bi bi-lightbulb"></i> Best Practices for Concurrent Requests</h5>
+       <div class="row">
+        <div class="col-md-6">
+   <h6>✅ Do</h6>
+      <ul>
+        <li>Use for independent requests</li>
+      <li>Set appropriate timeouts</li>
+        <li>Handle partial failures gracefully</li>
+   <li>Monitor resource usage</li>
+        <li>Use cancellation tokens</li>
+     </ul>
+    </div>
+       <div class="col-md-6">
+        <h6>❌ Don't</h6>
+       <ul>
+       <li>Overwhelm the target API</li>
+      <li>Ignore rate limits</li>
+        <li>Use for dependent requests</li>
+     <li>Forget error handling</li>
+       <li>Ignore memory constraints</li>
+        </ul>
+     </div>
+</div>
+  </div>
+   </div>
+    </div>
+
+    <!-- Use Cases -->
+    <div class="row mt-4">
+  <div class="col-lg-12">
+     <div class="card">
+       <div class="card-header">
+     <h5 class="mb-0">🎯 Common Use Cases</h5>
+    </div>
+        <div class="card-body">
+        <div class="row">
+       <div class="col-md-6">
+     <h6>Perfect For:</h6>
+     <ul>
+      <li>Aggregating data from multiple APIs</li>
+     <li>Batch processing operations</li>
+        <li>Loading dashboard widgets</li>
+    <li>Parallel validation checks</li>
+       <li>Multi-source search queries</li>
+  </ul>
+      </div>
+  <div class="col-md-6">
+        <h6>Real-World Examples:</h6>
+      <ul>
+      <li>E-commerce: Check inventory across stores</li>
+     <li>Travel: Compare prices from airlines</li>
+<li>News: Fetch articles from sources</li>
+     <li>Weather: Get forecasts for cities</li>
+     <li>Social: Aggregate user feeds</li>
+   </ul>
+   </div>
+   </div>
+  </div>
+   </div>
+</div>
+    </div>
+</div>

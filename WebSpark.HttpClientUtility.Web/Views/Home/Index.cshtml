@@ -1,0 +1,190 @@
+@model List<WebSpark.HttpClientUtility.Web.Models.FeatureCardViewModel>
+@{
+    ViewData["Title"] = "WebSpark.HttpClientUtility - Demo & Showcase";
+}
+
+<div class="hero-section text-center py-5 mb-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+    <div class="container">
+  <h1 class="display-3 fw-bold mb-3">
+            <img src="https://raw.githubusercontent.com/MarkHazleton/HttpClientUtility/main/WebSpark.HttpClientUtility/images/icon.png" 
+        alt="WebSpark.HttpClientUtility" 
+       style="height: 80px; vertical-align: middle;" />
+     WebSpark.HttpClientUtility
+        </h1>
+        <p class="lead mb-4">Robust & Simplified .NET HttpClient Wrapper for .NET 9</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+  <a href="https://www.nuget.org/packages/WebSpark.HttpClientUtility" class="btn btn-light btn-lg" target="_blank">
+    <i class="bi bi-download"></i> Install from NuGet
+        </a>
+  <a href="https://github.com/markhazleton/httpclientutility" class="btn btn-outline-light btn-lg" target="_blank">
+    <i class="bi bi-github"></i> View on GitHub
+            </a>
+   </div>
+        <div class="mt-4">
+  <span class="badge bg-light text-dark me-2">v1.3.0</span>
+            <span class="badge bg-light text-dark me-2">.NET 9</span>
+         <span class="badge bg-light text-dark">MIT License</span>
+   </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Value Proposition -->
+    <div class="row mb-5">
+        <div class="col-lg-12">
+            <div class="alert alert-info" role="alert">
+       <h4 class="alert-heading"><i class="bi bi-lightbulb"></i> Why Choose WebSpark.HttpClientUtility?</h4>
+           <p class="mb-0">
+           <strong>Stop writing boilerplate code!</strong> This library provides a comprehensive solution for HTTP operations with built-in 
+         <strong>resilience</strong> (Polly), <strong>caching</strong>, <strong>telemetry</strong>, 
+         <strong>concurrent processing</strong>, and more. Build reliable API clients <em>faster</em> with less code.
+           </p>
+      </div>
+        </div>
+    </div>
+
+    <!-- Installation -->
+    <div class="row mb-5">
+    <div class="col-lg-12">
+  <div class="card border-primary">
+         <div class="card-header bg-primary text-white">
+           <h5 class="mb-0"><i class="bi bi-terminal"></i> Quick Installation</h5>
+                </div>
+    <div class="card-body">
+         <pre class="mb-0"><code>dotnet add package WebSpark.HttpClientUtility</code></pre>
+  </div>
+        </div>
+        </div>
+  </div>
+
+    <!-- Feature Categories -->
+    <h2 class="text-center mb-4">Explore Features</h2>
+    
+    @{
+        var categories = Model.GroupBy(f => f.Category).OrderBy(g => g.Key);
+      foreach (var category in categories)
+        {
+            <div class="mb-5">
+                <h3 class="border-bottom pb-2 mb-3">@category.Key</h3>
+          <div class="row g-4">
+             @foreach (var feature in category)
+    {
+              <div class="col-lg-6">
+     <div class="card h-100 shadow-sm hover-shadow">
+     <div class="card-body">
+  <div class="d-flex justify-content-between align-items-start mb-3">
+             <h4 class="card-title">
+    <span style="font-size: 2rem;">@feature.Icon</span>
+           @feature.Title
+         </h4>
+ <span class="badge bg-@feature.BadgeColor">@feature.BadgeText</span>
+           </div>
+   <p class="card-text text-muted">@feature.Description</p>
+  <ul class="list-unstyled">
+       @foreach (var keyFeature in feature.KeyFeatures)
+           {
+   <li><i class="bi bi-check-circle text-success"></i> @keyFeature</li>
+   }
+     </ul>
+         </div>
+       <div class="card-footer bg-transparent">
+         <a href="@feature.DemoUrl" class="btn btn-outline-primary w-100">
+          <i class="bi bi-play-circle"></i> Try Live Demo
+         </a>
+        </div>
+       </div>
+            </div>
+       }
+       </div>
+   </div>
+}
+    }
+
+    <!-- Benefits Section -->
+    <div class="row mb-5 mt-5">
+        <div class="col-lg-12">
+            <h2 class="text-center mb-4">Key Benefits</h2>
+            <div class="row">
+       <div class="col-md-4 text-center mb-4">
+         <div class="display-4 text-primary mb-3">📉</div>
+             <h5>Reduce Boilerplate</h5>
+     <p class="text-muted">Write 70% less code for HTTP operations with type-safe abstractions</p>
+     </div>
+       <div class="col-md-4 text-center mb-4">
+         <div class="display-4 text-success mb-3">🛡️</div>
+      <h5>Built-in Resilience</h5>
+              <p class="text-muted">Automatic retries and circuit breakers with Polly integration</p>
+          </div>
+       <div class="col-md-4 text-center mb-4">
+        <div class="display-4 text-info mb-3">⚡</div>
+           <h5>Better Performance</h5>
+        <p class="text-muted">Response caching and concurrent processing out of the box</p>
+      </div>
+<div class="col-md-4 text-center mb-4">
+   <div class="display-4 text-warning mb-3">📊</div>
+      <h5>Enhanced Observability</h5>
+            <p class="text-muted">OpenTelemetry integration and correlation ID tracking</p>
+</div>
+          <div class="col-md-4 text-center mb-4">
+               <div class="display-4 text-danger mb-3">🔐</div>
+         <h5>Flexible Authentication</h5>
+     <p class="text-muted">Multiple auth providers: API Key, Bearer, Basic, and custom</p>
+ </div>
+        <div class="col-md-4 text-center mb-4">
+        <div class="display-4 text-secondary mb-3">🧪</div>
+        <h5>Easy Testing</h5>
+           <p class="text-muted">Interface-based design makes mocking and testing simple</p>
+      </div>
+          </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="row mb-5">
+      <div class="col-lg-12">
+         <div class="card bg-dark text-white">
+     <div class="card-body text-center p-5">
+      <h3 class="mb-4">Ready to Simplify Your HTTP Code?</h3>
+     <p class="lead mb-4">Join developers already using WebSpark.HttpClientUtility in production</p>
+   <div class="d-flex justify-content-center gap-3 flex-wrap">
+           <a href="https://www.nuget.org/packages/WebSpark.HttpClientUtility" class="btn btn-primary btn-lg" target="_blank">
+ <i class="bi bi-download"></i> Get Started Now
+             </a>
+              <a href="https://github.com/markhazleton/httpclientutility" class="btn btn-outline-light btn-lg" target="_blank">
+  <i class="bi bi-book"></i> Read Documentation
+          </a>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Add hover effects
+        document.querySelectorAll('.hover-shadow').forEach(card => {
+   card.addEventListener('mouseenter', () => {
+           card.style.transform = 'translateY(-5px)';
+    card.style.transition = 'all 0.3s ease';
+            });
+        card.addEventListener('mouseleave', () => {
+      card.style.transform = 'translateY(0)';
+   });
+        });
+    </script>
+}
+
+<style>
+    .hover-shadow {
+        transition: all 0.3s ease;
+    }
+    .hover-shadow:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+    pre {
+     background-color: #f8f9fa;
+        padding: 1rem;
+     border-radius: 0.25rem;
+    }
+</style>

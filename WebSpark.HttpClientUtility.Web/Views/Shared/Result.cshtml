@@ -1,0 +1,120 @@
+@model WebSpark.HttpClientUtility.Web.Models.DemoResultViewModel
+
+<div class="container mt-4">
+ <div class="row">
+  <div class="col-lg-12">
+      <div class="card">
+    <div class="card-header @(Model.Success ? "bg-success" : "bg-danger") text-white">
+      <h4 class="mb-0">
+    @if (Model.Success)
+     {
+  <i class="bi bi-check-circle"></i>
+      }
+  else
+   {
+         <i class="bi bi-x-circle"></i>
+         }
+  @Model.Title
+</h4>
+     </div>
+        <div class="card-body">
+      <p class="text-muted">@Model.Description</p>
+
+         @if (Model.Success && Model.Data != null)
+        {
+  <div class="alert alert-success">
+      <h5>✅ Response Data</h5>
+      <pre><code>@System.Text.Json.JsonSerializer.Serialize(Model.Data, new System.Text.Json.JsonSerializerOptions { WriteIndented = true })</code></pre>
+     </div>
+      }
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+     {
+       <div class="alert alert-danger">
+     <h5>❌ Error</h5>
+       <p>@Model.ErrorMessage</p>
+      </div>
+  }
+
+    <!-- Metrics -->
+       <div class="row mt-3">
+    <div class="col-md-3">
+  <div class="card bg-light">
+       <div class="card-body text-center">
+        <h6 class="text-muted">Duration</h6>
+     <h4>@Model.DurationMs ms</h4>
+    </div>
+     </div>
+     </div>
+    <div class="col-md-3">
+     <div class="card bg-light">
+   <div class="card-body text-center">
+    <h6 class="text-muted">Status Code</h6>
+       <h4>@((int)Model.StatusCode)</h4>
+         </div>
+       </div>
+      </div>
+ @if (!string.IsNullOrEmpty(Model.CorrelationId))
+    {
+      <div class="col-md-3">
+      <div class="card bg-light">
+          <div class="card-body text-center">
+     <h6 class="text-muted">Correlation ID</h6>
+      <small>@Model.CorrelationId</small>
+     </div>
+       </div>
+     </div>
+   }
+     @if (Model.IsCached)
+  {
+   <div class="col-md-3">
+      <div class="card bg-info text-white">
+    <div class="card-body text-center">
+       <h6>Cache Status</h6>
+       <h4>✓ Cached</h4>
+  </div>
+       </div>
+       </div>
+     }
+ </div>
+
+  @if (Model.Metrics.Any())
+        {
+      <div class="mt-3">
+       <h5>Additional Metrics</h5>
+    <table class="table table-sm">
+    @foreach (var metric in Model.Metrics)
+      {
+       <tr>
+     <td><strong>@metric.Key</strong></td>
+      <td>@metric.Value</td>
+      </tr>
+        }
+      </table>
+  </div>
+      }
+
+      @if (!string.IsNullOrEmpty(Model.CodeSample))
+       {
+      <div class="mt-4">
+    <h5>Code Sample</h5>
+        <pre class="bg-dark text-light p-3 rounded"><code>@Model.CodeSample</code></pre>
+      </div>
+        }
+
+   @if (!string.IsNullOrEmpty(Model.CurlCommand))
+    {
+       <div class="mt-4">
+     <h5>cURL Command</h5>
+       <pre class="bg-dark text-light p-3 rounded"><code>@Model.CurlCommand</code></pre>
+     </div>
+     }
+   </div>
+   <div class="card-footer">
+     <a href="javascript:history.back()" class="btn btn-secondary">← Back</a>
+     <button class="btn btn-primary" onclick="window.location.reload()">🔄 Run Again</button>
+   </div>
+ </div>
+        </div>
+    </div>
+</div>

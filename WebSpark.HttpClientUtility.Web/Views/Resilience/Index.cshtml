@@ -1,0 +1,342 @@
+@{
+ ViewData["Title"] = "Resilience & Polly Integration";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1>🛡️ Resilience & Polly Integration</h1>
+         <p class="lead">Automatic retry policies and circuit breakers for building fault-tolerant applications</p>
+        </div>
+    </div>
+
+    <!-- Demo Buttons -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+ <div class="card-header bg-danger text-white">
+        <h5 class="mb-0">Error Handling Demo</h5>
+            </div>
+      <div class="card-body">
+                    <p><strong>Demonstrates error handling and retry behavior</strong></p>
+          <p>This demo intentionally uses an <strong>invalid category</strong> to show how the library handles failures gracefully.</p>
+    <div class="alert alert-warning mb-3">
+   <i class="bi bi-exclamation-triangle"></i> <strong>Expected Result: HTTP 400 Bad Request</strong><br />
+             The JokeAPI will return a 400 error because "InvalidCategory" is not a valid category.<br />
+       <small>Valid categories: Programming, Misc, Dark, Pun, Spooky, Christmas, Any</small>
+  </div>
+     <form action="/Resilience/RetryDemo" method="get">
+    <button type="submit" class="btn btn-danger w-100">
+  <i class="bi bi-x-circle"></i> Execute Error Demo (Returns 400)
+   </button>
+         </form>
+          </div>
+            </div>
+        </div>
+
+    <div class="col-md-6">
+   <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+  <h5 class="mb-0">Successful Request Demo</h5>
+   </div>
+    <div class="card-body">
+        <p><strong>Shows successful request with retry capability</strong></p>
+     <p>This demo uses a <strong>valid category</strong> to demonstrate that the same resilience infrastructure works for successful requests.</p>
+               <div class="alert alert-success mb-3">
+  <i class="bi bi-check-circle"></i> <strong>Expected Result: HTTP 200 OK</strong><br />
+         The request succeeds on the first attempt, but retry logic is still available if needed.
+         </div>
+         <form action="/Resilience/SuccessfulRetry" method="get">
+              <div class="mb-3">
+    <label class="form-label">Category</label>
+   <select name="category" class="form-select">
+               <option value="Programming">Programming</option>
+      <option value="Misc">Miscellaneous</option>
+          <option value="Dark">Dark</option>
+   <option value="Pun">Pun</option>
+             <option value="Any">Any</option>
+</select>
+       </div>
+  <button type="submit" class="btn btn-success w-100">
+            <i class="bi bi-check-circle"></i> Execute Success Demo (Returns 200)
+  </button>
+             </form>
+   </div>
+            </div>
+   </div>
+    </div>
+
+    <!-- Why the Error Demo? -->
+    <div class="row mt-4">
+ <div class="col-lg-12">
+  <div class="alert alert-info">
+<h5><i class="bi bi-lightbulb"></i> Why Show an Error Demo?</h5>
+       <p class="mb-2">The error demo is intentional and educational because it demonstrates:</p>
+            <ul class="mb-0">
+      <li><strong>Graceful Error Handling:</strong> The application doesn't crash when APIs return errors</li>
+        <li><strong>Structured Error Information:</strong> Error details are captured in <code>ErrorList</code> with correlation IDs</li>
+       <li><strong>Retry Behavior:</strong> Shows how retry logic would work (if Polly is configured)</li>
+            <li><strong>Real-World Scenarios:</strong> In production, APIs fail - you need to handle it properly</li>
+       <li><strong>Debugging Support:</strong> Correlation IDs and detailed error info make troubleshooting easier</li>
+     </ul>
+    </div>
+        </div>
+    </div>
+
+    <!-- Polly Patterns -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
+<div class="card">
+       <div class="card-header">
+    <h5 class="mb-0">🔄 Resilience Patterns</h5>
+     </div>
+      <div class="card-body">
+         <div class="row">
+      <div class="col-md-6">
+ <h6>Retry Policy</h6>
+            <p>Automatically retry failed requests with configurable delay and backoff strategies</p>
+              <ul>
+          <li>Exponential backoff</li>
+        <li>Jitter for avoiding thundering herd</li>
+           <li>Configurable max attempts</li>
+                 <li>Handles transient failures (5xx errors, timeouts)</li>
+             </ul>
+     <div class="alert alert-warning">
+  <small><strong>Note:</strong> Retries are typically for transient failures (500s, timeouts).
+  400 errors are usually not retried since they indicate client errors that won't resolve with retries.</small>
+         </div>
+                 </div>
+         <div class="col-md-6">
+       <h6>Circuit Breaker</h6>
+    <p>Prevents cascading failures by stopping requests to failing services</p>
+      <ul>
+ <li>Opens after threshold failures</li>
+       <li>Automatically recovers</li>
+              <li>Configurable duration</li>
+            <li>Protects downstream services</li>
+       </ul>
+       <div class="alert alert-info">
+     <small><strong>How it works:</strong> After multiple failures, the circuit "opens" and requests fail fast
+     without hitting the API. After a timeout, it "half-opens" to test if the service recovered.</small>
+           </div>
+        </div>
+ </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Configuration -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
+     <div class="card">
+                <div class="card-header">
+      <h5 class="mb-0">⚙️ Configuration in Program.cs</h5>
+  </div>
+    <div class="card-body">
+   <pre class="bg-dark text-light p-3 rounded"><code>// Configure Polly options
+var pollyOptions = new HttpRequestResultPollyOptions
+{
+    // Retry settings
+    MaxRetryAttempts = 3,
+    RetryDelay = TimeSpan.FromSeconds(1),
+    RetryStrategy = RetryStrategy.Exponential,  // Each retry waits longer
+  
+    // Circuit breaker settings
+    EnableCircuitBreaker = true,
+    CircuitBreakerThreshold = 5,    // Open after 5 consecutive failures
+    CircuitBreakerDuration = TimeSpan.FromSeconds(30)  // Stay open for 30 seconds
+};
+
+// Add Polly decorator to service chain
+builder.Services.AddScoped&lt;IHttpRequestResultService&gt;(provider =>
+{
+    IHttpRequestResultService service = provider.GetRequiredService&lt;HttpRequestResultService&gt;();
+    
+    // Add Polly decorator (usually after cache, before telemetry)
+    service = new HttpRequestResultServicePolly(
+      provider.GetRequiredService&lt;ILogger&lt;HttpRequestResultServicePolly&gt;&gt;(),
+        service,
+        pollyOptions
+    );
+    
+    // Add telemetry (outermost layer)
+    service = new HttpRequestResultServiceTelemetry(
+        provider.GetRequiredService&lt;ILogger&lt;HttpRequestResultServiceTelemetry&gt;&gt;(),
+        service
+    );
+    
+    return service;
+});</code></pre>
+       </div>
+            </div>
+   </div>
+</div>
+
+    <!-- Usage Example -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
+            <div class="card">
+  <div class="card-header">
+        <h5 class="mb-0">📝 Usage Example</h5>
+          </div>
+        <div class="card-body">
+   <h6>No Code Changes Required!</h6>
+                    <pre class="bg-dark text-light p-3 rounded"><code>// Just use the service normally - resilience is automatic!
+var request = new HttpRequestResult&lt;JokeResponse&gt;
+{
+    RequestPath = "https://v2.jokeapi.dev/joke/Programming?safe-mode",
+    RequestMethod = HttpMethod.Get
+};
+
+// Polly automatically handles retries and circuit breaking
+var result = await _requestResultService.HttpSendRequestResultAsync(request);
+
+// Check if request succeeded
+if (result.IsSuccessStatusCode)
+{
+    var joke = result.ResponseResults;
+    
+    // Check if any retries occurred
+    if (result.RequestContext.TryGetValue("RetryCount", out var retryCount))
+    {
+        Console.WriteLine($"Request succeeded after {retryCount} retries");
+    }
+}
+else
+{
+    // Handle failure gracefully
+    Console.WriteLine($"Request failed: {result.StatusCode}");
+    Console.WriteLine($"Errors: {string.Join(", ", result.ErrorList)}");
+    Console.WriteLine($"Correlation ID: {result.CorrelationId}");
+    
+    // Check circuit breaker state
+    if (result.RequestContext.TryGetValue("CircuitState", out var state))
+    {
+   Console.WriteLine($"Circuit breaker state: {state}");
+    }
+}</code></pre>
+   </div>
+   </div>
+        </div>
+    </div>
+
+    <!-- Benefits -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
+   <div class="alert alert-success">
+    <h5><i class="bi bi-shield-check"></i> Benefits of Resilience Patterns</h5>
+                <div class="row">
+<div class="col-md-6">
+ <h6>Retry Policy Benefits</h6>
+       <ul>
+<li><strong>Handles transient failures:</strong> Network blips, timeouts, 5xx errors</li>
+        <li><strong>Improves reliability:</strong> Higher success rate without code changes</li>
+<li><strong>Configurable strategy:</strong> Linear, exponential, or custom backoff</li>
+      <li><strong>Automatic:</strong> No manual retry loops needed</li>
+        </ul>
+    </div>
+ <div class="col-md-6">
+       <h6>Circuit Breaker Benefits</h6>
+   <ul>
+       <li><strong>Prevents cascade failures:</strong> Stops hitting failing services</li>
+        <li><strong>Fast failure:</strong> Fail fast when service is down</li>
+           <li><strong>Auto recovery:</strong> Automatically tries again after timeout</li>
+      <li><strong>Resource protection:</strong> Prevents resource exhaustion</li>
+ </ul>
+     </div>
+           </div>
+  </div>
+        </div>
+    </div>
+
+    <!-- Best Practices -->
+    <div class="row mt-4">
+  <div class="col-lg-12">
+        <div class="card border-info">
+       <div class="card-header bg-info text-white">
+  <h5 class="mb-0">💡 Best Practices</h5>
+  </div>
+  <div class="card-body">
+            <ul class="mb-0">
+      <li><strong>Use Exponential Backoff:</strong> Increase delay between retries to avoid overwhelming the service</li>
+        <li><strong>Set Appropriate Timeouts:</strong> Don't retry forever, set reasonable limits</li>
+           <li><strong>Retry Only Transient Errors:</strong> Don't retry 4xx client errors (except 408, 429)</li>
+              <li><strong>Monitor Circuit State:</strong> Log when circuit opens/closes for ops visibility</li>
+       <li><strong>Combine with Caching:</strong> Cache successful responses to reduce retry load</li>
+      <li><strong>Handle Partial Failures:</strong> Consider what to do when some requests succeed and others fail</li>
+         <li><strong>Test Resilience:</strong> Use tools like Chaos Monkey to test fault tolerance</li>
+     <li><strong>Use Correlation IDs:</strong> Track request flows across retries for debugging</li>
+           </ul>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Types Guide -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
+     <div class="card">
+      <div class="card-header">
+      <h5 class="mb-0">📋 HTTP Error Types & Retry Strategy</h5>
+    </div>
+        <div class="card-body">
+           <table class="table table-striped">
+       <thead>
+            <tr>
+    <th>Status Code</th>
+           <th>Type</th>
+    <th>Should Retry?</th>
+         <th>Reason</th>
+</tr>
+    </thead>
+            <tbody>
+    <tr class="table-danger">
+     <td><code>400</code></td>
+             <td>Bad Request</td>
+     <td>❌ No</td>
+          <td>Client error - won't resolve with retries</td>
+ </tr>
+        <tr class="table-warning">
+   <td><code>408</code></td>
+           <td>Request Timeout</td>
+             <td>✅ Yes</td>
+  <td>Transient - may succeed on retry</td>
+            </tr>
+  <tr class="table-warning">
+     <td><code>429</code></td>
+     <td>Too Many Requests</td>
+          <td>✅ Yes (with delay)</td>
+     <td>Rate limit - retry after delay</td>
+      </tr>
+      <tr class="table-success">
+      <td><code>500</code></td>
+        <td>Internal Server Error</td>
+      <td>✅ Yes</td>
+      <td>Server error - may be transient</td>
+       </tr>
+   <tr class="table-success">
+ <td><code>502</code></td>
+       <td>Bad Gateway</td>
+       <td>✅ Yes</td>
+              <td>Gateway error - may be transient</td>
+        </tr>
+     <tr class="table-success">
+         <td><code>503</code></td>
+      <td>Service Unavailable</td>
+     <td>✅ Yes</td>
+              <td>Temporary - service may recover</td>
+      </tr>
+  <tr class="table-success">
+            <td><code>504</code></td>
+           <td>Gateway Timeout</td>
+  <td>✅ Yes</td>
+       <td>Timeout - may succeed on retry</td>
+     </tr>
+   </tbody>
+            </table>
+     </div>
+      </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,384 @@
+@{
+    ViewData["Title"] = "Authentication Providers";
+}
+
+<div class="container mt-4">
+    <div class="row">
+   <div class="col-lg-12">
+     <h1>🔐 Authentication Providers</h1>
+            <p class="lead">Multiple authentication strategies for secure HTTP requests with built-in provider support</p>
+  </div>
+    </div>
+
+  <!-- Authentication Methods Grid -->
+    <div class="row mt-4">
+   <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm mb-4 text-center h-100">
+        <div class="card-body">
+   <div class="display-4 text-primary mb-3">🔑</div>
+          <h5>API Key</h5>
+ <p class="text-muted">Header or query parameter based authentication</p>
+</div>
+            </div>
+        </div>
+  
+<div class="col-md-6 col-lg-3">
+       <div class="card shadow-sm mb-4 text-center h-100">
+     <div class="card-body">
+          <div class="display-4 text-success mb-3">🎫</div>
+           <h5>Bearer Token</h5>
+       <p class="text-muted">OAuth 2.0 and JWT token support</p>
+           </div>
+            </div>
+ </div>
+  
+        <div class="col-md-6 col-lg-3">
+<div class="card shadow-sm mb-4 text-center h-100">
+       <div class="card-body">
+       <div class="display-4 text-info mb-3">👤</div>
+ <h5>Basic Auth</h5>
+<p class="text-muted">Username/password authentication</p>
+  </div>
+   </div>
+ </div>
+        
+ <div class="col-md-6 col-lg-3">
+   <div class="card shadow-sm mb-4 text-center h-100">
+  <div class="card-body">
+     <div class="display-4 text-warning mb-3">🔧</div>
+         <h5>Custom</h5>
+  <p class="text-muted">Implement your own authentication provider</p>
+    </div>
+  </div>
+        </div>
+    </div>
+
+    <!-- Implementation Examples -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
+            <div class="card">
+      <div class="card-header">
+   <h5 class="mb-0">📝 Implementation Examples</h5>
+        </div>
+           <div class="card-body">
+        <h6>1. API Key Authentication</h6>
+  <pre class="bg-dark text-light p-3 rounded"><code>using WebSpark.HttpClientUtility.Authentication;
+using WebSpark.HttpClientUtility.RequestResult;
+
+// Create API key provider
+var apiKeyProvider = new ApiKeyAuthenticationProvider("your-api-key-here");
+
+// Option 1: Set globally in DI (recommended)
+builder.Services.AddSingleton&lt;IAuthenticationProvider&gt;(apiKeyProvider);
+
+// Option 2: Use per-request
+var request = new HttpRequestResult&lt;MyData&gt;
+{
+    RequestPath = "https://api.example.com/data",
+    RequestMethod = HttpMethod.Get,
+    AuthenticationProvider = apiKeyProvider  // Per-request auth
+};
+
+var result = await _requestService.HttpSendRequestResultAsync(request);
+
+// The provider automatically adds the header:
+// X-API-Key: your-api-key-here</code></pre>
+
+       <h6 class="mt-4">2. Bearer Token Authentication</h6>
+           <pre class="bg-dark text-light p-3 rounded"><code>// For OAuth 2.0 / JWT tokens
+var bearerProvider = new BearerTokenAuthenticationProvider("eyJhbGciOiJIUzI1NiIs...");
+
+var request = new HttpRequestResult&lt;MyData&gt;
+{
+    RequestPath = "https://api.example.com/protected",
+    RequestMethod = HttpMethod.Get,
+    AuthenticationProvider = bearerProvider
+};
+
+// Automatically adds:
+// Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
+
+// Refresh token support
+var tokenProvider = new RefreshableBearerTokenProvider(
+    getAccessToken: async () => await GetAccessTokenAsync(),
+    refreshToken: async () => await RefreshAccessTokenAsync(),
+    tokenLifetime: TimeSpan.FromHours(1)
+);</code></pre>
+
+       <h6 class="mt-4">3. Basic Authentication</h6>
+       <pre class="bg-dark text-light p-3 rounded"><code>// Username and password
+var basicAuthProvider = new BasicAuthenticationProvider("username", "password");
+
+var request = new HttpRequestResult&lt;MyData&gt;
+{
+    RequestPath = "https://api.example.com/secure",
+    RequestMethod = HttpMethod.Get,
+    AuthenticationProvider = basicAuthProvider
+};
+
+// Automatically adds:
+// Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=</code></pre>
+
+            <h6 class="mt-4">4. Custom Authentication Provider</h6>
+  <pre class="bg-dark text-light p-3 rounded"><code>// Implement IAuthenticationProvider interface
+public class CustomAuthProvider : IAuthenticationProvider
+{
+    private readonly string _customToken;
+    
+    public CustomAuthProvider(string customToken)
+    {
+        _customToken = customToken;
+    }
+    
+    public Task&lt;Dictionary&lt;string, string&gt;&gt; GetAuthenticationHeadersAsync(
+        CancellationToken cancellationToken = default)
+    {
+     var headers = new Dictionary&lt;string, string&gt;
+ {
+   { "X-Custom-Auth", _customToken },
+            { "X-Request-Time", DateTime.UtcNow.ToString("O") },
+ { "X-Client-Id", "my-app-v1.0" }
+        };
+        
+    return Task.FromResult(headers);
+    }
+}
+
+// Use it
+var customProvider = new CustomAuthProvider("custom-token-123");
+var request = new HttpRequestResult&lt;MyData&gt;
+{
+    RequestPath = "https://api.example.com/data",
+    RequestMethod = HttpMethod.Get,
+    AuthenticationProvider = customProvider
+};</code></pre>
+        </div>
+</div>
+  </div>
+    </div>
+
+    <!-- Configuration Patterns -->
+    <div class="row mt-4">
+  <div class="col-lg-12">
+            <div class="card">
+   <div class="card-header">
+        <h5 class="mb-0">⚙️ Configuration Patterns</h5>
+</div>
+           <div class="card-body">
+         <h6>Global Configuration (Recommended for Single Auth)</h6>
+     <pre class="bg-light p-3"><code>// In Program.cs
+// Read from configuration
+var apiKey = builder.Configuration["ApiSettings:ApiKey"];
+var apiKeyProvider = new ApiKeyAuthenticationProvider(apiKey);
+
+// Register as singleton
+builder.Services.AddSingleton&lt;IAuthenticationProvider&gt;(apiKeyProvider);
+
+// All requests automatically use this auth
+builder.Services.AddScoped&lt;IHttpRequestResultService&gt;(provider =>
+{
+    var service = provider.GetRequiredService&lt;HttpRequestResultService&gt;();
+    return new HttpRequestResultServiceTelemetry(
+        provider.GetRequiredService&lt;ILogger&lt;HttpRequestResultServiceTelemetry&gt;&gt;(),
+   service
+    );
+});</code></pre>
+
+ <h6 class="mt-3">Per-Service Configuration (Multiple APIs)</h6>
+ <pre class="bg-light p-3"><code>// Different auth for different services
+public class PaymentService
+{
+    private readonly IHttpRequestResultService _requestService;
+    private readonly IAuthenticationProvider _paymentAuth;
+    
+    public PaymentService(IHttpRequestResultService requestService)
+    {
+        _requestService = requestService;
+        // Specific auth for payment API
+   _paymentAuth = new ApiKeyAuthenticationProvider("payment-api-key");
+    }
+    
+    public async Task&lt;Payment&gt; ProcessPaymentAsync(decimal amount)
+    {
+        var request = new HttpRequestResult&lt;Payment&gt;
+        {
+ RequestPath = "https://payment-api.com/process",
+   AuthenticationProvider = _paymentAuth  // Override default
+        };
+    
+        var result = await _requestService.HttpSendRequestResultAsync(request);
+  return result.ResponseResults;
+    }
+}
+
+public class UserService
+{
+    private readonly IHttpRequestResultService _requestService;
+    private readonly IAuthenticationProvider _userAuth;
+    
+    public UserService(IHttpRequestResultService requestService)
+    {
+        _requestService = requestService;
+        // Different auth for user API
+        _userAuth = new BearerTokenAuthenticationProvider("user-api-token");
+    }
+    
+    public async Task&lt;User&gt; GetUserAsync(int userId)
+    {
+        var request = new HttpRequestResult&lt;User&gt;
+ {
+            RequestPath = $"https://user-api.com/users/{userId}",
+       AuthenticationProvider = _userAuth  // Different auth
+        };
+      
+        var result = await _requestService.HttpSendRequestResultAsync(request);
+        return result.ResponseResults;
+    }
+}</code></pre>
+
+    <h6 class="mt-3">Dynamic Token Management</h6>
+              <pre class="bg-light p-3"><code>// Token refresh and caching
+public class TokenManager
+{
+    private string _cachedToken;
+  private DateTime _tokenExpiry;
+    private readonly SemaphoreSlim _lock = new(1);
+    
+    public async Task&lt;string&gt; GetValidTokenAsync()
+    {
+     await _lock.WaitAsync();
+   try
+        {
+  if (string.IsNullOrEmpty(_cachedToken) || DateTime.UtcNow >= _tokenExpiry)
+  {
+             // Fetch new token
+             _cachedToken = await FetchNewTokenAsync();
+       _tokenExpiry = DateTime.UtcNow.AddHours(1);
+        }
+ 
+     return _cachedToken;
+        }
+        finally
+     {
+   _lock.Release();
+        }
+ }
+    
+  private async Task&lt;string&gt; FetchNewTokenAsync()
+    {
+      // Your token acquisition logic
+ var tokenRequest = new HttpRequestResult&lt;TokenResponse&gt;
+  {
+            RequestPath = "https://auth.example.com/token",
+     RequestMethod = HttpMethod.Post,
+  // ... token request details
+        };
+        
+        var result = await _requestService.HttpSendRequestResultAsync(tokenRequest);
+        return result.ResponseResults.AccessToken;
+    }
+}</code></pre>
+   </div>
+       </div>
+        </div>
+    </div>
+
+<!-- Security Best Practices -->
+    <div class="row mt-4">
+<div class="col-lg-12">
+            <div class="alert alert-warning">
+   <h5><i class="bi bi-shield-exclamation"></i> Security Best Practices</h5>
+<div class="row">
+     <div class="col-md-6">
+   <h6>✅ Do</h6>
+       <ul>
+      <li>Store credentials in Azure Key Vault or similar</li>
+       <li>Use environment variables for dev/test</li>
+           <li>Implement token rotation</li>
+   <li>Use HTTPS for all authenticated requests</li>
+        <li>Set appropriate token expiration times</li>
+      <li>Log authentication failures (without credentials)</li>
+  </ul>
+   </div>
+     <div class="col-md-6">
+     <h6>❌ Don't</h6>
+           <ul>
+ <li>Hard-code credentials in source code</li>
+ <li>Commit credentials to version control</li>
+    <li>Log sensitive authentication data</li>
+      <li>Share API keys across environments</li>
+         <li>Use the same credentials for dev and prod</li>
+         <li>Ignore token expiration</li>
+  </ul>
+   </div>
+  </div>
+ </div>
+  </div>
+    </div>
+
+    <!-- Feature Comparison -->
+    <div class="row mt-4">
+ <div class="col-lg-12">
+     <div class="card">
+         <div class="card-header">
+      <h5 class="mb-0">📊 Authentication Method Comparison</h5>
+     </div>
+        <div class="card-body">
+      <table class="table table-striped">
+           <thead>
+ <tr>
+        <th>Method</th>
+          <th>Security</th>
+      <th>Complexity</th>
+       <th>Best For</th>
+        </tr>
+       </thead>
+  <tbody>
+  <tr>
+         <td><strong>API Key</strong></td>
+              <td>⭐⭐⭐</td>
+   <td>Simple</td>
+       <td>Internal APIs, basic auth</td>
+            </tr>
+    <tr>
+      <td><strong>Bearer Token</strong></td>
+       <td>⭐⭐⭐⭐⭐</td>
+         <td>Moderate</td>
+<td>OAuth 2.0, JWT, modern APIs</td>
+       </tr>
+    <tr>
+        <td><strong>Basic Auth</strong></td>
+              <td>⭐⭐</td>
+       <td>Very Simple</td>
+      <td>Legacy systems, internal tools</td>
+        </tr>
+         <tr>
+   <td><strong>Custom</strong></td>
+       <td>Varies</td>
+  <td>Complex</td>
+       <td>Proprietary auth schemes</td>
+    </tr>
+  </tbody>
+    </table>
+   </div>
+   </div>
+    </div>
+ </div>
+
+    <!-- Benefits -->
+    <div class="row mt-4">
+    <div class="col-lg-12">
+            <div class="alert alert-info">
+    <h5><i class="bi bi-info-circle"></i> Key Benefits</h5>
+       <ul>
+     <li><strong>Standardized:</strong> Consistent authentication across all HTTP requests</li>
+   <li><strong>Flexible:</strong> Per-request or global authentication configuration</li>
+              <li><strong>Extensible:</strong> Implement custom providers for any auth scheme</li>
+        <li><strong>Secure:</strong> Automatic header injection prevents credential exposure</li>
+       <li><strong>Testable:</strong> Mock authentication providers for unit testing</li>
+    <li><strong>Maintainable:</strong> Centralized authentication logic</li>
+  </ul>
+</div>
+        </div>
+    </div>
+</div>

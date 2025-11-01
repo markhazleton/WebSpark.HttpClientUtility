@@ -24,7 +24,7 @@ public class CurlCommandSaverOptions
     public string CsvFileName { get; set; } = "curl_commands";
 
     /// <summary>
-    /// Gets or sets the maximum size of each log file in bytes before rotation (default: 10MB).
+ /// Gets or sets the maximum size of each log file in bytes before rotation (default: 10MB).
     /// </summary>
     public long MaxFileSize { get; set; } = 10 * 1024 * 1024;
 
@@ -41,12 +41,12 @@ public class CurlCommandSaverOptions
     /// <summary>
     /// Gets or sets a value indicating whether to sanitize sensitive information from requests.
     /// </summary>
-    public bool SanitizeSensitiveInfo { get; set; } = true;
+public bool SanitizeSensitiveInfo { get; set; } = true;
 
     /// <summary>
     /// Gets or sets a value indicating whether to use batch processing for better performance.
     /// </summary>
-    public bool UseBatchProcessing { get; set; } = true;
+ public bool UseBatchProcessing { get; set; } = true;
 
     /// <summary>
     /// Gets or sets the batch size when batch processing is enabled.
@@ -63,7 +63,7 @@ public class CurlCommandSaverOptions
     /// </summary>
     public List<string> SensitiveHeaders { get; set; } = new List<string>
     {
-        "Authorization",
+      "Authorization",
         "Api-Key",
         "X-Api-Key",
         "Password",
@@ -79,10 +79,11 @@ public class CurlCommandSaver : IDisposable
     // SemaphoreSlim is used to enforce exclusive access during file writes.
     private static readonly SemaphoreSlim _fileLock = new SemaphoreSlim(1, 1);
     private readonly string _csvFilePath;
-    private readonly ILogger _logger;
+  private readonly ILogger _logger;
     private readonly CurlCommandSaverOptions _options;
     private readonly ConcurrentQueue<CurlCommandRecord> _pendingRecords = new ConcurrentQueue<CurlCommandRecord>();
     private readonly Timer? _batchProcessingTimer;
+    private readonly bool _isFileLoggingEnabled;
     private bool _disposed;
 
     /// <summary>
@@ -90,57 +91,77 @@ public class CurlCommandSaver : IDisposable
     /// </summary>
     /// <param name="logger">The logger instance to use for logging operations</param>
     /// <param name="configuration">The configuration containing settings for the command saver</param>
-    /// <exception cref="ArgumentException">Thrown when the CsvOutputFolder configuration setting is not properly configured</exception>
     public CurlCommandSaver(ILogger logger, IConfiguration configuration)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
         if (configuration == null)
-        {
-            throw new ArgumentNullException(nameof(configuration));
+    {
+     throw new ArgumentNullException(nameof(configuration));
         }
 
         // Initialize options from configuration
         _options = new CurlCommandSaverOptions
-        {
-            OutputFolder = configuration["CsvOutputFolder"] ?? string.Empty,
-            CsvFileName = configuration["CsvFileName"] ?? "curl_commands"
+     {
+      OutputFolder = configuration["CsvOutputFolder"] ?? string.Empty,
+     CsvFileName = configuration["CsvFileName"] ?? "curl_commands"
         };
 
-        if (string.IsNullOrWhiteSpace(_options.OutputFolder))
+        // Check if output folder is configured
+      if (string.IsNullOrWhiteSpace(_options.OutputFolder))
         {
-            throw new ArgumentException("CsvOutputFolder is not configured properly.");
+            _logger.LogWarning(
+"CsvOutputFolder is not configured. cURL commands will not be saved to file. " +
+    "To enable file logging, configure 'CsvOutputFolder' in your application settings.");
+       _isFileLoggingEnabled = false;
+        _csvFilePath = string.Empty;
+        }
+    else
+        {
+      _isFileLoggingEnabled = true;
+
+      try
+            {
+             // Ensure the output directory exists.
+    Directory.CreateDirectory(_options.OutputFolder);
+
+                // Build the full path for the CSV file.
+    _csvFilePath = Path.Combine(_options.OutputFolder, $"{_options.CsvFileName}.csv");
+    }
+ catch (Exception ex)
+{
+        _logger.LogError(ex, 
+              "Failed to create output directory '{OutputFolder}'. File logging will be disabled.", 
+ _options.OutputFolder);
+     _isFileLoggingEnabled = false;
+           _csvFilePath = string.Empty;
+      }
         }
 
         // Manually check UseBatchProcessing configuration
-        var useBatchProcessingSection = configuration.GetSection("CurlCommandSaver:UseBatchProcessing");
+  var useBatchProcessingSection = configuration.GetSection("CurlCommandSaver:UseBatchProcessing");
         if (useBatchProcessingSection.Value != null &&
-            bool.TryParse(useBatchProcessingSection.Value, out bool useBatchProcessing))
+         bool.TryParse(useBatchProcessingSection.Value, out bool useBatchProcessing))
         {
-            _options.UseBatchProcessing = useBatchProcessing;
+   _options.UseBatchProcessing = useBatchProcessing;
         }
 
-        // Ensure the output directory exists.
-        Directory.CreateDirectory(_options.OutputFolder);
-
-        // Build the full path for the CSV file.
-        _csvFilePath = Path.Combine(_options.OutputFolder, $"{_options.CsvFileName}.csv");
-
-        // Log configuration settings
+    // Log configuration settings
         _logger.LogInformation(
-            "CurlCommandSaver initialized with OutputFolder: {OutputFolder}, BatchProcessing: {UseBatchProcessing}",
-            _options.OutputFolder,
-            _options.UseBatchProcessing);
+      "CurlCommandSaver initialized - FileLogging: {FileLoggingEnabled}, OutputFolder: {OutputFolder}, BatchProcessing: {UseBatchProcessing}",
+  _isFileLoggingEnabled,
+          _isFileLoggingEnabled ? _options.OutputFolder : "Not Configured",
+      _options.UseBatchProcessing);
 
-        // Initialize batch processing timer if enabled
-        if (_options.UseBatchProcessing)
+        // Initialize batch processing timer if enabled and file logging is enabled
+        if (_isFileLoggingEnabled && _options.UseBatchProcessing)
         {
             _batchProcessingTimer = new Timer(
                 ProcessBatch,
-                null,
-                _options.BatchFlushIntervalMs,
-                _options.BatchFlushIntervalMs
-            );
+      null,
+         _options.BatchFlushIntervalMs,
+          _options.BatchFlushIntervalMs
+ );
         }
     }
 
@@ -160,156 +181,164 @@ public class CurlCommandSaver : IDisposable
         try
         {
             // Build the curl command string.
-            var curlCommand = new StringBuilder();
+        var curlCommand = new StringBuilder();
             curlCommand.Append("curl");
 
-            // Handle null requests gracefully
+        // Handle null requests gracefully
             if (request == null)
-            {
-                _logger.LogInformation("Created curl command: {Command} (null request)", curlCommand.ToString());
+    {
+    _logger.LogInformation("Created curl command: {Command} (null request)", curlCommand.ToString());
 
-                // Create a record with the current timestamp and a basic curl command.
-                var record = new CurlCommandRecord
-                {
-                    CurlCommand = curlCommand.ToString(),
-                    RequestPath = string.Empty,
-                    RequestMethod = string.Empty,
-                    CallingMethod = memberName,
-                    CallingFile = filePath,
-                    CallingLineNumber = lineNumber
-                };
+     // Only save to file if file logging is enabled
+     if (_isFileLoggingEnabled)
+              {
+           // Create a record with the current timestamp and a basic curl command.
+               var record = new CurlCommandRecord
+         {
+            CurlCommand = curlCommand.ToString(),
+ RequestPath = string.Empty,
+ RequestMethod = string.Empty,
+         CallingMethod = memberName,
+     CallingFile = filePath,
+     CallingLineNumber = lineNumber
+              };
 
-                if (_options.UseBatchProcessing)
-                {
-                    _pendingRecords.Enqueue(record);
+       if (_options.UseBatchProcessing)
+        {
+        _pendingRecords.Enqueue(record);
 
-                    // Process immediately if we've reached batch size
-                    if (_pendingRecords.Count >= _options.BatchSize)
-                    {
-                        await ProcessBatchAsync();
-                    }
-                }
-                else
-                {
-                    await SaveRecordToCsvWithRetryAsync(record);
-                }
-                return;
+       // Process immediately if we've reached batch size
+     if (_pendingRecords.Count >= _options.BatchSize)
+             {
+             await ProcessBatchAsync();
             }
+      }
+       else
+            {
+     await SaveRecordToCsvWithRetryAsync(record);
+           }
+}
+                return;
+      }
 
             // Include the HTTP method if it's not GET (curl defaults to GET).
-            if (request.Method != HttpMethod.Get)
-            {
-                curlCommand.Append(" -X ").Append(request.Method.Method);
-            }
+  if (request.Method != HttpMethod.Get)
+      {
+       curlCommand.Append(" -X ").Append(request.Method.Method);
+      }
 
-            // Add headers (with sanitization if configured)
+        // Add headers (with sanitization if configured)
             if (request.Headers != null && request.Headers.Any())
-            {
-                foreach (var header in request.Headers)
-                {
-                    string headerValue = header.Value.First();
+          {
+    foreach (var header in request.Headers)
+       {
+   string headerValue = header.Value.First();
 
-                    // Apply sanitization if enabled and header is in sensitive list
-                    if (_options.SanitizeSensitiveInfo &&
-                        _options.SensitiveHeaders.Contains(header.Key, StringComparer.OrdinalIgnoreCase))
-                    {
-                        headerValue = "REDACTED";
-                    }
+              // Apply sanitization if enabled and header is in sensitive list
+if (_options.SanitizeSensitiveInfo &&
+   _options.SensitiveHeaders.Contains(header.Key, StringComparer.OrdinalIgnoreCase))
+ {
+  headerValue = "REDACTED";
+ }
 
-                    curlCommand.Append(" -H \"")
-                        .Append(header.Key)
-                        .Append(": ")
-                        .Append(headerValue.Replace("\"", "\\\""))
-                        .Append("\"");
-                }
-            }
+    curlCommand.Append(" -H \"")
+       .Append(header.Key)
+        .Append(": ")
+            .Append(headerValue.Replace("\"", "\\\""))
+         .Append("\"");
+        }
+   }
 
-            // Include request content as a data parameter, if available.
+       // Include request content as a data parameter, if available.
             if (request.Content != null)
             {
-                string content = await request.Content.ReadAsStringAsync().ConfigureAwait(true);
+ string content = await request.Content.ReadAsStringAsync().ConfigureAwait(true);
 
-                // Sanitize content if enabled
-                if (_options.SanitizeSensitiveInfo)
-                {
-                    content = SanitizeJson(content);
-                }
+       // Sanitize content if enabled
+    if (_options.SanitizeSensitiveInfo)
+     {
+content = SanitizeJson(content);
+         }
 
-                curlCommand.Append(" -d '").Append(content.Replace("'", "\\'")).Append('\'');
+ curlCommand.Append(" -d '").Append(content.Replace("'", "\\'")).Append('\'');
 
-                // Add content type header if present
-                if (request.Content.Headers.ContentType != null)
-                {
-                    curlCommand.Append(" -H \"Content-Type: ")
-                        .Append(request.Content.Headers.ContentType)
-                        .Append("\"");
-                }
-            }
+        // Add content type header if present
+    if (request.Content.Headers.ContentType != null)
+     {
+        curlCommand.Append(" -H \"Content-Type: ")
+          .Append(request.Content.Headers.ContentType)
+.Append("\"");
+              }
+}
 
-            // Append the request URL.
-            curlCommand.Append(" \"").Append(request.RequestUri).Append("\"");
+        // Append the request URL.
+ curlCommand.Append(" \"").Append(request.RequestUri).Append("\"");
 
-            _logger.LogInformation("Created curl command: {Command}", curlCommand.ToString());
+         _logger.LogInformation("Created curl command: {Command}", curlCommand.ToString());
 
-            // Create a record with the current timestamp and the generated curl command.
-            var commandRecord = new CurlCommandRecord
+     // Only save to file if file logging is enabled
+      if (_isFileLoggingEnabled)
             {
-                CurlCommand = curlCommand.ToString(),
-                RequestPath = request.RequestUri?.ToString() ?? string.Empty,
+       // Create a record with the current timestamp and the generated curl command.
+                var commandRecord = new CurlCommandRecord
+      {
+      CurlCommand = curlCommand.ToString(),
+        RequestPath = request.RequestUri?.ToString() ?? string.Empty,
                 RequestMethod = request.Method.Method,
-                CallingMethod = memberName,
-                CallingFile = filePath,
-                CallingLineNumber = lineNumber
-            };
+ CallingMethod = memberName,
+CallingFile = filePath,
+            CallingLineNumber = lineNumber
+     };
 
-            if (_options.UseBatchProcessing)
-            {
-                _pendingRecords.Enqueue(commandRecord);
+      if (_options.UseBatchProcessing)
+           {
+  _pendingRecords.Enqueue(commandRecord);
 
-                // Process immediately if we've reached batch size
+      // Process immediately if we've reached batch size
                 if (_pendingRecords.Count >= _options.BatchSize)
-                {
-                    await ProcessBatchAsync();
-                }
-            }
-            else
-            {
-                await SaveRecordToCsvWithRetryAsync(commandRecord);
-            }
+           {
+          await ProcessBatchAsync();
+      }
+           }
+    else
+   {
+        await SaveRecordToCsvWithRetryAsync(commandRecord);
+    }
+  }
         }
         catch (Exception ex)
         {
             // Log but don't throw to avoid impacting the main application flow
-            _logger.LogError(ex, "Error generating or saving curl command");
-        }
+       _logger.LogError(ex, "Error generating or saving curl command");
+     }
     }
 
     private string SanitizeJson(string json)
     {
         if (string.IsNullOrEmpty(json) || !json.Contains("\""))
-        {
-            return json;
+    {
+       return json;
         }
 
-        try
+   try
         {
-            // Very basic JSON sanitization - replace values of sensitive fields
+      // Very basic JSON sanitization - replace values of sensitive fields
             foreach (var sensitiveField in _options.SensitiveHeaders)
-            {
-                // This is a simple approach - for production code, use a proper JSON parser
-                var pattern = $"\"{sensitiveField}\"\\s*:\\s*\"[^\"]*\"";
-                json = System.Text.RegularExpressions.Regex.Replace(
-                    json,
-                    pattern,
-                    $"\"{sensitiveField}\":\"REDACTED\"",
-                    System.Text.RegularExpressions.RegexOptions.IgnoreCase
-                );
+         {
+       // This is a simple approach - for production code, use a proper JSON parser
+      var pattern = $"\"{sensitiveField}\"\\s*:\\s*\"[^\"]*\"";
+  json = System.Text.RegularExpressions.Regex.Replace(
+        json,
+ pattern,
+        $"\"{sensitiveField}\":\"REDACTED\"",
+        System.Text.RegularExpressions.RegexOptions.IgnoreCase
+          );
             }
 
             return json;
         }
-        catch
-        {
+    catch
+     {
             // If we fail to sanitize, return the original string
             return json;
         }
@@ -323,140 +352,150 @@ public class CurlCommandSaver : IDisposable
 
     private async Task ProcessBatchAsync()
     {
-        if (_pendingRecords.IsEmpty)
+        if (!_isFileLoggingEnabled || _pendingRecords.IsEmpty)
         {
             return;
         }
 
-        var recordsToProcess = new List<CurlCommandRecord>();
+     var recordsToProcess = new List<CurlCommandRecord>();
 
         // Dequeue all pending records
         while (_pendingRecords.TryDequeue(out var record))
         {
-            recordsToProcess.Add(record);
+          recordsToProcess.Add(record);
         }
 
-        if (recordsToProcess.Count == 0)
-        {
+     if (recordsToProcess.Count == 0)
+  {
             return;
         }
 
-        try
+try
         {
             await SaveRecordsBatchToCsvWithRetryAsync(recordsToProcess);
         }
-        catch (Exception ex)
+     catch (Exception ex)
         {
             _logger.LogError(ex, "Error processing batch of curl commands");
-        }
+ }
     }
 
     private async Task SaveRecordToCsvWithRetryAsync(CurlCommandRecord record)
     {
+    if (!_isFileLoggingEnabled)
+        {
+            return;
+        }
+
         await SaveRecordsBatchToCsvWithRetryAsync(new List<CurlCommandRecord> { record });
     }
 
     private async Task SaveRecordsBatchToCsvWithRetryAsync(List<CurlCommandRecord> records)
     {
-        if (records == null || records.Count == 0)
-        {
-            return;
-        }
+        if (!_isFileLoggingEnabled || records == null || records.Count == 0)
+    {
+  return;
+    }
 
         int retryCount = 0;
         bool succeeded = false;
 
         while (!succeeded && retryCount < _options.MaxRetries)
-        {
-            try
-            {
-                // First, check if file rotation is needed
-                await CheckAndRotateFileIfNeededAsync();
+   {
+    try
+       {
+    // First, check if file rotation is needed
+          await CheckAndRotateFileIfNeededAsync();
 
-                // Write the records to the CSV file using a file lock for thread safety.
-                await _fileLock.WaitAsync().ConfigureAwait(true);
+      // Write the records to the CSV file using a file lock for thread safety.
+    await _fileLock.WaitAsync().ConfigureAwait(true);
                 try
-                {
-                    bool fileExists = File.Exists(_csvFilePath);
+          {
+       bool fileExists = File.Exists(_csvFilePath);
 
-                    using (var stream = File.Open(_csvFilePath, fileExists ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.Read))
-                    using (var writer = new StreamWriter(stream))
-                    using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-                    {
-                        // If the file is new, write the header first.
-                        if (!fileExists)
-                        {
-                            csv.WriteHeader<CurlCommandRecord>();
-                            await csv.NextRecordAsync().ConfigureAwait(true);
-                        }
+ using (var stream = File.Open(_csvFilePath, fileExists ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.Read))
+using (var writer = new StreamWriter(stream))
+         using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+    {
+    // If the file is new, write the header first.
+               if (!fileExists)
+              {
+    csv.WriteHeader<CurlCommandRecord>();
+        await csv.NextRecordAsync().ConfigureAwait(true);
+     }
 
-                        foreach (var record in records)
-                        {
-                            csv.WriteRecord(record);
-                            await csv.NextRecordAsync().ConfigureAwait(true);
-                        }
-                    }
+        foreach (var record in records)
+    {
+        csv.WriteRecord(record);
+           await csv.NextRecordAsync().ConfigureAwait(true);
+  }
+       }
 
-                    _logger.LogInformation("Saved {Count} curl command records to CSV file at {Path}",
-                        records.Count, _csvFilePath);
+     _logger.LogInformation("Saved {Count} curl command records to CSV file at {Path}",
+    records.Count, _csvFilePath);
 
-                    succeeded = true;
+   succeeded = true;
                 }
-                finally
+      finally
                 {
-                    _fileLock.Release();
-                }
-            }
-            catch (IOException ex)
+        _fileLock.Release();
+ }
+      }
+      catch (IOException ex)
             {
-                retryCount++;
+     retryCount++;
 
-                if (retryCount >= _options.MaxRetries)
-                {
-                    _logger.LogError(ex, "Failed to save curl commands to CSV after {RetryCount} retries", retryCount);
-                    throw;
-                }
+            if (retryCount >= _options.MaxRetries)
+           {
+      _logger.LogError(ex, "Failed to save curl commands to CSV after {RetryCount} retries", retryCount);
+ throw;
+       }
 
-                _logger.LogWarning(ex, "Error saving curl commands to CSV (attempt {RetryCount}/{MaxRetries}). Retrying...",
-                    retryCount, _options.MaxRetries);
+          _logger.LogWarning(ex, "Error saving curl commands to CSV (attempt {RetryCount}/{MaxRetries}). Retrying...",
+  retryCount, _options.MaxRetries);
 
-                // Add exponential backoff
-                await Task.Delay(_options.RetryDelayMs * (int)Math.Pow(2, retryCount - 1));
+            // Add exponential backoff
+    await Task.Delay(_options.RetryDelayMs * (int)Math.Pow(2, retryCount - 1));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unexpected error saving curl commands to CSV");
-                throw;
-            }
-        }
+           _logger.LogError(ex, "Unexpected error saving curl commands to CSV");
+   throw;
+       }
+      }
     }
 
     private async Task CheckAndRotateFileIfNeededAsync()
     {
-        await _fileLock.WaitAsync().ConfigureAwait(true);
-        try
+        if (!_isFileLoggingEnabled)
         {
-            if (!File.Exists(_csvFilePath))
-            {
-                return;
-            }
+         return;
+     }
 
-            var fileInfo = new FileInfo(_csvFilePath);
-            if (fileInfo.Length >= _options.MaxFileSize)
+     await _fileLock.WaitAsync().ConfigureAwait(true);
+      try
+        {
+      if (!File.Exists(_csvFilePath))
             {
+        return;
+         }
+
+      var fileInfo = new FileInfo(_csvFilePath);
+     if (fileInfo.Length >= _options.MaxFileSize)
+          {
                 string timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
-                string rotatedFilePath = Path.Combine(
-                    _options.OutputFolder,
-                    $"{_options.CsvFileName}_{timestamp}.csv"
-                );
+            string rotatedFilePath = Path.Combine(
+          _options.OutputFolder,
+             $"{_options.CsvFileName}_{timestamp}.csv"
+      );
 
                 File.Move(_csvFilePath, rotatedFilePath);
-                _logger.LogInformation("Rotated CSV file to {RotatedFilePath}", rotatedFilePath);
-            }
+       _logger.LogInformation("Rotated CSV file to {RotatedFilePath}", rotatedFilePath);
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error checking/rotating curl command CSV file");
+  }
+     catch (Exception ex)
+    {
+      _logger.LogError(ex, "Error checking/rotating curl command CSV file");
         }
         finally
         {
@@ -470,9 +509,9 @@ public class CurlCommandSaver : IDisposable
     /// <returns>A task representing the asynchronous operation</returns>
     public async Task FlushAsync()
     {
-        if (_options.UseBatchProcessing && !_pendingRecords.IsEmpty)
+    if (_isFileLoggingEnabled && _options.UseBatchProcessing && !_pendingRecords.IsEmpty)
         {
-            await ProcessBatchAsync();
+       await ProcessBatchAsync();
         }
     }
 
@@ -493,21 +532,21 @@ public class CurlCommandSaver : IDisposable
     {
         if (_disposed)
         {
-            return;
+       return;
         }
 
-        if (disposing)
+  if (disposing)
         {
-            _batchProcessingTimer?.Dispose();
+     _batchProcessingTimer?.Dispose();
 
-            // Process any pending records
-            if (_options.UseBatchProcessing && !_pendingRecords.IsEmpty)
+     // Process any pending records
+   if (_isFileLoggingEnabled && _options.UseBatchProcessing && !_pendingRecords.IsEmpty)
             {
-                // Use Wait() here as this is Dispose
-                ProcessBatchAsync().Wait();
+       // Use Wait() here as this is Dispose
+           ProcessBatchAsync().Wait();
             }
 
-            _fileLock.Dispose();
+  _fileLock.Dispose();
         }
 
         _disposed = true;
@@ -523,33 +562,33 @@ public class CurlCommandSaver : IDisposable
         /// </summary>
         public string CallingFile { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Gets or sets the line number in the file where the request was initiated.
+   /// <summary>
+ /// Gets or sets the line number in the file where the request was initiated.
         /// </summary>
         public int CallingLineNumber { get; set; }
 
-        /// <summary>
+      /// <summary>
         /// Gets or sets the method name where the request was initiated.
         /// </summary>
-        public string CallingMethod { get; set; } = string.Empty;
+    public string CallingMethod { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the generated cURL command string.
+    /// Gets or sets the generated cURL command string.
         /// </summary>
-        public string CurlCommand { get; set; } = string.Empty;
+  public string CurlCommand { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the HTTP method used in the request.
+     /// Gets or sets the HTTP method used in the request.
         /// </summary>
-        public string RequestMethod { get; set; } = string.Empty;
+    public string RequestMethod { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Gets or sets the URL or path of the request.
+    /// <summary>
+     /// Gets or sets the URL or path of the request.
         /// </summary>
         public string RequestPath { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Gets or sets the timestamp when the record was created.
+   /// <summary>
+ /// Gets or sets the timestamp when the record was created.
         /// </summary>
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
     }
