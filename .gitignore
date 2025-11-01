@@ -398,3 +398,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Code coverage report directories (should not be committed)
+CoverageReport/
+coverage-*/
+build_output.txt
+artifacts/
