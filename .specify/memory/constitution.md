@@ -75,8 +75,9 @@ Version management follows strict processes:
 - **Changelog Discipline**: Every release documented in `CHANGELOG.md` following Keep a Changelog format
 - **Git Tagging**: Tags trigger automated NuGet publishing via GitHub Actions
 - **Package Validation**: Baseline validation enabled to detect breaking changes
+- **CI/CD Enforcement**: **ALL NuGet package publications MUST go through GitHub Actions CI/CD pipeline. Manual publishing is strictly prohibited.**
 
-**Rationale**: As a published NuGet package, version chaos breaks consumer builds. Automated publishing reduces human error; changelog provides upgrade guidance.
+**Rationale**: As a published NuGet package, version chaos breaks consumer builds. Automated publishing reduces human error; changelog provides upgrade guidance. The GitHub Actions workflow is the single source of truth for all NuGet package releases, ensuring consistent builds, proper testing, symbol packages, and audit trails.
 
 ### VII. Decorator Pattern Architecture
 
@@ -174,7 +175,13 @@ Version bumps follow this workflow:
 5. **Tag**: `git tag v1.X.Y && git push origin v1.X.Y`
 6. **Automation**: GitHub Actions builds, tests, packs, publishes to NuGet.org
 
-**Never combine version bumps with feature work** - separate concerns for clean history.
+**NEVER**:
+- ❌ Manually upload packages to NuGet.org
+- ❌ Use `dotnet nuget push` locally
+- ❌ Bypass the CI/CD pipeline
+- ❌ Combine version bumps with feature work
+
+**Never combine version bumps with feature work** - separate concerns for clean history. The GitHub Actions workflow is the ONLY way to publish NuGet packages.
 
 ### AI Agent Output Organization
 
