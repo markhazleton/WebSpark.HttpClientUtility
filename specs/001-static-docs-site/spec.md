@@ -31,6 +31,8 @@
 - Q: How should the NuGet API data caching work during the build process? → A: Fetch on every build, cache to JSON file as backup; use cache only if fetch fails
 - Q: How should the site handle responsive navigation on mobile devices? → A: Hamburger menu that expands/collapses (standard mobile pattern, accessible, no JavaScript required with CSS-only approach)
 - Q: Which CSS approach should be used for styling the site? → A: Minimal custom CSS with CSS custom properties/variables (no framework, lightweight, maintainable, modern browser support)
+- Q: Should internal navigation links use absolute paths (starting with /) or relative paths? → A: **CRITICAL**: Use relative paths only. Absolute paths break on GitHub Pages subdirectory deployments. Root pages use `href="getting-started/"`, subdirectory pages use `href="../getting-started/"`. Never use `href="/getting-started/"`.
+- Q: What domains should external links be restricted to? → A: Only link to: project's GitHub Pages site, NuGet package page, GitHub repository, markhazleton.com, and legitimate external technical references (Polly, OpenTelemetry, Microsoft docs). No arbitrary external links.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -191,6 +193,9 @@ A contributor wants to preview documentation changes locally before pushing to G
 - **FR-018**: Site MUST have bidirectional links between GitHub Pages documentation and NuGet package page
 - **FR-019**: NuGet package page MUST link to GitHub Pages documentation in the project URL or documentation fields
 - **FR-020**: Site MUST be compatible with GitHub Pages default build environment (static HTML output from Eleventy)
+- **FR-021**: All internal navigation links MUST use relative paths (not absolute paths starting with /) to ensure compatibility with GitHub Pages subdirectory deployment
+- **FR-022**: All external links MUST only point to approved domains: `https://markhazleton.github.io/WebSpark.HttpClientUtility/`, `https://www.nuget.org/packages/WebSpark.HttpClientUtility`, `https://github.com/markhazleton/WebSpark.HttpClientUtility`, `https://markhazleton.com`, or legitimate external references (e.g., Polly, OpenTelemetry, Microsoft docs)
+- **FR-023**: Call-to-action buttons (Get Started, View Examples, etc.) MUST use relative paths matching the site's actual structure (e.g., `../getting-started/` from subdirectory pages, `getting-started/` from root)
 
 ### Key Entities
 
@@ -319,6 +324,8 @@ eleventyConfig.addFilter("relativePath", function(path) {
 <link rel="stylesheet" href="{{ '/assets/css/main.css' | relativePath }}">
 <a href="{{ '/features/' | relativePath }}">Features</a>
 ```
+
+**CRITICAL LEARNING**: During initial deployment, buttons used absolute paths (e.g., `href="/getting-started/"`) which broke on GitHub Pages because the site is deployed to a subdirectory (`/WebSpark.HttpClientUtility/`). Absolute paths resolve to the domain root, not the subdirectory. **Solution**: All internal links must use relative paths. Root-level pages use `href="getting-started/"`, subdirectory pages use `href="../getting-started/"`. This ensures links work correctly regardless of deployment location.
 
 #### Previous Approach: pathPrefix (Replaced)
 
@@ -512,7 +519,21 @@ permalink: /features/
 
 ### Common Issues and Solutions
 
-#### Issue 1: Blank Page or 404
+#### Issue 1: Internal Links Broken on GitHub Pages (CRITICAL)
+
+**Symptoms**: Buttons and navigation links return 404 errors on GitHub Pages but work locally
+
+**Root Cause**: Using absolute paths (e.g., `href="/getting-started/"`) instead of relative paths. When deployed to GitHub Pages subdirectory (`https://markhazleton.github.io/WebSpark.HttpClientUtility/`), absolute paths incorrectly resolve to domain root (`https://markhazleton.github.io/getting-started/`) instead of subdirectory (`https://markhazleton.github.io/WebSpark.HttpClientUtility/getting-started/`).
+
+**Solutions**:
+1. **From root-level pages** (e.g., `index.html`): Use `href="getting-started/"` (no leading slash)
+2. **From subdirectory pages** (e.g., `features/index.html`): Use `href="../getting-started/"` (with ../)
+3. Search codebase for any remaining `href="/` patterns: `grep -r 'href="/' docs/`
+4. Verify all call-to-action buttons use relative paths
+
+**Prevention**: Never use absolute paths for internal navigation. Always use relative paths that work from the page's current location.
+
+#### Issue 2: Blank Page or 404
 
 **Symptoms**: Page loads but shows blank or "Cannot GET /path"
 
@@ -527,7 +548,7 @@ permalink: /features/
 3. Run `npm run clean && npm run build`
 4. Check `.eleventy.js` passthrough copy configuration
 
-#### Issue 2: Infinite Rebuild Loop
+#### Issue 3: Infinite Rebuild Loop
 
 **Symptoms**: Dev server continuously rebuilds
 
@@ -538,7 +559,7 @@ permalink: /features/
 eleventyConfig.watchIgnores.add("./_data/nuget-cache.json");
 ```
 
-#### Issue 3: CSS/JS Not Loading
+#### Issue 4: CSS/JS Not Loading
 
 **Symptoms**: Styles not applied, no syntax highlighting
 
@@ -553,17 +574,22 @@ eleventyConfig.watchIgnores.add("./_data/nuget-cache.json");
 3. Run `npm run copy:prism`
 4. Check browser DevTools Network tab for 404 errors
 
-#### Issue 4: Different Behavior Local vs Production
+#### Issue 5: Different Behavior Local vs Production
 
 **Symptoms**: Works locally but not on GitHub Pages
 
-**Cause**: pathPrefix differences between environments
+**Causes**:
+- Absolute paths in HTML (see Issue 1 above)
+- pathPrefix differences between environments
+- Different base URLs
 
 **Solutions**:
-1. Test production build locally (see instructions above)
-2. Verify all templates use url filter
-3. Check browser console for errors
-4. Verify GitHub Pages settings
+1. **First check for absolute paths** - Most common cause of local/production differences
+2. Test production build locally (see instructions above)
+3. Verify all templates use url filter for assets
+4. Verify all navigation links use relative paths
+5. Check browser console for errors
+6. Verify GitHub Pages settings
 
 ### NPM Scripts Reference
 
@@ -646,6 +672,34 @@ docs/ (generated)
 - First Contentful Paint: <1.0s
 - Total page weight: <150KB
 
+### Link Validation
+
+**Before deploying to GitHub Pages**, validate all links:
+
+```bash
+# Search for absolute internal paths (should return 0 results)
+grep -r 'href="/' docs/**/*.html | grep -v 'https://'
+
+# Common patterns that indicate problems:
+# - href="/getting-started/"
+# - href="/features/"
+# - href="/examples/"
+# - href="/api-reference/"
+# - href="/about/"
+
+# Correct patterns:
+# - href="getting-started/" (from root)
+# - href="../getting-started/" (from subdirectory)
+# - href="https://github.com/..." (external links OK)
+```
+
+**Approved External Link Domains**:
+- `https://markhazleton.github.io/WebSpark.HttpClientUtility/`
+- `https://www.nuget.org/packages/WebSpark.HttpClientUtility`
+- `https://github.com/markhazleton/WebSpark.HttpClientUtility`
+- `https://markhazleton.com`
+- Technical references: `github.com/App-vNext/Polly`, `opentelemetry.io`, `docs.microsoft.com`
+
 ### Troubleshooting Commands
 
 ```bash
@@ -660,6 +714,9 @@ DEBUG=Eleventy* npx eleventy
 
 # Check dev server port
 netstat -ano | findstr :8080  # Windows
+
+# Validate internal links (should be empty)
+grep -r 'href="/' docs/**/*.html | grep -v 'https://'
 ```
 
 ---
