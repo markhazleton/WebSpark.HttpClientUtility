@@ -37,6 +37,8 @@ public class HttpClientConcurrentProcessor(Func<int, HttpClientConcurrentModel> 
     /// </remarks>
     protected override HttpClientConcurrentModel? GetNextTaskData(HttpClientConcurrentModel taskData)
     {
+        ArgumentNullException.ThrowIfNull(taskData);
+
         if (taskData.TaskId < MaxTaskCount)
         {
             return new HttpClientConcurrentModel(taskData.TaskId + 1, taskData.StatusCall.RequestPath);
@@ -70,6 +72,8 @@ public class HttpClientConcurrentProcessor(Func<int, HttpClientConcurrentModel> 
         HttpClientConcurrentModel taskData,
         CancellationToken ct = default)
     {
+        ArgumentNullException.ThrowIfNull(taskData);
+
         Stopwatch sw = Stopwatch.StartNew();
         var result = await service.HttpSendRequestResultAsync(taskData.StatusCall, ct: ct).ConfigureAwait(false);
         taskData.StatusCall = result;

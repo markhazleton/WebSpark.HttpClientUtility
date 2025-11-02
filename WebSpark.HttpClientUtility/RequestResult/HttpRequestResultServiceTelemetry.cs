@@ -33,6 +33,8 @@ public class HttpRequestResultServiceTelemetry(ILogger<HttpRequestResultServiceT
         [CallerLineNumber] int lineNumber = 0,
         CancellationToken ct = default)
     {
+        ArgumentNullException.ThrowIfNull(statusCall);
+
         Stopwatch sw = new();
         sw.Start();
         try

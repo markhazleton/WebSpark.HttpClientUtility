@@ -23,6 +23,8 @@ public static class OpenTelemetryServiceCollectionExtensions
         this IServiceCollection services,
         Action<TracerProviderBuilder>? configureTracing = null)
     {
+        ArgumentNullException.ThrowIfNull(services);
+
         // Add OpenTelemetry services
         services.AddOpenTelemetry()
             .ConfigureResource(resourceBuilder =>
@@ -83,6 +85,8 @@ public static class OpenTelemetryServiceCollectionExtensions
     public static IServiceCollection AddWebSparkHttpRequestResultServiceWithOpenTelemetry(
         this IServiceCollection services)
     {
+        ArgumentNullException.ThrowIfNull(services);
+
         // Register the OpenTelemetry wrapper as the interface implementation
         // The base service will be created inline within the wrapper factory
         services.AddScoped<IHttpRequestResultService>(provider =>
@@ -109,6 +113,8 @@ public static class OpenTelemetryServiceCollectionExtensions
     public static IServiceCollection AddWebSparkHttpClientServiceWithOpenTelemetry(
         this IServiceCollection services)
     {
+        ArgumentNullException.ThrowIfNull(services);
+
         // Register the OpenTelemetry wrapper as the interface implementation
         // The base service will be created inline within the wrapper factory
         services.AddScoped<IHttpClientService>(provider =>
@@ -138,6 +144,9 @@ public static class OpenTelemetryServiceCollectionExtensions
         IHostEnvironment environment,
         string? otlpEndpoint = null)
     {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(environment);
+
         services.AddWebSparkOpenTelemetry(tracerBuilder =>
         {
             if (environment.IsDevelopment())

@@ -178,6 +178,9 @@ public class CurlCommandSaver : IDisposable
         [CallerFilePath] string filePath = "",
         [CallerLineNumber] int lineNumber = 0)
     {
+        ArgumentException.ThrowIfNullOrEmpty(memberName);
+        ArgumentException.ThrowIfNullOrEmpty(filePath);
+
         try
         {
             // Build the curl command string.
@@ -249,12 +252,10 @@ if (_options.SanitizeSensitiveInfo &&
         }
    }
 
-       // Include request content as a data parameter, if available.
+            // Include request content as a data parameter, if available.
             if (request.Content != null)
             {
- string content = await request.Content.ReadAsStringAsync().ConfigureAwait(true);
-
-       // Sanitize content if enabled
+ string content = await request.Content.ReadAsStringAsync().ConfigureAwait(false);       // Sanitize content if enabled
     if (_options.SanitizeSensitiveInfo)
      {
 content = SanitizeJson(content);
@@ -315,7 +316,9 @@ CallingFile = filePath,
 
     private string SanitizeJson(string json)
     {
-        if (string.IsNullOrEmpty(json) || !json.Contains("\""))
+        ArgumentException.ThrowIfNullOrEmpty(json);
+
+        if (!json.Contains("\""))
     {
        return json;
         }
@@ -382,7 +385,9 @@ try
 
     private async Task SaveRecordToCsvWithRetryAsync(CurlCommandRecord record)
     {
-    if (!_isFileLoggingEnabled)
+        ArgumentNullException.ThrowIfNull(record);
+
+        if (!_isFileLoggingEnabled)
         {
             return;
         }
@@ -392,7 +397,9 @@ try
 
     private async Task SaveRecordsBatchToCsvWithRetryAsync(List<CurlCommandRecord> records)
     {
-        if (!_isFileLoggingEnabled || records == null || records.Count == 0)
+        ArgumentNullException.ThrowIfNull(records);
+
+        if (!_isFileLoggingEnabled || records.Count == 0)
     {
   return;
     }
@@ -404,11 +411,11 @@ try
    {
     try
        {
-    // First, check if file rotation is needed
-          await CheckAndRotateFileIfNeededAsync();
+            // First, check if file rotation is needed
+          await CheckAndRotateFileIfNeededAsync().ConfigureAwait(false);
 
       // Write the records to the CSV file using a file lock for thread safety.
-    await _fileLock.WaitAsync().ConfigureAwait(true);
+    await _fileLock.WaitAsync().ConfigureAwait(false);
                 try
           {
        bool fileExists = File.Exists(_csvFilePath);
@@ -421,13 +428,13 @@ using (var writer = new StreamWriter(stream))
                if (!fileExists)
               {
     csv.WriteHeader<CurlCommandRecord>();
-        await csv.NextRecordAsync().ConfigureAwait(true);
+        await csv.NextRecordAsync().ConfigureAwait(false);
      }
 
         foreach (var record in records)
     {
         csv.WriteRecord(record);
-           await csv.NextRecordAsync().ConfigureAwait(true);
+           await csv.NextRecordAsync().ConfigureAwait(false);
   }
        }
 
@@ -472,7 +479,7 @@ using (var writer = new StreamWriter(stream))
          return;
      }
 
-     await _fileLock.WaitAsync().ConfigureAwait(true);
+     await _fileLock.WaitAsync().ConfigureAwait(false);
       try
         {
       if (!File.Exists(_csvFilePath))

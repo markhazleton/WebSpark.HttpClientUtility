@@ -179,6 +179,8 @@ public class HttpRequestResultServicePolly : IHttpRequestResultService
         [CallerLineNumber] int lineNumber = 0,
         CancellationToken ct = default)
     {
+        ArgumentNullException.ThrowIfNull(statusCall);
+
         var stopwatch = Stopwatch.StartNew();
         string correlationId = statusCall.CorrelationId;
         string requestPath = statusCall.SafeRequestPath;

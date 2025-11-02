@@ -45,6 +45,8 @@ public sealed class HttpRequestResultServiceCache(
         [CallerLineNumber] int lineNumber = 0,
         CancellationToken ct = default)
     {
+        ArgumentNullException.ThrowIfNull(statusCall);
+
         var stopwatch = Stopwatch.StartNew();
         var cacheKey = statusCall.RequestPath;
 

@@ -63,6 +63,11 @@ public class HttpClientService : IHttpClientService
         string correlationId,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(httpRequest);
+        ArgumentException.ThrowIfNullOrEmpty(method);
+        ArgumentNullException.ThrowIfNull(requestUri);
+        ArgumentException.ThrowIfNullOrEmpty(correlationId);
+
         var stopwatch = Stopwatch.StartNew();
         var sanitizedUri = LoggingUtility.SanitizeUrl(requestUri.ToString());
 
@@ -182,6 +187,8 @@ public class HttpClientService : IHttpClientService
     /// <returns>A descriptive prefix for the exception.</returns>
     private static string GetExceptionTypePrefix(Exception exception)
     {
+        ArgumentNullException.ThrowIfNull(exception);
+
         return exception switch
         {
             HttpRequestException => "HTTP Request Error",
@@ -199,6 +206,9 @@ public class HttpClientService : IHttpClientService
         Dictionary<string, string>? headers,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(method);
+        ArgumentNullException.ThrowIfNull(requestUri);
+
         // Generate a correlation ID for request tracking
         string correlationId = Guid.NewGuid().ToString();
 
@@ -279,6 +289,8 @@ public class HttpClientService : IHttpClientService
     /// <returns>An instance of HttpResponseContent containing the response content and status code.</returns>
     public async Task<HttpResponseContent<TResult>> DeleteAsync<TResult>(Uri requestUri, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(requestUri);
+
         // Generate a correlation ID for request tracking
         string correlationId = Guid.NewGuid().ToString();
 
@@ -305,6 +317,8 @@ public class HttpClientService : IHttpClientService
     /// <returns>An instance of HttpResponseContent containing the response content and status code.</returns>
     public async Task<HttpResponseContent<T>> GetAsync<T>(Uri requestUri, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(requestUri);
+
         // Generate a correlation ID for request tracking
         string correlationId = Guid.NewGuid().ToString();
 
@@ -333,6 +347,8 @@ public class HttpClientService : IHttpClientService
     /// <returns>An instance of HttpResponseContent containing the response content and status code.</returns>
     public Task<HttpResponseContent<TResult>> PostAsync<T, TResult>(Uri requestUri, T payload, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(requestUri);
+
         return SendAsync<T, TResult>(HttpMethod.Post, requestUri, payload, null, cancellationToken);
     }
 
@@ -348,6 +364,9 @@ public class HttpClientService : IHttpClientService
     /// <returns>An instance of HttpResponseContent containing the response content and status code.</returns>
     public Task<HttpResponseContent<TResult>> PostAsync<T, TResult>(Uri requestUri, T payload, Dictionary<string, string> headers, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(requestUri);
+        ArgumentNullException.ThrowIfNull(headers);
+
         return SendAsync<T, TResult>(HttpMethod.Post, requestUri, payload, headers, cancellationToken);
     }
 
@@ -362,6 +381,8 @@ public class HttpClientService : IHttpClientService
     /// <returns>An instance of HttpResponseContent containing the response content and status code.</returns>
     public Task<HttpResponseContent<TResult>> PutAsync<T, TResult>(Uri requestUri, T payload, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(requestUri);
+
         return SendAsync<T, TResult>(HttpMethod.Put, requestUri, payload, null, cancellationToken);
     }
 }
