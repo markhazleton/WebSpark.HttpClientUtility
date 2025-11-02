@@ -1,0 +1,51 @@
+{
+  "main": [
+    {
+      "label": "Home",
+      "url": "/",
+      "order": 1
+    },
+    {
+      "label": "Features",
+      "url": "/features/",
+      "order": 2
+    },
+    {
+      "label": "Getting Started",
+      "url": "/getting-started/",
+      "order": 3
+    },
+    {
+      "label": "API Reference",
+      "url": "/api-reference/",
+      "order": 4
+    },
+    {
+      "label": "Examples",
+      "url": "/examples/",
+      "order": 5
+    },
+    {
+      "label": "About",
+      "url": "/about/",
+      "order": 6
+    }
+  ],
+  "footer": [
+    {
+      "label": "GitHub",
+      "url": "https://github.com/markhazleton/WebSpark.HttpClientUtility",
+      "external": true
+    },
+    {
+      "label": "NuGet",
+      "url": "https://www.nuget.org/packages/WebSpark.HttpClientUtility",
+      "external": true
+    },
+    {
+      "label": "Issues",
+      "url": "https://github.com/markhazleton/WebSpark.HttpClientUtility/issues",
+      "external": true
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "name": "webspark-httpclientutility-docs",
+  "version": "1.4.0",
+  "description": "Documentation website for WebSpark.HttpClientUtility",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "clean": "rimraf ../docs",
+    "dev": "eleventy --serve",
+    "build": "npm run clean && npm run copy:prism && cross-env ELEVENTY_ENV=production eleventy",
+    "build:prod": "npm run clean && npm run copy:prism && cross-env ELEVENTY_ENV=production eleventy",
+    "copy:prism": "node scripts/copy-prism.js",
+    "test:links": "hyperlink ../docs",
+    "test:html": "htmlhint ../docs/**/*.html",
+    "validate": "npm run test:html && npm run test:links"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.0.0",
+    "cross-env": "^10.1.0",
+    "htmlhint": "^1.1.4",
+    "hyperlink": "^5.0.4",
+    "markdown-it": "^14.1.0",
+    "markdown-it-anchor": "^9.2.0",
+    "rimraf": "^5.0.5"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2",
+    "prismjs": "^1.30.0"
+  }
+}

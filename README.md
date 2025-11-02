@@ -5,10 +5,22 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://github.com/MarkHazleton/HttpClientUtility/actions/workflows/publish-nuget.yml/badge.svg)](https://github.com/MarkHazleton/HttpClientUtility/actions/workflows/publish-nuget.yml)
 [![.NET 8+](https://img.shields.io/badge/.NET-8%2B-blue.svg)](https://dotnet.microsoft.com/download/dotnet)
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://markhazleton.github.io/WebSpark.HttpClientUtility/)
 
 **A production-ready HttpClient wrapper for .NET 8+ that makes HTTP calls simple, resilient, and observable.**
 
 Stop writing boilerplate HTTP code. Get built-in resilience, caching, telemetry, and structured logging out of the box.
+
+## 📚 Documentation
+
+**[View Full Documentation →](https://markhazleton.github.io/WebSpark.HttpClientUtility/)**
+
+The complete documentation site includes:
+- Getting started guide
+- Feature documentation
+- API reference
+- Code examples
+- Best practices
 
 ## ⚡ Quick Start
 

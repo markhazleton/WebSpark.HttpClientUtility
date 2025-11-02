@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Examples | WebSpark.HttpClientUtility</title>
+  <meta name="description" content="Real-world examples of using WebSpark.HttpClientUtility in various scenarios.">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Examples">
+  <meta property="og:description" content="Real-world examples of using WebSpark.HttpClientUtility in various scenarios.">
+  <meta property="og:url" content="https://markhazleton.github.io/WebSpark.HttpClientUtility/examples/">
+  <meta property="og:type" content="website">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Examples">
+  <meta name="twitter:description" content="Real-world examples of using WebSpark.HttpClientUtility in various scenarios.">
+  
+  <!-- Canonical -->
+  <link rel="canonical" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/examples/">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/prism-tomorrow.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico">
+</head>
+<body>
+  <header class="site-header">
+  <div class="container">
+    <div class="header-content">
+      <div class="site-logo">
+        <a href="/">WebSpark.HttpClientUtility</a>
+      </div>
+      
+      <nav class="main-nav">
+        <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+        <label for="nav-toggle" class="nav-toggle-label">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+        
+        <ul class="nav-menu">
+          
+          <li class="nav-item">
+            <a href="/">Home</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="/features/">Features</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="/getting-started/">Getting Started</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="/api-reference/">API Reference</a>
+          </li>
+          
+          <li class="nav-item active">
+            <a href="/examples/">Examples</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="/about/">About</a>
+          </li>
+          
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
+  
+  <main class="main-content">
+    <div class="container">
+      <h1>Examples</h1>
+<p>Practical examples for common scenarios.</p>
+<h2>Basic HTTP Requests</h2>
+<h3>Simple GET Request</h3>
+<pre><code class="language-csharp">var request = new HttpRequestResult&lt;UserProfile&gt;
+{
+    RequestPath = &quot;https://api.example.com/users/123&quot;,
+    RequestMethod = HttpMethod.Get
+};
+
+var result = await _httpService.HttpSendRequestResultAsync(request);
+
+if (result.IsSuccessStatusCode)
+{
+    var user = result.ResponseResults;
+    Console.WriteLine($&quot;User: {user.Name}, Email: {user.Email}&quot;);
+}
+</code></pre>
+<h3>POST Request with JSON Body</h3>
+<pre><code class="language-csharp">var newUser = new CreateUserRequest
+{
+    Name = &quot;Jane Doe&quot;,
+    Email = &quot;jane@example.com&quot;,
+    Role = &quot;Developer&quot;
+};
+
+var request = new HttpRequestResult&lt;UserResponse&gt;
+{
+    RequestPath = &quot;https://api.example.com/users&quot;,
+    RequestMethod = HttpMethod.Post,
+    RequestBody = newUser
+};
+
+var result = await _httpService.HttpSendRequestResultAsync(request);
+Console.WriteLine($&quot;Created user with ID: {result.ResponseResults.Id}&quot;);
+</code></pre>
+<h3>PUT Request (Update)</h3>
+<pre><code class="language-csharp">var updateData = new UpdateUserRequest
+{
+    Name = &quot;Jane Smith&quot;,
+    Email = &quot;jane.smith@example.com&quot;
+};
+
+var request = new HttpRequestResult&lt;UserResponse&gt;
+{
+    RequestPath = &quot;https://api.example.com/users/123&quot;,
+    RequestMethod = HttpMethod.Put,
+    RequestBody = updateData
+};
+
+var result = await _httpService.HttpSendRequestResultAsync(request);
+</code></pre>
+<h3>DELETE Request</h3>
+<pre><code class="language-csharp">var request = new HttpRequestResult&lt;object&gt;
+{
+    RequestPath = &quot;https://api.example.com/users/123&quot;,
+    RequestMethod = HttpMethod.Delete
+};
+
+var result = await _httpService.HttpSendRequestResultAsync(request);
+
+if (result.IsSuccessStatusCode)
+{
+    Console.WriteLine(&quot;User deleted successfully&quot;);
+}
+</code></pre>
+<h2>Authentication Examples</h2>
+<h3>Bearer Token Authentication</h3>
+<pre><code class="language-csharp">var request = new HttpRequestResult&lt;SecureData&gt;
+{
+    RequestPath = &quot;https://api.example.com/secure/data&quot;,
+    RequestMethod = HttpMethod.Get,
+    AuthenticationProvider = new BearerTokenAuthenticationProvider(&quot;eyJhbGciOiJIUzI1...&quot;)
+};
+
+var result = await _httpService.HttpSendRequestResultAsync(request);
+</code></pre>
+<h3>Basic Authentication</h3>
+<pre><code class="language-csharp">var request = new HttpRequestResult&lt;Data&gt;
+{
+    RequestPath = &quot;https://api.example.com/data&quot;,
+    RequestMethod = HttpMethod.Get,
+    AuthenticationProvider = new BasicAuthenticationProvider(&quot;username&quot;, &quot;password&quot;)
+};
+</code></pre>
+<h3>API Key Authentication</h3>
+<pre><code class="language-csharp">var request = new HttpRequestResult&lt;Data&gt;
+{
+    RequestPath = &quot;https://api.example.com/data&quot;,
+    RequestMethod = HttpMethod.Get,
+    AuthenticationProvider = new ApiKeyAuthenticationProvider(&quot;X-API-Key&quot;, &quot;your-api-key-here&quot;)
+};
+</code></pre>
+<h2>Caching Examples</h2>
+<h3>Cache API Response</h3>
+<pre><code class="language-csharp">var request = new HttpRequestResult&lt;WeatherData&gt;
+{
+    RequestPath = &quot;https://api.weather.com/current/seattle&quot;,
+    RequestMethod = HttpMethod.Get,
+    CacheDurationMinutes = 30 // Cache for 30 minutes
+};
+
+// First call - hits the API
+var result1 = await _httpService.HttpSendRequestResultAsync(request);
+
+// Second call within 30 minutes - returns cached data
+var result2 = await _httpService.HttpSendRequestResultAsync(request);
+</code></pre>
+<h3>Different Cache Durations</h3>
+<pre><code class="language-csharp">// Frequently changing data - short cache
+var realtimeRequest = new HttpRequestResult&lt;StockPrice&gt;
+{
+    RequestPath = &quot;https://api.stocks.com/price/MSFT&quot;,
+    CacheDurationMinutes = 1
+};
+
+// Rarely changing data - long cache
+var configRequest = new HttpRequestResult&lt;AppConfig&gt;
+{
+    RequestPath = &quot;https://api.example.com/config&quot;,
+    CacheDurationMinutes = 1440 // 24 hours
+};
+</code></pre>
+<h2>Error Handling</h2>
+<h3>Handle Different Status Codes</h3>
+<pre><code class="language-csharp">var result = await _httpService.HttpSendRequestResultAsync(request);
+
+switch (result.StatusCode)
+{
+    case HttpStatusCode.OK:
+        var data = result.ResponseResults;
+        Console.WriteLine($&quot;Success: {data}&quot;);
+        break;
+    
+    case HttpStatusCode.NotFound:
+        Console.WriteLine(&quot;Resource not found&quot;);
+        break;
+    
+    case HttpStatusCode.Unauthorized:
+        Console.WriteLine(&quot;Authentication required&quot;);
+        break;
+    
+    case HttpStatusCode.BadRequest:
+        Console.WriteLine($&quot;Bad request: {result.ResponseContent}&quot;);
+        break;
+    
+    default:
+        Console.WriteLine($&quot;Error {result.StatusCode}: {result.ResponseContent}&quot;);
+        break;
+}
+</code></pre>
+<h3>Resilience with Automatic Retry</h3>
+<pre><code class="language-csharp">// With resilience enabled, this will automatically retry on transient failures
+builder.Services.AddHttpClientUtility(options =&gt; {
+    options.EnableResilience = true;
+    options.ResilienceOptions.MaxRetryAttempts = 3;
+    options.ResilienceOptions.RetryDelay = TimeSpan.FromSeconds(2);
+});
+
+// Request will retry up to 3 times with 2 second delay
+var result = await _httpService.HttpSendRequestResultAsync(request);
+</code></pre>
+<h2>Advanced Examples</h2>
+<h3>Custom Headers</h3>
+<pre><code class="language-csharp">var request = new HttpRequestResult&lt;Data&gt;
+{
+    RequestPath = &quot;https://api.example.com/data&quot;,
+    RequestMethod = HttpMethod.Get,
+    RequestHeaders = new Dictionary&lt;string, string&gt;
+    {
+        { &quot;Accept&quot;, &quot;application/json&quot; },
+        { &quot;Accept-Language&quot;, &quot;en-US&quot; },
+        { &quot;X-Custom-Header&quot;, &quot;custom-value&quot; },
+        { &quot;User-Agent&quot;, &quot;MyApp/1.0&quot; }
+    }
+};
+</code></pre>
+<h3>Query String Parameters</h3>
+<pre><code class="language-csharp">var queryParams = new QueryStringParametersList
+{
+    { &quot;page&quot;, &quot;1&quot; },
+    { &quot;pageSize&quot;, &quot;50&quot; },
+    { &quot;sort&quot;, &quot;name&quot; },
+    { &quot;filter&quot;, &quot;active&quot; }
+};
+
+var request = new HttpRequestResult&lt;PagedResult&lt;User&gt;&gt;
+{
+    RequestPath = $&quot;https://api.example.com/users{queryParams.ToQueryString()}&quot;,
+    RequestMethod = HttpMethod.Get
+};
+</code></pre>
+<h3>Correlation ID for Distributed Tracing</h3>
+<pre><code class="language-csharp">var request = new HttpRequestResult&lt;Data&gt;
+{
+    RequestPath = &quot;https://api.example.com/data&quot;,
+    RequestMethod = HttpMethod.Get,
+    CorrelationId = Guid.NewGuid().ToString() // Auto-generated if not provided
+};
+
+var result = await _httpService.HttpSendRequestResultAsync(request);
+Console.WriteLine($&quot;Request tracked with ID: {result.CorrelationId}&quot;);
+</code></pre>
+<h3>Concurrent Requests</h3>
+<pre><code class="language-csharp">using WebSpark.HttpClientUtility.Concurrent;
+
+var requests = new List&lt;HttpRequestResult&lt;Data&gt;&gt;
+{
+    new() { RequestPath = &quot;https://api.example.com/data/1&quot;, RequestMethod = HttpMethod.Get },
+    new() { RequestPath = &quot;https://api.example.com/data/2&quot;, RequestMethod = HttpMethod.Get },
+    new() { RequestPath = &quot;https://api.example.com/data/3&quot;, RequestMethod = HttpMethod.Get }
+};
+
+var results = await _concurrentService.ExecuteConcurrentRequestsAsync(requests);
+
+foreach (var result in results)
+{
+    Console.WriteLine($&quot;Path: {result.RequestPath}, Success: {result.IsSuccessStatusCode}&quot;);
+}
+</code></pre>
+<h2>Web Crawling Example</h2>
+<h3>Basic Crawler Setup</h3>
+<pre><code class="language-csharp">using WebSpark.HttpClientUtility.Crawler;
+
+var options = new CrawlerOptions
+{
+    BaseUrl = &quot;https://example.com&quot;,
+    MaxDepth = 3,
+    MaxPages = 100,
+    RespectRobotsTxt = true,
+    UserAgent = &quot;MyBot/1.0&quot;,
+    DelayBetweenRequests = TimeSpan.FromMilliseconds(500)
+};
+
+var crawler = new SiteCrawler(options, _httpService, _logger);
+
+crawler.PageCrawled += (sender, e) =&gt;
+{
+    Console.WriteLine($&quot;Crawled: {e.Url} - Status: {e.StatusCode}&quot;);
+};
+
+await crawler.CrawlAsync(cancellationToken);
+</code></pre>
+<h3>Crawler with Progress Updates</h3>
+<pre><code class="language-csharp">var crawler = new SiteCrawler(options, _httpService, _logger);
+
+crawler.CrawlProgress += (sender, progress) =&gt;
+{
+    Console.WriteLine($&quot;Progress: {progress.PagesProcessed}/{progress.TotalPages}&quot;);
+    Console.WriteLine($&quot;Success Rate: {progress.SuccessRate:P}&quot;);
+};
+
+await crawler.CrawlAsync(cancellationToken);
+</code></pre>
+<h2>Testing Examples</h2>
+<h3>Mock Successful Response</h3>
+<pre><code class="language-csharp">[TestMethod]
+public async Task TestSuccessfulApiCall()
+{
+    // Arrange
+    var expectedData = new UserData { Id = 1, Name = &quot;Test User&quot; };
+    var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
+    {
+        Content = new StringContent(
+            JsonSerializer.Serialize(expectedData),
+            Encoding.UTF8,
+            &quot;application/json&quot;
+        )
+    };
+
+    var mockService = new MockHttpRequestResultService&lt;UserData&gt;(mockResponse);
+    var service = new MyService(mockService);
+
+    // Act
+    var result = await service.GetUserAsync(1);
+
+    // Assert
+    Assert.IsNotNull(result);
+    Assert.AreEqual(expectedData.Name, result.Name);
+}
+</code></pre>
+<h3>Mock Error Response</h3>
+<pre><code class="language-csharp">[TestMethod]
+public async Task TestApiError()
+{
+    // Arrange
+    var mockResponse = new HttpResponseMessage(HttpStatusCode.NotFound)
+    {
+        Content = new StringContent(&quot;User not found&quot;)
+    };
+
+    var mockService = new MockHttpRequestResultService&lt;UserData&gt;(mockResponse);
+    var service = new MyService(mockService);
+
+    // Act
+    var result = await service.GetUserAsync(999);
+
+    // Assert
+    Assert.IsNull(result);
+}
+</code></pre>
+<h2>Integration Examples</h2>
+<h3>ASP.NET Core Controller</h3>
+<pre><code class="language-csharp">[ApiController]
+[Route(&quot;api/[controller]&quot;)]
+public class WeatherController : ControllerBase
+{
+    private readonly IHttpRequestResultService _httpService;
+
+    public WeatherController(IHttpRequestResultService httpService)
+    {
+        _httpService = httpService;
+    }
+
+    [HttpGet(&quot;{city}&quot;)]
+    public async Task&lt;IActionResult&gt; GetWeather(string city)
+    {
+        var request = new HttpRequestResult&lt;WeatherData&gt;
+        {
+            RequestPath = $&quot;https://api.weather.com/v1/current/{city}&quot;,
+            RequestMethod = HttpMethod.Get,
+            CacheDurationMinutes = 15
+        };
+
+        var result = await _httpService.HttpSendRequestResultAsync(request);
+
+        if (result.IsSuccessStatusCode)
+        {
+            return Ok(result.ResponseResults);
+        }
+
+        return StatusCode((int)result.StatusCode, result.ResponseContent);
+    }
+}
+</code></pre>
+<h3>Background Service</h3>
+<pre><code class="language-csharp">public class DataSyncService : BackgroundService
+{
+    private readonly IHttpRequestResultService _httpService;
+    private readonly ILogger&lt;DataSyncService&gt; _logger;
+
+    public DataSyncService(
+        IHttpRequestResultService httpService,
+        ILogger&lt;DataSyncService&gt; logger)
+    {
+        _httpService = httpService;
+        _logger = logger;
+    }
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            try
+            {
+                var request = new HttpRequestResult&lt;SyncData&gt;
+                {
+                    RequestPath = &quot;https://api.example.com/sync&quot;,
+                    RequestMethod = HttpMethod.Get
+                };
+
+                var result = await _httpService.HttpSendRequestResultAsync(request);
+
+                if (result.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation(&quot;Sync completed successfully&quot;);
+                }
+                else
+                {
+                    _logger.LogWarning($&quot;Sync failed: {result.StatusCode}&quot;);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, &quot;Sync error&quot;);
+            }
+
+            await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
+        }
+    }
+}
+</code></pre>
+<h2>Next Steps</h2>
+<div class="cta-buttons">
+  <a href="/api-reference/" class="button primary">API Reference</a>
+  <a href="/features/" class="button secondary">View All Features</a>
+</div>
+
+    </div>
+  </main>
+  
+  <footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>WebSpark.HttpClientUtility</h3>
+        <p>Version 1.4.0</p>
+        
+      </div>
+      
+      <div class="footer-section">
+        <h3>Links</h3>
+        <ul class="footer-links">
+          
+          <li>
+            <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
+              GitHub
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.nuget.org/packages/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
+              NuGet
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility/issues" target="_blank" rel="noopener noreferrer">
+              Issues
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <p>&copy; 2025 <a href="https://markhazleton.com" target="_blank" rel="noopener noreferrer">Mark Hazleton</a></p>
+        <p>Licensed under MIT</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+  <!-- Scripts -->
+  <script src="/assets/js/prism.min.js" defer></script>
+</body>
+</html>

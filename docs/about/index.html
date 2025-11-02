@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About | WebSpark.HttpClientUtility</title>
+  <meta name="description" content="About WebSpark.HttpClientUtility - purpose, architecture, and contributors.">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="About">
+  <meta property="og:description" content="About WebSpark.HttpClientUtility - purpose, architecture, and contributors.">
+  <meta property="og:url" content="https://markhazleton.github.io/WebSpark.HttpClientUtility/about/">
+  <meta property="og:type" content="website">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="About">
+  <meta name="twitter:description" content="About WebSpark.HttpClientUtility - purpose, architecture, and contributors.">
+  
+  <!-- Canonical -->
+  <link rel="canonical" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/about/">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/prism-tomorrow.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico">
+</head>
+<body>
+  <header class="site-header">
+  <div class="container">
+    <div class="header-content">
+      <div class="site-logo">
+        <a href="/">WebSpark.HttpClientUtility</a>
+      </div>
+      
+      <nav class="main-nav">
+        <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+        <label for="nav-toggle" class="nav-toggle-label">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+        
+        <ul class="nav-menu">
+          
+          <li class="nav-item">
+            <a href="/">Home</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="/features/">Features</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="/getting-started/">Getting Started</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="/api-reference/">API Reference</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="/examples/">Examples</a>
+          </li>
+          
+          <li class="nav-item active">
+            <a href="/about/">About</a>
+          </li>
+          
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
+  
+  <main class="main-content">
+    <div class="container">
+      <h1>About WebSpark.HttpClientUtility</h1>
+<p>A production-ready NuGet library that eliminates boilerplate HTTP code while providing enterprise-grade features.</p>
+<h2>Purpose</h2>
+<p>WebSpark.HttpClientUtility was created to solve common challenges when working with <code>HttpClient</code> in .NET applications:</p>
+<ul>
+<li><strong>Reduce Boilerplate</strong>: Eliminate repetitive HTTP client setup code</li>
+<li><strong>Add Resilience</strong>: Built-in retry logic and circuit breakers</li>
+<li><strong>Enable Caching</strong>: Automatic response caching with minimal configuration</li>
+<li><strong>Improve Observability</strong>: Comprehensive telemetry and distributed tracing</li>
+<li><strong>Simplify Testing</strong>: Mock service for easy unit testing</li>
+</ul>
+<h2>Architecture</h2>
+<p>The library uses a <strong>decorator pattern</strong> to compose features. This design allows you to:</p>
+<ul>
+<li>Enable only the features you need</li>
+<li>Maintain clean separation of concerns</li>
+<li>Extend with custom decorators</li>
+<li>Test each layer independently</li>
+</ul>
+<h3>Decorator Chain</h3>
+<pre><code>User Code
+    ↓
+IHttpRequestResultService (Interface)
+    ↓
+HttpRequestResultServiceTelemetry (Optional - Outermost)
+    ↓
+HttpRequestResultServicePolly (Optional - Resilience)
+    ↓
+HttpRequestResultServiceCache (Optional - Caching)
+    ↓
+HttpRequestResultService (Base - Core HTTP)
+</code></pre>
+<p>Each decorator wraps the layer below it, adding functionality while maintaining the same interface.</p>
+<h2>Technology Stack</h2>
+<ul>
+<li><strong>Frameworks</strong>: .NET 8.0 (LTS), .NET 9.0</li>
+<li><strong>Resilience</strong>: Polly for retry and circuit breaker patterns</li>
+<li><strong>Caching</strong>: Microsoft.Extensions.Caching.Memory</li>
+<li><strong>Telemetry</strong>: OpenTelemetry with OTLP support</li>
+<li><strong>Testing</strong>: MSTest with Moq for mocking</li>
+</ul>
+<h2>Version History</h2>
+<h3>v1.4.0 (Current)</h3>
+<ul>
+<li>Added .NET 8 LTS support alongside .NET 9</li>
+<li>Simplified DI registration with multiple quick-start methods</li>
+<li>Improved documentation and test coverage</li>
+</ul>
+<h3>v1.3.2</h3>
+<ul>
+<li>Fixed test reliability and improved mock patterns</li>
+<li>Enhanced code quality with stricter analysis</li>
+</ul>
+<h3>v1.3.1</h3>
+<ul>
+<li>Enhanced CurlCommandSaver with batch processing</li>
+<li>Added file rotation for CURL command storage</li>
+</ul>
+<h3>v1.3.0</h3>
+<ul>
+<li>Removed deprecated Jaeger exporter</li>
+<li>Modernized OpenTelemetry to use OTLP standard</li>
+<li>Breaking change: Updated telemetry configuration</li>
+</ul>
+<h2>Quality Assurance</h2>
+<ul>
+<li><strong>252+ Passing Tests</strong>: Comprehensive test coverage with MSTest</li>
+<li><strong>Strong Naming</strong>: Assembly signed for enterprise scenarios</li>
+<li><strong>Nullable Reference Types</strong>: Full nullability annotations</li>
+<li><strong>Code Analysis</strong>: Warning level 5 with .NET analyzers enabled</li>
+<li><strong>Multi-Targeting</strong>: Both .NET 8 LTS and .NET 9 supported</li>
+</ul>
+<h2>Contributing</h2>
+<p>We welcome contributions! Here's how you can help:</p>
+<ol>
+<li><strong>Report Issues</strong>: Found a bug? <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility/issues">Open an issue</a></li>
+<li><strong>Suggest Features</strong>: Have an idea? <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility/discussions">Start a discussion</a></li>
+<li><strong>Submit PRs</strong>: Want to contribute code? <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility/blob/main/documentation/CONTRIBUTING.md">Read the contributing guide</a></li>
+</ol>
+<h3>Development Setup</h3>
+<pre><code class="language-bash"># Clone the repository
+git clone https://github.com/markhazleton/WebSpark.HttpClientUtility.git
+
+# Restore dependencies
+dotnet restore
+
+# Build
+dotnet build --configuration Release
+
+# Run tests
+dotnet test --configuration Release
+</code></pre>
+<h2>Code of Conduct</h2>
+<p>This project follows the <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility/blob/main/CODE_OF_CONDUCT.md">Contributor Covenant Code of Conduct</a>.</p>
+<h2>License</h2>
+<p>MIT License - free for commercial and open-source use.</p>
+<pre><code>Copyright (c) 2024 Mark Hazleton
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+</code></pre>
+<h2>Credits</h2>
+<h3>Author</h3>
+<p><strong>Mark Hazleton</strong></p>
+<ul>
+<li>GitHub: <a href="https://github.com/markhazleton">@markhazleton</a></li>
+<li>Website: <a href="https://markhazleton.com">markhazleton.com</a></li>
+</ul>
+<h3>Built With</h3>
+<ul>
+<li><a href="https://github.com/App-vNext/Polly">Polly</a> - Resilience and transient-fault-handling library</li>
+<li><a href="https://opentelemetry.io/">OpenTelemetry</a> - Observability framework</li>
+<li><a href="https://docs.microsoft.com/en-us/dotnet/core/extensions/caching">Microsoft.Extensions.Caching</a> - Caching abstractions</li>
+<li><a href="https://github.com/microsoft/testfx">MSTest</a> - Testing framework</li>
+</ul>
+<h2>Acknowledgments</h2>
+<p>Thank you to all contributors and users who have helped make this library better through feedback, bug reports, and pull requests.</p>
+<h2>Project Status</h2>
+<p><strong>Active</strong>: This project is actively maintained and accepting contributions.</p>
+<ul>
+<li>✅ Regular updates and bug fixes</li>
+<li>✅ Support for latest .NET versions</li>
+<li>✅ Responsive to issues and questions</li>
+<li>✅ Open to feature requests</li>
+</ul>
+<h2>Community</h2>
+<ul>
+<li>📦 <a href="https://www.nuget.org/packages/WebSpark.HttpClientUtility">NuGet Package</a></li>
+<li>💻 <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility">GitHub Repository</a></li>
+<li>📖 <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/">Documentation</a></li>
+<li>🐛 <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility/issues">Issue Tracker</a></li>
+<li>💬 <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility/discussions">Discussions</a></li>
+</ul>
+<h2>Statistics</h2>
+<ul>
+<li><strong>Version</strong>: 1.4.0</li>
+<li><strong>Total Downloads</strong>: 1.6K</li>
+<li><strong>Target Frameworks</strong>: .NET 8.0, .NET 9.0</li>
+<li><strong>Test Coverage</strong>: 252+ tests passing</li>
+<li><strong>License</strong>: MIT</li>
+</ul>
+<h2>Next Steps</h2>
+<div class="cta-buttons">
+  <a href="/getting-started/" class="button primary">Get Started</a>
+  <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility" class="button secondary">View on GitHub</a>
+</div>
+
+    </div>
+  </main>
+  
+  <footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>WebSpark.HttpClientUtility</h3>
+        <p>Version 1.4.0</p>
+        
+      </div>
+      
+      <div class="footer-section">
+        <h3>Links</h3>
+        <ul class="footer-links">
+          
+          <li>
+            <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
+              GitHub
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.nuget.org/packages/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
+              NuGet
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility/issues" target="_blank" rel="noopener noreferrer">
+              Issues
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <p>&copy; 2025 <a href="https://markhazleton.com" target="_blank" rel="noopener noreferrer">Mark Hazleton</a></p>
+        <p>Licensed under MIT</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+  <!-- Scripts -->
+  <script src="/assets/js/prism.min.js" defer></script>
+</body>
+</html>

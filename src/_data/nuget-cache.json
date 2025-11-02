@@ -1,0 +1,112 @@
+{
+  "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/index.json",
+  "@type": "Package",
+  "registration": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/index.json",
+  "id": "WebSpark.HttpClientUtility",
+  "version": "1.4.0",
+  "description": "A utility library for simplifying HttpClient usage in .NET applications, including\n\t\t\tfeatures for telemetry, caching, Polly integration, concurrent requests, and web\n\t\t\tcrawling. Supports .NET 8 (LTS) and .NET 9.",
+  "summary": "",
+  "title": "WebSpark.HttpClientUtility",
+  "iconUrl": "https://api.nuget.org/v3-flatcontainer/webspark.httpclientutility/1.4.0/icon",
+  "licenseUrl": "https://www.nuget.org/packages/WebSpark.HttpClientUtility/1.4.0/license",
+  "projectUrl": "https://markhazleton.com/MarkHazleton/HttpClientUtility",
+  "tags": [
+    "httpclient",
+    "utility",
+    "web",
+    "api",
+    "rest",
+    "polly",
+    "cache",
+    "telemetry",
+    "concurrent",
+    "dotnet",
+    "aspnetcore",
+    "crawler",
+    "sitemap",
+    "http-resilience",
+    "retry",
+    "circuit-breaker",
+    "caching",
+    "curl",
+    "fire-and-forget",
+    "opentelemetry",
+    "streaming",
+    "observability",
+    "tracing",
+    "net8",
+    "net9"
+  ],
+  "authors": [
+    "MarkHazleton"
+  ],
+  "owners": [
+    "markhazleton"
+  ],
+  "totalDownloads": 1602,
+  "verified": false,
+  "packageTypes": [
+    {
+      "name": "Dependency"
+    }
+  ],
+  "versions": [
+    {
+      "version": "1.0.2",
+      "downloads": 105,
+      "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.0.2.json"
+    },
+    {
+      "version": "1.0.3",
+      "downloads": 110,
+      "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.0.3.json"
+    },
+    {
+      "version": "1.0.4",
+      "downloads": 165,
+      "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.0.4.json"
+    },
+    {
+      "version": "1.0.5",
+      "downloads": 308,
+      "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.0.5.json"
+    },
+    {
+      "version": "1.0.8",
+      "downloads": 214,
+      "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.0.8.json"
+    },
+    {
+      "version": "1.0.10",
+      "downloads": 114,
+      "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.0.10.json"
+    },
+    {
+      "version": "1.1.0",
+      "downloads": 222,
+      "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.1.0.json"
+    },
+    {
+      "version": "1.2.0",
+      "downloads": 124,
+      "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.2.0.json"
+    },
+    {
+      "version": "1.3.0",
+      "downloads": 167,
+      "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.3.0.json"
+    },
+    {
+      "version": "1.3.2",
+      "downloads": 0,
+      "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.3.2.json"
+    },
+    {
+      "version": "1.4.0",
+      "downloads": 0,
+      "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.4.0.json"
+    }
+  ],
+  "vulnerabilities": [],
+  "cachedAt": "2025-11-02T16:22:02.211Z"
+}
