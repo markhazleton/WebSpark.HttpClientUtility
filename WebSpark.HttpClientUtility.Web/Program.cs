@@ -27,7 +27,7 @@ builder.Services.AddScoped<IHttpRequestResultService>(provider =>
     IHttpRequestResultService service = provider.GetRequiredService<HttpRequestResultService>();
 
     // Add Telemetry decorator (outermost layer)
-  service = new HttpRequestResultServiceTelemetry(
+    service = new HttpRequestResultServiceTelemetry(
         provider.GetRequiredService<ILogger<HttpRequestResultServiceTelemetry>>(),
         service
     );
@@ -49,15 +49,26 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+#if NET9_0_OR_GREATER
+app.MapStaticAssets();
+#else
+app.UseStaticFiles();
+#endif
+
 app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapStaticAssets();
-
+#if NET9_0_OR_GREATER
 app.MapControllerRoute(
-    name: "default",
+ name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
+#else
+app.MapControllerRoute(
+    name: "default",
+  pattern: "{controller=Home}/{action=Index}/{id?}");
+#endif
 
 app.Run();

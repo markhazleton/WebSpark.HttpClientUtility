@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<!-- Target only .NET 9 production -->
-		<TargetFramework>net9.0</TargetFramework>
+		<!-- Target .NET 8 LTS and .NET 9 for maximum compatibility -->
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -11,19 +11,19 @@
 		<!-- NuGet Package Properties -->
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>WebSpark.HttpClientUtility</PackageId>
-		<Version>1.3.2</Version>
+		<Version>1.4.0</Version>
 		<Deterministic>true</Deterministic>
 		<Authors>MarkHazleton</Authors>
 		<Company>MarkHazleton</Company>
 		<Copyright>Copyright © MarkHazleton 2025</Copyright>
-		<Summary>Powerful HttpClient wrapper with resilience, caching, telemetry, and crawling
-			capabilities for .NET applications.</Summary>
+		<Summary>Powerful HttpClient wrapper with resilience, caching, telemetry, and crawling capabilities for .NET 8+ applications.</Summary>
 		<Description>
 			A utility library for simplifying HttpClient usage in .NET applications, including
 			features for telemetry, caching, Polly integration, concurrent requests, and web
-			crawling.
+			crawling. Supports .NET 8 (LTS) and .NET 9.
 		</Description>
 		<PackageReleaseNotes>
+			1.4.0 - Major update: Added .NET 8 LTS support alongside .NET 9 for broader compatibility. Simplified DI registration with extension methods. Improved documentation structure.
 			1.3.2 - Bug fixes: Fixed CurlCommandSaver tests for proper configuration handling. Improved test reliability and mock setup patterns.
 			1.3.1 - Enhanced CurlCommandSaver with batch processing, file rotation, sensitive data sanitization, and improved error handling with retry logic. Added comprehensive configuration options and better resource management.
 			1.3.0 - Major update: Target only .NET 9 production for improved performance and modern features. Removed .NET 8 support to focus on latest stable .NET version. Updated test coverage with 75+ new tests across authentication providers, object pooling, streaming, and utility classes.
@@ -31,7 +31,7 @@
 		</PackageReleaseNotes>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<PackageTags>
-			httpclient;utility;web;api;rest;polly;cache;telemetry;concurrent;dotnet;aspnetcore;crawler;sitemap;http-resilience;retry;circuit-breaker;caching;curl;fire-and-forget;opentelemetry;streaming;observability;tracing;net9
+			httpclient;utility;web;api;rest;polly;cache;telemetry;concurrent;dotnet;aspnetcore;crawler;sitemap;http-resilience;retry;circuit-breaker;caching;curl;fire-and-forget;opentelemetry;streaming;observability;tracing;net8;net9
 		</PackageTags>
 		<RepositoryUrl>https://github.com/MarkHazleton/HttpClientUtility</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
@@ -43,10 +43,9 @@
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-		<!-- Package Validation - disabled for major version with breaking changes -->
-		<!-- Re-enable once 1.3.0 is established as baseline -->
-		<EnablePackageValidation>false</EnablePackageValidation>
-		<!-- <PackageValidationBaselineVersion>1.3.0</PackageValidationBaselineVersion> -->
+		<!-- Package Validation -->
+		<EnablePackageValidation>true</EnablePackageValidation>
+		<PackageValidationBaselineVersion>1.3.2</PackageValidationBaselineVersion>
 		<!-- Source Link: Enables debugging the source through the NuGet Package -->
 		<ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
 		<SignAssembly>true</SignAssembly>
@@ -74,8 +73,8 @@
 		<PackageReference Include="CsvHelper" Version="33.1.0" />
 		<PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
 		<PackageReference Include="Markdig" Version="0.43.0" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.10" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.10" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 		

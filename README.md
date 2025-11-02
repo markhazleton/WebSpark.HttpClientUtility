@@ -1,851 +1,179 @@
-# WebSpark.HttpClientUtility: Robust & Simplified .NET HttpClient Wrapper
-
-> **v1.3.2 released!**
->
-> **What's new:**
->
-> - **Bug Fixes**: Fixed CurlCommandSaver tests for proper configuration handling
-> - **Improved Reliability**: Enhanced test mock patterns for better stability
-> - **All Tests Passing**: 252/252 tests passing with zero failures
-> - See [CHANGELOG.md](https://github.com/markhazleton/httpclientutility/blob/main/CHANGELOG.md) for full details.
-
-![WebSpark.HttpClientUtility Logo](https://raw.githubusercontent.com/MarkHazleton/HttpClientUtility/main/WebSpark.HttpClientUtility/images/icon.png)
+# WebSpark.HttpClientUtility
 
 [![NuGet Version](https://img.shields.io/nuget/v/WebSpark.HttpClientUtility.svg)](https://www.nuget.org/packages/WebSpark.HttpClientUtility/)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/WebSpark.HttpClientUtility.svg)](https://www.nuget.org/packages/WebSpark.HttpClientUtility/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://github.com/MarkHazleton/HttpClientUtility/actions/workflows/publish-nuget.yml/badge.svg)](https://github.com/MarkHazleton/HttpClientUtility/actions/workflows/publish-nuget.yml)
-[![.NET 9](https://img.shields.io/badge/.NET-9-blue.svg)](https://dotnet.microsoft.com/download/dotnet/9.0)
+[![.NET 8+](https://img.shields.io/badge/.NET-8%2B-blue.svg)](https://dotnet.microsoft.com/download/dotnet)
 
-## 📦 Quick Links
+**A production-ready HttpClient wrapper for .NET 8+ that makes HTTP calls simple, resilient, and observable.**
 
-- **[NuGet Package](https://www.nuget.org/packages/WebSpark.HttpClientUtility)**: Download and install the package
-- **[GitHub Repository](https://github.com/markhazleton/httpclientutility)**: Source code, issue tracking, and contributions
-- **[Changelog](https://github.com/markhazleton/httpclientutility/blob/main/CHANGELOG.md)**: Version history and updates
+Stop writing boilerplate HTTP code. Get built-in resilience, caching, telemetry, and structured logging out of the box.
 
-**Tired of boilerplate code and manual handling of resilience, caching, and telemetry for `HttpClient` in your .NET applications?** WebSpark.HttpClientUtility is a powerful yet easy-to-use library designed to streamline your HTTP interactions, making them more robust, observable, and maintainable. Build reliable API clients faster with built-in support for Polly resilience, response caching, concurrent requests, and standardized logging.
+## ⚡ Quick Start
 
-This library provides a comprehensive solution for common challenges faced when working with `HttpClient` in modern .NET 9 applications.
-
-## 📑 Table of Contents
-
-- [Why Choose WebSpark.HttpClientUtility?](#why-choose-websparkhttpclientutility)
-- [Key Features](#key-features)
-- [Installation](#installation)
-- [Getting Started](#getting-started)
-  - [Dependency Injection Setup](#1-dependency-injection-setup)
-  - [Basic Usage](#2-basic-usage-ihttprequestresultservice)
-  - [Using Resilience (Polly)](#3-using-resilience-polly)
-  - [Using Caching](#4-using-caching)
-  - [Using Concurrent HTTP Requests](#5-using-concurrent-http-requests)
-  - [Using FireAndForgetUtility](#6-using-the-fireandforgetutility-for-background-tasks)
-  - [Using CurlCommandSaver](#7-using-curlcommandsaver-for-debugging)
-  - [Azure Integration Example](#8-azure-integration-example)
-  - [Using Web Crawler](#9-using-web-crawler)
-- [Ideal Use Cases](#ideal-use-cases)
-- [Contributing](#contributing)
-- [License](#license)
-
-## Why Choose WebSpark.HttpClientUtility?
-
-- **Reduce Boilerplate:** Abstract away common patterns for request setup, response handling, serialization, and error management. Focus on your application logic, not HTTP plumbing.
-- **Enhance Resilience:** Easily integrate industry-standard Polly policies (like retries and circuit breakers) using simple decorators, making your application more fault-tolerant.
-- **Improve Performance:** Implement response caching with minimal effort via the caching decorator to reduce latency and load on external services.
-- **Boost Observability:** Gain crucial insights with built-in telemetry (request timing) and structured logging, featuring correlation IDs for easy request tracing.
-- **Simplify Concurrency:** Efficiently manage and execute multiple outbound HTTP requests in parallel with the dedicated concurrent processor.
-- **Web Crawling Capabilities:** Build powerful web crawlers with configurable options, sitemap generation, robots.txt compliance, and SignalR integration for real-time progress updates.
-- **Promote Best Practices:** Encourages a structured, testable, and maintainable approach to HTTP communication in .NET, aligning with modern software design principles.
-- **Flexible & Extensible:** Designed with interfaces and decorators for easy customization and extension.
-
-## Key Features
-
-- **Simplified HTTP Client Operations:** Intuitive `IHttpClientService` and `HttpRequestResultService` for clean GET, POST, PUT, DELETE requests.
-- **Streaming Support for Large Responses:** Efficient handling of large HTTP responses with configurable streaming thresholds to optimize memory usage.
-- **OpenTelemetry Integration:** Complete OpenTelemetry support with multiple exporters (Console, Jaeger, OTLP, InMemory) for comprehensive observability.
-- **Structured & Informative Results:** `HttpRequestResult<T>` encapsulates response data, status codes, timing, errors, and correlation IDs in a single, easy-to-use object.
-- **Seamless Polly Integration:** Add resilience patterns (retries, circuit breakers) via the `HttpRequestResultServicePolly` decorator without complex manual setup.
-- **Effortless Response Caching:** Decorate with `HttpRequestResultServiceCache` for automatic in-memory caching of HTTP responses based on configurable durations.
-- **Automatic Basic Telemetry:** `HttpClientServiceTelemetry` and `HttpRequestResultServiceTelemetry` wrappers capture request duration out-of-the-box for performance monitoring.
-- **Efficient Concurrent Processing:** `HttpClientConcurrentProcessor` utility for managing and executing parallel HTTP requests effectively.
-- **Web Crawling Engine:** `ISiteCrawler` interface with implementations including `SiteCrawler` and `SimpleSiteCrawler` for efficient crawling of websites, sitemap generation, and more.
-- **Standardized & Rich Logging:** Utilities (`LoggingUtility`, `ErrorHandlingUtility`) provide correlation IDs, automatic URL sanitization (for security), and structured context for better diagnostics and easier debugging in logs.
-- **Flexible JSON Serialization:** Choose between `System.Text.Json` (`SystemJsonStringConverter`) and `Newtonsoft.Json` (`NewtonsoftJsonStringConverter`) via the `IStringConverter` abstraction.
-- **Safe Background Tasks:** `FireAndForgetUtility` for safely executing non-critical background tasks (like logging or notifications) without awaiting them and potentially blocking request threads.
-- **Easy Debugging:** Option to save requests as cURL commands using `CurlCommandSaver` for simple reproduction and testing outside your application.
-- **Comprehensive Resource Management:** Audited and optimized IDisposable usage throughout the library for proper resource cleanup.
-
-## Installation
-
-Install the package from NuGet:
-
-```powershell
-Install-Package WebSpark.HttpClientUtility
-```
-
-Or via the .NET CLI:
-
+### Install
 ```bash
 dotnet add package WebSpark.HttpClientUtility
 ```
 
-## Getting Started
-
-### 1. Dependency Injection Setup
-
-Register the necessary services in your `Program.cs` (minimal API or ASP.NET Core 6+) or `Startup.cs` (`ConfigureServices` method).
-
+### 5-Minute Example
 ```csharp
-using Microsoft.Extensions.Caching.Memory; // Required for caching
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using WebSpark.HttpClientUtility.ClientService;
-using WebSpark.HttpClientUtility.MemoryCache; // If using MemoryCacheManager
-using WebSpark.HttpClientUtility.RequestResult;
-using WebSpark.HttpClientUtility.StringConverter;
-using WebSpark.HttpClientUtility.FireAndForget; // If using FireAndForgetUtility
-using WebSpark.HttpClientUtility.Concurrent; // If using concurrent processor
+// Program.cs - Register services (ONE LINE!)
+builder.Services.AddHttpClientUtility();
 
-// --- Inside your service configuration ---
-
-// 1. Add HttpClientFactory (essential for managing HttpClient instances)
-services.AddHttpClient();
-
-// 2. Register the core HttpClient service and its dependencies
-// Choose your preferred JSON serializer
-services.AddSingleton<IStringConverter, SystemJsonStringConverter>();
-// Or use Newtonsoft.Json:
-// services.AddSingleton<IStringConverter, NewtonsoftJsonStringConverter>();
-
-// Register the basic service implementation
-services.AddScoped<IHttpClientService, HttpClientService>();
-
-// 3. Register the HttpRequestResult service stack (using decorators)
-services.AddScoped<HttpRequestResultService>(); // Base service - always register
-
-// Register the final IHttpRequestResultService using a factory to build the decorator chain
-services.AddScoped<IHttpRequestResultService>(provider =>
+// YourService.cs - Make requests
+public class WeatherService
 {
-    // Start with the base service instance
-    IHttpRequestResultService service = provider.GetRequiredService<HttpRequestResultService>();
+    private readonly IHttpRequestResultService _httpService;
+    
+    public WeatherService(IHttpRequestResultService httpService) => _httpService = httpService;
 
-    // --- Chain the Optional Decorators (Order Matters!) ---
-    // The order typically goes: Base -> Cache -> Polly -> Telemetry
+    public async Task<WeatherData?> GetWeatherAsync(string city)
+    {
+        var request = new HttpRequestResult<WeatherData>
+        {
+     RequestPath = $"https://api.weather.com/forecast?city={city}",
+     RequestMethod = HttpMethod.Get
+        };
+ 
+        var result = await _httpService.HttpSendRequestResultAsync(request);
+        return result.IsSuccessStatusCode ? result.ResponseResults : null;
+    }
+}
+```
 
-    // Add Caching (Requires IMemoryCache registration)
-    // Uncomment the next lines if you need caching
-    // services.AddMemoryCache(); // Ensure MemoryCache is registered BEFORE this factory
-    // service = new HttpRequestResultServiceCache(
-    //     provider.GetRequiredService<ILogger<HttpRequestResultServiceCache>>(),
-    //     service,
-    //     provider.GetRequiredService<IMemoryCache>() // Get registered IMemoryCache
-    // );
+That's it! You now have:
+- ✅ Automatic correlation IDs for tracing
+- ✅ Structured logging with request/response details
+- ✅ Request timing telemetry
+- ✅ Proper error handling and exception management
+- ✅ Support for .NET 8 LTS and .NET 9
 
-    // Add Polly Resilience (Requires options configuration)
-    // Uncomment the next lines if you need Polly resilience
-    // var pollyOptions = new HttpRequestResultPollyOptions
-    // {
-    //     MaxRetryAttempts = 3,
-    //     RetryDelay = TimeSpan.FromSeconds(1),
-    //     EnableCircuitBreaker = true,
-    //     CircuitBreakerThreshold = 5,
-    //     CircuitBreakerDuration = TimeSpan.FromSeconds(30)
-    // }; // Configure as needed
-    // service = new HttpRequestResultServicePolly(
-    //     provider.GetRequiredService<ILogger<HttpRequestResultServicePolly>>(),
-    //     service,
-    //     pollyOptions
-    // );
+## 🎯 Why Choose This Library?
 
-    // Add Telemetry (Usually the outermost layer)
-    service = new HttpRequestResultServiceTelemetry(
-        provider.GetRequiredService<ILogger<HttpRequestResultServiceTelemetry>>(),
-        service
-    );
+| Challenge | Solution |
+|-----------|----------|
+| **Boilerplate Code** | One-line service registration replaces 50+ lines of manual setup |
+| **Transient Failures** | Built-in Polly integration for retries and circuit breakers |
+| **Repeated API Calls** | Automatic response caching with customizable duration |
+| **Observability** | Correlation IDs, structured logging, and OpenTelemetry support |
+| **Testing** | All services are interface-based for easy mocking |
 
-    // Return the fully decorated service instance
-    return service;
+## 🚀 Features
+
+### Core Features (Always Included)
+- **Simple API** - Intuitive request/response model
+- **Correlation IDs** - Automatic tracking across distributed systems
+- **Structured Logging** - Rich context in all log messages
+- **Telemetry** - Request timing and performance metrics
+- **Error Handling** - Standardized exception processing
+- **Type-Safe** - Strongly-typed request and response models
+
+### Optional Features (Enable as Needed)
+- **Caching** - In-memory response caching
+- **Resilience** - Polly retry and circuit breaker policies
+- **Concurrent Requests** - Parallel request processing
+- **Web Crawling** - Site crawling with robots.txt support
+- **OpenTelemetry** - Full observability integration
+
+## 📚 Common Scenarios
+
+### Enable Caching
+```csharp
+builder.Services.AddHttpClientUtility(options =>
+{
+    options.EnableCaching = true;
 });
 
-// 4. --- Optional Utilities ---
-// services.AddSingleton<IMemoryCacheManager, MemoryCacheManager>(); // If using MemoryCacheManager helper
-// services.AddSingleton<FireAndForgetUtility>(); // If using FireAndForgetUtility
-// services.AddScoped<HttpClientConcurrentProcessor>(); // If using concurrent processor
-
-// Add other application services...
-
-// --- End of service configuration ---
+// In your service
+var request = new HttpRequestResult<Product>
+{
+    RequestPath = "https://api.example.com/products/123",
+    RequestMethod = HttpMethod.Get,
+    CacheDurationMinutes = 10  // Cache for 10 minutes
+};
 ```
 
-- **Important:** Ensure you register `services.AddHttpClient()` and `services.AddMemoryCache()` (if using caching) *before* the factory that registers `IHttpRequestResultService`.
-- Adjust the registration lifetimes (`Scoped`, `Singleton`, `Transient`) based on your application's needs. `Scoped` is generally a good default for services involved in a web request.
-
-### 2. Basic Usage (`IHttpRequestResultService`)
-
-Inject `IHttpRequestResultService` into your service, controller, or component.
-
+### Add Resilience (Retry + Circuit Breaker)
 ```csharp
-using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using WebSpark.HttpClientUtility.RequestResult;
-
-public class MyApiService
+builder.Services.AddHttpClientUtility(options =>
 {
-    private readonly IHttpRequestResultService _requestService;
-    private readonly ILogger<MyApiService> _logger;
-
-    // Inject the service via constructor
-    public MyApiService(IHttpRequestResultService requestService, ILogger<MyApiService> logger)
-    {
-        _requestService = requestService;
-        _logger = logger;
-    }
-
-    public async Task<MyData?> GetDataAsync(string id)
-    {
-        // Define the request details using HttpRequestResult<TResponse>
-        var request = new HttpRequestResult<MyData> // Specify the expected response type
-        {
-            RequestPath = $"https://api.example.com/data/{id}", // The full URL
-            RequestMethod = HttpMethod.Get,
-            // Optional: Set CacheDurationMinutes if the caching decorator is enabled
-            // CacheDurationMinutes = 5,
-            // Optional: Add custom headers if needed
-            // RequestHeaders = new Dictionary<string, string> { { "X-API-Key", "your-key" } }
-        };
-
-        _logger.LogInformation("Attempting to get data for ID: {Id}", id);
-
-        // Send the request using the service
-        // Resilience, Caching, Telemetry are handled automatically by the decorators (if enabled)
-        var result = await _requestService.HttpSendRequestResultAsync(request);
-
-        // Check the outcome using the properties of the result object
-        if (result.IsSuccessStatusCode && result.ResponseResults != null)
-        {
-            _logger.LogInformation("Successfully retrieved data for ID: {Id}. CorrelationId: {CorrelationId}, Duration: {DurationMs}ms",
-                id, result.CorrelationId, result.RequestDurationMilliseconds);
-            return result.ResponseResults; // Access the deserialized data
-        }
-        else
-        {
-            // Log detailed error information provided by the result object
-            _logger.LogError("Failed to retrieve data for ID: {Id}. Status: {StatusCode}, Errors: [{Errors}], CorrelationId: {CorrelationId}, Duration: {DurationMs}ms",
-                id, result.StatusCode, string.Join(", ", result.ErrorList), result.CorrelationId, result.RequestDurationMilliseconds);
-            // Handle the error appropriately (e.g., return null, throw exception)
-            return null;
-        }
-    }
-
-    public async Task<bool> PostDataAsync(MyData data)
-    {
-        var request = new HttpRequestResult<string> // Expecting a string response (e.g., confirmation ID)
-        {
-            RequestPath = "https://api.example.com/data",
-            RequestMethod = HttpMethod.Post,
-            // The 'Payload' object will be automatically serialized to JSON (using the registered IStringConverter)
-            // and sent as the request body.
-            Payload = data
-        };
-
-        _logger.LogInformation("Attempting to post data: {@Data}", data);
-
-        var result = await _requestService.HttpSendRequestResultAsync(request);
-
-        if (result.IsSuccessStatusCode)
-        {
-            _logger.LogInformation("Successfully posted data. Response: {Response}, CorrelationId: {CorrelationId}, Duration: {DurationMs}ms",
-                result.ResponseResults, result.CorrelationId, result.RequestDurationMilliseconds);
-            return true;
-        }
-        else
-        {
-            _logger.LogError("Failed to post data. Status: {StatusCode}, Errors: [{Errors}], CorrelationId: {CorrelationId}, Duration: {DurationMs}ms",
-                result.StatusCode, string.Join(", ", result.ErrorList), result.CorrelationId, result.RequestDurationMilliseconds);
-            return false;
-        }
-    }
-}
-
-// Example Data Transfer Object (DTO)
-public class MyData
-{
-    public int Id { get; set; }
-    public string? Name { get; set; }
-    // Add other properties as needed
-}
-```
-
-### 3. Using Resilience (Polly)
-
-If you registered the `HttpRequestResultServicePolly` decorator (as shown in the DI setup) and configured `HttpRequestResultPollyOptions`, the retry and/or circuit breaker policies will be automatically applied whenever you call `_requestService.HttpSendRequestResultAsync`. No extra code is needed in your service method!
-
-Here's a complete example configuring and using Polly resilience:
-
-```csharp
-// In Program.cs or Startup.cs
-services.AddScoped<IHttpRequestResultService>(provider =>
-{
-    IHttpRequestResultService service = provider.GetRequiredService<HttpRequestResultService>();
-    
-    // Configure Polly options with progressive retry delay and circuit breaker
-    var pollyOptions = new HttpRequestResultPollyOptions
-    {
-        MaxRetryAttempts = 3,
-        RetryDelay = TimeSpan.FromSeconds(1),      // Base delay for first retry
-        RetryStrategy = RetryStrategy.Exponential, // Each subsequent retry will wait longer
-        EnableCircuitBreaker = true,
-        CircuitBreakerThreshold = 5,               // Open circuit after 5 consecutive failures
-        CircuitBreakerDuration = TimeSpan.FromSeconds(30)  // Keep circuit open for 30 seconds
-    };
-    
-    // Add the Polly decorator with the configured options
-    service = new HttpRequestResultServicePolly(
-        provider.GetRequiredService<ILogger<HttpRequestResultServicePolly>>(),
-        service,
-        pollyOptions
-    );
-    
-    return service;
-});
-
-// In your service class:
-public async Task<WeatherForecast?> GetWeatherWithResilience(string city)
-{
-    var request = new HttpRequestResult<WeatherForecast>
-    {
-        RequestPath = $"https://api.weather.example.com/forecast/{city}",
-        RequestMethod = HttpMethod.Get,
-        // You can check if the circuit is open before making a request
-        IsDebugEnabled = true // Enable detailed logging of retries and circuit breaker events
-    };
-    
-    var result = await _requestService.HttpSendRequestResultAsync(request);
-    
-    // The result includes information about retries and circuit breaker state
-    if (result.IsSuccessStatusCode)
-    {
-        _logger.LogInformation(
-            "Weather data retrieved after {RetryCount} retries. Circuit state: {CircuitState}",
-            result.RequestContext.TryGetValue("RetryCount", out var retryCount) ? retryCount : 0,
-            result.RequestContext.TryGetValue("FinalCircuitState", out var state) ? state : "Unknown");
-        
-        return result.ResponseResults;
-    }
-    
-    return null;
-}
-```
-
-### 4. Using Caching
-
-Configure and use the caching decorator to avoid redundant API calls and improve performance:
-
-```csharp
-// In Program.cs or Startup.cs
-services.AddMemoryCache(); // Register IMemoryCache
-
-services.AddScoped<IHttpRequestResultService>(provider =>
-{
-    IHttpRequestResultService service = provider.GetRequiredService<HttpRequestResultService>();
-    
-    // Add caching decorator
-    service = new HttpRequestResultServiceCache(
-        provider.GetRequiredService<ILogger<HttpRequestResultServiceCache>>(),
-        service,
-        provider.GetRequiredService<IMemoryCache>()
-    );
-    
-    return service;
-});
-
-// In your service class:
-public async Task<ProductDetails?> GetProductDetailsWithCaching(string productId)
-{
-    var request = new HttpRequestResult<ProductDetails>
-    {
-        RequestPath = $"https://api.example.com/products/{productId}",
-        RequestMethod = HttpMethod.Get,
-        CacheDurationMinutes = 15 // Cache product details for 15 minutes
-    };
-    
-    var result = await _requestService.HttpSendRequestResultAsync(request);
-    
-    if (result.IsSuccessStatusCode)
-    {
-        // Check if this was a cache hit
-        bool isCacheHit = result.RequestContext.TryGetValue("CacheHit", out var cacheHit) && 
-                          cacheHit is bool hitBool && hitBool;
-        
-        string source = isCacheHit ? "cache" : "API";
-        _logger.LogInformation("Product details retrieved from {Source}", source);
-        
-        if (isCacheHit && result.RequestContext.TryGetValue("CacheAge", out var age))
-        {
-            _logger.LogDebug("Cache entry age: {Age}", age);
-        }
-        
-        return result.ResponseResults;
-    }
-    
-    return null;
-}
-```
-
-### 5. Using Concurrent HTTP Requests
-
-Process multiple HTTP requests in parallel with controlled concurrency:
-
-```csharp
-// In Program.cs or Startup.cs
-services.AddScoped<HttpClientConcurrentProcessor>();
-
-// In your service class:
-public class ProductService
-{
-    private readonly HttpClientConcurrentProcessor _concurrentProcessor;
-    private readonly ILogger<ProductService> _logger;
-    
-    public ProductService(
-        HttpClientConcurrentProcessor concurrentProcessor,
-        ILogger<ProductService> logger)
-    {
-        _concurrentProcessor = concurrentProcessor;
-        _logger = logger;
-    }
-    
-    public async Task<IEnumerable<ProductPrice>> GetPricesForProductsAsync(
-        IEnumerable<string> productIds,
-        CancellationToken cancellationToken = default)
-    {
-        // Configure the concurrent processor
-        _concurrentProcessor.MaxTaskCount = productIds.Count();
-        _concurrentProcessor.MaxDegreeOfParallelism = 5; // Process 5 requests at a time
-        
-        // Create a factory function for generating the request tasks
-        Func<int, HttpClientConcurrentModel> taskFactory = taskId =>
-        {
-            string productId = productIds.ElementAt(taskId - 1); // taskId is 1-based
-            return new HttpClientConcurrentModel(
-                taskId,
-                $"https://api.example.com/products/{productId}/price"
-            );
-        };
-        
-        // Set the task factory and start processing
-        _concurrentProcessor.SetTaskDataFactory(taskFactory);
-        var results = await _concurrentProcessor.ProcessAllAsync(cancellationToken);
-        
-        // Transform the results
-        var prices = new List<ProductPrice>();
-        foreach (var result in results)
-        {
-            if (result.StatusCall.IsSuccessStatusCode && result.StatusCall.ResponseResults != null)
-            {
-                prices.Add(new ProductPrice
-                {
-                    ProductId = productIds.ElementAt(result.TaskId - 1),
-                    Price = result.StatusCall.ResponseResults.Price,
-                    Currency = result.StatusCall.ResponseResults.Currency
-                });
-                
-                _logger.LogInformation(
-                    "Fetched price for product {ProductId} in {Duration}ms",
-                    productIds.ElementAt(result.TaskId - 1),
-                    result.DurationMS);
-            }
-            else
-            {
-                _logger.LogWarning(
-                    "Failed to fetch price for product {ProductId}: {Status} {Error}",
-                    productIds.ElementAt(result.TaskId - 1),
-                    result.StatusCall.StatusCode,
-                    string.Join(", ", result.StatusCall.ErrorList));
-            }
-        }
-        
-        return prices;
-    }
-}
-
-public class ProductPrice
-{
-    public string ProductId { get; set; } = string.Empty;
-    public decimal Price { get; set; }
-    public string Currency { get; set; } = "USD";
-}
-```
-
-### 6. Using the FireAndForgetUtility for Background Tasks
-
-Execute non-critical operations without blocking the main request thread:
-
-```csharp
-// In Program.cs or Startup.cs
-services.AddSingleton<FireAndForgetUtility>();
-
-// In your service class:
-public class NotificationService
-{
-    private readonly IHttpRequestResultService _requestService;
-    private readonly FireAndForgetUtility _fireAndForget;
-    private readonly ILogger<NotificationService> _logger;
-    
-    public NotificationService(
-        IHttpRequestResultService requestService,
-        FireAndForgetUtility fireAndForget,
-        ILogger<NotificationService> logger)
-    {
-        _requestService = requestService;
-        _fireAndForget = fireAndForget;
-        _logger = logger;
-    }
-    
-    public void SendNotificationInBackground(string userId, string message)
-    {
-        // Define the task that will run in the background
-        async Task SendNotificationAsync()
-        {
-            try
-            {
-                var notification = new NotificationModel
-                {
-                    UserId = userId,
-                    Message = message,
-                    Timestamp = DateTime.UtcNow
-                };
-                
-                var request = new HttpRequestResult<string>
-                {
-                    RequestPath = "https://api.notifications.example.com/send",
-                    RequestMethod = HttpMethod.Post,
-                    Payload = notification
-                };
-                
-                var result = await _requestService.HttpSendRequestResultAsync(request);
-                
-                if (!result.IsSuccessStatusCode)
-                {
-                    _logger.LogWarning(
-                        "Failed to send notification to user {UserId}: {Status}",
-                        userId,
-                        result.StatusCode);
-                }
-            }
-            catch (Exception ex)
-            {
-                // The FireAndForgetUtility will already log this exception,
-                // but you can add additional error handling here if needed
-            }
-        }
-        
-        // Fire and forget the notification task
-        _fireAndForget.SafeFireAndForget(
-            SendNotificationAsync(),
-            $"Send notification to user {userId}");
-        
-        _logger.LogInformation(
-            "Notification to user {UserId} queued for background delivery",
-            userId);
-    }
-}
-
-public class NotificationModel
-{
-    public string UserId { get; set; } = string.Empty;
-    public string Message { get; set; } = string.Empty;
-    public DateTime Timestamp { get; set; }
-}
-```
-
-### 7. Using CurlCommandSaver for Debugging
-
-Generate cURL commands for requests to assist with debugging:
-
-```csharp
-// In your service class:
-public class ApiDebugService
-{
-    private readonly IHttpRequestResultService _requestService;
-    private readonly ILogger<ApiDebugService> _logger;
-    
-    public ApiDebugService(
-        IHttpRequestResultService requestService,
-        ILogger<ApiDebugService> logger)
-    {
-        _requestService = requestService;
-        _logger = logger;
-    }
-    
-    public async Task<ProductDetails?> GetProductWithCurlDebug(string productId)
-    {
-        var request = new HttpRequestResult<ProductDetails>
-        {
-            RequestPath = $"https://api.example.com/products/{productId}",
-            RequestMethod = HttpMethod.Get,
-            RequestHeaders = new Dictionary<string, string> 
-            { 
-                { "X-API-Key", "your-api-key" },
-                { "Accept", "application/json" }
-            }
-        };
-        
-        // Generate and save curl command before making the request
-        var curlCommand = CurlCommandSaver.GenerateCurlCommand(
-            request.RequestPath,
-            request.RequestMethod,
-            request.RequestHeaders);
-        
-        // Save to a temporary file for debugging
-        string debugFilePath = Path.Combine(Path.GetTempPath(), $"curl-debug-{Guid.NewGuid()}.txt");
-        await File.WriteAllTextAsync(debugFilePath, curlCommand);
-        
-        _logger.LogDebug("cURL command for debugging saved to {FilePath}", debugFilePath);
-        
-        // Make the actual request
-        var result = await _requestService.HttpSendRequestResultAsync(request);
-        
-        // Add the cURL command to the result context for reference
-        result.RequestContext["CurlCommand"] = curlCommand;
-        
-        if (result.IsSuccessStatusCode)
-        {
-            return result.ResponseResults;
-        }
-        else
-        {
-            _logger.LogError(
-                "Request failed. For debugging, you can use the cURL command saved at {FilePath}",
-                debugFilePath);
-            return null;
-        }
-    }
-}
-```
-
-### 8. Azure Integration Example
-
-When working with Azure services, you can leverage the library's features for resilience and telemetry:
-
-```csharp
-using Azure.Identity;
-using WebSpark.HttpClientUtility.RequestResult;
-
-public class AzureStorageService
-{
-    private readonly IHttpRequestResultService _requestService;
-    private readonly ILogger<AzureStorageService> _logger;
-    private readonly string _storageAccountName;
-    
-    public AzureStorageService(
-        IHttpRequestResultService requestService,
-        ILogger<AzureStorageService> logger,
-        IConfiguration configuration)
-    {
-        _requestService = requestService;
-        _logger = logger;
-        _storageAccountName = configuration["Azure:StorageAccountName"];
-    }
-    
-    public async Task<IEnumerable<BlobMetadata>> ListBlobsAsync(string containerName)
-    {
-        // Get token for Azure Storage
-        var credential = new DefaultAzureCredential();
-        var token = await credential.GetTokenAsync(
-            new Azure.Core.TokenRequestContext(new[] { "https://storage.azure.com/.default" }));
-        
-        // Prepare the request with proper auth headers
-        var request = new HttpRequestResult<BlobListResponse>
-        {
-            RequestPath = $"https://{_storageAccountName}.blob.core.windows.net/{containerName}?restype=container&comp=list",
-            RequestMethod = HttpMethod.Get,
-            RequestHeaders = new Dictionary<string, string>
-            {
-                { "Authorization", $"Bearer {token.Token}" },
-                { "x-ms-version", "2020-10-02" }
-            },
-            CacheDurationMinutes = 5,  // Cache for 5 minutes
-            Retries = 3  // Retry up to 3 times on failure
-        };
-        
-        // Execute the request with built-in resilience
-        var result = await _requestService.HttpSendRequestResultAsync(request);
-        
-        if (result.IsSuccessStatusCode && result.ResponseResults?.Blobs?.Items != null)
-        {
-            return result.ResponseResults.Blobs.Items;
-        }
-        
-        _logger.LogError(
-            "Failed to list blobs in container {Container}: {Status} {Error}",
-            containerName,
-            result.StatusCode,
-            string.Join(", ", result.ErrorList));
-            
-        return Array.Empty<BlobMetadata>();
-    }
-}
-
-// Response models
-public class BlobListResponse
-{
-    public BlobItems? Blobs { get; set; }
-}
-
-public class BlobItems
-{
-    public List<BlobMetadata> Items { get; set; } = new();
-}
-
-public class BlobMetadata
-{
-    public string Name { get; set; } = string.Empty;
-    public string Url { get; set; } = string.Empty;
-    public long Size { get; set; }
-    public string ContentType { get; set; } = string.Empty;
-}
-```
-
-The `SimpleSiteCrawler` implementation offers additional features:
-
-```csharp
-// In Program.cs or Startup.cs
-services.AddHttpClient();
-services.AddScoped<SimpleSiteCrawler>();
-
-// In your service class:
-public class AdvancedCrawlerService
-{
-    private readonly SimpleSiteCrawler _crawler;
-    private readonly ILogger<AdvancedCrawlerService> _logger;
-    
-    public AdvancedCrawlerService(
-        SimpleSiteCrawler crawler,
-        ILogger<AdvancedCrawlerService> logger)
-    {
-        _crawler = crawler;
-        _logger = logger;
-    }
-    
-    public async Task<string> ArchiveWebsiteAsync(
-        string startUrl,
-        string outputDirectory,
-        CancellationToken cancellationToken = default)
-    {
-        var options = new CrawlerOptions
-        {
-            MaxPages = 1000,
-            MaxDepth = 5,
-            RespectRobotsTxt = true,
-            SavePagesToDisk = true, // Enable saving pages to disk
-            OutputDirectory = outputDirectory,
-            AdaptiveRateLimit = true, // Automatically adjust request rate based on server response
-            OptimizeMemoryUsage = true, // Enable for large crawls
-            IncludePatterns = new List<string> { @"\.html$", @"\.aspx$", @"/$" }, // Only HTML pages
-            ExcludePatterns = new List<string> { @"/login", @"/logout", @"/admin" } // Skip sensitive areas
-        };
-        
-        _logger.LogInformation(
-            "Starting website archival of {Url} to {Directory}",
-            startUrl, outputDirectory);
-            
-        var result = await _crawler.CrawlAsync(startUrl, options, cancellationToken);
-        
-        // Extract performance metrics
-        var successCount = result.CrawlResults.Count(r => r.StatusCode == HttpStatusCode.OK);
-        var errorCount = result.CrawlResults.Count - successCount;
-        
-        _logger.LogInformation(
-            "Archival completed: {SuccessCount} pages saved, {ErrorCount} errors",
-            successCount, errorCount);
-            
-        return Path.Combine(outputDirectory, "index.html");
-    }
-}
-```
-
-## New Features in v1.0.10
-
-### OpenTelemetry Integration
-
-The library now includes comprehensive OpenTelemetry support for observability:
-
-```csharp
-// Add OpenTelemetry with multiple exporters
-services.AddOpenTelemetry()
-    .WithTracing(builder =>
-    {
-        builder
-            .SetResourceBuilder(ResourceBuilder.CreateDefault()
-                .AddService("MyApp", "1.0.0"))
-            .AddSource("MyApp")
-            .AddHttpClientInstrumentation()
-            .AddConsoleExporter()
-            .AddOtlpExporter(options =>
-            {
-                options.Endpoint = new Uri("http://localhost:4317");
-                options.Protocol = OtlpExportProtocol.Grpc;
-            });
-    });
-```
-
-### Streaming Support for Large Responses
-
-Efficiently handle large HTTP responses with automatic streaming:
-
-```csharp
-// Configure streaming threshold (default: 10MB)
-services.Configure<HttpClientOptions>(options =>
-{
-    options.StreamingThreshold = 5 * 1024 * 1024; // 5MB threshold
-});
-
-// The HttpRequestResultService automatically uses streaming for large responses
-var result = await httpRequestResultService.GetAsync<MyLargeDataModel>(
-    "https://api.example.com/large-dataset");
-
-if (result.IsSuccess)
-{
-    // Large response handled efficiently with streaming
-    var data = result.ResponseObject;
-}
-```
-
-### Enhanced Resource Management
-
-All IDisposable resources are now properly managed with comprehensive cleanup:
-
-```csharp
-// Automatic resource cleanup in background tasks
-await FireAndForgetUtility.ExecuteAsync(async () =>
-{
-    // Long-running background operation
-    // Resources are automatically cleaned up
+    options.EnableResilience = true;
+  options.ResilienceOptions.MaxRetryAttempts = 3;
+    options.ResilienceOptions.RetryDelay = TimeSpan.FromSeconds(2);
 });
 ```
 
-## Ideal Use Cases
+### All Features Enabled
+```csharp
+builder.Services.AddHttpClientUtilityWithAllFeatures();
+```
 
-- Building robust API clients for internal or external services.
-- Simplifying HTTP interactions in microservices.
-- Adding resilience and caching to existing applications with minimal refactoring.
-- Creating web crawlers for content indexing, site analysis, or data gathering.
-- Generating sitemaps for SEO optimization.
-- Any .NET application that needs to make reliable and observable HTTP calls.
+## 📖 Documentation
 
-## Contributing
+- **[Getting Started Guide](docs/GettingStarted.md)** - Complete walkthrough
+- **[Configuration Options](docs/Configuration.md)** - All settings explained
+- **[Caching Guide](docs/Caching.md)** - Response caching strategies
+- **[Resilience Guide](docs/Resilience.md)** - Retry and circuit breaker patterns
+- **[Web Crawling](docs/WebCrawling.md)** - Site crawler features
+- **[Migration Guide](docs/Migration.md)** - From raw HttpClient
+- **[API Reference](docs/ApiReference.md)** - Complete API documentation
 
-Contributions are welcome! If you find a bug, have a feature request, or want to improve the library, please feel free to:
+## 🎓 Sample Projects
 
-1. Check for existing issues or open a new issue.
-2. Fork the repository.
-3. Create a new branch (`git checkout -b feature/your-feature-name`).
-4. Make your changes and add tests if applicable.
-5. Ensure the code builds and tests pass.
-6. Commit your changes (`git commit -am 'feat: Add some amazing feature'`).
-7. Push to the branch (`git push origin feature/your-feature-name`).
-8. Create a new Pull Request against the `main` branch.
+Explore working examples in the [samples directory](samples/):
+- **BasicUsage** - Simple GET/POST requests
+- **WithCaching** - Response caching implementation
+- **WithResilience** - Retry and circuit breaker patterns
+- **ConcurrentRequests** - Parallel request processing
+- **WebCrawler** - Site crawling example
 
-## License
+## 🆚 Comparison to Alternatives
+
+| Feature | WebSpark.HttpClientUtility | Raw HttpClient | RestSharp | Refit |
+|---------|---------------------------|----------------|-----------|-------|
+| Setup Complexity | ⭐ One line | ⭐⭐⭐ Manual | ⭐⭐ Low | ⭐⭐ Low |
+| Built-in Caching | ✅ Yes | ❌ Manual | ❌ Manual | ⚠️ Plugin |
+| Built-in Resilience | ✅ Yes | ❌ Manual | ❌ Manual | ❌ Manual |
+| Telemetry | ✅ Built-in | ⚠️ Manual | ⚠️ Manual | ⚠️ Manual |
+| Type Safety | ✅ Yes | ⚠️ Partial | ✅ Yes | ✅ Yes |
+| Web Crawling | ✅ Yes | ❌ No | ❌ No | ❌ No |
+| .NET 8 LTS Support | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+
+## 🤝 Contributing
+
+Contributions are welcome! See our [Contributing Guide](CONTRIBUTING.md) for details.
+
+1. Fork the repository
+2. Create a feature branch
+3. Add tests for your changes
+4. Ensure all tests pass
+5. Submit a pull request
+
+## 📊 Project Stats
+
+- **252+ Unit Tests** - 100% passing
+- **Supports .NET 8 LTS & .NET 9**
+- **MIT Licensed** - Free for commercial use
+- **Active Maintenance** - Regular updates
+
+## 📦 Related Packages
+
+- [WebSpark.HttpClientUtility.Testing](https://nuget.org/packages/WebSpark.HttpClientUtility.Testing) - Test helpers (coming soon)
+
+## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🔗 Links
+
+- [GitHub Repository](https://github.com/markhazleton/httpclientutility)
+- [NuGet Package](https://www.nuget.org/packages/WebSpark.HttpClientUtility)
+- [Changelog](CHANGELOG.md)
+- [Issue Tracker](https://github.com/markhazleton/httpclientutility/issues)
+- [Discussions](https://github.com/markhazleton/httpclientutility/discussions)
+
+---
+
+**Questions or Issues?** [Open an issue](https://github.com/markhazleton/httpclientutility/issues) or [start a discussion](https://github.com/markhazleton/httpclientutility/discussions)!
