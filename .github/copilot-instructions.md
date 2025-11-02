@@ -48,19 +48,29 @@ dotnet test --configuration Release --logger "trx" --collect:"XPlat Code Coverag
 
 ### Publishing Workflow
 
-**IMPORTANT**: This is a published NuGet package. Version is controlled in `.csproj` files.
+**CRITICAL**: This is a published NuGet package. Version is controlled in `.csproj` files.
+
+**ALL NuGet package publications MUST go through GitHub Actions CI/CD pipeline. Manual publishing is strictly prohibited.**
+
+#### Standard Release Process (ONLY Way to Publish):
 
 1. Update version in `WebSpark.HttpClientUtility/WebSpark.HttpClientUtility.csproj` (Version property)
 2. Update `CHANGELOG.md` following Keep a Changelog format
 3. Commit changes: `git commit -m "chore: bump version to X.Y.Z"`
 4. Tag release: `git tag vX.Y.Z && git push origin vX.Y.Z`
-5. GitHub Actions (`.github/workflows/publish-nuget.yml`) automatically:
+5. GitHub Actions (`.github/workflows/publish-nuget.yml`) **automatically and exclusively**:
    - Builds and tests
    - Packs `.nupkg` and `.snupkg` (symbol package)
    - Publishes to NuGet.org if tag starts with `v*.*.*`
    - Creates GitHub release with CHANGELOG
 
-**Never manually increment version in code changes** - separate version bumps from feature work.
+**NEVER**:
+- ❌ Manually upload packages to NuGet.org
+- ❌ Use `dotnet nuget push` locally
+- ❌ Bypass the CI/CD pipeline
+- ❌ Manually increment version in code changes - separate version bumps from feature work
+
+**The GitHub Actions workflow is the single source of truth for all NuGet package releases. This ensures consistent builds, proper testing, symbol packages, and audit trails.**
 
 ## Critical Conventions
 
