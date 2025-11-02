@@ -112,13 +112,13 @@ builder.Services.AddHttpClientUtilityWithAllFeatures();
 
 ## 📖 Documentation
 
-- **[Getting Started Guide](docs/GettingStarted.md)** - Complete walkthrough
-- **[Configuration Options](docs/Configuration.md)** - All settings explained
-- **[Caching Guide](docs/Caching.md)** - Response caching strategies
-- **[Resilience Guide](docs/Resilience.md)** - Retry and circuit breaker patterns
-- **[Web Crawling](docs/WebCrawling.md)** - Site crawler features
-- **[Migration Guide](docs/Migration.md)** - From raw HttpClient
-- **[API Reference](docs/ApiReference.md)** - Complete API documentation
+- **[Getting Started Guide](documentation/GettingStarted.md)** - Complete walkthrough
+- **[Configuration Options](documentation/Configuration.md)** - All settings explained
+- **[Caching Guide](documentation/Caching.md)** - Response caching strategies
+- **[Resilience Guide](documentation/Resilience.md)** - Retry and circuit breaker patterns
+- **[Web Crawling](documentation/WebCrawling.md)** - Site crawler features
+- **[Migration Guide](documentation/Migration.md)** - From raw HttpClient
+- **[API Reference](documentation/ApiReference.md)** - Complete API documentation
 
 ## 🎓 Sample Projects
 
@@ -143,7 +143,7 @@ Explore working examples in the [samples directory](samples/):
 
 ## 🤝 Contributing
 
-Contributions are welcome! See our [Contributing Guide](docs/CONTRIBUTING.md) for details.
+Contributions are welcome! See our [Contributing Guide](documentation/CONTRIBUTING.md) for details.
 
 1. Fork the repository
 2. Create a feature branch

@@ -46,23 +46,23 @@ These are historical process docs that are no longer relevant:
 
 ---
 
-### Category 2: MOVE to /docs/archive/
+### Category 2: MOVE to /documentation/archive/
 Useful historical context but not current:
 
 ```
-📦 MOVE to /docs/archive/:
+📦 MOVE to /documentation/archive/:
 - QUICK_PUBLISH_CHECKLIST.md            # Keep as reference but archive
 ```
 
 ---
 
-### Category 3: MOVE to /docs/
-Active documentation that belongs in docs folder:
+### Category 3: MOVE to /documentation/
+Active documentation that belongs in documentation folder:
 
 ```
-📁 MOVE to /docs/:
-- CONTRIBUTING.md  → /docs/CONTRIBUTING.md
-- SECURITY.md      → /docs/SECURITY.md
+📁 MOVE to /documentation/:
+- CONTRIBUTING.md  → /documentation/CONTRIBUTING.md
+- SECURITY.md      → /documentation/SECURITY.md
 ```
 
 **Note**: Update README.md links after moving.
@@ -153,7 +153,7 @@ Files needing clarification:
 ├── 📁 artifacts/                         # Build artifacts
 ├── 📁 copilot/                           # AI session docs
 │   └── session-2025-11-02/
-├── 📁 docs/                              # All documentation
+├── 📁 documentation/                     # All documentation
 │   ├── GettingStarted.md
 │   ├── CONTRIBUTING.md                   ← MOVED
 │   ├── SECURITY.md                       ← MOVED
@@ -186,17 +186,17 @@ git checkout main
 
 ### Step 3: Create Archive Directory
 ```powershell
-New-Item -ItemType Directory -Path "docs/archive" -Force
+New-Item -ItemType Directory -Path "documentation/archive" -Force
 ```
 
 ### Step 4: Move Files
 ```powershell
-# Move to docs
-git mv CONTRIBUTING.md docs/
-git mv SECURITY.md docs/
+# Move to documentation
+git mv CONTRIBUTING.md documentation/
+git mv SECURITY.md documentation/
 
 # Move to archive
-git mv QUICK_PUBLISH_CHECKLIST.md docs/archive/
+git mv QUICK_PUBLISH_CHECKLIST.md documentation/archive/
 ```
 
 ### Step 5: Delete Outdated Files
@@ -217,8 +217,8 @@ git rm RELEASE_SUMMARY_v1.3.1.md
 
 ### Step 6: Update README.md Links
 Update any broken links that referenced moved files:
-- `CONTRIBUTING.md` → `docs/CONTRIBUTING.md`
-- `SECURITY.md` → `docs/SECURITY.md`
+- `CONTRIBUTING.md` → `documentation/CONTRIBUTING.md`
+- `SECURITY.md` → `documentation/SECURITY.md`
 
 ### Step 7: Investigate Program.cs
 ```powershell
@@ -244,7 +244,7 @@ git rm build_output.txt
 git add .
 git commit -m "chore: clean up repository root directory
 
-- Move CONTRIBUTING.md and SECURITY.md to docs/
+- Move CONTRIBUTING.md and SECURITY.md to documentation/
 - Archive QUICK_PUBLISH_CHECKLIST.md
 - Remove 12 outdated process/release documents
 - Add build artifacts to .gitignore
