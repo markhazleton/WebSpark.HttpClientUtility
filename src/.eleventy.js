@@ -2,12 +2,6 @@ export default function(eleventyConfig) {
   // Ignore cache file from watch to prevent infinite rebuild loop
   eleventyConfig.watchIgnores.add("./_data/nuget-cache.json");
   
-  // Determine if production build
-  const isProduction = process.env.ELEVENTY_ENV === "production";
-  
-  console.log(`🔧 Build mode: ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'}`);
-  console.log(`🔧 PathPrefix will be: ${isProduction ? '/WebSpark.HttpClientUtility/' : '/'}`);
-  
   // Set server options
   eleventyConfig.setServerOptions({
     showAllHosts: true
@@ -18,6 +12,20 @@ export default function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "assets/images/favicon.ico": "favicon.ico" });
   eleventyConfig.addPassthroughCopy({ ".nojekyll": ".nojekyll" });
   eleventyConfig.addPassthroughCopy({ "robots.txt": "robots.txt" });
+  
+  // Add relativePath filter for environment-independent asset paths
+  eleventyConfig.addFilter("relativePath", function(path) {
+    // Get the current page URL (e.g., "/features/" or "/")
+    const pageUrl = this.page?.url || "/";
+    
+    // If at root level, no ../ needed
+    if (pageUrl === "/" || pageUrl === "/index.html") {
+      return path.startsWith("/") ? path.slice(1) : path;
+    }
+    
+    // For pages in subdirectories, add ../ prefix
+    return path.startsWith("/") ? ".." + path : "../" + path;
+  });
   
   // Add filters
   eleventyConfig.addFilter("formatNumber", function(value) {
@@ -54,8 +62,7 @@ export default function(eleventyConfig) {
     },
     templateFormats: ["md", "njk", "html"],
     markdownTemplateEngine: "njk",
-    htmlTemplateEngine: "njk",
-    // GitHub Pages serves repo at /WebSpark.HttpClientUtility/ subdirectory
-    pathPrefix: isProduction ? "/WebSpark.HttpClientUtility/" : "/"
+    htmlTemplateEngine: "njk"
+    // No pathPrefix needed - using relative paths for portability
   };
 }

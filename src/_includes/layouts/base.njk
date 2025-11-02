@@ -21,11 +21,11 @@
   <link rel="canonical" href="{{ site.url }}{{ page.url }}">
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="{{ '/assets/css/main.css' | url }}">
-  <link rel="stylesheet" href="{{ '/assets/css/prism-tomorrow.css' | url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/main.css' | relativePath }}">
+  <link rel="stylesheet" href="{{ '/assets/css/prism-tomorrow.css' | relativePath }}">
   
   <!-- Favicon -->
-  <link rel="icon" href="{{ '/favicon.ico' | url }}">
+  <link rel="icon" href="{{ '/favicon.ico' | relativePath }}">
 </head>
 <body>
   {% include "components/header.njk" %}
@@ -39,6 +39,6 @@
   {% include "components/footer.njk" %}
   
   <!-- Scripts -->
-  <script src="{{ '/assets/js/prism.min.js' | url }}" defer></script>
+  <script src="{{ '/assets/js/prism.min.js' | relativePath }}" defer></script>
 </body>
 </html>
