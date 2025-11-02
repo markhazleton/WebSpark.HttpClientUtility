@@ -22,42 +22,58 @@
 
 This comprehensive guide documents the complete configuration approach discovered through implementing the static documentation site. It addresses the critical requirement to support **both local development and GitHub Pages deployment** with a single codebase.
 
-### Overview: The Dual-Environment Challenge
+### Overview: The Solution Evolution
 
-**The Problem**: 
-- GitHub Pages serves from subdirectory: `/WebSpark.HttpClientUtility/`
-- Local development needs root path: `/`
-- Same configuration file must support both
+**Initial Challenge**: 
+- GitHub Pages serves user repos from subdirectory: `/WebSpark.HttpClientUtility/`
+- Local development typically uses root path: `/`
+- Need single codebase to work in both environments
 
-**The Solution**: Environment-aware configuration using `ELEVENTY_ENV` variable
+**First Solution Attempt**: Environment-aware `pathPrefix` with `ELEVENTY_ENV` variable
+- Required environment variable management
+- Different build configurations for dev vs production
+- Complex troubleshooting of environment mismatches
 
-### Critical Discovery #1: pathPrefix Dual Behavior
+**Final Solution** (Implemented): Custom `relativePath` filter
+- Uses relative paths calculated from page depth
+- No environment variables needed
+- Works identically in all environments
+- Simpler mental model and easier validation
 
-Eleventy's `pathPrefix` setting affects **TWO things simultaneously**:
+### Critical Discovery #1: Relative Paths vs pathPrefix (Final Solution)
 
-1. **URL Generation**: Prepends to all URLs (when using `url` filter)
-2. **File Output Location**: Changes where files are written in output directory
+**Problem with pathPrefix**: Eleventy's `pathPrefix` setting affects **both URL generation AND file output location**, requiring complex environment-aware configuration:
 
-**Example**:
 ```javascript
-// When pathPrefix = "/WebSpark.HttpClientUtility/"
-pathPrefix: "/WebSpark.HttpClientUtility/"
-// Results in:
-// - URLs: /WebSpark.HttpClientUtility/features/
-// - Files: docs/WebSpark.HttpClientUtility/features/index.html
-
-// When pathPrefix = "/"
-pathPrefix: "/"
-// Results in:
-// - URLs: /features/
-// - Files: docs/features/index.html
+// Environment-dependent approach (replaced)
+const isProduction = process.env.ELEVENTY_ENV === "production";
+const pathPrefix = isProduction ? "/WebSpark.HttpClientUtility/" : "/";
+// Required environment variables, different configs, hard to validate
 ```
 
-**Impact**: Cannot use fixed pathPrefix for both environments - must be dynamic.
+**Solution**: Custom `relativePath` filter (final implementation):
 
-### Critical Discovery #2: Template URL Filtering
+```javascript
+// In .eleventy.js
+eleventyConfig.addFilter("relativePath", function(path) {
+  const pageUrl = this.page?.url || "/";
+  if (pageUrl === "/" || pageUrl === "/index.html") {
+    return path.startsWith("/") ? path.slice(1) : path; // Root: assets/css/main.css
+  }
+  return path.startsWith("/") ? ".." + path : "../" + path; // Subdir: ../assets/css/main.css
+});
+```
 
-All asset and navigation URLs in templates **MUST** use the `url` filter:
+**Results**:
+- Homepage HTML: `<link rel="stylesheet" href="assets/css/main.css">` (no ../)
+- Features HTML: `<link rel="stylesheet" href="../assets/css/main.css">` (with ../)
+- Works identically everywhere without configuration
+
+**Impact**: Eliminates environment complexity, simpler validation, more portable code.
+
+### Critical Discovery #2: Template Path Filtering (relativePath)
+
+All asset and navigation URLs in templates **MUST** use the `relativePath` filter:
 
 **Template Example (base.njk)**:
 ```njk
@@ -65,14 +81,18 @@ All asset and navigation URLs in templates **MUST** use the `url` filter:
 <link rel="stylesheet" href="/assets/css/main.css">
 <a href="/features/">Features</a>
 
-<!-- RIGHT - Uses url filter -->
-<link rel="stylesheet" href="{{ '/assets/css/main.css' | url }}">
-<a href="{{ '/features/' | url }}">Features</a>
+<!-- RIGHT - Uses relativePath filter -->
+<link rel="stylesheet" href="{{ '/assets/css/main.css' | relativePath }}">
+<a href="{{ '/features/' | relativePath }}">Features</a>
 ```
 
-**Why**: The `url` filter applies pathPrefix automatically. Without it, paths break in production.
+**Why**: The `relativePath` filter calculates correct relative path based on page depth. Without it, paths break for subdirectory pages.
 
-**Files to Audit**: ALL template files must use url filter:
+**How It Works**:
+- Root pages (`/`) → Returns `assets/css/main.css` (strips leading slash)
+- Subdirectory pages (`/features/`) → Returns `../assets/css/main.css` (prepends ../)
+
+**Files to Audit**: ALL template files must use relativePath filter:
 - `_includes/layouts/base.njk`
 - `_includes/components/header.njk`
 - `_includes/components/footer.njk`
@@ -120,30 +140,18 @@ eleventyConfig.watchIgnores.add("./_data/nuget-cache.json");
 
 **Pattern**: Any file written during build MUST be added to `watchIgnores`.
 
-### Critical Discovery #5: Environment-Aware Asset Copying
+### Critical Discovery #5: Simplified Asset Copying (No Environment Logic)
 
-Passthrough copy destinations must match pathPrefix structure:
+With relative paths, passthrough copy is simple and consistent:
 
 ```javascript
-const isProduction = process.env.ELEVENTY_ENV === "production";
-const prefix = isProduction ? "WebSpark.HttpClientUtility" : "";
-
-if (prefix) {
-  // Production: Copy to subdirectory
-  eleventyConfig.addPassthroughCopy({ "assets": `${prefix}/assets` });
-  eleventyConfig.addPassthroughCopy({ 
-    "assets/images/favicon.ico": `${prefix}/favicon.ico" 
-  });
-} else {
-  // Development: Copy to root
-  eleventyConfig.addPassthroughCopy("assets");
-  eleventyConfig.addPassthroughCopy({ 
-    "assets/images/favicon.ico": "favicon.ico" 
-  });
-}
+// Same for all environments - no conditional logic needed
+eleventyConfig.addPassthroughCopy("assets");
+eleventyConfig.addPassthroughCopy(".nojekyll");
+eleventyConfig.addPassthroughCopy("robots.txt");
 ```
 
-**Why**: Assets must land in same directory structure as HTML files, which varies by environment.
+**Why**: Relative paths mean assets always copied to same location (`docs/assets/`). HTML files reference them with relative paths (`assets/` or `../assets/`) based on page depth, so no environment-specific configuration needed.
 
 ### Complete .eleventy.js Configuration
 
@@ -154,43 +162,27 @@ export default function(eleventyConfig) {
   // 1. CRITICAL: Ignore cache file to prevent infinite rebuild loop
   eleventyConfig.watchIgnores.add("./_data/nuget-cache.json");
   
-  // 2. Environment detection (core of dual-mode support)
-  const isProduction = process.env.ELEVENTY_ENV === "production";
-  const prefix = isProduction ? "WebSpark.HttpClientUtility" : "";
+  // 2. Relative path filter (replaces environment-aware pathPrefix)
+  eleventyConfig.addFilter("relativePath", function(path) {
+    const pageUrl = this.page?.url || "/";
+    if (pageUrl === "/" || pageUrl === "/index.html") {
+      return path.startsWith("/") ? path.slice(1) : path;
+    }
+    return path.startsWith("/") ? ".." + path : "../" + path;
+  });
   
-  // 3. Logging for debugging
-  console.log(`🔧 Build mode: ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'}`);
-  console.log(`🔧 PathPrefix: ${isProduction ? '/WebSpark.HttpClientUtility/' : '/'}`);
-  console.log(`🔧 Output: ../docs${prefix ? '/' + prefix : ''}`);
+  // 3. Development server configuration
+  eleventyConfig.setServerOptions({
+    showAllHosts: true,
+    port: 8080
+  });
   
-  // 4. Development server configuration
-  if (!isProduction) {
-    eleventyConfig.setServerOptions({
-      showAllHosts: true,
-      port: 8080
-    });
-  }
+  // 4. Passthrough copy (same for all environments)
+  eleventyConfig.addPassthroughCopy("assets");
+  eleventyConfig.addPassthroughCopy(".nojekyll");
+  eleventyConfig.addPassthroughCopy("robots.txt");
   
-  // 5. CRITICAL: Environment-aware asset copying
-  if (prefix) {
-    // Production: assets → docs/WebSpark.HttpClientUtility/assets
-    eleventyConfig.addPassthroughCopy({ "assets": `${prefix}/assets` });
-    eleventyConfig.addPassthroughCopy({ 
-      "assets/images/favicon.ico": `${prefix}/favicon.ico` 
-    });
-  } else {
-    // Development: assets → docs/assets
-    eleventyConfig.addPassthroughCopy("assets");
-    eleventyConfig.addPassthroughCopy({ 
-      "assets/images/favicon.ico": "favicon.ico" 
-    });
-  }
-  
-  // 6. Static files (always at root for GitHub Pages)
-  eleventyConfig.addPassthroughCopy({ ".nojekyll": ".nojekyll" });
-  eleventyConfig.addPassthroughCopy({ "robots.txt": "robots.txt" });
-  
-  // 7. Custom filters for templates
+  // 5. Custom filters for templates
   eleventyConfig.addFilter("formatNumber", function(value) {
     if (!value) return "0";
     const num = parseInt(value);
@@ -212,7 +204,7 @@ export default function(eleventyConfig) {
     return new Date(dateString).toISOString();
   });
   
-  // 8. Return configuration with environment-aware pathPrefix
+  // 6. Return configuration (no pathPrefix needed)
   return {
     dir: {
       input: ".",           // Current directory (src/)
@@ -222,9 +214,8 @@ export default function(eleventyConfig) {
     },
     templateFormats: ["md", "njk", "html"],
     markdownTemplateEngine: "njk",  // Process Markdown with Nunjucks
-    htmlTemplateEngine: "njk",
-    // CRITICAL: pathPrefix changes based on environment
-    pathPrefix: isProduction ? "/WebSpark.HttpClientUtility/" : "/"
+    htmlTemplateEngine: "njk"
+    // No pathPrefix - using relative paths via relativePath filter
   };
 }
 ```
@@ -242,8 +233,7 @@ export default function(eleventyConfig) {
   "scripts": {
     "clean": "rimraf ../docs",
     "dev": "eleventy --serve",
-    "build": "npm run clean && npm run copy:prism && cross-env ELEVENTY_ENV=production eleventy",
-    "build:prod": "npm run clean && npm run copy:prism && cross-env ELEVENTY_ENV=production eleventy",
+    "build": "npm run clean && npm run copy:prism && eleventy",
     "copy:prism": "node scripts/copy-prism.js",
     "test:links": "hyperlink ../docs",
     "test:html": "htmlhint ../docs/**/*.html",
@@ -259,7 +249,6 @@ export default function(eleventyConfig) {
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0",
-    "cross-env": "^10.1.0",
     "htmlhint": "^1.1.4",
     "hyperlink": "^5.0.4",
     "markdown-it": "^14.1.0",
@@ -270,9 +259,11 @@ export default function(eleventyConfig) {
 ```
 
 **Key Scripts**:
-- `npm run dev` - Local development (no ELEVENTY_ENV set → defaults to development)
-- `npm run build` - Production build (sets ELEVENTY_ENV=production via cross-env)
+- `npm run dev` - Local development with live reload
+- `npm run build` - Production build (same output as dev, but clean first)
 - `npm run copy:prism` - Bundles Prism.js with language support
+
+**Note**: No `cross-env` or `ELEVENTY_ENV` needed - relative paths work everywhere.
 
 ### Local Development Workflow
 
@@ -328,43 +319,38 @@ npm run build
 **What Happens**:
 1. `npm run clean` - Removes entire `docs/` folder
 2. `npm run copy:prism` - Generates Prism.js bundle
-3. `cross-env ELEVENTY_ENV=production eleventy` - Sets environment variable and builds
-4. `ELEVENTY_ENV = "production"` → production mode
-5. `pathPrefix = "/WebSpark.HttpClientUtility/"` (subdirectory)
-6. Files written to `docs/WebSpark.HttpClientUtility/` subdirectory:
-   - `docs/WebSpark.HttpClientUtility/index.html`
-   - `docs/WebSpark.HttpClientUtility/features/index.html`
-   - `docs/WebSpark.HttpClientUtility/assets/css/main.css`
-7. Assets copied to `docs/WebSpark.HttpClientUtility/assets/`
-8. All URLs include `/WebSpark.HttpClientUtility/` prefix
-9. Ready for GitHub Pages deployment
+3. `eleventy` - Builds site with relative paths
+4. Files written to `docs/` at root level (same as dev)
+5. Homepage uses: `assets/css/main.css` (no ../)
+6. Subdirectory pages use: `../assets/css/main.css` (with ../)
+7. Assets copied to `docs/assets/`
+8. Ready for GitHub Pages deployment
 
 **Output Structure**:
 ```
 docs/
 ├── .nojekyll                     # GitHub Pages: disable Jekyll
 ├── robots.txt                    # SEO: sitemap reference
-└── WebSpark.HttpClientUtility/   # Production site root
-    ├── index.html                # Homepage
-    ├── favicon.ico               # Site icon
-    ├── features/
-    │   └── index.html
-    ├── getting-started/
-    │   └── index.html
-    ├── examples/
-    │   └── index.html
-    ├── api-reference/
-    │   └── index.html
-    ├── about/
-    │   └── index.html
-    └── assets/
-        ├── css/
-        │   ├── main.css
-        │   └── prism-tomorrow.css
-        ├── js/
-        │   └── prism.min.js
-        └── images/
-            └── favicon.ico
+├── index.html                    # Homepage (uses assets/css/main.css)
+├── favicon.ico                   # Site icon
+├── features/
+│   └── index.html                # (uses ../assets/css/main.css)
+├── getting-started/
+│   └── index.html
+├── examples/
+│   └── index.html
+├── api-reference/
+│   └── index.html
+├── about/
+│   └── index.html
+└── assets/
+    ├── css/
+    │   ├── main.css
+    │   └── prism-tomorrow.css
+    ├── js/
+    │   └── prism.min.js
+    └── images/
+        └── favicon.ico
 ```
 
 ### Testing Production Build Locally
@@ -377,7 +363,7 @@ docs/
 npm run build
 
 # 2. Navigate to production output
-cd ../docs/WebSpark.HttpClientUtility
+cd ../docs
 
 # 3. Start local server (Python 3)
 python -m http.server 8080
@@ -391,14 +377,15 @@ npx http-server -p 8080
 
 **Testing Checklist**:
 - [ ] Homepage loads at http://localhost:8080/
-- [ ] All navigation links work (should navigate within subdirectory)
-- [ ] CSS loads correctly
+- [ ] All navigation links work
+- [ ] CSS loads correctly (check DevTools: assets/css/main.css for homepage)
 - [ ] JavaScript loads
 - [ ] Syntax highlighting works
 - [ ] Images display
 - [ ] NuGet data displays
 - [ ] Responsive design works
 - [ ] Browser console shows no errors
+- [ ] Subdirectory pages load correctly (check DevTools: ../assets/css/main.css)
 
 ### GitHub Pages Deployment
 
@@ -557,27 +544,30 @@ npm run build
 
 **Symptoms**: Works locally but not on GitHub Pages (or vice versa)
 
-**Cause**: pathPrefix differences between environments not handled correctly
+**Cause**: Browser cache or deployment delay
 
 **Solution**:
 ```bash
-# 1. Test production build locally (see "Testing Production Build Locally")
+# 1. Hard refresh to clear browser cache
+# Ctrl+F5 or Cmd+Shift+R
+
+# 2. Test production build locally (see "Testing Production Build Locally")
 npm run build
-cd ../docs/WebSpark.HttpClientUtility
+cd ../docs
 python -m http.server 8080
 # Open http://localhost:8080/
 
-# 2. Compare behavior
+# 3. Compare behavior (should be identical everywhere)
 # Local dev: http://localhost:8080/ (from npm run dev)
 # Local prod: http://localhost:8080/ (from http-server)
 # GitHub Pages: https://markhazleton.github.io/WebSpark.HttpClientUtility/
-# All should work identically
+# All use same relative paths, so behavior is identical
 
-# 3. Check browser console for errors
+# 4. Check browser console for errors
 # F12 → Console tab
 # Look for 404s, CORS errors, etc.
 
-# 4. Verify GitHub Pages settings
+# 5. Verify GitHub Pages settings
 # Settings → Pages → Folder: /docs
 ```
 

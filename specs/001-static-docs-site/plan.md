@@ -356,23 +356,54 @@ fs.writeFileSync('assets/js/prism.min.js', prismCore + '\n' + languageCode);
 
 **Key Learning**: Use real npm packages with proper bundling - avoid placeholder files for production features.
 
+#### 7. Relative Paths vs pathPrefix (Final Decision)
+
+**Discovery**: Relative paths are simpler and more portable than environment-aware pathPrefix configuration.
+
+**Problem**: pathPrefix approach required:
+- Environment variable management (`ELEVENTY_ENV=production`)
+- Different build configurations for dev vs production
+- Troubleshooting environment mismatches
+- Complex explanation in documentation
+- Local validation didn't match production exactly
+
+**Solution**: Custom `relativePath` filter that calculates correct relative path based on page depth:
+```javascript
+// In .eleventy.js
+eleventyConfig.addFilter("relativePath", function(path) {
+  const pageUrl = this.page?.url || "/";
+  if (pageUrl === "/" || pageUrl === "/index.html") {
+    return path.startsWith("/") ? path.slice(1) : path; // Root: assets/css/main.css
+  }
+  return path.startsWith("/") ? ".." + path : "../" + path; // Subdir: ../assets/css/main.css
+});
+```
+
+**Results**:
+- Homepage HTML: `<link rel="stylesheet" href="assets/css/main.css">` (no ../)
+- Features HTML: `<link rel="stylesheet" href="../assets/css/main.css">` (with ../)
+- Works identically on local dev server and GitHub Pages
+- No environment variables needed
+- Single build command for all environments
+
+**Key Learning**: For simple static sites with fixed directory depth, relative paths are significantly simpler than pathPrefix. They eliminate environment configuration complexity while providing identical behavior everywhere.
+
 ### Environment Configuration Pattern
 
-The final working pattern for dual-environment support:
+The final working pattern uses relative paths (no environment variables needed):
 
-**Local Development** (`npm run dev`):
-- No `ELEVENTY_ENV` set (defaults to development)
-- `pathPrefix="/"` (root)
+**All Environments** (`npm run dev` or `npm run build`):
+- No environment variables required
+- `relativePath` filter calculates paths automatically
 - Files written to `docs/` root
-- Server at http://localhost:8080/
+- Homepage: `assets/css/main.css` (no prefix)
+- Subdirectory pages: `../assets/css/main.css` (with ../ prefix)
 - Assets copied to `docs/assets/`
+- Works identically on local dev server and GitHub Pages
+- Single configuration for all scenarios
 
-**Production Build** (`npm run build`):
-- `ELEVENTY_ENV=production` (set by cross-env)
-- `pathPrefix="/WebSpark.HttpClientUtility/"` (subdirectory)
-- Files written to `docs/WebSpark.HttpClientUtility/`
-- Assets copied to `docs/WebSpark.HttpClientUtility/assets/`
-- Ready for GitHub Pages deployment
+**Previous Approach** (replaced):
+Earlier implementation used `ELEVENTY_ENV=production` with `pathPrefix="/WebSpark.HttpClientUtility/"` for GitHub Pages, but this was replaced with the simpler `relativePath` filter approach that eliminates environment-specific configuration.
 
 ### Configuration Files Summary
 
@@ -438,16 +469,20 @@ npm install
 npm run dev
 # Open http://localhost:8080/
 # Verify: All pages load, CSS/JS work, navigation works
+# Check DevTools: Homepage uses assets/css/main.css (no ../)
+# Check DevTools: Features page uses ../assets/css/main.css (with ../)
 # Edit any .md file → Browser auto-refreshes
 ```
 
 **Test Production Build Locally**:
 ```bash
 npm run build
-cd ../docs/WebSpark.HttpClientUtility
+cd ../docs
 python -m http.server 8080
 # Open http://localhost:8080/
-# Verify: Same behavior as dev, but from subdirectory
+# Verify: Identical behavior to dev server
+# Check DevTools: Same relative paths as dev
+# No environment differences to troubleshoot
 ```
 
 **Deploy to GitHub Pages**:
@@ -455,17 +490,18 @@ python -m http.server 8080
 2. Branch: "main", Folder: "/docs"
 3. Push changes to main branch
 4. Visit: https://markhazleton.github.io/WebSpark.HttpClientUtility/
+5. Verify: Works exactly like local testing (relative paths)
 
 ### Common Troubleshooting
 
 | Symptom | Cause | Solution |
 |---------|-------|----------|
-| Blank pages locally | pathPrefix hardcoded | Use environment-aware pathPrefix |
-| CSS not loading | Hardcoded asset paths | Use `{{ '/path' | url }}` filter |
+| CSS not loading | Wrong filter used | Use `{{ '/path' | relativePath }}` filter |
 | Infinite rebuild loop | Cache file triggers watcher | Add to watchIgnores |
-| Assets in wrong location | Fixed passthrough copy | Use conditional passthrough |
+| Assets in wrong location | Forgot passthrough copy | Add to eleventyConfig |
 | No syntax highlighting | Placeholder Prism files | Install prismjs npm package |
-| Works locally, not GitHub | pathPrefix difference | Test production build locally |
+| Broken navigation links | Hardcoded paths | Use relativePath filter for all links |
+| Works locally, not GitHub | Browser cache | Hard refresh with Ctrl+F5 |
 
 ### Performance Results
 

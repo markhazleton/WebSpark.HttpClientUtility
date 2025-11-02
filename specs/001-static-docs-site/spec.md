@@ -285,24 +285,49 @@ A contributor wants to preview documentation changes locally before pushing to G
 
 ## Implementation Guide: Eleventy Configuration
 
-This section provides detailed instructions for configuring Eleventy to support **both local development and GitHub Pages deployment**. The implementation uses environment-aware configuration to handle different path requirements for each environment.
+This section provides detailed instructions for configuring Eleventy to support **both local development and GitHub Pages deployment**. The implementation uses relative paths for maximum portability and simplicity.
 
 ### Critical Concepts
 
-#### pathPrefix Dual Behavior
+#### Relative Path Strategy (Final Implementation)
 
-Eleventy's `pathPrefix` setting affects **both URL generation and file output location**:
-- `pathPrefix="/WebSpark.HttpClientUtility/"` → Files written to `docs/WebSpark.HttpClientUtility/`
-- `pathPrefix="/"` → Files written to `docs/` (root)
-- All template URLs **must** use the `url` filter: `{{ '/path' | url }}`
+The site uses a custom `relativePath` filter instead of Eleventy's built-in `pathPrefix` for simpler, more portable configuration:
 
-#### Environment Detection Pattern
+**Benefits**:
+- Works identically in all environments without configuration
+- No environment variables needed
+- Easier to validate locally vs production
+- Simpler mental model for template authors
 
+**How It Works**:
 ```javascript
 // In .eleventy.js
-const isProduction = process.env.ELEVENTY_ENV === "production";
-const pathPrefix = isProduction ? "/WebSpark.HttpClientUtility/" : "/";
+eleventyConfig.addFilter("relativePath", function(path) {
+  const pageUrl = this.page?.url || "/";
+  // Root pages (/) use assets/css/main.css
+  if (pageUrl === "/" || pageUrl === "/index.html") {
+    return path.startsWith("/") ? path.slice(1) : path;
+  }
+  // Subdirectory pages (/features/) use ../assets/css/main.css
+  return path.startsWith("/") ? ".." + path : "../" + path;
+});
 ```
+
+**Template Usage**:
+```njk
+<!-- All templates use relativePath filter -->
+<link rel="stylesheet" href="{{ '/assets/css/main.css' | relativePath }}">
+<a href="{{ '/features/' | relativePath }}">Features</a>
+```
+
+#### Previous Approach: pathPrefix (Replaced)
+
+Earlier implementation used environment-aware `pathPrefix`, but this was replaced with `relativePath` for simplicity. The pathPrefix approach required:
+- Environment variable management (`ELEVENTY_ENV`)
+- Different configurations for dev vs production
+- Complex troubleshooting of environment mismatches
+
+The `relativePath` filter eliminates these complexities.
 
 ### Local Development Workflow
 
@@ -323,10 +348,12 @@ npm run dev
 **What Happens**:
 1. Eleventy starts server on http://localhost:8080/
 2. Files built to `docs/` at root level
-3. `pathPrefix="/"` (no subdirectory)
+3. Relative paths used automatically (no configuration needed)
 4. Assets copied: `assets/` → `docs/assets/`
-5. Live reload enabled - changes trigger auto-rebuild
-6. Browser refreshes automatically
+5. Homepage uses: `assets/css/main.css` (no ../)
+6. Subdirectory pages use: `../assets/css/main.css` (with ../)
+7. Live reload enabled - changes trigger auto-rebuild
+8. Browser refreshes automatically
 
 **Testing Checklist**:
 - [ ] Homepage loads at http://localhost:8080/
@@ -349,10 +376,11 @@ npm run build
 **What Happens**:
 1. `npm run clean` - Removes entire `docs/` folder
 2. `npm run copy:prism` - Bundles Prism.js files
-3. `cross-env ELEVENTY_ENV=production eleventy` - Builds with pathPrefix
-4. Files written to `docs/WebSpark.HttpClientUtility/` subdirectory
-5. All URLs include `/WebSpark.HttpClientUtility/` prefix
-6. Assets copied: `assets/` → `docs/WebSpark.HttpClientUtility/assets/`
+3. `eleventy` - Builds with relative paths (no environment variable needed)
+4. Files written to `docs/` at root level
+5. Relative paths used throughout (same as dev build)
+6. Assets copied: `assets/` → `docs/assets/`
+7. Works identically in local testing and GitHub Pages
 
 #### Testing Production Build Locally
 
