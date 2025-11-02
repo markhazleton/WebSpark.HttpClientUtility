@@ -1,0 +1,31 @@
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>{{ site.name }}</h3>
+        <p>Version {{ nuget.version }}</p>
+        {% if nuget.cached %}
+        <p class="cache-notice">⚠️ Data cached: {{ nuget.cacheTimestamp }}</p>
+        {% endif %}
+      </div>
+      
+      <div class="footer-section">
+        <h3>Links</h3>
+        <ul class="footer-links">
+          {% for item in navigation.footer %}
+          <li>
+            <a href="{{ item.url }}"{% if item.external %} target="_blank" rel="noopener noreferrer"{% endif %}>
+              {{ item.label }}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <p>&copy; 2025 {{ site.author.name }}</p>
+        <p>Licensed under MIT</p>
+      </div>
+    </div>
+  </div>
+</footer>

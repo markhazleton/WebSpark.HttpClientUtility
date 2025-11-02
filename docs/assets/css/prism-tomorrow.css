@@ -1,0 +1,24 @@
+/* Placeholder for Prism.js Tomorrow Night theme
+ * Download from https://prismjs.com/download.html with Tomorrow Night theme
+ */
+
+/* Basic syntax highlighting fallback */
+pre[class*="language-"] {
+  background: #1d1f21;
+  color: #c5c8c6;
+  padding: 1em;
+  margin: 0.5em 0;
+  overflow: auto;
+  border-radius: 0.3em;
+}
+
+code[class*="language-"] {
+  background: #1d1f21;
+  color: #c5c8c6;
+}
+
+:not(pre) > code[class*="language-"] {
+  padding: 0.1em 0.3em;
+  border-radius: 0.3em;
+  white-space: normal;
+}

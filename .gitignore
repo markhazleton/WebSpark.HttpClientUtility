@@ -412,3 +412,20 @@ artifacts/
 TestResults/
 *.trx
 *.runsettings.user
+
+# Node.js dependencies and build artifacts (for documentation site)
+node_modules/
+.env*
+.npm
+.node_repl_history
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Documentation site cache (Eleventy)
+src/.cache/
+src/.eleventy-cache/
+
+# Note: docs/ folder is intentionally NOT ignored
+# It contains GitHub Pages output and should be committed

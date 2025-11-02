@@ -1,0 +1,16 @@
+{
+  "name": "WebSpark.HttpClientUtility",
+  "title": "WebSpark.HttpClientUtility - Production-Ready HttpClient Wrapper",
+  "description": "A comprehensive HttpClient wrapper for .NET 8+ with resilience, caching, telemetry, and web crawling capabilities.",
+  "url": "https://markhazleton.github.io/WebSpark.HttpClientUtility",
+  "repositoryUrl": "https://github.com/markhazleton/WebSpark.HttpClientUtility",
+  "nugetUrl": "https://www.nuget.org/packages/WebSpark.HttpClientUtility",
+  "issueTrackerUrl": "https://github.com/markhazleton/WebSpark.HttpClientUtility/issues",
+  "author": {
+    "name": "Mark Hazleton",
+    "url": "https://github.com/markhazleton"
+  },
+  "social": {
+    "github": "markhazleton/WebSpark.HttpClientUtility"
+  }
+}

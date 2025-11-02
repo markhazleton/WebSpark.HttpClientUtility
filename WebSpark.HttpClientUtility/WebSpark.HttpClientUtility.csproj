@@ -35,7 +35,7 @@
 		</PackageTags>
 		<RepositoryUrl>https://github.com/MarkHazleton/HttpClientUtility</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageProjectUrl>https://MarkHazleton.com/MarkHazleton/HttpClientUtility</PackageProjectUrl>
+		<PackageProjectUrl>https://markhazleton.github.io/WebSpark.HttpClientUtility/</PackageProjectUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageIcon>icon.png</PackageIcon>

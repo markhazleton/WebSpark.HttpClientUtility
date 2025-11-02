@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://markhazleton.github.io/WebSpark.HttpClientUtility/sitemap.xml
