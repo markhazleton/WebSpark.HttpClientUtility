@@ -2,28 +2,14 @@ export default function(eleventyConfig) {
   // Ignore cache file from watch to prevent infinite rebuild loop
   eleventyConfig.watchIgnores.add("./_data/nuget-cache.json");
   
-  // Determine if production build
-  const isProduction = process.env.ELEVENTY_ENV === "production";
-  const prefix = isProduction ? "WebSpark.HttpClientUtility" : "";
-  
-  console.log(`🔧 Build mode: ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'}`);
-  console.log(`🔧 PathPrefix will be: ${isProduction ? '/WebSpark.HttpClientUtility/' : '/'}`);
-  
   // Set server options for dev mode
-  if (!isProduction) {
-    eleventyConfig.setServerOptions({
-      showAllHosts: true
-    });
-  }
+  eleventyConfig.setServerOptions({
+    showAllHosts: true
+  });
   
-  // Copy assets through to output - use prefix for production, root for dev
-  if (prefix) {
-    eleventyConfig.addPassthroughCopy({ "assets": `${prefix}/assets` });
-    eleventyConfig.addPassthroughCopy({ "assets/images/favicon.ico": `${prefix}/favicon.ico` });
-  } else {
-    eleventyConfig.addPassthroughCopy("assets");
-    eleventyConfig.addPassthroughCopy({ "assets/images/favicon.ico": "favicon.ico" });
-  }
+  // Copy assets to output - GitHub Pages serves from /docs root
+  eleventyConfig.addPassthroughCopy("assets");
+  eleventyConfig.addPassthroughCopy({ "assets/images/favicon.ico": "favicon.ico" });
   eleventyConfig.addPassthroughCopy({ ".nojekyll": ".nojekyll" });
   eleventyConfig.addPassthroughCopy({ "robots.txt": "robots.txt" });
   
@@ -63,7 +49,7 @@ export default function(eleventyConfig) {
     templateFormats: ["md", "njk", "html"],
     markdownTemplateEngine: "njk",
     htmlTemplateEngine: "njk",
-    // Use pathPrefix only for production (GitHub Pages needs it)
-    pathPrefix: isProduction ? "/WebSpark.HttpClientUtility/" : "/"
+    // GitHub Pages serves from /docs root, so no pathPrefix needed
+    pathPrefix: "/"
   };
 }
