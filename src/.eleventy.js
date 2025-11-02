@@ -2,12 +2,18 @@ export default function(eleventyConfig) {
   // Ignore cache file from watch to prevent infinite rebuild loop
   eleventyConfig.watchIgnores.add("./_data/nuget-cache.json");
   
-  // Set server options for dev mode
+  // Determine if production build
+  const isProduction = process.env.ELEVENTY_ENV === "production";
+  
+  console.log(`🔧 Build mode: ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'}`);
+  console.log(`🔧 PathPrefix will be: ${isProduction ? '/WebSpark.HttpClientUtility/' : '/'}`);
+  
+  // Set server options
   eleventyConfig.setServerOptions({
     showAllHosts: true
   });
   
-  // Copy assets to output - GitHub Pages serves from /docs root
+  // Copy assets to output
   eleventyConfig.addPassthroughCopy("assets");
   eleventyConfig.addPassthroughCopy({ "assets/images/favicon.ico": "favicon.ico" });
   eleventyConfig.addPassthroughCopy({ ".nojekyll": ".nojekyll" });
@@ -49,7 +55,7 @@ export default function(eleventyConfig) {
     templateFormats: ["md", "njk", "html"],
     markdownTemplateEngine: "njk",
     htmlTemplateEngine: "njk",
-    // GitHub Pages serves from /docs root, so no pathPrefix needed
-    pathPrefix: "/"
+    // GitHub Pages serves repo at /WebSpark.HttpClientUtility/ subdirectory
+    pathPrefix: isProduction ? "/WebSpark.HttpClientUtility/" : "/"
   };
 }
