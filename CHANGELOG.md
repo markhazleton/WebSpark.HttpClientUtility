@@ -5,6 +5,66 @@ All notable changes to the WebSpark.HttpClientUtility project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2025-11-02
+
+### Added
+
+- **Comprehensive Documentation Website**: Launched complete documentation site at https://markhazleton.github.io/WebSpark.HttpClientUtility/
+  - **Getting Started Guide**: Step-by-step instructions for installation and configuration
+  - **Feature Documentation**: Detailed guides for caching, resilience, telemetry, authentication, and web crawling
+  - **API Reference**: Complete API documentation with examples
+  - **Code Examples**: Real-world usage scenarios and best practices
+  - **Live NuGet Stats**: Real-time package version and download counts from NuGet API
+- **Static Site Generator**: Eleventy 3.0-based documentation with sub-second build times
+- **Syntax Highlighting**: Prism.js integration supporting C#, JavaScript, JSON, PowerShell, Bash, and Markup
+- **Responsive Design**: Mobile-first design supporting 320px to 1920px+ viewports
+- **Progressive Enhancement**: Core functionality works without JavaScript
+- **Automated Deployment**: GitHub Actions workflow for continuous documentation deployment
+
+### Improved
+
+- **Package Metadata**: Updated NuGet package to reference new documentation website
+- **Developer Experience**: Centralized documentation improves discoverability and learning
+- **Performance**: Documentation site achieves 95+ Lighthouse scores for Performance, Accessibility, and SEO
+- **Build Pipeline**: Automated documentation builds on every commit to main branch
+
+### Technical Details
+
+- **Technology Stack**: Eleventy 3.0, Node.js 20.x LTS, custom CSS with CSS custom properties
+- **Build Time**: ~0.4 seconds for complete site generation (6+ pages)
+- **Deployment**: GitHub Pages from /docs folder with automated GitHub Actions workflow
+- **Cache Strategy**: NuGet API data cached with fallback for offline builds
+- **Path Strategy**: Relative paths for maximum portability across environments
+
+## [1.4.0] - 2025-10-15
+
+### Added
+
+- **.NET 8 LTS Support**: Added multi-targeting for .NET 8 (LTS) alongside .NET 9 for broader compatibility
+  - Supports .NET 8.0 (LTS - Long Term Support until November 2026)
+  - Supports .NET 9.0 (Standard Term Support until May 2025)
+  - Allows teams on LTS versions to adopt the library immediately
+- **Simplified DI Registration**: New extension methods for common configuration patterns
+  - `AddHttpClientUtilityWithCaching()` - Quick setup with caching enabled
+  - `AddHttpClientUtilityWithResilience()` - Quick setup with Polly resilience
+  - `AddHttpClientUtilityWithAllFeatures()` - One-line registration with all features
+- **Enhanced Documentation Structure**: Reorganized documentation for better discoverability
+  - Separated getting started from configuration guides
+  - Added migration guide for teams moving from raw HttpClient
+  - Expanded examples for common scenarios
+
+### Improved
+
+- **Developer Experience**: Reduced setup time with convenience extension methods
+- **Compatibility**: Broader ecosystem support with .NET 8 LTS targeting
+- **Documentation**: Clearer organization and more comprehensive examples
+
+### Technical Details
+
+- **Multi-Targeting**: `<TargetFrameworks>net8.0;net9.0</TargetFrameworks>`
+- **Package Validation**: Enabled baseline validation against version 1.3.2
+- **Build Configuration**: Deterministic builds for reproducibility
+
 ## [1.3.2] - 2025-01-15
 
 ### Fixed
