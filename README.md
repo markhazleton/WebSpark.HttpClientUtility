@@ -143,7 +143,7 @@ Explore working examples in the [samples directory](samples/):
 
 ## 🤝 Contributing
 
-Contributions are welcome! See our [Contributing Guide](CONTRIBUTING.md) for details.
+Contributions are welcome! See our [Contributing Guide](docs/CONTRIBUTING.md) for details.
 
 1. Fork the repository
 2. Create a feature branch
