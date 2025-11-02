@@ -32,6 +32,8 @@ public class HttpRequestResultService(
 
     private async Task<HttpRequestResult<T>> ProcessHttpResponseAsync<T>(HttpResponseMessage? response, HttpRequestResult<T> httpSendResults, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(httpSendResults);
+
         if (response is null)
         {
             httpSendResults.StatusCode = HttpStatusCode.InternalServerError;
@@ -120,6 +122,8 @@ public class HttpRequestResultService(
     /// <returns>A configured HttpRequestMessage ready to be sent</returns>
     public HttpRequestMessage CreateHttpRequest(HttpRequestResultBase httpSendResults)
     {
+        ArgumentNullException.ThrowIfNull(httpSendResults);
+
         var request = new HttpRequestMessage(httpSendResults.RequestMethod, httpSendResults.RequestPath);
 
         // Add the correlation ID as a header for distributed tracing
@@ -174,6 +178,8 @@ public class HttpRequestResultService(
         [CallerLineNumber] int lineNumber = 0,
          CancellationToken ct = default)
     {
+        ArgumentNullException.ThrowIfNull(httpSendResults);
+
         // Start timing the operation
         var stopwatch = Stopwatch.StartNew();
 
@@ -299,6 +305,9 @@ public class HttpRequestResultService(
     HttpRequestResult<T> httpSendResults,
     CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(exception);
+        ArgumentNullException.ThrowIfNull(httpSendResults);
+
         // Get operation context for logging
         string operationName = $"HTTP {httpSendResults.RequestMethod.Method} {httpSendResults.SafeRequestPath}";
 

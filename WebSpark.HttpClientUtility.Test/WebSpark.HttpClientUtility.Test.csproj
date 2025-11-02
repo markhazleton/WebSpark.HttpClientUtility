@@ -8,7 +8,10 @@
     
     <!-- Suppress warnings that are not relevant for test projects -->
     <!-- CA2007: ConfigureAwait is not needed in test code -->
-    <NoWarn>$(NoWarn);CA2007</NoWarn>
+    <!-- CS8618: Non-nullable fields are initialized in [TestInitialize] methods -->
+    <!-- MSTEST0001, MSTEST0025, MSTEST0032, MSTEST0037: Test analyzer suggestions -->
+    <!-- EnableGenerateDocumentationFile: IDE0005 analyzer suggestion (not relevant for tests) -->
+    <NoWarn>$(NoWarn);CA2007;CS8618;MSTEST0001;MSTEST0025;MSTEST0032;MSTEST0037;EnableGenerateDocumentationFile</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.4">

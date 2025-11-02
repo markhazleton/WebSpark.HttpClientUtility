@@ -107,6 +107,8 @@ public class SiteCrawler : ISiteCrawler
     /// <returns>A CrawlResult containing information about the crawled page</returns>
     private async Task<CrawlResult> CrawlPageAsync(string url, int depth, string userAgent, CancellationToken ct = default)
     {
+        ArgumentException.ThrowIfNullOrEmpty(url);
+
         var crawlRequest = new CrawlResult
         {
             CacheDurationMinutes = 0,
@@ -162,6 +164,10 @@ public class SiteCrawler : ISiteCrawler
         ConcurrentDictionary<string, CrawlResult> crawlResults,
         CrawlerOptions options)
     {
+        ArgumentNullException.ThrowIfNull(linksToCrawl);
+        ArgumentNullException.ThrowIfNull(crawlResults);
+        ArgumentNullException.ThrowIfNull(options);
+
         if (crawlResult?.CrawlLinks == null)
         {
             return;
@@ -203,7 +209,9 @@ public class SiteCrawler : ISiteCrawler
     /// </summary>
     private static string GenerateSitemapXml(IEnumerable<string> urls)
     {
-        if (urls == null || !urls.Any())
+        ArgumentNullException.ThrowIfNull(urls);
+
+        if (!urls.Any())
         {
             return string.Empty;
         }
@@ -238,10 +246,7 @@ public class SiteCrawler : ISiteCrawler
     /// </summary>
     private static string NormalizeUrl(string url)
     {
-        if (string.IsNullOrWhiteSpace(url))
-        {
-            return string.Empty;
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(url);
 
         try
         {
@@ -265,6 +270,8 @@ public class SiteCrawler : ISiteCrawler
     /// <returns>A task representing the asynchronous operation</returns>
     private async Task NotifyClientsAsync(string message, CancellationToken ct)
     {
+        ArgumentException.ThrowIfNullOrEmpty(message);
+
         try
         {
             await _hubContext.Clients.All.SendAsync("UrlFound", message, ct).ConfigureAwait(false);
@@ -300,12 +307,8 @@ public class SiteCrawler : ISiteCrawler
     /// <exception cref="OperationCanceledException">Thrown when the operation is cancelled</exception>
     public async Task<CrawlDomainViewModel> CrawlAsync(string startUrl, CrawlerOptions options, CancellationToken ct = default)
     {
-        if (string.IsNullOrEmpty(startUrl))
-        {
-            throw new ArgumentException("Start URL cannot be null or empty", nameof(startUrl));
-        }
-
-        options ??= new CrawlerOptions();
+        ArgumentException.ThrowIfNullOrEmpty(startUrl);
+        ArgumentNullException.ThrowIfNull(options);
 
         var linksToCrawl = new ConcurrentQueue<(string Url, int Depth)>();
         var crawlResults = new ConcurrentDictionary<string, CrawlResult>();

@@ -19,6 +19,8 @@ public static class ServiceCollectionExtensions
     /// <returns>The IServiceCollection so that additional calls can be chained</returns>
     public static IServiceCollection AddHttpClientCrawler(this IServiceCollection services)
     {
+        ArgumentNullException.ThrowIfNull(services);
+
         // Register SignalR hub
         services.AddSignalR();
 
@@ -74,10 +76,8 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         Action<CrawlerOptions> configureOptions)
     {
-        if (configureOptions == null)
-        {
-            throw new ArgumentNullException(nameof(configureOptions));
-        }
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configureOptions);
 
         // Create options
         var options = new CrawlerOptions();

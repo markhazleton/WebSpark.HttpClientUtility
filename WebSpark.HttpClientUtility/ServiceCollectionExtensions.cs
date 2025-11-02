@@ -175,7 +175,9 @@ service,
    this IServiceCollection services,
       int cacheDurationMinutes = 5)
     {
-    return services.AddHttpClientUtility(options =>
+        ArgumentNullException.ThrowIfNull(services);
+
+        return services.AddHttpClientUtility(options =>
       {
   options.EnableCaching = true;
             options.EnableTelemetry = true;
@@ -194,6 +196,8 @@ service,
    int maxRetries = 3,
         double retryDelaySeconds = 1)
     {
+        ArgumentNullException.ThrowIfNull(services);
+
         return services.AddHttpClientUtility(options =>
  {
             options.EnableResilience = true;
@@ -211,6 +215,8 @@ service,
     public static IServiceCollection AddHttpClientUtilityWithAllFeatures(
   this IServiceCollection services)
     {
+        ArgumentNullException.ThrowIfNull(services);
+
         return services.AddHttpClientUtility(options =>
   {
      options.EnableCaching = true;

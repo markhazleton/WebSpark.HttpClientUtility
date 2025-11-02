@@ -19,6 +19,8 @@ public class HttpClientServiceTelemetry(IHttpClientService service) : IHttpClien
     /// <inheritdoc/>
     public async Task<HttpResponseContent<TResult>> DeleteAsync<TResult>(Uri requestUri, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(requestUri);
+
         HttpResponseContent<TResult> statusCall;
         Stopwatch sw = new();
         sw.Start();
@@ -39,6 +41,8 @@ public class HttpClientServiceTelemetry(IHttpClientService service) : IHttpClien
     /// <inheritdoc/>
     public async Task<HttpResponseContent<T>> GetAsync<T>(Uri requestUri, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(requestUri);
+
         HttpResponseContent<T> statusCall;
         Stopwatch sw = new();
         sw.Start();
@@ -59,6 +63,8 @@ public class HttpClientServiceTelemetry(IHttpClientService service) : IHttpClien
     /// <inheritdoc/>
     public async Task<HttpResponseContent<TResult>> PostAsync<T, TResult>(Uri requestUri, T payload, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(requestUri);
+
         HttpResponseContent<TResult> statusCall;
         Stopwatch sw = new();
         sw.Start();
@@ -79,6 +85,9 @@ public class HttpClientServiceTelemetry(IHttpClientService service) : IHttpClien
     /// <inheritdoc/>
     public async Task<HttpResponseContent<TResult>> PostAsync<T, TResult>(Uri requestUri, T payload, Dictionary<string, string> headers, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(requestUri);
+        ArgumentNullException.ThrowIfNull(headers);
+
         HttpResponseContent<TResult> statusCall;
         Stopwatch sw = new();
         sw.Start();
@@ -99,6 +108,8 @@ public class HttpClientServiceTelemetry(IHttpClientService service) : IHttpClien
     /// <inheritdoc/>
     public async Task<HttpResponseContent<TResult>> PutAsync<T, TResult>(Uri requestUri, T payload, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(requestUri);
+
         HttpResponseContent<TResult> statusCall;
         Stopwatch sw = new();
         sw.Start();

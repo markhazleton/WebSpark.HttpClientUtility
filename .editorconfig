@@ -227,13 +227,16 @@ dotnet_diagnostic.CA1031.severity = none
 dotnet_diagnostic.CA1303.severity = none
 
 # CA2007: Consider calling ConfigureAwait on the awaited task
-dotnet_diagnostic.CA2007.severity = warning
+# Note: Configured as suggestion for library code - tests have NoWarn
+dotnet_diagnostic.CA2007.severity = suggestion
 
-# CA1062: Validate arguments of public methods
-dotnet_diagnostic.CA1062.severity = warning
+# CA1062: Validate arguments of public methods  
+# Note: Configured as suggestion - nullable reference types provide compile-time safety
+dotnet_diagnostic.CA1062.severity = suggestion
 
 # IDE0005: Remove unnecessary using directives
 dotnet_diagnostic.IDE0005.severity = warning
 
 # IDE0055: Fix formatting
-dotnet_diagnostic.IDE0055.severity = warning
+# Note: Set to suggestion to avoid blocking builds - use code formatter instead
+dotnet_diagnostic.IDE0055.severity = suggestion

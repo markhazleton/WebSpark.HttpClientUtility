@@ -157,6 +157,8 @@ public class HttpResponseContent<T>
     /// <returns>The updated response content instance for method chaining.</returns>
     public HttpResponseContent<T> WithCorrelationId(string correlationId)
     {
+        ArgumentException.ThrowIfNullOrEmpty(correlationId);
+
         CorrelationId = correlationId;
         return this;
     }
@@ -181,6 +183,9 @@ public class HttpResponseContent<T>
     /// <returns>The updated response content instance for method chaining.</returns>
     public HttpResponseContent<T> WithContextProperty(string key, object value)
     {
+        ArgumentException.ThrowIfNullOrEmpty(key);
+        ArgumentNullException.ThrowIfNull(value);
+
         RequestContext[key] = value;
         return this;
     }

@@ -59,6 +59,8 @@ public class OpenTelemetryHttpRequestResultService : IHttpRequestResultService
         [CallerLineNumber] int lineNumber = 0,
         CancellationToken ct = default)
     {
+        ArgumentNullException.ThrowIfNull(httpSendResults);
+
         // Create a span for this HTTP request operation
         using var activity = _activitySource.StartActivity("http.request");
 

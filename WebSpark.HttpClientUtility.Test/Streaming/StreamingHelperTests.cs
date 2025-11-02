@@ -24,18 +24,16 @@ public class StreamingHelperTests
     }
 
     [TestMethod]
-    public async Task ProcessResponseAsync_NullResponse_ReturnsDefault()
+    public async Task ProcessResponseAsync_NullResponse_ThrowsArgumentNullException()
     {
         // Arrange
         var jsonOptions = new JsonSerializerOptions();
         var correlationId = Guid.NewGuid().ToString();
 
-        // Act
-        var result = await StreamingHelper.ProcessResponseAsync<string>(
-            null!, 1024, jsonOptions, _mockLogger.Object, correlationId);
-
-        // Assert
-        Assert.IsNull(result);
+        // Act & Assert
+        await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
+            await StreamingHelper.ProcessResponseAsync<string>(
+                null!, 1024, jsonOptions, _mockLogger.Object, correlationId));
     }
 
     [TestMethod]
@@ -180,23 +178,19 @@ public class StreamingHelperTests
     }
 
     [TestMethod]
-    public void TruncateForLogging_NullContent_ReturnsNull()
+    public void TruncateForLogging_NullContent_ThrowsArgumentNullException()
     {
-        // Act
-        var result = StreamingHelper.TruncateForLogging(null!);
-
-        // Assert
-        Assert.IsNull(result);
+        // Act & Assert
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+            StreamingHelper.TruncateForLogging(null!));
     }
 
     [TestMethod]
-    public void TruncateForLogging_EmptyContent_ReturnsEmpty()
+    public void TruncateForLogging_EmptyContent_ThrowsArgumentException()
     {
-        // Act
-        var result = StreamingHelper.TruncateForLogging("");
-
-        // Assert
-        Assert.AreEqual("", result);
+        // Act & Assert
+        Assert.ThrowsExactly<ArgumentException>(() =>
+            StreamingHelper.TruncateForLogging(""));
     }
 
     [TestMethod]

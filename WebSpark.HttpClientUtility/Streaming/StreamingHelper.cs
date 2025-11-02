@@ -37,7 +37,12 @@ public static class StreamingHelper
         string correlationId,
         CancellationToken cancellationToken = default)
     {
-        if (response?.Content == null)
+        ArgumentNullException.ThrowIfNull(response);
+        ArgumentNullException.ThrowIfNull(jsonOptions);
+        ArgumentNullException.ThrowIfNull(logger);
+        ArgumentException.ThrowIfNullOrEmpty(correlationId);
+
+        if (response.Content == null)
         {
             logger.LogWarning("Response or content is null [CorrelationId: {CorrelationId}]", correlationId);
             return default;
@@ -81,6 +86,11 @@ public static class StreamingHelper
         string correlationId,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(response);
+        ArgumentNullException.ThrowIfNull(jsonOptions);
+        ArgumentNullException.ThrowIfNull(logger);
+        ArgumentException.ThrowIfNullOrEmpty(correlationId);
+
         logger.LogDebug("Using streaming deserialization [CorrelationId: {CorrelationId}]", correlationId);
 
         await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
@@ -111,6 +121,11 @@ public static class StreamingHelper
         string correlationId,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(response);
+        ArgumentNullException.ThrowIfNull(jsonOptions);
+        ArgumentNullException.ThrowIfNull(logger);
+        ArgumentException.ThrowIfNullOrEmpty(correlationId);
+
         logger.LogDebug("Using standard deserialization [CorrelationId: {CorrelationId}]", correlationId);
 
         var jsonContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
@@ -144,7 +159,9 @@ public static class StreamingHelper
     /// <returns>Truncated content with indication if truncation occurred.</returns>
     public static string TruncateForLogging(string content, int maxLength = 500)
     {
-        if (string.IsNullOrEmpty(content) || content.Length <= maxLength)
+        ArgumentException.ThrowIfNullOrEmpty(content);
+
+        if (content.Length <= maxLength)
         {
             return content;
         }

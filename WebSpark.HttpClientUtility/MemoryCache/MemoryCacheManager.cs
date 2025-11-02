@@ -48,6 +48,8 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     /// <param name="state">State</param>
     private void PostEviction(object key, object? value, EvictionReason reason, object? state)
     {
+        ArgumentNullException.ThrowIfNull(key);
+
         // if cached item just changed, then do nothing
         if (reason == EvictionReason.Replaced)
         {
@@ -68,6 +70,8 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     /// <returns>Itself key</returns>
     protected string AddKey(string key)
     {
+        ArgumentException.ThrowIfNullOrEmpty(key);
+
         _allKeys.TryAdd(key, true);
         return key;
     }
@@ -98,6 +102,8 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     /// <returns>Itself key</returns>
     protected string RemoveKey(string key)
     {
+        ArgumentException.ThrowIfNullOrEmpty(key);
+
         TryRemoveKey(key);
         return key;
     }
@@ -108,6 +114,8 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     /// <param name="key">Key of cached item</param>
     protected void TryRemoveKey(string key)
     {
+        ArgumentException.ThrowIfNullOrEmpty(key);
+
         // try to remove key from dictionary
         if (!_allKeys.TryRemove(key, out _))
         {
@@ -150,6 +158,9 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     /// </remarks>
     public virtual T Get<T>(string key, Func<T> acquire, int? cacheTime = null)
     {
+        ArgumentException.ThrowIfNullOrEmpty(key);
+        ArgumentNullException.ThrowIfNull(acquire);
+
         // item already is in cache, so return it
         if (cache.TryGetValue(key, out T? value) && value is not null)
         {
@@ -185,6 +196,8 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     /// <returns>True if item already is in cache; otherwise false</returns>
     public virtual bool IsSet(string key)
     {
+        ArgumentException.ThrowIfNullOrEmpty(key);
+
         return cache.TryGetValue(key, out object? _); // Use nullable object type to address CS8601
     }
 
@@ -202,6 +215,9 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     /// </remarks>
     public bool PerformActionWithLock(string key, TimeSpan expirationTime, Action action)
     {
+        ArgumentException.ThrowIfNullOrEmpty(key);
+        ArgumentNullException.ThrowIfNull(action);
+
         // ensure that lock is acquired
         if (!_allKeys.TryAdd(key, true))
         {
@@ -233,6 +249,8 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     /// </remarks>
     public virtual void Remove(string key)
     {
+        ArgumentException.ThrowIfNullOrEmpty(key);
+
         cache.Remove(RemoveKey(key));
     }
 
@@ -247,10 +265,10 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     /// It also adds the key to the tracking dictionary for management purposes.    /// </remarks>
     public virtual void Set(string key, object data, int cacheTimeMinutes)
     {
-        if (data is not null)
-        {
-            cache.Set(AddKey(key), data, GetMemoryCacheEntryOptions(TimeSpan.FromMinutes(cacheTimeMinutes)));
-        }
+        ArgumentException.ThrowIfNullOrEmpty(key);
+        ArgumentNullException.ThrowIfNull(data);
+
+        cache.Set(AddKey(key), data, GetMemoryCacheEntryOptions(TimeSpan.FromMinutes(cacheTimeMinutes)));
     }
 
     /// <summary>
