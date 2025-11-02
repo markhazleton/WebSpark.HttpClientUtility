@@ -21,11 +21,11 @@
   <link rel="canonical" href="{{ site.url }}{{ page.url }}">
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="/WebSpark.HttpClientUtility/assets/css/main.css">
-  <link rel="stylesheet" href="/WebSpark.HttpClientUtility/assets/css/prism-tomorrow.css">
+  <link rel="stylesheet" href="{{ '/assets/css/main.css' | url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/prism-tomorrow.css' | url }}">
   
   <!-- Favicon -->
-  <link rel="icon" href="/WebSpark.HttpClientUtility/favicon.ico">
+  <link rel="icon" href="{{ '/favicon.ico' | url }}">
 </head>
 <body>
   {% include "components/header.njk" %}
@@ -39,6 +39,6 @@
   {% include "components/footer.njk" %}
   
   <!-- Scripts -->
-  <script src="/WebSpark.HttpClientUtility/assets/js/prism.min.js" defer></script>
+  <script src="{{ '/assets/js/prism.min.js' | url }}" defer></script>
 </body>
 </html>

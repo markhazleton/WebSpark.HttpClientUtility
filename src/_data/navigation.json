@@ -2,32 +2,32 @@
   "main": [
     {
       "label": "Home",
-      "url": "/WebSpark.HttpClientUtility/",
+      "url": "/",
       "order": 1
     },
     {
       "label": "Features",
-      "url": "/WebSpark.HttpClientUtility/features/",
+      "url": "/features/",
       "order": 2
     },
     {
       "label": "Getting Started",
-      "url": "/WebSpark.HttpClientUtility/getting-started/",
+      "url": "/getting-started/",
       "order": 3
     },
     {
       "label": "API Reference",
-      "url": "/WebSpark.HttpClientUtility/api-reference/",
+      "url": "/api-reference/",
       "order": 4
     },
     {
       "label": "Examples",
-      "url": "/WebSpark.HttpClientUtility/examples/",
+      "url": "/examples/",
       "order": 5
     },
     {
       "label": "About",
-      "url": "/WebSpark.HttpClientUtility/about/",
+      "url": "/about/",
       "order": 6
     }
   ],

@@ -2,7 +2,7 @@
   <div class="container">
     <div class="header-content">
       <div class="site-logo">
-        <a href="/WebSpark.HttpClientUtility/">{{ site.name }}</a>
+        <a href="{{ '/' | url }}">{{ site.name }}</a>
       </div>
       
       <nav class="main-nav">
@@ -16,7 +16,7 @@
         <ul class="nav-menu">
           {% for item in navigation.main %}
           <li class="nav-item{% if page.url == item.url %} active{% endif %}">
-            <a href="{{ item.url }}">{{ item.label }}</a>
+            <a href="{{ item.url | url }}">{{ item.label }}</a>
           </li>
           {% endfor %}
         </ul>

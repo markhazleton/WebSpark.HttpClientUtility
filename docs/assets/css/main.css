@@ -277,6 +277,15 @@ li {
   text-decoration: underline;
 }
 
+.footer-section a {
+  color: white;
+  text-decoration: underline;
+}
+
+.footer-section a:hover {
+  color: var(--color-primary);
+}
+
 .cache-notice {
   font-size: var(--font-size-sm);
   color: var(--color-warning);

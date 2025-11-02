@@ -6,9 +6,10 @@
   "type": "module",
   "scripts": {
     "clean": "rimraf ../docs",
-    "dev": "eleventy --serve --incremental",
-    "build": "npm run clean && eleventy",
-    "build:prod": "npm run clean && eleventy",
+    "dev": "eleventy --serve",
+    "build": "npm run clean && npm run copy:prism && cross-env ELEVENTY_ENV=production eleventy",
+    "build:prod": "npm run clean && npm run copy:prism && cross-env ELEVENTY_ENV=production eleventy",
+    "copy:prism": "node scripts/copy-prism.js",
     "test:links": "hyperlink ../docs",
     "test:html": "htmlhint ../docs/**/*.html",
     "validate": "npm run test:html && npm run test:links"
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0",
+    "cross-env": "^10.1.0",
     "htmlhint": "^1.1.4",
     "hyperlink": "^5.0.4",
     "markdown-it": "^14.1.0",
@@ -26,6 +28,7 @@
     "rimraf": "^5.0.5"
   },
   "dependencies": {
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "prismjs": "^1.30.0"
   }
 }

@@ -2,7 +2,7 @@
 layout: layouts/base.njk
 title: Home
 description: A production-ready HttpClient wrapper for .NET 8+ with resilience, caching, telemetry, and web crawling capabilities.
-permalink: /WebSpark.HttpClientUtility/
+permalink: /
 ---
 
 <div class="hero">
@@ -77,8 +77,8 @@ if (result.IsSuccessStatusCode)
 ## Get Started
 
 <div class="cta-buttons">
-  <a href="/WebSpark.HttpClientUtility/getting-started/" class="button primary">Get Started</a>
-  <a href="/WebSpark.HttpClientUtility/features/" class="button secondary">View Features</a>
+  <a href="{{ '/getting-started/' | url }}" class="button primary">Get Started</a>
+  <a href="{{ '/features/' | url }}" class="button secondary">View Features</a>
 </div>
 
 ## What's Included

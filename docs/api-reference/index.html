@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Reference | WebSpark.HttpClientUtility</title>
+  <meta name="description" content="Complete API reference for WebSpark.HttpClientUtility classes and interfaces.">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="API Reference">
+  <meta property="og:description" content="Complete API reference for WebSpark.HttpClientUtility classes and interfaces.">
+  <meta property="og:url" content="https://markhazleton.github.io/WebSpark.HttpClientUtility/api-reference/">
+  <meta property="og:type" content="website">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="API Reference">
+  <meta name="twitter:description" content="Complete API reference for WebSpark.HttpClientUtility classes and interfaces.">
+  
+  <!-- Canonical -->
+  <link rel="canonical" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/api-reference/">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/prism-tomorrow.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico">
+</head>
+<body>
+  <header class="site-header">
+  <div class="container">
+    <div class="header-content">
+      <div class="site-logo">
+        <a href="/">WebSpark.HttpClientUtility</a>
+      </div>
+      
+      <nav class="main-nav">
+        <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+        <label for="nav-toggle" class="nav-toggle-label">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+        
+        <ul class="nav-menu">
+          
+          <li class="nav-item">
+            <a href="/">Home</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="/features/">Features</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="/getting-started/">Getting Started</a>
+          </li>
+          
+          <li class="nav-item active">
+            <a href="/api-reference/">API Reference</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="/examples/">Examples</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="/about/">About</a>
+          </li>
+          
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
+  
+  <main class="main-content">
+    <div class="container">
+      <h1>API Reference</h1>
+<p>Complete reference documentation for WebSpark.HttpClientUtility.</p>
+<h2>Core Interfaces</h2>
+<h3>IHttpRequestResultService</h3>
+<p>Main interface for making HTTP requests.</p>
+<pre><code class="language-csharp">public interface IHttpRequestResultService
+{
+    Task&lt;HttpRequestResult&lt;T&gt;&gt; HttpSendRequestResultAsync&lt;T&gt;(
+        HttpRequestResult&lt;T&gt; request,
+        CancellationToken cancellationToken = default);
+}
+</code></pre>
+<p><strong>Methods:</strong></p>
+<ul>
+<li><code>HttpSendRequestResultAsync&lt;T&gt;</code> - Sends an HTTP request and returns a typed result</li>
+</ul>
+<h2>Core Classes</h2>
+<h3>HttpRequestResult&lt;T&gt;</h3>
+<p>Represents an HTTP request and its response.</p>
+<pre><code class="language-csharp">public class HttpRequestResult&lt;T&gt;
+{
+    // Request Properties
+    public string RequestPath { get; set; }
+    public HttpMethod RequestMethod { get; set; }
+    public object? RequestBody { get; set; }
+    public Dictionary&lt;string, string&gt;? RequestHeaders { get; set; }
+    public string? CorrelationId { get; set; }
+    
+    // Caching
+    public int CacheDurationMinutes { get; set; }
+    
+    // Authentication
+    public IAuthenticationProvider? AuthenticationProvider { get; set; }
+    
+    // Response Properties (populated after request)
+    public T? ResponseResults { get; set; }
+    public string? ResponseContent { get; set; }
+    public HttpStatusCode StatusCode { get; set; }
+    public bool IsSuccessStatusCode { get; set; }
+    public long RequestDuration { get; set; }
+    public Dictionary&lt;string, IEnumerable&lt;string&gt;&gt;? ResponseHeaders { get; set; }
+}
+</code></pre>
+<p><strong>Key Properties:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RequestPath</code></td>
+<td><code>string</code></td>
+<td>The URL to send the request to</td>
+</tr>
+<tr>
+<td><code>RequestMethod</code></td>
+<td><code>HttpMethod</code></td>
+<td>HTTP method (GET, POST, PUT, DELETE, etc.)</td>
+</tr>
+<tr>
+<td><code>RequestBody</code></td>
+<td><code>object?</code></td>
+<td>Request body object (serialized to JSON)</td>
+</tr>
+<tr>
+<td><code>RequestHeaders</code></td>
+<td><code>Dictionary&lt;string, string&gt;?</code></td>
+<td>Custom headers to include</td>
+</tr>
+<tr>
+<td><code>CorrelationId</code></td>
+<td><code>string?</code></td>
+<td>Tracking ID (auto-generated if not provided)</td>
+</tr>
+<tr>
+<td><code>CacheDurationMinutes</code></td>
+<td><code>int</code></td>
+<td>Cache duration in minutes (0 = no cache)</td>
+</tr>
+<tr>
+<td><code>AuthenticationProvider</code></td>
+<td><code>IAuthenticationProvider?</code></td>
+<td>Authentication provider</td>
+</tr>
+<tr>
+<td><code>ResponseResults</code></td>
+<td><code>T?</code></td>
+<td>Deserialized response object</td>
+</tr>
+<tr>
+<td><code>ResponseContent</code></td>
+<td><code>string?</code></td>
+<td>Raw response content</td>
+</tr>
+<tr>
+<td><code>StatusCode</code></td>
+<td><code>HttpStatusCode</code></td>
+<td>HTTP status code</td>
+</tr>
+<tr>
+<td><code>IsSuccessStatusCode</code></td>
+<td><code>bool</code></td>
+<td>True if status code is 2xx</td>
+</tr>
+<tr>
+<td><code>RequestDuration</code></td>
+<td><code>long</code></td>
+<td>Request duration in milliseconds</td>
+</tr>
+</tbody>
+</table>
+<h2>Service Registration Extensions</h2>
+<h3>ServiceCollectionExtensions</h3>
+<p>Extension methods for configuring services.</p>
+<pre><code class="language-csharp">public static class ServiceCollectionExtensions
+{
+    // Basic registration
+    public static IServiceCollection AddHttpClientUtility(
+        this IServiceCollection services);
+
+    // With configuration
+    public static IServiceCollection AddHttpClientUtility(
+        this IServiceCollection services,
+        Action&lt;HttpClientUtilityOptions&gt; configure);
+
+    // Quick setups
+    public static IServiceCollection AddHttpClientUtilityWithCaching(
+        this IServiceCollection services);
+
+    public static IServiceCollection AddHttpClientUtilityWithAllFeatures(
+        this IServiceCollection services);
+}
+</code></pre>
+<h3>HttpClientUtilityOptions</h3>
+<p>Configuration options for the library.</p>
+<pre><code class="language-csharp">public class HttpClientUtilityOptions
+{
+    public bool EnableCaching { get; set; } = false;
+    public bool EnableResilience { get; set; } = false;
+    public bool EnableTelemetry { get; set; } = false;
+    public HttpRequestResultPollyOptions ResilienceOptions { get; set; }
+}
+</code></pre>
+<h3>HttpRequestResultPollyOptions</h3>
+<p>Resilience configuration options.</p>
+<pre><code class="language-csharp">public class HttpRequestResultPollyOptions
+{
+    public int MaxRetryAttempts { get; set; } = 3;
+    public TimeSpan RetryDelay { get; set; } = TimeSpan.FromSeconds(1);
+    public int CircuitBreakerThreshold { get; set; } = 5;
+    public TimeSpan CircuitBreakerDuration { get; set; } = TimeSpan.FromSeconds(30);
+}
+</code></pre>
+<h2>Authentication</h2>
+<h3>IAuthenticationProvider</h3>
+<p>Interface for authentication providers.</p>
+<pre><code class="language-csharp">public interface IAuthenticationProvider
+{
+    Task ApplyAuthenticationAsync(HttpRequestMessage request);
+}
+</code></pre>
+<h3>BearerTokenAuthenticationProvider</h3>
+<p>Bearer token authentication.</p>
+<pre><code class="language-csharp">public class BearerTokenAuthenticationProvider : IAuthenticationProvider
+{
+    public BearerTokenAuthenticationProvider(string token);
+    public Task ApplyAuthenticationAsync(HttpRequestMessage request);
+}
+</code></pre>
+<h3>BasicAuthenticationProvider</h3>
+<p>Basic authentication (username/password).</p>
+<pre><code class="language-csharp">public class BasicAuthenticationProvider : IAuthenticationProvider
+{
+    public BasicAuthenticationProvider(string username, string password);
+    public Task ApplyAuthenticationAsync(HttpRequestMessage request);
+}
+</code></pre>
+<h3>ApiKeyAuthenticationProvider</h3>
+<p>API key authentication.</p>
+<pre><code class="language-csharp">public class ApiKeyAuthenticationProvider : IAuthenticationProvider
+{
+    public ApiKeyAuthenticationProvider(string headerName, string apiKey);
+    public Task ApplyAuthenticationAsync(HttpRequestMessage request);
+}
+</code></pre>
+<h2>Web Crawling</h2>
+<h3>CrawlerOptions</h3>
+<p>Configuration for web crawler.</p>
+<pre><code class="language-csharp">public class CrawlerOptions
+{
+    public string BaseUrl { get; set; }
+    public int MaxDepth { get; set; } = 3;
+    public int MaxPages { get; set; } = 100;
+    public bool RespectRobotsTxt { get; set; } = true;
+    public string UserAgent { get; set; } = &quot;WebSparkCrawler/1.0&quot;;
+    public TimeSpan DelayBetweenRequests { get; set; } = TimeSpan.FromMilliseconds(500);
+}
+</code></pre>
+<h3>SiteCrawler</h3>
+<p>Web crawler implementation.</p>
+<pre><code class="language-csharp">public class SiteCrawler
+{
+    public SiteCrawler(
+        CrawlerOptions options,
+        IHttpRequestResultService httpService,
+        ILogger&lt;SiteCrawler&gt; logger);
+
+    public Task CrawlAsync(CancellationToken cancellationToken = default);
+    
+    public event EventHandler&lt;PageCrawledEventArgs&gt;? PageCrawled;
+    public event EventHandler&lt;CrawlProgressEventArgs&gt;? CrawlProgress;
+}
+</code></pre>
+<p><strong>Events:</strong></p>
+<ul>
+<li><code>PageCrawled</code> - Fired after each page is crawled</li>
+<li><code>CrawlProgress</code> - Fired periodically with progress updates</li>
+</ul>
+<h2>Utilities</h2>
+<h3>QueryStringParametersList</h3>
+<p>Helper for building query strings.</p>
+<pre><code class="language-csharp">public class QueryStringParametersList : List&lt;KeyValuePair&lt;string, string&gt;&gt;
+{
+    public void Add(string key, string value);
+    public string ToQueryString();
+}
+</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code class="language-csharp">var queryParams = new QueryStringParametersList
+{
+    { &quot;page&quot;, &quot;1&quot; },
+    { &quot;pageSize&quot;, &quot;50&quot; }
+};
+
+var queryString = queryParams.ToQueryString(); // &quot;?page=1&amp;pageSize=50&quot;
+</code></pre>
+<h3>HttpResponse</h3>
+<p>Response wrapper class.</p>
+<pre><code class="language-csharp">public class HttpResponse
+{
+    public HttpStatusCode StatusCode { get; set; }
+    public string? Content { get; set; }
+    public Dictionary&lt;string, IEnumerable&lt;string&gt;&gt;? Headers { get; set; }
+    public bool IsSuccessStatusCode { get; set; }
+}
+</code></pre>
+<h2>Testing</h2>
+<h3>MockHttpRequestResultService&lt;T&gt;</h3>
+<p>Mock service for unit testing.</p>
+<pre><code class="language-csharp">public class MockHttpRequestResultService&lt;T&gt; : IHttpRequestResultService
+{
+    public MockHttpRequestResultService(HttpResponseMessage response);
+    public MockHttpRequestResultService(T responseData, HttpStatusCode statusCode = HttpStatusCode.OK);
+    
+    public Task&lt;HttpRequestResult&lt;T&gt;&gt; HttpSendRequestResultAsync&lt;T&gt;(
+        HttpRequestResult&lt;T&gt; request,
+        CancellationToken cancellationToken = default);
+}
+</code></pre>
+<h2>Concurrent Requests</h2>
+<h3>IConcurrentHttpService</h3>
+<p>Interface for concurrent request execution.</p>
+<pre><code class="language-csharp">public interface IConcurrentHttpService
+{
+    Task&lt;IEnumerable&lt;HttpRequestResult&lt;T&gt;&gt;&gt; ExecuteConcurrentRequestsAsync&lt;T&gt;(
+        IEnumerable&lt;HttpRequestResult&lt;T&gt;&gt; requests,
+        CancellationToken cancellationToken = default);
+}
+</code></pre>
+<h2>OpenTelemetry Integration</h2>
+<h3>OpenTelemetry Extensions</h3>
+<pre><code class="language-csharp">public static class OpenTelemetryExtensions
+{
+    public static IServiceCollection AddWebSparkOpenTelemetry(
+        this IServiceCollection services,
+        Action&lt;TracerProviderBuilder&gt;? configure = null);
+}
+</code></pre>
+<h2>Common Status Codes</h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Enum</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200</td>
+<td><code>HttpStatusCode.OK</code></td>
+<td>Success</td>
+</tr>
+<tr>
+<td>201</td>
+<td><code>HttpStatusCode.Created</code></td>
+<td>Resource created</td>
+</tr>
+<tr>
+<td>204</td>
+<td><code>HttpStatusCode.NoContent</code></td>
+<td>Success with no content</td>
+</tr>
+<tr>
+<td>400</td>
+<td><code>HttpStatusCode.BadRequest</code></td>
+<td>Invalid request</td>
+</tr>
+<tr>
+<td>401</td>
+<td><code>HttpStatusCode.Unauthorized</code></td>
+<td>Authentication required</td>
+</tr>
+<tr>
+<td>403</td>
+<td><code>HttpStatusCode.Forbidden</code></td>
+<td>Access denied</td>
+</tr>
+<tr>
+<td>404</td>
+<td><code>HttpStatusCode.NotFound</code></td>
+<td>Resource not found</td>
+</tr>
+<tr>
+<td>500</td>
+<td><code>HttpStatusCode.InternalServerError</code></td>
+<td>Server error</td>
+</tr>
+<tr>
+<td>503</td>
+<td><code>HttpStatusCode.ServiceUnavailable</code></td>
+<td>Service unavailable</td>
+</tr>
+</tbody>
+</table>
+<h2>Framework Targets</h2>
+<ul>
+<li>.NET 8.0 (LTS)</li>
+<li>.NET 9.0</li>
+</ul>
+<h2>NuGet Package</h2>
+<ul>
+<li><strong>Package Name</strong>: <code>WebSpark.HttpClientUtility</code></li>
+<li><strong>Current Version</strong>: 1.4.0</li>
+<li><strong>Downloads</strong>: 1.6K</li>
+</ul>
+<h2>Source Code</h2>
+<p>View the complete source code and contribute on <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility">GitHub</a>.</p>
+<h2>Next Steps</h2>
+<div class="cta-buttons">
+  <a href="/examples/" class="button primary">View Examples</a>
+  <a href="/getting-started/" class="button secondary">Get Started</a>
+</div>
+
+    </div>
+  </main>
+  
+  <footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>WebSpark.HttpClientUtility</h3>
+        <p>Version 1.4.0</p>
+        
+      </div>
+      
+      <div class="footer-section">
+        <h3>Links</h3>
+        <ul class="footer-links">
+          
+          <li>
+            <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
+              GitHub
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.nuget.org/packages/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
+              NuGet
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility/issues" target="_blank" rel="noopener noreferrer">
+              Issues
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <p>&copy; 2025 <a href="https://markhazleton.com" target="_blank" rel="noopener noreferrer">Mark Hazleton</a></p>
+        <p>Licensed under MIT</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+  <!-- Scripts -->
+  <script src="/assets/js/prism.min.js" defer></script>
+</body>
+</html>
