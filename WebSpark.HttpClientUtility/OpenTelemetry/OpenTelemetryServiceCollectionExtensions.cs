@@ -166,11 +166,8 @@ public static class OpenTelemetryServiceCollectionExtensions
                 });
             }
 
-            // Always add in-memory exporter for testing scenarios
-            if (environment.IsDevelopment() || environment.EnvironmentName == "Testing")
-            {
-                tracerBuilder.AddInMemoryExporter(new List<System.Diagnostics.Activity>());
-            }
+            // In-memory exporter removed (moved to test projects only)
+            // For development, use Console or OTLP exporter instead
         });
 
         return services;

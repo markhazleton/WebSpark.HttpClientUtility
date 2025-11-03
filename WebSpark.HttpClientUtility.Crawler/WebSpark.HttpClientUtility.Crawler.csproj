@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<!-- Package-specific Properties -->
+		<PackageId>WebSpark.HttpClientUtility.Crawler</PackageId>
+		<OutputType>Library</OutputType>
+		<IsPackable>true</IsPackable>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		
+		<!-- Package Metadata -->
+		<Summary>Web crawling extension for WebSpark.HttpClientUtility with robots.txt support and SignalR progress updates.</Summary>
+		<Description>
+			Web crawling capabilities for WebSpark.HttpClientUtility, including robots.txt compliance, 
+			sitemap generation, HTML parsing, SignalR progress updates, and CSV export. Requires 
+			WebSpark.HttpClientUtility base package.
+		</Description>
+		<PackageTags>
+			crawler;web-scraping;sitemap;robots-txt;signalr;html-parsing;htmlagilitypack;
+			web-crawler;site-crawler;csv-export;dotnet;aspnetcore;net8;net9
+		</PackageTags>
+		<PackageReadmeFile>README-Crawler.md</PackageReadmeFile>
+		<PackageIcon>icon-crawler.png</PackageIcon>
+		
+		<!-- Package Validation -->
+		<EnablePackageValidation>true</EnablePackageValidation>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="README-Crawler.md" Pack="true" PackagePath="\" Condition="Exists('README-Crawler.md')" />
+		<None Include="images\icon-crawler.png" Pack="true" PackagePath="\" Condition="Exists('images\icon-crawler.png')" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<!-- Base Package Dependency (Project Reference for development) -->
+		<ProjectReference Include="..\WebSpark.HttpClientUtility\WebSpark.HttpClientUtility.csproj" />
+		
+		<!-- Crawler-Specific Dependencies -->
+		<PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
+		<PackageReference Include="Markdig" Version="0.43.0" />
+		<PackageReference Include="CsvHelper" Version="33.1.0" />
+		
+		<!-- ASP.NET Core for SignalR -->
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+</Project>
