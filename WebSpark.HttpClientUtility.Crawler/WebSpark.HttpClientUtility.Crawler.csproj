@@ -21,15 +21,15 @@
 		<PackageReleaseNotes>
 			2.0.0 - Initial release of crawler extension package. All web crawling features moved from base package. Requires exact version match with base package [2.0.0]. 54 tests passing. Features: SiteCrawler, SimpleSiteCrawler, robots.txt parsing, HTML extraction, SignalR progress, CSV export.
 		</PackageReleaseNotes>
-		<!-- <PackageReadmeFile>README-Crawler.md</PackageReadmeFile> --> <!-- TODO: Create README -->
-		<!-- <PackageIcon>icon-crawler.png</PackageIcon> --> <!-- TODO: Create crawler icon -->
+		<PackageReadmeFile>README-Crawler.md</PackageReadmeFile>
+		<!-- <PackageIcon>icon-crawler.png</PackageIcon> --> <!-- Optional: Create crawler icon variant -->
 		
 		<!-- Package Validation -->
 		<EnablePackageValidation>true</EnablePackageValidation>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<!-- <None Include="README-Crawler.md" Pack="true" PackagePath="\" Condition="Exists('README-Crawler.md')" /> -->
+		<None Include="README-Crawler.md" Pack="true" PackagePath="\" />
 		<!-- <None Include="images\icon-crawler.png" Pack="true" PackagePath="\" Condition="Exists('images\icon-crawler.png')" /> -->
 	</ItemGroup>
 	
