@@ -103,7 +103,7 @@ A developer with an existing application currently using WebSpark.HttpClientUtil
 - **FR-017**: Both packages MUST follow the existing publishing workflow through GitHub Actions CI/CD pipeline without manual NuGet uploads, with both packages built, tested, and published atomically in a single pipeline execution
 - **FR-018**: Documentation MUST be updated to reflect the new two-package architecture including installation instructions, migration guide, and feature mapping
 - **FR-019**: Base package MUST preserve the existing decorator chain pattern for composing features (HttpRequestResultService → HttpRequestResultServiceCache → HttpRequestResultServicePolly → HttpRequestResultServiceTelemetry) with the same ordering requirements and all decorator implementations remaining in the base package
-- **FR-020**: Demo web application (WebSpark.HttpClientUtility.Web) MUST be updated to include a CrawlerController that demonstrates proper two-package registration pattern (`AddHttpClientUtility()` + `AddHttpClientCrawler()`) and showcases crawler functionality including basic crawling, robots.txt compliance, and SignalR progress updates
+- **FR-020**: Demo web application (WebSpark.HttpClientUtility.Web) MUST be updated to include a CrawlerController that demonstrates proper two-package registration pattern (`AddHttpClientUtility()` + `AddHttpClientCrawler()`) and showcases crawler functionality including basic crawling, robots.txt compliance, real-time SignalR progress updates with Crawled/Discovered/Queued counters, sitemap/RSS discovery toggle, and interactive Razor UI for testing
 
 ### Package Composition
 
@@ -129,7 +129,7 @@ A developer with an existing application currently using WebSpark.HttpClientUtil
 - CrawlHub for SignalR progress reporting
 - CrawlResult and CrawlException models
 - HTML parsing and link extraction
-- Sitemap processing
+- Sitemap and RSS/Atom feed discovery (sitemap.xml, rss.xml, feed.xml, atom.xml) for finding pages hidden behind JavaScript navigation
 - CSV export for crawl results
 - Performance tracking for crawler operations
 

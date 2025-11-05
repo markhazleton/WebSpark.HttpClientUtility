@@ -31,6 +31,18 @@
 - [x] T119 - Security scan on crawler package (✅ No vulnerabilities)
 - [x] T120 - v2.0.0 packages built and ready
 
+### Demo App & Crawler Enhancements (Completed):
+- [x] T126 - Create CrawlerController with Index view and POST /Crawler/Crawl endpoint
+- [x] T127 - Create Views/Crawler/Index.cshtml with interactive Razor UI and SignalR client connection
+- [x] T128 - Implement real-time SignalR progress updates with Crawled/Discovered/Queued counters
+- [x] T129 - Add DiscoverFromSitemapAndRss feature to CrawlerOptions (default: true)
+- [x] T130 - Implement SiteCrawler.DiscoverUrlsFromSitemapAndRssAsync() to fetch sitemap.xml, rss.xml, feed.xml, atom.xml
+- [x] T131 - Implement SiteCrawler.ExtractUrlsFromXml() helper for parsing sitemap and RSS/Atom formats
+- [x] T132 - Add DiscoverFromSitemap checkbox to crawler UI for toggling sitemap/RSS discovery
+- [x] T133 - Fix StreamingHelper to detect typeof(T) == typeof(string) and return raw HTML without JSON parsing
+- [x] T134 - Fix footer overlap issue with flexbox layout (removed absolute positioning)
+- [x] T135 - Improve default values: MaxDepth 2→3, MaxPages 50→100, added better help text
+
 ### Post-Release Tasks (Not Blocking):
 These tasks require actual NuGet publication or are optional enhancements:
 
@@ -52,7 +64,9 @@ These tasks require actual NuGet publication or are optional enhancements:
 - ✅ Dependencies reduced: 10 (down from 13)
 - ✅ All 474 tests passing (420 base + 54 crawler)
 - ✅ Zero compiler warnings (TreatWarningsAsErrors=true)
-- ✅ Demo web app updated with both DI calls
+- ✅ Demo web app updated with interactive Crawler UI featuring real-time SignalR progress (Crawled/Discovered/Queued counters)
+- ✅ Sitemap/RSS discovery feature implemented to find pages hidden behind JavaScript navigation (checks sitemap.xml, rss.xml, feed.xml, atom.xml)
+- ✅ StreamingHelper enhanced to detect string responses and return raw HTML without JSON deserialization
 - ✅ CHANGELOG.md fully updated
 - ✅ GitHub Actions CI/CD configured for atomic releases
 - ✅ Both packages built and ready in ./artifacts directory

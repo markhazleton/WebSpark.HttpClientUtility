@@ -50,6 +50,22 @@ public static class StreamingHelper
 
         try
         {
+            // Special case: If the expected type is string, just return the raw content
+            if (typeof(T) == typeof(string))
+            {
+                logger.LogDebug("Returning raw string content without JSON deserialization [CorrelationId: {CorrelationId}]", correlationId);
+                var rawContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+                
+                // Return null/empty as appropriate for string type
+                if (string.IsNullOrWhiteSpace(rawContent))
+                {
+                    logger.LogWarning("Response content is empty or whitespace [CorrelationId: {CorrelationId}]", correlationId);
+                    return default;
+                }
+                
+                return (T)(object)rawContent;
+            }
+
             var contentLength = response.Content.Headers.ContentLength;
             var shouldStream = contentLength.HasValue && contentLength.Value > streamingThreshold;
 

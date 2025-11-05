@@ -534,11 +534,11 @@ This phase will decompose the implementation into specific, testable, and tracka
 4. Create CrawlerController in demo app with endpoints demonstrating crawler functionality
 
 **Stage 5: Demo Application Enhancement**
-1. Create Controllers/CrawlerController.cs in WebSpark.HttpClientUtility.Web
-2. Add endpoints: POST /api/crawler/crawl (basic crawl), GET /api/crawler/status (progress), GET /api/crawler/results (crawl results)
-3. Implement SignalR hub registration for real-time progress updates
-4. Add Swagger documentation for crawler endpoints
-5. Update demo app UI to showcase crawler features
+1. Create Controllers/CrawlerController.cs in WebSpark.HttpClientUtility.Web with MVC pattern (Index view + POST action)
+2. Create Views/Crawler/Index.cshtml with interactive Razor UI featuring URL input, crawler options (MaxDepth, MaxPages, RespectRobotsTxt, DiscoverFromSitemap), and real-time progress display
+3. Implement SignalR connection in client JavaScript to receive "UrlFound" events with Crawled/Discovered/Queued counters parsed from server messages
+4. Add CrawlerOptions.DiscoverFromSitemapAndRss feature with SiteCrawler.DiscoverUrlsFromSitemapAndRssAsync() method that fetches sitemap.xml, rss.xml, feed.xml, atom.xml at crawl start to find pages hidden behind JavaScript navigation
+5. Display results in responsive Bootstrap table with URL, status code, load time, and depth columns
 
 **Stage 6: CI/CD**
 1. Update publish-nuget.yml workflow
