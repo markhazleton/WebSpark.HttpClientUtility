@@ -135,15 +135,15 @@ namespace WebSpark.HttpClientUtility.Test.CurlService
    await curlCommandSaver.FlushAsync();
 
             // Assert
-  string csvFilePath = Path.Combine(tempDirectory, "curl_commands.csv");
-         Assert.IsTrue(File.Exists(csvFilePath), "CSV file should have been created");
-     string fileContent = File.ReadAllText(csvFilePath);
+  string jsonlFilePath = Path.Combine(tempDirectory, "curl_commands.jsonl");
+         Assert.IsTrue(File.Exists(jsonlFilePath), "JSONL file should have been created");
+     string fileContent = File.ReadAllText(jsonlFilePath);
 
     // Check for key components instead of exact string match
-         Assert.IsTrue(fileContent.Contains("curl"), "CSV should contain curl command");
-            Assert.IsTrue(fileContent.Contains("example.com"), "CSV should contain the domain");
-            Assert.IsTrue(fileContent.Contains("/api/test"), "CSV should contain the path");
-    Assert.IsTrue(fileContent.Contains("TestMethod"), "CSV should contain the calling method name");
+         Assert.IsTrue(fileContent.Contains("curl"), "JSONL should contain curl command");
+            Assert.IsTrue(fileContent.Contains("example.com"), "JSONL should contain the domain");
+            Assert.IsTrue(fileContent.Contains("/api/test"), "JSONL should contain the path");
+    Assert.IsTrue(fileContent.Contains("TestMethod"), "JSONL should contain the calling method name");
      }
 
         [TestMethod]
@@ -160,10 +160,10 @@ namespace WebSpark.HttpClientUtility.Test.CurlService
     await curlCommandSaver.FlushAsync();
 
      // Assert
- string csvFilePath = Path.Combine(tempDirectory, "curl_commands.csv");
-            Assert.IsTrue(File.Exists(csvFilePath), "CSV file should have been created");
-            string fileContent = File.ReadAllText(csvFilePath);
-         Assert.IsTrue(fileContent.Contains("-X POST"), "CSV should contain the POST method");
+ string jsonlFilePath = Path.Combine(tempDirectory, "curl_commands.jsonl");
+            Assert.IsTrue(File.Exists(jsonlFilePath), "JSONL file should have been created");
+            string fileContent = File.ReadAllText(jsonlFilePath);
+         Assert.IsTrue(fileContent.Contains("-X POST"), "JSONL should contain the POST method");
  }
 
         [TestMethod]
@@ -183,11 +183,11 @@ await curlCommandSaver.SaveCurlCommandAsync(request);
             await curlCommandSaver.FlushAsync();
 
             // Assert
-    string csvFilePath = Path.Combine(tempDirectory, "curl_commands.csv");
-      Assert.IsTrue(File.Exists(csvFilePath), "CSV file should have been created");
-            string fileContent = File.ReadAllText(csvFilePath);
-     Assert.IsTrue(fileContent.Contains("-d"), "CSV should contain the data parameter");
-         Assert.IsTrue(fileContent.Contains("name"), "CSV should contain the JSON content");
+    string jsonlFilePath = Path.Combine(tempDirectory, "curl_commands.jsonl");
+      Assert.IsTrue(File.Exists(jsonlFilePath), "JSONL file should have been created");
+            string fileContent = File.ReadAllText(jsonlFilePath);
+     Assert.IsTrue(fileContent.Contains("-d"), "JSONL should contain the data parameter");
+         Assert.IsTrue(fileContent.Contains("name"), "JSONL should contain the JSON content");
         }
 
 [TestMethod]
@@ -207,15 +207,15 @@ await curlCommandSaver.SaveCurlCommandAsync(request);
             await curlCommandSaver.FlushAsync();
 
        // Assert
-            string csvFilePath = Path.Combine(tempDirectory, "curl_commands.csv");
-   Assert.IsTrue(File.Exists(csvFilePath), "CSV file should have been created");
-     string fileContent = File.ReadAllText(csvFilePath);
-      Assert.IsTrue(fileContent.Contains("api/first"), "CSV should contain the first request");
-  Assert.IsTrue(fileContent.Contains("api/second"), "CSV should contain the second request");
+            string jsonlFilePath = Path.Combine(tempDirectory, "curl_commands.jsonl");
+   Assert.IsTrue(File.Exists(jsonlFilePath), "JSONL file should have been created");
+     string fileContent = File.ReadAllText(jsonlFilePath);
+      Assert.IsTrue(fileContent.Contains("api/first"), "JSONL should contain the first request");
+  Assert.IsTrue(fileContent.Contains("api/second"), "JSONL should contain the second request");
 
-  // Check that we have more than one line (header + at least 2 records)
+  // Check that we have at least 2 JSON lines (2 records)
             string[] lines = fileContent.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-      Assert.IsTrue(lines.Length >= 3, "CSV should contain header and at least 2 records");
+      Assert.IsTrue(lines.Length >= 2, "JSONL should contain at least 2 records");
         }
 
   [TestMethod]
@@ -232,12 +232,12 @@ await curlCommandSaver.SaveCurlCommandAsync(request);
             await curlCommandSaver.FlushAsync();
 
    // Assert
-         string csvFilePath = Path.Combine(tempDirectory, "curl_commands.csv");
-   Assert.IsTrue(File.Exists(csvFilePath), "CSV file should have been created even with null request");
+         string jsonlFilePath = Path.Combine(tempDirectory, "curl_commands.jsonl");
+   Assert.IsTrue(File.Exists(jsonlFilePath), "JSONL file should have been created even with null request");
 
        // Additional validation for null request handling
-       string fileContent = File.ReadAllText(csvFilePath);
-  Assert.IsTrue(fileContent.Contains("curl"), "CSV should contain the basic curl command");
+       string fileContent = File.ReadAllText(jsonlFilePath);
+  Assert.IsTrue(fileContent.Contains("curl"), "JSONL should contain the basic curl command");
         }
     }
 }

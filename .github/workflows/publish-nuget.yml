@@ -1,9 +1,9 @@
-name: Publish HttpClientUtility NuGet Package
+name: Publish HttpClientUtility NuGet Packages
 
 on:
   push:
     tags:
-      - "v*.*.*" # Trigger on version tags like v1.0.0
+      - "v*.*.*" # Trigger on version tags like v1.0.0, v2.0.0
     branches: [main] # Still run build/test on main branch
   pull_request:
     branches: [main]
@@ -71,10 +71,13 @@ jobs:
           path: ./CoverageReport
           if-no-files-found: warn
 
-      - name: Pack NuGet package
+      - name: Pack base package
         run: dotnet pack WebSpark.HttpClientUtility/WebSpark.HttpClientUtility.csproj --configuration Release --no-build --output ./nupkg
 
-      - name: Upload NuGet package artifact
+      - name: Pack crawler package
+        run: dotnet pack WebSpark.HttpClientUtility.Crawler/WebSpark.HttpClientUtility.Crawler.csproj --configuration Release --no-build --output ./nupkg
+
+      - name: Upload NuGet packages artifact
         uses: actions/upload-artifact@v4
         with:
           name: nuget-packages
@@ -82,9 +85,12 @@ jobs:
           if-no-files-found: error
 
       # Only publish on pushes to version tags, not PRs or branch pushes
-      - name: Publish NuGet package
+      # Both packages are published atomically in the same step
+      - name: Publish NuGet packages
         if: startsWith(github.ref, 'refs/tags/v')
-        run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+        run: |
+          dotnet nuget push ./nupkg/WebSpark.HttpClientUtility.*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+          dotnet nuget push ./nupkg/WebSpark.HttpClientUtility.Crawler.*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
 
       # Create GitHub Release with CHANGELOG information
       - name: Create GitHub Release

@@ -1,6 +1,5 @@
-using WebSpark.HttpClientUtility.ClientService;
-using WebSpark.HttpClientUtility.RequestResult;
-using WebSpark.HttpClientUtility.StringConverter;
+using WebSpark.HttpClientUtility;
+using WebSpark.HttpClientUtility.Crawler;
 using WebSpark.HttpClientUtility.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,32 +7,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Configure HttpClientUtility services (From NuGet package)
-builder.Services.AddHttpClient();
+// ========================================
+// Configure HttpClientUtility services (v2.0.0 Two-Package Pattern)
+// ========================================
+// Base package: Core HTTP utilities
+builder.Services.AddHttpClientUtility();
 
-// Register JSON converter
-builder.Services.AddSingleton<IStringConverter, SystemJsonStringConverter>();
-
-// Register base HTTP client service
-builder.Services.AddScoped<IHttpClientService, HttpClientService>();
-
-// Register base HttpRequestResultService
-builder.Services.AddScoped<HttpRequestResultService>();
-
-// Register IHttpRequestResultService with decorator chain
-builder.Services.AddScoped<IHttpRequestResultService>(provider =>
-{
-    // Start with the base service
-    IHttpRequestResultService service = provider.GetRequiredService<HttpRequestResultService>();
-
-    // Add Telemetry decorator (outermost layer)
-    service = new HttpRequestResultServiceTelemetry(
-        provider.GetRequiredService<ILogger<HttpRequestResultServiceTelemetry>>(),
-        service
-    );
-
-    return service;
-});
+// Crawler package: Web crawling features (requires base package)
+builder.Services.AddHttpClientCrawler();
+// ========================================
 
 // Register demo services
 builder.Services.AddScoped<JokeApiService>();
@@ -59,6 +41,9 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+// Map SignalR hub for crawler progress updates
+app.MapHub<CrawlHub>("/crawlHub");
 
 #if NET9_0_OR_GREATER
 app.MapControllerRoute(

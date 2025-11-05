@@ -7,26 +7,30 @@
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		
 		<!-- Package Metadata -->
-		<Summary>Web crawling extension for WebSpark.HttpClientUtility with robots.txt support and SignalR progress updates.</Summary>
+		<Summary>Web crawling extension for WebSpark.HttpClientUtility with robots.txt compliance, sitemap generation, HTML parsing, and SignalR progress updates.</Summary>
 		<Description>
-			Web crawling capabilities for WebSpark.HttpClientUtility, including robots.txt compliance, 
-			sitemap generation, HTML parsing, SignalR progress updates, and CSV export. Requires 
-			WebSpark.HttpClientUtility base package.
+			Web crawling capabilities for WebSpark.HttpClientUtility: SiteCrawler and SimpleSiteCrawler with 
+			robots.txt compliance, HTML link extraction (HtmlAgilityPack), sitemap generation (Markdig), 
+			CSV export (CsvHelper), and real-time SignalR progress updates. Requires WebSpark.HttpClientUtility 
+			base package [2.0.0]. Install both packages and call AddHttpClientUtility() + AddHttpClientCrawler() 
+			in your DI registration.
 		</Description>
 		<PackageTags>
-			crawler;web-scraping;sitemap;robots-txt;signalr;html-parsing;htmlagilitypack;
-			web-crawler;site-crawler;csv-export;dotnet;aspnetcore;net8;net9
+			web-crawler;crawler;web-scraping;site-crawler;sitemap;sitemap-generator;robots-txt;html-parser;htmlagilitypack;signalr;csv-export;markdown;link-extraction;seo;dotnet;aspnetcore;net8;net9
 		</PackageTags>
-		<PackageReadmeFile>README-Crawler.md</PackageReadmeFile>
-		<PackageIcon>icon-crawler.png</PackageIcon>
+		<PackageReleaseNotes>
+			2.0.0 - Initial release of crawler extension package. All web crawling features moved from base package. Requires exact version match with base package [2.0.0]. 54 tests passing. Features: SiteCrawler, SimpleSiteCrawler, robots.txt parsing, HTML extraction, SignalR progress, CSV export.
+		</PackageReleaseNotes>
+		<!-- <PackageReadmeFile>README-Crawler.md</PackageReadmeFile> --> <!-- TODO: Create README -->
+		<!-- <PackageIcon>icon-crawler.png</PackageIcon> --> <!-- TODO: Create crawler icon -->
 		
 		<!-- Package Validation -->
 		<EnablePackageValidation>true</EnablePackageValidation>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="README-Crawler.md" Pack="true" PackagePath="\" Condition="Exists('README-Crawler.md')" />
-		<None Include="images\icon-crawler.png" Pack="true" PackagePath="\" Condition="Exists('images\icon-crawler.png')" />
+		<!-- <None Include="README-Crawler.md" Pack="true" PackagePath="\" Condition="Exists('README-Crawler.md')" /> -->
+		<!-- <None Include="images\icon-crawler.png" Pack="true" PackagePath="\" Condition="Exists('images\icon-crawler.png')" /> -->
 	</ItemGroup>
 	
 	<ItemGroup>

@@ -1,43 +1,92 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
+using WebSpark.HttpClientUtility.RequestResult;
+using WebSpark.HttpClientUtility.StringConverter;
 
 namespace WebSpark.HttpClientUtility.Crawler;
 
 /// <summary>
-/// Extension methods for configuring web crawler services.
+/// Extension methods for setting up HttpClientCrawler services in an IServiceCollection
 /// </summary>
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// Adds web crawler services to the service collection.
-    /// Requires AddHttpClientUtility() to be called first.
+    /// Adds HttpClientCrawler services to the specified IServiceCollection
     /// </summary>
-    /// <param name="services">The service collection.</param>
-    /// <returns>The service collection for chaining.</returns>
+    /// <param name="services">The IServiceCollection to add services to</param>
+    /// <returns>The IServiceCollection so that additional calls can be chained</returns>
     public static IServiceCollection AddHttpClientCrawler(this IServiceCollection services)
     {
-        // TODO: Add crawler service registrations
-        // - ISiteCrawler
-        // - SiteCrawler
-        // - SimpleSiteCrawler
-        // - CrawlerPerformanceTracker
-        // - SignalR hub registration
-        
+        // Register SignalR hub
+        services.AddSignalR();
+
+        // Register HttpClient factory if not already registered
+        services.AddHttpClient();
+
+        // Register logging if not already registered
+        services.AddLogging();
+
+        // Register a default IConfiguration if not already registered
+        // Provide default configuration values for CurlCommandSaver
+        services.TryAddSingleton<IConfiguration>(_ =>
+        {
+            var configData = new Dictionary<string, string?>
+            {
+                ["CsvOutputFolder"] = Path.Combine(Path.GetTempPath(), "curl_commands"),
+                ["CsvFileName"] = "curl_commands"
+            };
+            return new ConfigurationBuilder()
+                .AddInMemoryCollection(configData)
+                .Build();
+        });
+
+        // Register default string converter if not already registered
+        services.TryAddSingleton<IStringConverter, SystemJsonStringConverter>();
+
+        // Register HttpRequestResultService if not already registered
+        // Use a factory to provide HttpClient from the HttpClientFactory
+        services.TryAddScoped<IHttpRequestResultService>(provider =>
+        {
+            var logger = provider.GetRequiredService<ILogger<HttpRequestResultService>>();
+            var configuration = provider.GetRequiredService<IConfiguration>();
+            var httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
+            var httpClient = httpClientFactory.CreateClient();
+            return new HttpRequestResultService(logger, configuration, httpClient);
+        });
+
+        // Register the crawlers
+        services.AddTransient<ISiteCrawler, SiteCrawler>();
+        services.AddTransient<SimpleSiteCrawler>();
+
+        // Return the IServiceCollection so that additional calls can be chained
         return services;
     }
 
     /// <summary>
-    /// Adds web crawler services with configuration options.
-    /// Requires AddHttpClientUtility() to be called first.
+    /// Adds HttpClientCrawler services with customized options to the specified IServiceCollection
     /// </summary>
-    /// <param name="services">The service collection.</param>
-    /// <param name="configureOptions">Action to configure crawler options.</param>
-    /// <returns>The service collection for chaining.</returns>
+    /// <param name="services">The IServiceCollection to add services to</param>
+    /// <param name="configureOptions">The action used to configure the crawler options</param>
+    /// <returns>The IServiceCollection so that additional calls can be chained</returns>
     public static IServiceCollection AddHttpClientCrawler(
         this IServiceCollection services,
         Action<CrawlerOptions> configureOptions)
     {
-        // TODO: Add crawler service registrations with options
-        
-        return services;
+        if (configureOptions == null)
+        {
+            throw new ArgumentNullException(nameof(configureOptions));
+        }
+
+        // Create options
+        var options = new CrawlerOptions();
+        configureOptions(options);
+
+        // Register options
+        services.AddSingleton(options);
+
+        // Add the services
+        return AddHttpClientCrawler(services);
     }
 }

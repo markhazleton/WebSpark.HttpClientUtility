@@ -11,28 +11,27 @@
 		<!-- NuGet Package Properties -->
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>WebSpark.HttpClientUtility</PackageId>
-		<Version>1.5.1</Version>
+		<!-- Version inherited from Directory.Build.props (2.0.0 lockstep) -->
 		<Deterministic>true</Deterministic>
 		<Authors>MarkHazleton</Authors>
 		<Company>MarkHazleton</Company>
 		<Copyright>Copyright © MarkHazleton 2025</Copyright>
-		<Summary>Powerful HttpClient wrapper with resilience, caching, telemetry, and crawling capabilities for .NET 8+ applications.</Summary>
+		<Summary>Lightweight HttpClient wrapper with authentication, caching, resilience, and telemetry for .NET 8+ applications. Core HTTP features without web crawling overhead.</Summary>
 		<Description>
-			A utility library for simplifying HttpClient usage in .NET applications, including
-			features for telemetry, caching, Polly integration, concurrent requests, and web
-			crawling. Supports .NET 8 (LTS) and .NET 9.
+			Core HTTP utilities for .NET 8+ applications: authentication providers (Bearer, Basic, API Key), 
+			response caching, Polly resilience (retry/circuit breaker), OpenTelemetry integration, concurrent 
+			requests, fire-and-forget operations, and streaming support. Lightweight package focused on HTTP 
+			client functionality. For web crawling features, see WebSpark.HttpClientUtility.Crawler package.
 		</Description>
 		<PackageReleaseNotes>
-			1.5.1 - Quality improvements: Enabled TreatWarningsAsErrors solution-wide with zero-warning baseline. All 520 tests passing across .NET 8 and .NET 9. Fixed npm security vulnerabilities in documentation dependencies.
-			1.5.0 - Documentation release: Launched comprehensive documentation website at https://markhazleton.github.io/WebSpark.HttpClientUtility/ with getting started guides, API reference, feature documentation, and live NuGet stats. Eleventy-based static site with 95+ Lighthouse scores and automated GitHub Actions deployment.
-			1.4.0 - Major update: Added .NET 8 LTS support alongside .NET 9 for broader compatibility. Simplified DI registration with extension methods. Improved documentation structure.
-			1.3.2 - Bug fixes: Fixed CurlCommandSaver tests for proper configuration handling. Improved test reliability and mock setup patterns.
-			1.3.1 - Enhanced CurlCommandSaver with batch processing, file rotation, sensitive data sanitization, and improved error handling with retry logic. Added comprehensive configuration options and better resource management.
-			1.3.0 - Major update: Target only .NET 9 production for improved performance and modern features. Removed .NET 8 support to focus on latest stable .NET version. Updated test coverage with 75+ new tests across authentication providers, object pooling, streaming, and utility classes.
+			2.0.0 - MAJOR: Package split into base + crawler. Base package now 163 KB with 10 dependencies (down from 13). Zero breaking changes for core HTTP users. Web crawling moved to separate WebSpark.HttpClientUtility.Crawler package. CurlCommandSaver now uses JSON Lines format. All 474 tests passing.
+			1.5.1 - Quality improvements: Zero-warning baseline with TreatWarningsAsErrors enabled. All 520 tests passing.
+			1.5.0 - Documentation website launched at https://markhazleton.github.io/WebSpark.HttpClientUtility/
+			1.4.0 - Added .NET 8 LTS support alongside .NET 9. Simplified DI registration.
 		</PackageReleaseNotes>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<PackageTags>
-			httpclient;utility;web;api;rest;polly;cache;telemetry;concurrent;dotnet;aspnetcore;crawler;sitemap;http-resilience;retry;circuit-breaker;caching;curl;fire-and-forget;opentelemetry;streaming;observability;tracing;net8;net9
+			httpclient;http-client;rest-api;web-api;authentication;bearer-token;api-key;polly;resilience;retry;circuit-breaker;caching;memory-cache;telemetry;opentelemetry;observability;tracing;concurrent;streaming;fire-and-forget;curl;dotnet;aspnetcore;net8;net9
 		</PackageTags>
 		<RepositoryUrl>https://github.com/MarkHazleton/HttpClientUtility</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
@@ -44,8 +43,8 @@
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-		<!-- Package Validation -->
-		<EnablePackageValidation>true</EnablePackageValidation>
+		<!-- Package Validation (Disabled for v2.0.0 intentional breaking changes) -->
+		<EnablePackageValidation>false</EnablePackageValidation>
 		<PackageValidationBaselineVersion>1.4.0</PackageValidationBaselineVersion>
 		<!-- Source Link: Enables debugging the source through the NuGet Package -->
 		<ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
@@ -70,7 +69,6 @@
 	
 	<ItemGroup>
 		<!-- Core dependencies -->
-		<PackageReference Include="CsvHelper" Version="33.1.0" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
