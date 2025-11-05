@@ -47,9 +47,6 @@ public class SimpleSiteCrawler : ISiteCrawler
     /// <exception cref="CrawlException">Thrown when domain initialization fails.</exception>
     private async Task InitializeDomainAsync(string domainUrl, CrawlerOptions options, CancellationToken ct = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(domainUrl);
-        ArgumentNullException.ThrowIfNull(options);
-
         try
         {
             // Process robots.txt if enabled
@@ -82,8 +79,6 @@ public class SimpleSiteCrawler : ISiteCrawler
     /// <returns>A task representing the asynchronous operation.</returns>
     private async Task ProcessSitemapAsync(string domainUrl, CancellationToken ct = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(domainUrl);
-
         var sitemapUrl = new Uri(new Uri(domainUrl), "sitemap.xml").ToString();
         try
         {
@@ -127,7 +122,11 @@ public class SimpleSiteCrawler : ISiteCrawler
     /// <returns>A list of URLs extracted from the sitemap.</returns>
     private List<string> ParseSitemap(string sitemapContent)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(sitemapContent);
+        // Return an empty list if the input is null or whitespace
+        if (string.IsNullOrWhiteSpace(sitemapContent))
+        {
+            return [];
+        }
 
         var links = new List<string>();
 
@@ -195,7 +194,10 @@ public class SimpleSiteCrawler : ISiteCrawler
     /// <exception cref="CrawlException">Thrown when a critical error occurs during page crawling.</exception>
     private async Task<CrawlResult?> CrawlPageAsync(string url, int depth, string userAgent, CancellationToken ct = default)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(url);
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            return null;
+        }
 
         var stopwatch = Stopwatch.StartNew();
         var crawlResult = new CrawlResult
@@ -283,7 +285,10 @@ public class SimpleSiteCrawler : ISiteCrawler
     /// <returns>The normalized URL.</returns>
     private static string NormalizeUrl(string url)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(url);
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            return string.Empty;
+        }
 
         try
         {
@@ -372,9 +377,6 @@ public class SimpleSiteCrawler : ISiteCrawler
     /// <returns>A safe filename for the given URL.</returns>
     private static string GetSafeFileName(string url, string outputDir)
     {
-        ArgumentException.ThrowIfNullOrEmpty(url);
-        ArgumentException.ThrowIfNullOrEmpty(outputDir);
-
         try
         {
             var uri = new Uri(url);
@@ -417,9 +419,6 @@ public class SimpleSiteCrawler : ISiteCrawler
     /// <returns>HTML content with resolved links.</returns>
     private static string ResolveRelativeLinks(string htmlContent, string baseUrl)
     {
-        ArgumentException.ThrowIfNullOrEmpty(htmlContent);
-        ArgumentException.ThrowIfNullOrEmpty(baseUrl);
-
         try
         {
             var baseUri = new Uri(baseUrl);
@@ -466,7 +465,10 @@ public class SimpleSiteCrawler : ISiteCrawler
     /// <returns>A list of validation messages, or null if no issues were found.</returns>
     private static List<string>? ValidateHtml(string htmlContent)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(htmlContent);
+        if (string.IsNullOrWhiteSpace(htmlContent))
+        {
+            return null;
+        }
 
         List<string> messages = [];
 
@@ -512,8 +514,13 @@ public class SimpleSiteCrawler : ISiteCrawler
     /// <exception cref="OperationCanceledException">Thrown when the operation is cancelled.</exception>
     public async Task<CrawlDomainViewModel> CrawlAsync(string startUrl, CrawlerOptions options, CancellationToken ct = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(startUrl);
-        ArgumentNullException.ThrowIfNull(options);
+        if (string.IsNullOrEmpty(startUrl))
+        {
+            throw new ArgumentException("Start URL cannot be null or empty", nameof(startUrl));
+        }
+
+        // Use default options if none provided
+        options ??= new CrawlerOptions();
 
         // Estimate memory requirements and log warning if large crawl
         double estimatedMemoryMb = _performanceTracker.EstimateMemoryRequirements(options.MaxPages);
@@ -700,12 +707,6 @@ public class SimpleSiteCrawler : ISiteCrawler
         CrawlerOptions options,
         CancellationToken ct)
     {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentNullException.ThrowIfNull(crawledURLs);
-        ArgumentNullException.ThrowIfNull(crawlResults);
-        ArgumentNullException.ThrowIfNull(linksToCrawl);
-        ArgumentNullException.ThrowIfNull(options);
-
         // Use a batch approach to process links
         var batch = new List<string>();
         var batchSize = 100; // Process links in batches of 100
@@ -748,12 +749,6 @@ public class SimpleSiteCrawler : ISiteCrawler
         CrawlerOptions options,
         CancellationToken ct)
     {
-        ArgumentNullException.ThrowIfNull(batch);
-        ArgumentNullException.ThrowIfNull(crawledURLs);
-        ArgumentNullException.ThrowIfNull(crawlResults);
-        ArgumentNullException.ThrowIfNull(linksToCrawl);
-        ArgumentNullException.ThrowIfNull(options);
-
         await Task.Run(() =>
         {
             foreach (var foundUrl in batch)
@@ -804,8 +799,6 @@ public class SimpleSiteCrawler : ISiteCrawler
     /// <returns>A priority score (lower is higher priority).</returns>
     private static int CalculateUrlPriority(string url, int depth)
     {
-        ArgumentException.ThrowIfNullOrEmpty(url);
-
         // Base priority is depth + 1 (depth 1 = priority 2)
         int priority = depth + 1;
 
@@ -842,8 +835,6 @@ public class SimpleSiteCrawler : ISiteCrawler
     /// <param name="depthStats">Statistics of pages crawled at each depth.</param>
     private void LogProgress(int crawledCount, int queueCount, int currentDepth, ConcurrentDictionary<int, int> depthStats)
     {
-        ArgumentNullException.ThrowIfNull(depthStats);
-
         var depthSummary = string.Join(", ", depthStats.OrderBy(kv => kv.Key)
             .Select(kv => $"D{kv.Key}:{kv.Value}"));
 
@@ -858,9 +849,7 @@ public class SimpleSiteCrawler : ISiteCrawler
     /// <returns>An XML string representing the sitemap.</returns>
     private static string GenerateSitemapXml(IEnumerable<string> urls)
     {
-        ArgumentNullException.ThrowIfNull(urls);
-
-        if (!urls.Any())
+        if (urls == null || !urls.Any())
         {
             return string.Empty;
         }

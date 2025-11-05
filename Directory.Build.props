@@ -1,5 +1,10 @@
 <Project>
   <PropertyGroup>
+    <!-- Version Information (Lockstep Versioning for v2.0.0) -->
+    <Version>2.0.0</Version>
+    <FileVersion>2.0.0.0</FileVersion>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    
     <!-- Common build properties -->
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
@@ -7,11 +12,16 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningLevel>5</WarningLevel>
     
+    <!-- Multi-Targeting (Constitutional Requirement) -->
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    
     <!-- Package metadata common to all projects -->
     <Authors>MarkHazleton</Authors>
     <Company>MarkHazleton</Company>
     <Copyright>Copyright © MarkHazleton 2025</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/MarkHazleton/WebSpark.HttpClientUtility</PackageProjectUrl>
     
     <!-- Repository information -->
     <RepositoryUrl>https://github.com/MarkHazleton/HttpClientUtility</RepositoryUrl>
@@ -30,5 +40,23 @@
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    
+    <!-- Strong Name Signing (Both Packages) -->
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)HttpClientUtility.snk</AssemblyOriginatorKeyFile>
+    <PublicSign Condition="'$(OS)' != 'Windows_NT'">true</PublicSign>
+    <EnableStrongNaming>true</EnableStrongNaming>
+    <DelaySign>false</DelaySign>
+    
+    <!-- NuGet Package Configuration -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <!-- SourceLink for GitHub -->
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
+  </ItemGroup>
 </Project>

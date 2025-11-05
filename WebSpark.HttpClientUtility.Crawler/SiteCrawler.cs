@@ -107,8 +107,6 @@ public class SiteCrawler : ISiteCrawler
     /// <returns>A CrawlResult containing information about the crawled page</returns>
     private async Task<CrawlResult> CrawlPageAsync(string url, int depth, string userAgent, CancellationToken ct = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(url);
-
         var crawlRequest = new CrawlResult
         {
             CacheDurationMinutes = 0,
@@ -164,10 +162,6 @@ public class SiteCrawler : ISiteCrawler
         ConcurrentDictionary<string, CrawlResult> crawlResults,
         CrawlerOptions options)
     {
-        ArgumentNullException.ThrowIfNull(linksToCrawl);
-        ArgumentNullException.ThrowIfNull(crawlResults);
-        ArgumentNullException.ThrowIfNull(options);
-
         if (crawlResult?.CrawlLinks == null)
         {
             return;
@@ -209,9 +203,7 @@ public class SiteCrawler : ISiteCrawler
     /// </summary>
     private static string GenerateSitemapXml(IEnumerable<string> urls)
     {
-        ArgumentNullException.ThrowIfNull(urls);
-
-        if (!urls.Any())
+        if (urls == null || !urls.Any())
         {
             return string.Empty;
         }
@@ -246,7 +238,10 @@ public class SiteCrawler : ISiteCrawler
     /// </summary>
     private static string NormalizeUrl(string url)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(url);
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            return string.Empty;
+        }
 
         try
         {
@@ -270,8 +265,6 @@ public class SiteCrawler : ISiteCrawler
     /// <returns>A task representing the asynchronous operation</returns>
     private async Task NotifyClientsAsync(string message, CancellationToken ct)
     {
-        ArgumentException.ThrowIfNullOrEmpty(message);
-
         try
         {
             await _hubContext.Clients.All.SendAsync("UrlFound", message, ct).ConfigureAwait(false);
@@ -307,8 +300,12 @@ public class SiteCrawler : ISiteCrawler
     /// <exception cref="OperationCanceledException">Thrown when the operation is cancelled</exception>
     public async Task<CrawlDomainViewModel> CrawlAsync(string startUrl, CrawlerOptions options, CancellationToken ct = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(startUrl);
-        ArgumentNullException.ThrowIfNull(options);
+        if (string.IsNullOrEmpty(startUrl))
+        {
+            throw new ArgumentException("Start URL cannot be null or empty", nameof(startUrl));
+        }
+
+        options ??= new CrawlerOptions();
 
         var linksToCrawl = new ConcurrentQueue<(string Url, int Depth)>();
         var crawlResults = new ConcurrentDictionary<string, CrawlResult>();
@@ -325,6 +322,12 @@ public class SiteCrawler : ISiteCrawler
             if (options.RespectRobotsTxt)
             {
                 await _robotsTxtParser.ProcessRobotsTxtAsync(startUrl, ct).ConfigureAwait(false);
+            }
+
+            // Try to discover URLs from sitemap.xml and RSS feeds
+            if (options.DiscoverFromSitemapAndRss)
+            {
+                await DiscoverUrlsFromSitemapAndRssAsync(startUrl, linksToCrawl, crawlResults, ct).ConfigureAwait(false);
             }
 
             // Add the start URL to the queue
@@ -359,11 +362,8 @@ public class SiteCrawler : ISiteCrawler
                 // Add new links to the queue
                 EnqueueNewLinks(crawlResult, linksToCrawl, crawlResults, options);
 
-                // Notify clients periodically
-                if (crawlResults.Count % 10 == 0)
-                {
-                    await NotifyClientsAsync($"Links to parse: {linksToCrawl.Count} Crawled: {crawlResults.Count}", ct).ConfigureAwait(false);
-                }
+                // Notify clients after each page
+                await NotifyClientsAsync($"Crawled: {crawlResults.Count} | Queue: {linksToCrawl.Count} | Found: {link}", ct).ConfigureAwait(false);
             }
         }
         catch (OperationCanceledException)
@@ -389,6 +389,125 @@ public class SiteCrawler : ISiteCrawler
             .Distinct());
 
         return viewModel;
+    }
+
+    /// <summary>
+    /// Discovers URLs from sitemap.xml and RSS feeds to find pages hidden behind JavaScript navigation
+    /// </summary>
+    private async Task DiscoverUrlsFromSitemapAndRssAsync(
+        string startUrl,
+        ConcurrentQueue<(string Url, int Depth)> linksToCrawl,
+        ConcurrentDictionary<string, CrawlResult> crawlResults,
+        CancellationToken ct)
+    {
+        try
+        {
+            var baseUri = new Uri(startUrl);
+            var baseUrl = $"{baseUri.Scheme}://{baseUri.Host}";
+            
+            // Common sitemap and RSS locations
+            var discoveryUrls = new[]
+            {
+                $"{baseUrl}/sitemap.xml",
+                $"{baseUrl}/rss.xml",
+                $"{baseUrl}/feed.xml",
+                $"{baseUrl}/atom.xml"
+            };
+
+            foreach (var discoveryUrl in discoveryUrls)
+            {
+                try
+                {
+                    _logger.LogDebug("Attempting to discover URLs from: {Url}", discoveryUrl);
+                    
+                    var httpClient = _httpClientFactory.CreateClient("SiteCrawler");
+                    var response = await httpClient.GetAsync(discoveryUrl, ct).ConfigureAwait(false);
+                    
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        continue;
+                    }
+
+                    var content = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
+                    
+                    // Parse XML to extract URLs
+                    var urls = ExtractUrlsFromXml(content, baseUrl);
+                    
+                    var addedCount = 0;
+                    foreach (var url in urls)
+                    {
+                        var normalizedUrl = NormalizeUrl(url);
+                        
+                        // Only add if not already in queue or crawled, and is same domain
+                        if (!string.IsNullOrEmpty(normalizedUrl) &&
+                            !crawlResults.ContainsKey(normalizedUrl) &&
+                            !linksToCrawl.Any(item => item.Url == normalizedUrl) &&
+                            SiteCrawlerHelpers.IsSameDomain(normalizedUrl, startUrl))
+                        {
+                            // Add with depth 2 (treat as if discovered from homepage)
+                            linksToCrawl.Enqueue((normalizedUrl, 2));
+                            addedCount++;
+                        }
+                    }
+                    
+                    if (addedCount > 0)
+                    {
+                        _logger.LogInformation("Discovered {Count} URLs from {Source}", addedCount, discoveryUrl);
+                        await NotifyClientsAsync($"Discovered {addedCount} URLs from {Path.GetFileName(discoveryUrl)}", ct).ConfigureAwait(false);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogDebug(ex, "Could not fetch or parse {Url}", discoveryUrl);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Error during sitemap/RSS discovery");
+        }
+    }
+
+    /// <summary>
+    /// Extracts URLs from XML content (sitemap or RSS/Atom feed)
+    /// </summary>
+    private static List<string> ExtractUrlsFromXml(string xmlContent, string baseUrl)
+    {
+        var urls = new List<string>();
+        
+        try
+        {
+            var doc = XDocument.Parse(xmlContent);
+            
+            // Check for sitemap format
+            var sitemapNs = doc.Root?.Name.Namespace;
+            var locElements = doc.Descendants().Where(e => e.Name.LocalName == "loc");
+            urls.AddRange(locElements.Select(e => e.Value).Where(v => !string.IsNullOrWhiteSpace(v)));
+            
+            // Check for RSS/Atom feed format
+            var linkElements = doc.Descendants().Where(e => e.Name.LocalName == "link");
+            foreach (var linkElement in linkElements)
+            {
+                // RSS: <link>url</link>
+                if (!string.IsNullOrWhiteSpace(linkElement.Value))
+                {
+                    urls.Add(linkElement.Value);
+                }
+                
+                // Atom: <link href="url" />
+                var hrefAttr = linkElement.Attribute("href");
+                if (hrefAttr != null && !string.IsNullOrWhiteSpace(hrefAttr.Value))
+                {
+                    urls.Add(hrefAttr.Value);
+                }
+            }
+        }
+        catch (Exception)
+        {
+            // If XML parsing fails, return empty list
+        }
+        
+        return urls.Distinct().ToList();
     }
 }
 

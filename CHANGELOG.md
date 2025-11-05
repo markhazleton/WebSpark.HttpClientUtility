@@ -5,6 +5,101 @@ All notable changes to the WebSpark.HttpClientUtility project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2025-11-05
+
+### 🎯 MAJOR RELEASE - Package Architecture Split
+
+This release splits the monolithic package into two focused packages for better modularity and reduced package size.
+
+### 📦 New Package Structure
+
+**WebSpark.HttpClientUtility** (Base Package) - 163 KB
+- Core HTTP utilities: authentication, caching, resilience, telemetry
+- Supports .NET 8 LTS and .NET 9
+- **10 dependencies** (down from 13 in v1.x)
+- **Zero breaking changes** for users of core HTTP features
+
+**WebSpark.HttpClientUtility.Crawler** (Extension Package) - 75 KB
+- Web crawling functionality: SiteCrawler, SimpleSiteCrawler
+- Robots.txt compliance, sitemap generation, HTML parsing
+- SignalR progress updates, CSV export
+- Requires base package [2.0.0] with exact version match
+- **Breaking change**: Must install separately and call `AddHttpClientCrawler()`
+
+### 🚀 NO BREAKING CHANGES - Core HTTP Users
+
+If you use **only** these features, your code continues to work with zero changes:
+- ✅ HTTP request/response handling (`IHttpRequestResultService`)
+- ✅ Authentication providers (Bearer, Basic, API Key)
+- ✅ Caching (`HttpRequestResultServiceCache`)
+- ✅ Resilience with Polly (`HttpRequestResultServicePolly`)
+- ✅ Telemetry (`HttpRequestResultServiceTelemetry`)
+- ✅ Concurrent requests (`IConcurrentHttpRequestResultService`)
+- ✅ Fire-and-forget operations (`IFireAndForgetService`)
+- ✅ Streaming (`IHttpStreamingService`)
+- ✅ CURL command generation (`ICurlCommandService`)
+- ✅ Mock services for testing (`IMockHttpRequestResultService`)
+
+**Migration**: Simply upgrade to v2.0.0 - no code changes required!
+
+### ⚠️ BREAKING CHANGES - Crawler Users
+
+If you use **web crawling features**, follow this 3-step migration:
+
+**Step 1**: Install the crawler package
+```bash
+dotnet add package WebSpark.HttpClientUtility.Crawler
+```
+
+**Step 2**: Add using directive
+```csharp
+using WebSpark.HttpClientUtility.Crawler;
+```
+
+**Step 3**: Update DI registration
+```csharp
+// Before (v1.x)
+services.AddHttpClientUtility();
+
+// After (v2.0.0)
+services.AddHttpClientUtility();
+services.AddHttpClientCrawler();  // NEW - Required for crawler features
+```
+
+That's it! All crawler functionality (ISiteCrawler, SiteCrawler, SimpleSiteCrawler, CrawlerOptions, etc.) works identically after these changes.
+
+### Added
+
+- **Crawler Package**: New `WebSpark.HttpClientUtility.Crawler` package with all web crawling features
+- **Atomic Releases**: Both packages always released together with identical version numbers (lockstep versioning)
+- **JSON Lines Format**: CurlCommandSaver now uses `.jsonl` format instead of CSV for better streaming and parsing
+
+### Changed
+
+- **Package Dependencies**: Base package reduced from 13 to 10 dependencies
+- **CurlCommandSaver Format**: Switched from CSV to JSON Lines format for improved debugging and tooling support
+- **Lockstep Versioning**: Both packages maintain identical version numbers (2.0.0)
+
+### Removed
+
+- **Crawler Code from Base**: Moved SiteCrawler, SimpleSiteCrawler, ISiteCrawler, CrawlerOptions, RobotsTxtParser, CrawlHub to separate package
+- **Crawler Dependencies from Base**: Removed HtmlAgilityPack, Markdig, CsvHelper dependencies from base package (now only in Crawler package)
+
+### Technical Details
+
+- **Base Package**: 163.23 KB, 10 runtime dependencies
+- **Crawler Package**: 75.39 KB, 4 crawler-specific dependencies + base package reference
+- **Total Tests**: 474 tests passing (420 base + 54 crawler) across .NET 8 and .NET 9
+- **Build Quality**: Zero compiler warnings with `TreatWarningsAsErrors=true`
+- **Strong Name Signing**: Both packages signed with same key for assembly compatibility
+
+### Migration Resources
+
+- **Documentation**: See [Migration Guide](https://markhazleton.github.io/WebSpark.HttpClientUtility/getting-started/migration-v2/)
+- **Support**: For questions, open an issue on [GitHub](https://github.com/MarkHazleton/HttpClientUtility/issues)
+
+---
+
 ## [1.5.0] - 2025-11-02
 
 ### Added

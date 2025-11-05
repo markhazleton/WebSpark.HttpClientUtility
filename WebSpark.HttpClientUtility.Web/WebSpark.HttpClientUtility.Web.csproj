@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WebSpark.HttpClientUtility\WebSpark.HttpClientUtility.csproj" />
+    <ProjectReference Include="..\WebSpark.HttpClientUtility.Crawler\WebSpark.HttpClientUtility.Crawler.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -12,8 +13,9 @@
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <!-- Suppress IDE0005 analyzer suggestion (not relevant for demo app) -->
-    <NoWarn>$(NoWarn);EnableGenerateDocumentationFile</NoWarn>
+    <!-- Suppress XML documentation warnings for demo application -->
+    <!-- CS1591: Missing XML comment for publicly visible type or member -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 
 </Project>

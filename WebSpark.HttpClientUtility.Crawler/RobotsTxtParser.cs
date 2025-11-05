@@ -22,10 +22,6 @@ public class RobotsTxtParser
     /// <param name="logger">Logger for diagnostic information</param>
     public RobotsTxtParser(IHttpClientFactory httpClientFactory, string userAgent, ILogger logger)
     {
-        ArgumentNullException.ThrowIfNull(httpClientFactory);
-        ArgumentException.ThrowIfNullOrEmpty(userAgent);
-        ArgumentNullException.ThrowIfNull(logger);
-
         _httpClient = httpClientFactory.CreateClient("RobotsTxtParser");
         _userAgent = userAgent.ToLowerInvariant();
         _logger = logger;
@@ -39,8 +35,6 @@ public class RobotsTxtParser
     /// <returns>A task representing the asynchronous operation</returns>
     public async Task ProcessRobotsTxtAsync(string url, CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(url);
-
         try
         {
             var uri = new Uri(url);
@@ -75,9 +69,6 @@ public class RobotsTxtParser
     /// <param name="content">The content of the robots.txt file</param>
     private void ParseRobotsTxt(string domain, string content)
     {
-        ArgumentException.ThrowIfNullOrEmpty(domain);
-        ArgumentException.ThrowIfNullOrEmpty(content);
-
         var disallowedPaths = new List<string>();
         string? currentUserAgent = null;
         bool isRelevantUserAgent = false;
@@ -139,8 +130,6 @@ public class RobotsTxtParser
     /// <returns>True if the URL is allowed to be crawled, false otherwise</returns>
     public bool IsAllowed(string url)
     {
-        ArgumentException.ThrowIfNullOrEmpty(url);
-
         try
         {
             var uri = new Uri(url);

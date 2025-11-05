@@ -56,6 +56,16 @@ public class CrawlerOptions
     public bool RespectRobotsTxt { get; set; } = true;
 
     /// <summary>
+    /// Whether to discover URLs from sitemap.xml and RSS feeds.
+    /// </summary>
+    /// <remarks>
+    /// When enabled, the crawler will check for sitemap.xml, rss.xml, feed.xml, and atom.xml
+    /// at the site root to discover additional URLs. Useful for finding pages hidden behind
+    /// JavaScript navigation or not linked from the main navigation structure.
+    /// </remarks>
+    public bool DiscoverFromSitemapAndRss { get; set; } = true;
+
+    /// <summary>
     /// Whether to save crawled pages to disk.
     /// </summary>
     /// <remarks>

@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<!-- Test Project Configuration -->
+		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+		<GenerateDocumentationFile>false</GenerateDocumentationFile>
+		
+		<!-- Suppress warnings not relevant for test projects -->
+		<!-- CA2007: ConfigureAwait not needed in test code -->
+		<!-- CS1591: Missing XML documentation (not required for tests) -->
+		<!-- IDE0005: Remove unnecessary using directives -->
+		<NoWarn>$(NoWarn);CA2007;CS1591;IDE0005</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Test Framework -->
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+		<PackageReference Include="MSTest.TestAdapter" Version="3.7.0" />
+		<PackageReference Include="MSTest.TestFramework" Version="3.7.0" />
+		<PackageReference Include="coverlet.collector" Version="6.0.2">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		
+		<!-- Mocking Framework -->
+		<PackageReference Include="Moq" Version="4.20.72" />
+		
+		<!-- Projects Under Test -->
+		<ProjectReference Include="..\WebSpark.HttpClientUtility\WebSpark.HttpClientUtility.csproj" />
+		<ProjectReference Include="..\WebSpark.HttpClientUtility.Crawler\WebSpark.HttpClientUtility.Crawler.csproj" />
+		
+		<!-- OpenTelemetry InMemory for testing (not in published packages) -->
+		<PackageReference Include="OpenTelemetry.Exporter.InMemory" Version="1.13.1" />
+	</ItemGroup>
+
+</Project>

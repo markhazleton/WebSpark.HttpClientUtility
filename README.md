@@ -2,6 +2,7 @@
 
 [![NuGet Version](https://img.shields.io/nuget/v/WebSpark.HttpClientUtility.svg)](https://www.nuget.org/packages/WebSpark.HttpClientUtility/)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/WebSpark.HttpClientUtility.svg)](https://www.nuget.org/packages/WebSpark.HttpClientUtility/)
+[![Crawler Package](https://img.shields.io/nuget/v/WebSpark.HttpClientUtility.Crawler.svg?label=Crawler)](https://www.nuget.org/packages/WebSpark.HttpClientUtility.Crawler/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://github.com/MarkHazleton/HttpClientUtility/actions/workflows/publish-nuget.yml/badge.svg)](https://github.com/MarkHazleton/HttpClientUtility/actions/workflows/publish-nuget.yml)
 [![.NET 8+](https://img.shields.io/badge/.NET-8%2B-blue.svg)](https://dotnet.microsoft.com/download/dotnet)
@@ -10,6 +11,17 @@
 **A production-ready HttpClient wrapper for .NET 8+ that makes HTTP calls simple, resilient, and observable.**
 
 Stop writing boilerplate HTTP code. Get built-in resilience, caching, telemetry, and structured logging out of the box.
+
+## 📦 v2.0 - Now in Two Focused Packages!
+
+Starting with v2.0, the library is split into two packages:
+
+| Package | Purpose | Size | Use When |
+|---------|---------|------|----------|
+| **[WebSpark.HttpClientUtility](https://www.nuget.org/packages/WebSpark.HttpClientUtility/)** | Core HTTP features | 163 KB | You need HTTP client utilities (authentication, caching, resilience, telemetry) |
+| **[WebSpark.HttpClientUtility.Crawler](https://www.nuget.org/packages/WebSpark.HttpClientUtility.Crawler/)** | Web crawling extension | 75 KB | You need web crawling, robots.txt parsing, sitemap generation |
+
+**Upgrading from v1.x?** Most users need no code changes! See [Migration Guide](#-upgrading-from-v1x).
 
 ## 📚 Documentation
 
@@ -24,12 +36,14 @@ The complete documentation site includes:
 
 ## ⚡ Quick Start
 
-### Install
+### Core HTTP Features (Base Package)
+
+**Install**
 ```bash
 dotnet add package WebSpark.HttpClientUtility
 ```
 
-### 5-Minute Example
+**5-Minute Example**
 ```csharp
 // Program.cs - Register services (ONE LINE!)
 builder.Services.AddHttpClientUtility();
@@ -62,6 +76,43 @@ That's it! You now have:
 - ✅ Proper error handling and exception management
 - ✅ Support for .NET 8 LTS and .NET 9
 
+### Web Crawling Features (Crawler Package)
+
+**Install Both Packages**
+```bash
+dotnet add package WebSpark.HttpClientUtility
+dotnet add package WebSpark.HttpClientUtility.Crawler
+```
+
+**Register Services**
+```csharp
+// Program.cs
+builder.Services.AddHttpClientUtility();
+builder.Services.AddHttpClientCrawler();  // Adds crawler features
+```
+
+**Use Crawler**
+```csharp
+public class SiteAnalyzer
+{
+    private readonly ISiteCrawler _crawler;
+    
+    public SiteAnalyzer(ISiteCrawler crawler) => _crawler = crawler;
+
+    public async Task<CrawlResult> AnalyzeSiteAsync(string url)
+    {
+        var options = new CrawlerOptions
+        {
+            MaxDepth = 3,
+            MaxPages = 100,
+            RespectRobotsTxt = true
+        };
+        
+        return await _crawler.CrawlAsync(url, options);
+    }
+}
+```
+
 ## 🎯 Why Choose This Library?
 
 | Challenge | Solution |
@@ -71,23 +122,34 @@ That's it! You now have:
 | **Repeated API Calls** | Automatic response caching with customizable duration |
 | **Observability** | Correlation IDs, structured logging, and OpenTelemetry support |
 | **Testing** | All services are interface-based for easy mocking |
+| **Package Size** | Modular design - install only what you need |
 
 ## 🚀 Features
 
-### Core Features (Always Included)
+### Base Package Features
 - **Simple API** - Intuitive request/response model
+- **Authentication** - Bearer token, Basic auth, API key providers
 - **Correlation IDs** - Automatic tracking across distributed systems
 - **Structured Logging** - Rich context in all log messages
 - **Telemetry** - Request timing and performance metrics
 - **Error Handling** - Standardized exception processing
 - **Type-Safe** - Strongly-typed request and response models
-
-### Optional Features (Enable as Needed)
-- **Caching** - In-memory response caching
-- **Resilience** - Polly retry and circuit breaker policies
+- **Caching** - In-memory response caching (optional)
+- **Resilience** - Polly retry and circuit breaker policies (optional)
 - **Concurrent Requests** - Parallel request processing
-- **Web Crawling** - Site crawling with robots.txt support
-- **OpenTelemetry** - Full observability integration
+- **Fire-and-Forget** - Background request execution
+- **Streaming** - Efficient handling of large responses
+- **OpenTelemetry** - Full observability integration (optional)
+- **CURL Export** - Generate CURL commands for debugging
+
+### Crawler Package Features
+- **Site Crawling** - Full website crawling with depth control
+- **Robots.txt** - Automatic compliance with robots.txt rules
+- **Sitemap Generation** - Create XML sitemaps from crawl results
+- **HTML Parsing** - Extract links and metadata with HtmlAgilityPack
+- **SignalR Progress** - Real-time crawl progress updates
+- **CSV Export** - Export crawl results to CSV files
+- **Performance Tracking** - Monitor crawl speed and efficiency
 
 ## 📚 Common Scenarios
 
@@ -121,6 +183,46 @@ builder.Services.AddHttpClientUtility(options =>
 ```csharp
 builder.Services.AddHttpClientUtilityWithAllFeatures();
 ```
+
+## 🔄 Upgrading from v1.x
+
+### If You DON'T Use Web Crawling
+
+**No code changes required!** Simply upgrade:
+
+```bash
+dotnet add package WebSpark.HttpClientUtility --version 2.0.0
+```
+
+Your existing code continues to work exactly as before. All core HTTP features (authentication, caching, resilience, telemetry, etc.) are still in the base package with the same API.
+
+### If You DO Use Web Crawling
+
+Three simple steps to migrate:
+
+**Step 1**: Install the crawler package
+```bash
+dotnet add package WebSpark.HttpClientUtility.Crawler --version 2.0.0
+```
+
+**Step 2**: Add using directive
+```csharp
+using WebSpark.HttpClientUtility.Crawler;
+```
+
+**Step 3**: Update service registration
+```csharp
+// v1.x (old)
+services.AddHttpClientUtility();
+
+// v2.0 (new)
+services.AddHttpClientUtility();
+services.AddHttpClientCrawler();  // Add this line
+```
+
+That's it! Your crawler code (ISiteCrawler, SiteCrawler, SimpleSiteCrawler, etc.) works identically after these changes.
+
+**Need Help?** See the [detailed migration guide](https://markhazleton.github.io/WebSpark.HttpClientUtility/getting-started/migration-v2/) or [open an issue](https://github.com/MarkHazleton/HttpClientUtility/issues).
 
 ## 📖 Documentation
 

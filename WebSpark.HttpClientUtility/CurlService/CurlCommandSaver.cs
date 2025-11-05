@@ -1,8 +1,7 @@
 using System.Collections.Concurrent;
-using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
-using CsvHelper;
+using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -19,9 +18,9 @@ public class CurlCommandSaverOptions
     public string OutputFolder { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets the base name of the CSV file (without extension).
+    /// Gets or sets the base name of the output file (without extension).
     /// </summary>
-    public string CsvFileName { get; set; } = "curl_commands";
+    public string FileName { get; set; } = "curl_commands";
 
     /// <summary>
  /// Gets or sets the maximum size of each log file in bytes before rotation (default: 10MB).
@@ -78,7 +77,7 @@ public class CurlCommandSaver : IDisposable
 {
     // SemaphoreSlim is used to enforce exclusive access during file writes.
     private static readonly SemaphoreSlim _fileLock = new SemaphoreSlim(1, 1);
-    private readonly string _csvFilePath;
+    private readonly string _filePath;
   private readonly ILogger _logger;
     private readonly CurlCommandSaverOptions _options;
     private readonly ConcurrentQueue<CurlCommandRecord> _pendingRecords = new ConcurrentQueue<CurlCommandRecord>();
@@ -104,17 +103,17 @@ public class CurlCommandSaver : IDisposable
         _options = new CurlCommandSaverOptions
      {
       OutputFolder = configuration["CsvOutputFolder"] ?? string.Empty,
-     CsvFileName = configuration["CsvFileName"] ?? "curl_commands"
+     FileName = configuration["CsvFileName"] ?? "curl_commands"
         };
 
         // Check if output folder is configured
       if (string.IsNullOrWhiteSpace(_options.OutputFolder))
         {
             _logger.LogWarning(
-"CsvOutputFolder is not configured. cURL commands will not be saved to file. " +
+            "CsvOutputFolder is not configured. cURL commands will not be saved to file. " +
     "To enable file logging, configure 'CsvOutputFolder' in your application settings.");
        _isFileLoggingEnabled = false;
-        _csvFilePath = string.Empty;
+        _filePath = string.Empty;
         }
     else
         {
@@ -125,8 +124,8 @@ public class CurlCommandSaver : IDisposable
              // Ensure the output directory exists.
     Directory.CreateDirectory(_options.OutputFolder);
 
-                // Build the full path for the CSV file.
-    _csvFilePath = Path.Combine(_options.OutputFolder, $"{_options.CsvFileName}.csv");
+                // Build the full path for the JSON log file.
+    _filePath = Path.Combine(_options.OutputFolder, $"{_options.FileName}.jsonl");
     }
  catch (Exception ex)
 {
@@ -134,7 +133,7 @@ public class CurlCommandSaver : IDisposable
               "Failed to create output directory '{OutputFolder}'. File logging will be disabled.", 
  _options.OutputFolder);
      _isFileLoggingEnabled = false;
-           _csvFilePath = string.Empty;
+           _filePath = string.Empty;
       }
         }
 
@@ -414,32 +413,27 @@ try
             // First, check if file rotation is needed
           await CheckAndRotateFileIfNeededAsync().ConfigureAwait(false);
 
-      // Write the records to the CSV file using a file lock for thread safety.
+      // Write the records to the JSON Lines file using a file lock for thread safety.
     await _fileLock.WaitAsync().ConfigureAwait(false);
                 try
           {
-       bool fileExists = File.Exists(_csvFilePath);
-
- using (var stream = File.Open(_csvFilePath, fileExists ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.Read))
+       using (var stream = File.Open(_filePath, FileMode.Append, FileAccess.Write, FileShare.Read))
 using (var writer = new StreamWriter(stream))
-         using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
     {
-    // If the file is new, write the header first.
-               if (!fileExists)
-              {
-    csv.WriteHeader<CurlCommandRecord>();
-        await csv.NextRecordAsync().ConfigureAwait(false);
-     }
-
+    // Write each record as a JSON line
         foreach (var record in records)
     {
-        csv.WriteRecord(record);
-           await csv.NextRecordAsync().ConfigureAwait(false);
+        var jsonLine = JsonSerializer.Serialize(record, new JsonSerializerOptions 
+        { 
+            WriteIndented = false,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        });
+           await writer.WriteLineAsync(jsonLine).ConfigureAwait(false);
   }
        }
 
-     _logger.LogInformation("Saved {Count} curl command records to CSV file at {Path}",
-    records.Count, _csvFilePath);
+     _logger.LogInformation("Saved {Count} curl command records to log file at {Path}",
+    records.Count, _filePath);
 
    succeeded = true;
                 }
@@ -454,11 +448,11 @@ using (var writer = new StreamWriter(stream))
 
             if (retryCount >= _options.MaxRetries)
            {
-      _logger.LogError(ex, "Failed to save curl commands to CSV after {RetryCount} retries", retryCount);
+      _logger.LogError(ex, "Failed to save curl commands to log file after {RetryCount} retries", retryCount);
  throw;
        }
 
-          _logger.LogWarning(ex, "Error saving curl commands to CSV (attempt {RetryCount}/{MaxRetries}). Retrying...",
+          _logger.LogWarning(ex, "Error saving curl commands to log file (attempt {RetryCount}/{MaxRetries}). Retrying...",
   retryCount, _options.MaxRetries);
 
             // Add exponential backoff
@@ -466,7 +460,7 @@ using (var writer = new StreamWriter(stream))
             }
             catch (Exception ex)
             {
-           _logger.LogError(ex, "Unexpected error saving curl commands to CSV");
+           _logger.LogError(ex, "Unexpected error saving curl commands to log file");
    throw;
        }
       }
@@ -479,30 +473,28 @@ using (var writer = new StreamWriter(stream))
          return;
      }
 
-     await _fileLock.WaitAsync().ConfigureAwait(false);
+      await _fileLock.WaitAsync().ConfigureAwait(false);
       try
         {
-      if (!File.Exists(_csvFilePath))
+      if (!File.Exists(_filePath))
             {
         return;
-         }
-
-      var fileInfo = new FileInfo(_csvFilePath);
+         }      var fileInfo = new FileInfo(_filePath);
      if (fileInfo.Length >= _options.MaxFileSize)
           {
                 string timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
             string rotatedFilePath = Path.Combine(
           _options.OutputFolder,
-             $"{_options.CsvFileName}_{timestamp}.csv"
+             $"{_options.FileName}_{timestamp}.jsonl"
       );
 
-                File.Move(_csvFilePath, rotatedFilePath);
-       _logger.LogInformation("Rotated CSV file to {RotatedFilePath}", rotatedFilePath);
+                File.Move(_filePath, rotatedFilePath);
+       _logger.LogInformation("Rotated log file to {RotatedFilePath}", rotatedFilePath);
         }
   }
      catch (Exception ex)
     {
-      _logger.LogError(ex, "Error checking/rotating curl command CSV file");
+      _logger.LogError(ex, "Error checking/rotating curl command log file");
         }
         finally
         {
