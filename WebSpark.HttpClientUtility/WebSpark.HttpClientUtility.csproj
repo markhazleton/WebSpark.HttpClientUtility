@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<!-- Target .NET 8 LTS and .NET 9 for maximum compatibility -->
-		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+		<!-- Target .NET 8 LTS, .NET 9, and .NET 10 Preview for maximum compatibility -->
+		<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -11,19 +11,20 @@
 		<!-- NuGet Package Properties -->
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>WebSpark.HttpClientUtility</PackageId>
-		<!-- Version inherited from Directory.Build.props (2.0.0 lockstep) -->
+		<!-- Version inherited from Directory.Build.props (2.1.0 lockstep) -->
 		<Deterministic>true</Deterministic>
 		<Authors>MarkHazleton</Authors>
 		<Company>MarkHazleton</Company>
 		<Copyright>Copyright © MarkHazleton 2025</Copyright>
-		<Summary>Lightweight HttpClient wrapper with authentication, caching, resilience, and telemetry for .NET 8+ applications. Core HTTP features without web crawling overhead.</Summary>
+		<Summary>Lightweight HttpClient wrapper with authentication, caching, resilience, and telemetry for .NET 8-10 applications. Core HTTP features without web crawling overhead.</Summary>
 		<Description>
-			Core HTTP utilities for .NET 8+ applications: authentication providers (Bearer, Basic, API Key), 
+			Core HTTP utilities for .NET 8-10 applications: authentication providers (Bearer, Basic, API Key), 
 			response caching, Polly resilience (retry/circuit breaker), OpenTelemetry integration, concurrent 
 			requests, fire-and-forget operations, and streaming support. Lightweight package focused on HTTP 
-			client functionality. For web crawling features, see WebSpark.HttpClientUtility.Crawler package.
+			client functionality. Supports .NET 8 LTS, .NET 9, and .NET 10 (Preview). For web crawling features, see WebSpark.HttpClientUtility.Crawler package.
 		</Description>
 		<PackageReleaseNotes>
+			2.1.0 - Added .NET 10 (Preview) multi-targeting support. All projects now target net8.0, net9.0, and net10.0. Updated Microsoft.Extensions packages to 10.0.0. All 291 tests passing on all three frameworks (873 test runs, 0 failures). Zero breaking changes.
 			2.0.0 - MAJOR: Package split into base + crawler. Base package now 163 KB with 10 dependencies (down from 13). Zero breaking changes for core HTTP users. Web crawling moved to separate WebSpark.HttpClientUtility.Crawler package. CurlCommandSaver now uses JSON Lines format. All 474 tests passing.
 			1.5.1 - Quality improvements: Zero-warning baseline with TreatWarningsAsErrors enabled. All 520 tests passing.
 			1.5.0 - Documentation website launched at https://markhazleton.github.io/WebSpark.HttpClientUtility/
@@ -31,7 +32,7 @@
 		</PackageReleaseNotes>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<PackageTags>
-			httpclient;http-client;rest-api;web-api;authentication;bearer-token;api-key;polly;resilience;retry;circuit-breaker;caching;memory-cache;telemetry;opentelemetry;observability;tracing;concurrent;streaming;fire-and-forget;curl;dotnet;aspnetcore;net8;net9
+			httpclient;http-client;rest-api;web-api;authentication;bearer-token;api-key;polly;resilience;retry;circuit-breaker;caching;memory-cache;telemetry;opentelemetry;observability;tracing;concurrent;streaming;fire-and-forget;curl;dotnet;aspnetcore;net8;net9;net10
 		</PackageTags>
 		<RepositoryUrl>https://github.com/MarkHazleton/HttpClientUtility</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
@@ -69,9 +70,9 @@
 	
 	<ItemGroup>
 		<!-- Core dependencies -->
-		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 		
 		<!-- OpenTelemetry -->
