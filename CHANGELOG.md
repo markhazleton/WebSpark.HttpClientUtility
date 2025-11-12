@@ -5,7 +5,7 @@ All notable changes to the WebSpark.HttpClientUtility project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - .NET 10 Multi-Targeting Support
+## [2.1.0] - 2025-11-12
 
 ### ✨ Added
 - **Multi-Targeting for .NET 10 (Preview)**: All projects now target net8.0, net9.0, and net10.0
@@ -20,10 +20,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated Microsoft.Extensions.Caching.Memory from 8.0.1 to 10.0.0
 - Updated Microsoft.Extensions.Http from 8.0.1 to 10.0.0
 - Updated global.json to use .NET 10 SDK (10.0.100) with allowPrerelease
+- Bumped package version from 2.0.0 to 2.1.0 (minor version for new framework support)
 
 ### ✅ Verified
 - All 291 unique tests pass on net8.0, net9.0, and net10.0 (873 total test runs, 0 failures)
-- NuGet packages correctly include all three framework targets
+- NuGet packages correctly include all three framework targets (lib/net8.0, lib/net9.0, lib/net10.0)
 - Strong-name signing intact for all targets
 - No breaking changes for existing consumers
 
@@ -31,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - .NET 10 is in Preview - requires .NET 10 SDK for development
 - Consumers on .NET 8 or .NET 9 are unaffected (continues using existing builds)
 - This is a non-breaking, additive change
+- Both base and crawler packages use lockstep versioning (both are 2.1.0)
 
 ## [2.0.0] - 2025-11-05
 
