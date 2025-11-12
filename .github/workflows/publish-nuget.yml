@@ -127,11 +127,14 @@ jobs:
 
       - name: Verify package contents
         run: |
+          echo "Listing all packages in ./nupkg:"
+          ls -la ./nupkg/
+          echo ""
           echo "Base package contents:"
-          unzip -l ./nupkg/WebSpark.HttpClientUtility.*.nupkg | grep "lib/"
+          unzip -l ./nupkg/WebSpark.HttpClientUtility.[0-9]*.nupkg | grep "lib/" || echo "No lib/ entries found"
           echo ""
           echo "Crawler package contents:"
-          unzip -l ./nupkg/WebSpark.HttpClientUtility.Crawler.*.nupkg | grep "lib/"
+          unzip -l ./nupkg/WebSpark.HttpClientUtility.Crawler.[0-9]*.nupkg | grep "lib/" || echo "No lib/ entries found"
 
       - name: Upload NuGet packages artifact
         uses: actions/upload-artifact@v4
