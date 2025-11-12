@@ -5,10 +5,10 @@
 [![Crawler Package](https://img.shields.io/nuget/v/WebSpark.HttpClientUtility.Crawler.svg?label=Crawler)](https://www.nuget.org/packages/WebSpark.HttpClientUtility.Crawler/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://github.com/MarkHazleton/HttpClientUtility/actions/workflows/publish-nuget.yml/badge.svg)](https://github.com/MarkHazleton/HttpClientUtility/actions/workflows/publish-nuget.yml)
-[![.NET 8+](https://img.shields.io/badge/.NET-8%2B-blue.svg)](https://dotnet.microsoft.com/download/dotnet)
+[![.NET 8-10](https://img.shields.io/badge/.NET-8--10-blue.svg)](https://dotnet.microsoft.com/download/dotnet)
 [![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://markhazleton.github.io/WebSpark.HttpClientUtility/)
 
-**A production-ready HttpClient wrapper for .NET 8+ that makes HTTP calls simple, resilient, and observable.**
+**A production-ready HttpClient wrapper for .NET 8-10 that makes HTTP calls simple, resilient, and observable.**
 
 Stop writing boilerplate HTTP code. Get built-in resilience, caching, telemetry, and structured logging out of the box.
 
@@ -74,7 +74,7 @@ That's it! You now have:
 - ✅ Structured logging with request/response details
 - ✅ Request timing telemetry
 - ✅ Proper error handling and exception management
-- ✅ Support for .NET 8 LTS and .NET 9
+- ✅ Support for .NET 8 LTS, .NET 9, and .NET 10 (Preview)
 
 ### Web Crawling Features (Crawler Package)
 
@@ -253,7 +253,7 @@ Explore working examples in the [samples directory](samples/):
 | Telemetry | ✅ Built-in | ⚠️ Manual | ⚠️ Manual | ⚠️ Manual |
 | Type Safety | ✅ Yes | ⚠️ Partial | ✅ Yes | ✅ Yes |
 | Web Crawling | ✅ Yes | ❌ No | ❌ No | ❌ No |
-| .NET 8 LTS Support | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| .NET 8-10 Support | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
 
 ## 🤝 Contributing
 
@@ -268,7 +268,7 @@ Contributions are welcome! See our [Contributing Guide](documentation/CONTRIBUTI
 ## 📊 Project Stats
 
 - **252+ Unit Tests** - 100% passing
-- **Supports .NET 8 LTS & .NET 9**
+- **Supports .NET 8 LTS, .NET 9, & .NET 10 (Preview)**
 - **MIT Licensed** - Free for commercial use
 - **Active Maintenance** - Regular updates
 
