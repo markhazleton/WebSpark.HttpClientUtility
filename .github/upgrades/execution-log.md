@@ -158,3 +158,35 @@ Status: Complete
 
 Success - All tests pass on net9.0 target
 
+
+## [2025-11-12 12:15] TASK-011: Build and Test WebSpark.HttpClientUtility.Test (net10.0)
+
+Status: Complete
+
+- **Verified**:
+  - Project builds successfully for net10.0
+  - All 210 tests passed (0 failures)
+  - No .NET 10-specific issues detected
+  - No test framework compatibility issues
+- **Commits**: 0d1ac98: "feat: Add .NET 10 multi-targeting to base library tests"
+- **Files Modified**: WebSpark.HttpClientUtility.Test\WebSpark.HttpClientUtility.Test.csproj
+- **Code Changes**: Multi-targeting updated, package upgraded
+- **Build Status**: Test run succeeded in 4.9s
+- **Tests**: 210 tests passed on net8.0, net9.0, and net10.0 (630 total test runs, 0 failures)
+
+Success - All base library tests pass on all three framework targets!
+
+
+## [2025-11-12 12:16] TASK-012: Update WebSpark.HttpClientUtility.Crawler.Test Project File
+
+Status: Complete
+
+- **Files Modified**: WebSpark.HttpClientUtility.Crawler.Test\WebSpark.HttpClientUtility.Crawler.Test.csproj
+- **Code Changes**:
+  - Added explicit TargetFrameworks property: `net8.0;net9.0;net10.0`
+  - Added Nullable and ImplicitUsings for consistency
+- **Verified**:
+  - Project file contains `<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>`
+
+Success - WebSpark.HttpClientUtility.Crawler.Test project file updated with .NET 10 target
+
