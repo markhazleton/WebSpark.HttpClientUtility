@@ -48,27 +48,52 @@ jobs:
         run: dotnet build WebSpark.HttpClientUtility.sln --configuration Release --no-restore
 
       - name: Run tests on .NET 8
-        run: dotnet test WebSpark.HttpClientUtility.sln --configuration Release --no-build --framework net8.0 --verbosity normal --logger "trx;LogFileName=test-results-net8.trx" --collect:"XPlat Code Coverage" --results-directory ./TestResults
+        continue-on-error: false
+        run: dotnet test WebSpark.HttpClientUtility.sln --configuration Release --no-build --framework net8.0 --verbosity normal --logger "trx" --collect:"XPlat Code Coverage" --results-directory ./TestResults/net8.0
 
       - name: Run tests on .NET 9
-        run: dotnet test WebSpark.HttpClientUtility.sln --configuration Release --no-build --framework net9.0 --verbosity normal --logger "trx;LogFileName=test-results-net9.trx" --collect:"XPlat Code Coverage" --results-directory ./TestResults
+        continue-on-error: false
+        run: dotnet test WebSpark.HttpClientUtility.sln --configuration Release --no-build --framework net9.0 --verbosity normal --logger "trx" --collect:"XPlat Code Coverage" --results-directory ./TestResults/net9.0
 
       - name: Run tests on .NET 10
-        run: dotnet test WebSpark.HttpClientUtility.sln --configuration Release --no-build --framework net10.0 --verbosity normal --logger "trx;LogFileName=test-results-net10.trx" --collect:"XPlat Code Coverage" --results-directory ./TestResults
+        continue-on-error: false
+        run: dotnet test WebSpark.HttpClientUtility.sln --configuration Release --no-build --framework net10.0 --verbosity normal --logger "trx" --collect:"XPlat Code Coverage" --results-directory ./TestResults/net10.0
 
       - name: List test results (debug)
         if: always()
         run: |
           echo "TestResults directory structure:"
-          find ./TestResults -type f -name "*.trx" -o -name "*.xml" || echo "No test files found"
-          ls -R ./TestResults || echo "TestResults directory not found"
+          ls -la ./TestResults || echo "TestResults directory not found"
+          echo ""
+          echo "Searching for TRX files:"
+          find ./TestResults -type f -name "*.trx" 2>/dev/null || echo "No .trx files found"
+          echo ""
+          echo "All files in TestResults:"
+          find ./TestResults -type f 2>/dev/null || echo "TestResults directory empty or not found"
+          echo ""
+          echo "Working directory:"
+          pwd
+          echo ""
+          echo "Directory listing:"
+          ls -la
+
+      - name: Verify TRX files exist before reporting
+        if: always()
+        run: |
+          TRX_COUNT=$(find ./TestResults -name "*.trx" 2>/dev/null | wc -l)
+          echo "Found $TRX_COUNT TRX files"
+          if [ $TRX_COUNT -eq 0 ]; then
+            echo "WARNING: No TRX files found for test reporting"
+            echo "This may cause the test reporter to fail"
+          fi
 
       - name: Test Report
         uses: dorny/test-reporter@v1
         if: always() # run this step even if previous steps failed
+        continue-on-error: true # Don't fail workflow if test reporter has issues
         with:
           name: .NET Tests # Name of the check run which will be created
-          path: "TestResults/*.trx" # Path to test results (no subdirectories now)
+          path: 'TestResults/**/*.trx' # Path to test results (single quotes for glob)
           reporter: dotnet-trx # Format of test results
           fail-on-error: false # Do not fail the workflow run if tests fail
 
