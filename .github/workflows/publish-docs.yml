@@ -7,9 +7,15 @@ on:
       - 'src/**'
       - '.github/workflows/publish-docs.yml'
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Publish HttpClientUtility NuGet Packages"]
+    types:
+      - completed
+    branches: [main]
 
 jobs:
   build-and-deploy:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write # Needed to push documentation changes back to repository
