@@ -52,18 +52,19 @@ jobs:
         run: dotnet build WebSpark.HttpClientUtility.sln --configuration Release --no-restore
 
       - name: Run tests on .NET 8
-        run: dotnet test WebSpark.HttpClientUtility.sln --configuration Release --no-build --framework net8.0 --verbosity normal --logger "trx;LogFileName=test-results-net8.trx" --collect:"XPlat Code Coverage" --results-directory ./TestResults
+        run: dotnet test WebSpark.HttpClientUtility.sln --configuration Release --no-build --framework net8.0 --verbosity normal --logger "trx" --collect:"XPlat Code Coverage" --results-directory ./TestResults/net8.0
 
       - name: Run tests on .NET 9
-        run: dotnet test WebSpark.HttpClientUtility.sln --configuration Release --no-build --framework net9.0 --verbosity normal --logger "trx;LogFileName=test-results-net9.trx" --collect:"XPlat Code Coverage" --results-directory ./TestResults
+        run: dotnet test WebSpark.HttpClientUtility.sln --configuration Release --no-build --framework net9.0 --verbosity normal --logger "trx" --collect:"XPlat Code Coverage" --results-directory ./TestResults/net9.0
 
       - name: Run tests on .NET 10
-        run: dotnet test WebSpark.HttpClientUtility.sln --configuration Release --no-build --framework net10.0 --verbosity normal --logger "trx;LogFileName=test-results-net10.trx" --collect:"XPlat Code Coverage" --results-directory ./TestResults
+        run: dotnet test WebSpark.HttpClientUtility.sln --configuration Release --no-build --framework net10.0 --verbosity normal --logger "trx" --collect:"XPlat Code Coverage" --results-directory ./TestResults/net10.0
 
       - name: List test results (debug)
         if: always()
         run: |
           echo "TestResults directory structure:"
+          find ./TestResults -type f -name "*.trx" || echo "No .trx files found"
           ls -R ./TestResults || echo "TestResults directory not found"
 
       - name: Test Report
@@ -71,7 +72,7 @@ jobs:
         if: success() || failure() # run this step even if previous step failed
         with:
           name: .NET Tests # Name of the check run which will be created
-          path: "TestResults/**/*.trx" # Path to test results (simplified pattern)
+          path: "TestResults/**/*.trx" # Path to test results
           reporter: dotnet-trx # Format of test results
           fail-on-error: false # Do not fail the workflow run if tests fail
 
