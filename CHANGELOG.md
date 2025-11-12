@@ -5,6 +5,18 @@ All notable changes to the WebSpark.HttpClientUtility project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [2.1.1] - 2025-11-12
+
+### Fixed
+- GitHub Actions: Fixed package verification step failing with exit code 1
+- Added error handling to prevent grep failures
+- Changed wildcard pattern to avoid matching .snupkg files
+
+### Verified
+- All workflow steps complete successfully
+- Package contents verified for net8.0, net9.0, and net10.0
+
 ## [2.1.0] - 2025-11-12
 
 ### ✨ Added
