@@ -5,21 +5,42 @@ All notable changes to the WebSpark.HttpClientUtility project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.2] - 2025-12-03
+
+### 🔒 Security
+
+- **Fixed js-yaml prototype pollution vulnerability (GHSA-mh29-5h37-fv8m)** - MODERATE severity
+  - Updated js-yaml from 3.14.1 to 3.14.2
+  - Updated js-yaml from 4.1.0 to 4.1.1
+  - Fixes prototype pollution in YAML merge (<<) operator
+- **Fixed glob command injection vulnerability (GHSA-5j98-mcp5-4vw2)** - HIGH severity
+  - Updated glob from 11.0.3 to 11.1.0
+  - Fixes command injection via -c/--cmd flag in glob CLI
+
+### 📝 Notes
+
+- All Dependabot security alerts resolved
+- Zero npm audit vulnerabilities remaining
+- Security fixes apply to documentation build dependencies only (not runtime library)
+- No breaking changes or functional changes to library code
 
 ## [2.1.1] - 2025-11-12
 
 ### Fixed
+
 - GitHub Actions: Fixed package verification step failing with exit code 1
 - Added error handling to prevent grep failures
 - Changed wildcard pattern to avoid matching .snupkg files
 
 ### Verified
+
 - All workflow steps complete successfully
 - Package contents verified for net8.0, net9.0, and net10.0
 
 ## [2.1.0] - 2025-11-12
 
 ### ✨ Added
+
 - **Multi-Targeting for .NET 10 (Preview)**: All projects now target net8.0, net9.0, and net10.0
   - WebSpark.HttpClientUtility (base library)
   - WebSpark.HttpClientUtility.Crawler (crawler extension)
@@ -28,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - WebSpark.HttpClientUtility.Web (demo application)
 
 ### 🔧 Changed
+
 - Updated Microsoft.Extensions.Caching.Abstractions from 8.0.0 to 10.0.0
 - Updated Microsoft.Extensions.Caching.Memory from 8.0.1 to 10.0.0
 - Updated Microsoft.Extensions.Http from 8.0.1 to 10.0.0
@@ -35,12 +57,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bumped package version from 2.0.0 to 2.1.0 (minor version for new framework support)
 
 ### ✅ Verified
+
 - All 291 unique tests pass on net8.0, net9.0, and net10.0 (873 total test runs, 0 failures)
 - NuGet packages correctly include all three framework targets (lib/net8.0, lib/net9.0, lib/net10.0)
 - Strong-name signing intact for all targets
 - No breaking changes for existing consumers
 
 ### 📝 Notes
+
 - .NET 10 is in Preview - requires .NET 10 SDK for development
 - Consumers on .NET 8 or .NET 9 are unaffected (continues using existing builds)
 - This is a non-breaking, additive change
@@ -55,12 +79,14 @@ This release splits the monolithic package into two focused packages for better 
 ### 📦 New Package Structure
 
 **WebSpark.HttpClientUtility** (Base Package) - 163 KB
+
 - Core HTTP utilities: authentication, caching, resilience, telemetry
 - Supports .NET 8 LTS and .NET 9
 - **10 dependencies** (down from 13 in v1.x)
 - **Zero breaking changes** for users of core HTTP features
 
 **WebSpark.HttpClientUtility.Crawler** (Extension Package) - 75 KB
+
 - Web crawling functionality: SiteCrawler, SimpleSiteCrawler
 - Robots.txt compliance, sitemap generation, HTML parsing
 - SignalR progress updates, CSV export
@@ -70,6 +96,7 @@ This release splits the monolithic package into two focused packages for better 
 ### 🚀 NO BREAKING CHANGES - Core HTTP Users
 
 If you use **only** these features, your code continues to work with zero changes:
+
 - ✅ HTTP request/response handling (`IHttpRequestResultService`)
 - ✅ Authentication providers (Bearer, Basic, API Key)
 - ✅ Caching (`HttpRequestResultServiceCache`)
@@ -88,16 +115,19 @@ If you use **only** these features, your code continues to work with zero change
 If you use **web crawling features**, follow this 3-step migration:
 
 **Step 1**: Install the crawler package
+
 ```bash
 dotnet add package WebSpark.HttpClientUtility.Crawler
 ```
 
 **Step 2**: Add using directive
+
 ```csharp
 using WebSpark.HttpClientUtility.Crawler;
 ```
 
 **Step 3**: Update DI registration
+
 ```csharp
 // Before (v1.x)
 services.AddHttpClientUtility();
@@ -145,7 +175,7 @@ That's it! All crawler functionality (ISiteCrawler, SiteCrawler, SimpleSiteCrawl
 
 ### Added
 
-- **Comprehensive Documentation Website**: Launched complete documentation site at https://markhazleton.github.io/WebSpark.HttpClientUtility/
+- **Comprehensive Documentation Website**: Launched complete documentation site at <https://markhazleton.github.io/WebSpark.HttpClientUtility/>
   - **Getting Started Guide**: Step-by-step instructions for installation and configuration
   - **Feature Documentation**: Detailed guides for caching, resilience, telemetry, authentication, and web crawling
   - **API Reference**: Complete API documentation with examples

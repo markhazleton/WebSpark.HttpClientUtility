@@ -17,17 +17,31 @@
 		<Authors>Mark Hazleton</Authors>
 		<Company>WebSpark</Company>
 		<Copyright>Copyright © 2025 Mark Hazleton</Copyright>
-		<Summary>Drop-in HttpClient wrapper for .NET 8-10+ with Polly resilience, response caching, and OpenTelemetry—configured in one line. Eliminates boilerplate setup for retries, circuit breakers, correlation IDs, and structured logging.</Summary>
-		<Description>Drop-in HttpClient wrapper for .NET 8-10+ with Polly resilience, response caching, and OpenTelemetry. One-line setup eliminates boilerplate for retries, circuit breakers, correlation IDs, and structured logging. Perfect for microservices, APIs, and web scrapers. Includes authentication providers (Bearer, Basic, API Key), concurrent requests, fire-and-forget operations, and streaming support. MIT licensed, 252+ tests. For web crawling features, see WebSpark.HttpClientUtility.Crawler package.</Description>
+		<Summary>Drop-in HttpClient wrapper for .NET 8-10+ with Polly resilience, response caching,
+			and OpenTelemetry—configured in one line. Eliminates boilerplate setup for retries,
+			circuit breakers, correlation IDs, and structured logging.</Summary>
+		<Description>Drop-in HttpClient wrapper for .NET 8-10+ with Polly resilience, response
+			caching, and OpenTelemetry. One-line setup eliminates boilerplate for retries, circuit
+			breakers, correlation IDs, and structured logging. Perfect for microservices, APIs, and
+			web scrapers. Includes authentication providers (Bearer, Basic, API Key), concurrent
+			requests, fire-and-forget operations, and streaming support. MIT licensed, 252+ tests.
+			For web crawling features, see WebSpark.HttpClientUtility.Crawler package.</Description>
 		<PackageReleaseNotes>
-			2.1.0 - Added .NET 10 (Preview) multi-targeting support. All projects now target net8.0, net9.0, and net10.0. Updated Microsoft.Extensions packages to 10.0.0. All 291 tests passing on all three frameworks (873 test runs, 0 failures). Zero breaking changes.
-			2.0.0 - MAJOR: Package split into base + crawler. Base package now 163 KB with 10 dependencies (down from 13). Zero breaking changes for core HTTP users. Web crawling moved to separate WebSpark.HttpClientUtility.Crawler package. CurlCommandSaver now uses JSON Lines format. All 474 tests passing.
-			1.5.1 - Quality improvements: Zero-warning baseline with TreatWarningsAsErrors enabled. All 520 tests passing.
-			1.5.0 - Documentation website launched at https://markhazleton.github.io/WebSpark.HttpClientUtility/
-			1.4.0 - Added .NET 8 LTS support alongside .NET 9. Simplified DI registration.
+			2.1.2 - Security patch: Fixed js-yaml prototype pollution (GHSA-mh29-5h37-fv8m,
+			MODERATE) and glob command injection (GHSA-5j98-mcp5-4vw2, HIGH) in documentation build
+			dependencies. All Dependabot alerts resolved. Zero breaking changes.
+			2.1.1 - GitHub Actions: Fixed package verification step. Zero breaking changes.
+			2.1.0 - Added .NET 10 (Preview) multi-targeting support. All projects now target net8.0,
+			net9.0, and net10.0. Updated Microsoft.Extensions packages to 10.0.0. All 291 tests
+			passing on all three frameworks (873 test runs, 0 failures). Zero breaking changes.
+			2.0.0 - MAJOR: Package split into base + crawler. Base package now 163 KB with 10
+			dependencies (down from 13). Zero breaking changes for core HTTP users. Web crawling
+			moved to separate WebSpark.HttpClientUtility.Crawler package. CurlCommandSaver now uses
+			JSON Lines format. All 474 tests passing.
 		</PackageReleaseNotes>
 		<NeutralLanguage>en-US</NeutralLanguage>
-		<PackageTags>httpclient;polly;resilience;retry;circuit-breaker;caching;opentelemetry;observability;correlation-id;distributed-tracing;structured-logging;httpclientfactory;web-scraping;microservices;api-client;rest-api;bearer-token;authentication;api-key;production-ready;dotnet;aspnetcore;net8;net9;net10</PackageTags>
+		<PackageTags>
+			httpclient;polly;resilience;retry;circuit-breaker;caching;opentelemetry;observability;correlation-id;distributed-tracing;structured-logging;httpclientfactory;web-scraping;microservices;api-client;rest-api;bearer-token;authentication;api-key;production-ready;dotnet;aspnetcore;net8;net9;net10</PackageTags>
 		<RepositoryUrl>https://github.com/MarkHazleton/HttpClientUtility</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageProjectUrl>https://markhazleton.github.io/WebSpark.HttpClientUtility/</PackageProjectUrl>
@@ -57,25 +71,25 @@
 		<None Include="images\icon.png" Pack="true" PackagePath="\" />
 		<None Include="Documentation\*.md" Pack="true" PackagePath="documentation\" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<!-- ASP.NET Core framework reference removed (SignalR moved to Crawler package) -->
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<!-- Core dependencies -->
 		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-		
+
 		<!-- OpenTelemetry -->
 		<PackageReference Include="OpenTelemetry" Version="1.14.0" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.14.0" />
 		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.14.0" />
 		<PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.14.0" />
 		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.14.0" />
-		
+
 		<!-- Resilience -->
 		<PackageReference Include="Polly" Version="8.6.5" />
 	</ItemGroup>
