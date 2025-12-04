@@ -19,10 +19,10 @@
 
 	<ItemGroup>
 		<!-- Test Framework -->
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-		<PackageReference Include="MSTest.TestAdapter" Version="3.7.0" />
-		<PackageReference Include="MSTest.TestFramework" Version="3.7.0" />
-		<PackageReference Include="coverlet.collector" Version="6.0.2">
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+		<PackageReference Include="MSTest.TestAdapter" Version="4.0.2" />
+		<PackageReference Include="MSTest.TestFramework" Version="4.0.2" />
+		<PackageReference Include="coverlet.collector" Version="6.0.4">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
@@ -35,7 +35,7 @@
 		<ProjectReference Include="..\WebSpark.HttpClientUtility.Crawler\WebSpark.HttpClientUtility.Crawler.csproj" />
 		
 		<!-- OpenTelemetry InMemory for testing (not in published packages) -->
-		<PackageReference Include="OpenTelemetry.Exporter.InMemory" Version="1.13.1" />
+		<PackageReference Include="OpenTelemetry.Exporter.InMemory" Version="1.14.0" />
 	</ItemGroup>
 
 </Project>

@@ -84,13 +84,13 @@ public class CrawlerUtilityTests
             var result = exception.ToString();
 
             // Assert
-            Assert.IsTrue(result.Contains(message));
-            Assert.IsTrue(result.Contains(url));
-            Assert.IsTrue(result.Contains("Forbidden"));
-            Assert.IsTrue(result.Contains("3"));
-            Assert.IsTrue(result.Contains("URL:"));
-            Assert.IsTrue(result.Contains("Status Code:"));
-            Assert.IsTrue(result.Contains("Depth:"));
+            StringAssert.Contains(result, message);
+            StringAssert.Contains(result, url);
+            StringAssert.Contains(result, "Forbidden");
+            StringAssert.Contains(result, "3");
+            StringAssert.Contains(result, "URL:");
+            StringAssert.Contains(result, "Status Code:");
+            StringAssert.Contains(result, "Depth:");
         }
 
         [TestMethod]
@@ -104,8 +104,8 @@ public class CrawlerUtilityTests
             var result = exception.ToString();
 
             // Assert
-            Assert.IsTrue(result.Contains("Outer error"));
-            Assert.IsTrue(result.Contains("Test inner exception"));
+            StringAssert.Contains(result, "Outer error");
+            StringAssert.Contains(result, "Test inner exception");
         }
     }
 
@@ -120,7 +120,7 @@ public class CrawlerUtilityTests
 
             // Assert
             Assert.IsNotNull(result.Errors);
-            Assert.AreEqual(0, result.Errors.Count);
+            Assert.IsEmpty(result.Errors);
             Assert.AreEqual(string.Empty, result.FoundUrl);
             Assert.AreEqual(0, result.Depth);
         }
@@ -154,7 +154,7 @@ public class CrawlerUtilityTests
             Assert.AreEqual(httpResult.Retries, crawlResult.Retries);
             Assert.AreEqual(httpResult.ElapsedMilliseconds, crawlResult.ElapsedMilliseconds);
             Assert.AreEqual(httpResult.Id, crawlResult.Id);
-            Assert.IsTrue(crawlResult.Errors.Contains("Test error"));
+            CollectionAssert.Contains(crawlResult.Errors, "Test error");
         }
 
         [TestMethod]
@@ -164,7 +164,15 @@ public class CrawlerUtilityTests
             // before the explicit null check can be performed
 
             // Act & Assert
-            Assert.ThrowsException<NullReferenceException>(() => new CrawlResult(null!));
+            try
+            {
+                _ = new CrawlResult(null!);
+                Assert.Fail("Expected NullReferenceException was not thrown");
+            }
+            catch (NullReferenceException)
+            {
+                // Expected exception
+            }
         }
 
         [TestMethod]
@@ -190,16 +198,30 @@ public class CrawlerUtilityTests
         public void Constructor_WithParameters_NullRequestPath_ThrowsArgumentNullException()
         {
             // Act & Assert
-            Assert.ThrowsException<ArgumentNullException>(() =>
-                new CrawlResult(null!, "found", 1, 1));
+            try
+            {
+                _ = new CrawlResult(null!, "found", 1, 1);
+                Assert.Fail("Expected ArgumentNullException was not thrown");
+            }
+            catch (ArgumentNullException)
+            {
+                // Expected exception
+            }
         }
 
         [TestMethod]
         public void Constructor_WithParameters_NullFoundUrl_ThrowsArgumentNullException()
         {
             // Act & Assert
-            Assert.ThrowsException<ArgumentNullException>(() =>
-                new CrawlResult("request", null!, 1, 1));
+            try
+            {
+                _ = new CrawlResult("request", null!, 1, 1);
+                Assert.Fail("Expected ArgumentNullException was not thrown");
+            }
+            catch (ArgumentNullException)
+            {
+                // Expected exception
+            }
         }
 
         [TestMethod]
@@ -272,7 +294,7 @@ public class CrawlerUtilityTests
 
             // Assert
             Assert.IsNotNull(links);
-            Assert.AreEqual(0, links.Count);
+            Assert.IsEmpty(links);
         }
 
         [TestMethod]
@@ -288,7 +310,7 @@ public class CrawlerUtilityTests
 
             // Assert
             Assert.IsNotNull(links);
-            Assert.AreEqual(0, links.Count);
+            Assert.IsEmpty(links);
         }
 
         [TestMethod]
@@ -305,10 +327,10 @@ public class CrawlerUtilityTests
             var stringResult = result.ToString();
 
             // Assert
-            Assert.IsTrue(stringResult.Contains("ID:123"));
-            Assert.IsTrue(stringResult.Contains("Depth:2"));
-            Assert.IsTrue(stringResult.Contains("Status:OK"));
-            Assert.IsTrue(stringResult.Contains("URL:https://example.com/test"));
+            StringAssert.Contains(stringResult, "ID:123");
+            StringAssert.Contains(stringResult, "Depth:2");
+            StringAssert.Contains(stringResult, "Status:OK");
+            StringAssert.Contains(stringResult, "URL:https://example.com/test");
         }
 
         [TestMethod]
@@ -324,9 +346,9 @@ public class CrawlerUtilityTests
             result.Errors.Add(error2);
 
             // Assert
-            Assert.AreEqual(2, result.Errors.Count);
-            Assert.IsTrue(result.Errors.Contains(error1));
-            Assert.IsTrue(result.Errors.Contains(error2));
+            Assert.HasCount(2, result.Errors);
+            CollectionAssert.Contains(result.Errors, error1);
+            CollectionAssert.Contains(result.Errors, error2);
         }
 
         [TestMethod]

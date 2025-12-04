@@ -13,17 +13,12 @@
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		
 		<!-- Package Metadata -->
+		<Title>WebSpark.HttpClientUtility.Crawler - Web Crawling Extension</Title>
+		<Authors>Mark Hazleton</Authors>
+		<Company>WebSpark</Company>
 		<Summary>Web crawling extension for WebSpark.HttpClientUtility with robots.txt compliance, sitemap generation, HTML parsing, and SignalR progress updates for .NET 8-10.</Summary>
-		<Description>
-			Web crawling capabilities for WebSpark.HttpClientUtility: SiteCrawler and SimpleSiteCrawler with 
-			robots.txt compliance, HTML link extraction (HtmlAgilityPack), sitemap generation (Markdig), 
-			CSV export (CsvHelper), and real-time SignalR progress updates. Supports .NET 8 LTS, .NET 9, and .NET 10 (Preview). 
-			Requires WebSpark.HttpClientUtility base package [2.1.0]. Install both packages and call AddHttpClientUtility() + AddHttpClientCrawler() 
-			in your DI registration.
-		</Description>
-		<PackageTags>
-			web-crawler;crawler;web-scraping;site-crawler;sitemap;sitemap-generator;robots-txt;html-parser;htmlagilitypack;signalr;csv-export;markdown;link-extraction;seo;dotnet;aspnetcore;net8;net9;net10
-		</PackageTags>
+		<Description>Web crawling extension for WebSpark.HttpClientUtility. Includes SiteCrawler and SimpleSiteCrawler with robots.txt compliance, HTML link extraction (HtmlAgilityPack), sitemap generation (Markdig), CSV export (CsvHelper), and real-time SignalR progress updates. Perfect for web scraping, SEO audits, and site analysis. Supports .NET 8 LTS, .NET 9, and .NET 10 (Preview). Requires WebSpark.HttpClientUtility base package [2.1.0]. Install both packages and call AddHttpClientUtility() + AddHttpClientCrawler() in your DI registration.</Description>
+		<PackageTags>web-crawler;crawler;web-scraping;site-crawler;sitemap;sitemap-generator;robots-txt;html-parser;htmlagilitypack;signalr;csv-export;link-extraction;seo;seo-audit;content-migration;dotnet;aspnetcore;net8;net9;net10</PackageTags>
 		<PackageReleaseNotes>
 			2.1.0 - Added .NET 10 (Preview) multi-targeting support. All projects now target net8.0, net9.0, and net10.0. Requires base package [2.1.0]. All 81 crawler tests passing on all three frameworks (243 test runs, 0 failures). Zero breaking changes.
 			2.0.0 - Initial release of crawler extension package. All web crawling features moved from base package. Requires exact version match with base package [2.0.0]. 54 tests passing. Features: SiteCrawler, SimpleSiteCrawler, robots.txt parsing, HTML extraction, SignalR progress, CSV export.
@@ -46,7 +41,7 @@
 		
 		<!-- Crawler-Specific Dependencies -->
 		<PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
-		<PackageReference Include="Markdig" Version="0.43.0" />
+		<PackageReference Include="Markdig" Version="0.44.0" />
 		<PackageReference Include="CsvHelper" Version="33.1.0" />
 		
 		<!-- ASP.NET Core for SignalR -->

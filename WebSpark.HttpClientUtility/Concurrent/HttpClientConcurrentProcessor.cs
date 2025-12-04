@@ -20,7 +20,7 @@ namespace WebSpark.HttpClientUtility.Concurrent;
 /// <param name="service">The HTTP request service used to execute individual requests.</param>
 public class HttpClientConcurrentProcessor(Func<int, HttpClientConcurrentModel> taskDataFactory, IHttpRequestResultService service) : ConcurrentProcessor<HttpClientConcurrentModel>(taskDataFactory)
 {
-    private readonly IHttpRequestResultService service = service ?? throw new ArgumentNullException(nameof(service));
+    private readonly IHttpRequestResultService _service = service ?? throw new ArgumentNullException(nameof(service));
 
     /// <summary>
     /// Gets the next task data based on the current task data for request chaining.
@@ -75,7 +75,7 @@ public class HttpClientConcurrentProcessor(Func<int, HttpClientConcurrentModel> 
         ArgumentNullException.ThrowIfNull(taskData);
 
         Stopwatch sw = Stopwatch.StartNew();
-        var result = await service.HttpSendRequestResultAsync(taskData.StatusCall, ct: ct).ConfigureAwait(false);
+        var result = await _service.HttpSendRequestResultAsync(taskData.StatusCall, ct: ct).ConfigureAwait(false);
         taskData.StatusCall = result;
         sw.Stop();
         taskData.DurationMS = sw.ElapsedMilliseconds;

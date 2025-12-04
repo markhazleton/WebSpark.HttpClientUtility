@@ -13,16 +13,12 @@
 		<PackageId>WebSpark.HttpClientUtility</PackageId>
 		<!-- Version inherited from Directory.Build.props (2.1.0 lockstep) -->
 		<Deterministic>true</Deterministic>
-		<Authors>MarkHazleton</Authors>
-		<Company>MarkHazleton</Company>
-		<Copyright>Copyright © MarkHazleton 2025</Copyright>
-		<Summary>Lightweight HttpClient wrapper with authentication, caching, resilience, and telemetry for .NET 8-10 applications. Core HTTP features without web crawling overhead.</Summary>
-		<Description>
-			Core HTTP utilities for .NET 8-10 applications: authentication providers (Bearer, Basic, API Key), 
-			response caching, Polly resilience (retry/circuit breaker), OpenTelemetry integration, concurrent 
-			requests, fire-and-forget operations, and streaming support. Lightweight package focused on HTTP 
-			client functionality. Supports .NET 8 LTS, .NET 9, and .NET 10 (Preview). For web crawling features, see WebSpark.HttpClientUtility.Crawler package.
-		</Description>
+		<Title>WebSpark.HttpClientUtility - Resilient HTTP Client with Polly &amp; Caching</Title>
+		<Authors>Mark Hazleton</Authors>
+		<Company>WebSpark</Company>
+		<Copyright>Copyright © 2025 Mark Hazleton</Copyright>
+		<Summary>Drop-in HttpClient wrapper for .NET 8-10+ with Polly resilience, response caching, and OpenTelemetry—configured in one line. Eliminates boilerplate setup for retries, circuit breakers, correlation IDs, and structured logging.</Summary>
+		<Description>Drop-in HttpClient wrapper for .NET 8-10+ with Polly resilience, response caching, and OpenTelemetry. One-line setup eliminates boilerplate for retries, circuit breakers, correlation IDs, and structured logging. Perfect for microservices, APIs, and web scrapers. Includes authentication providers (Bearer, Basic, API Key), concurrent requests, fire-and-forget operations, and streaming support. MIT licensed, 252+ tests. For web crawling features, see WebSpark.HttpClientUtility.Crawler package.</Description>
 		<PackageReleaseNotes>
 			2.1.0 - Added .NET 10 (Preview) multi-targeting support. All projects now target net8.0, net9.0, and net10.0. Updated Microsoft.Extensions packages to 10.0.0. All 291 tests passing on all three frameworks (873 test runs, 0 failures). Zero breaking changes.
 			2.0.0 - MAJOR: Package split into base + crawler. Base package now 163 KB with 10 dependencies (down from 13). Zero breaking changes for core HTTP users. Web crawling moved to separate WebSpark.HttpClientUtility.Crawler package. CurlCommandSaver now uses JSON Lines format. All 474 tests passing.
@@ -31,9 +27,7 @@
 			1.4.0 - Added .NET 8 LTS support alongside .NET 9. Simplified DI registration.
 		</PackageReleaseNotes>
 		<NeutralLanguage>en-US</NeutralLanguage>
-		<PackageTags>
-			httpclient;http-client;rest-api;web-api;authentication;bearer-token;api-key;polly;resilience;retry;circuit-breaker;caching;memory-cache;telemetry;opentelemetry;observability;tracing;concurrent;streaming;fire-and-forget;curl;dotnet;aspnetcore;net8;net9;net10
-		</PackageTags>
+		<PackageTags>httpclient;polly;resilience;retry;circuit-breaker;caching;opentelemetry;observability;correlation-id;distributed-tracing;structured-logging;httpclientfactory;web-scraping;microservices;api-client;rest-api;bearer-token;authentication;api-key;production-ready;dotnet;aspnetcore;net8;net9;net10</PackageTags>
 		<RepositoryUrl>https://github.com/MarkHazleton/HttpClientUtility</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageProjectUrl>https://markhazleton.github.io/WebSpark.HttpClientUtility/</PackageProjectUrl>
@@ -76,14 +70,14 @@
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 		
 		<!-- OpenTelemetry -->
-		<PackageReference Include="OpenTelemetry" Version="1.13.1" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.13.0" />
-		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.13.1" />
-		<PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.13.1" />
-		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.13.1" />
+		<PackageReference Include="OpenTelemetry" Version="1.14.0" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.14.0" />
+		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.14.0" />
+		<PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.14.0" />
+		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.14.0" />
 		
 		<!-- Resilience -->
-		<PackageReference Include="Polly" Version="8.6.4" />
+		<PackageReference Include="Polly" Version="8.6.5" />
 	</ItemGroup>
 
 </Project>

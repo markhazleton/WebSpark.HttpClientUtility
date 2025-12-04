@@ -26,7 +26,7 @@ public class HttpRequestResultService(
 {
     private readonly HttpClient _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
     private readonly ILogger<HttpRequestResultService> _logger = _logger ?? throw new ArgumentNullException(nameof(_logger));
-    private readonly CurlCommandSaver curlCommandSaver = new(_logger, _configuration);
+    private readonly CurlCommandSaver _curlCommandSaver = new(_logger, _configuration);
     // Streaming configuration
     private readonly long _streamingThreshold = _configuration?.GetValue<long>("HttpClient:StreamingThreshold") ?? 10 * 1024 * 1024; // 10 MB default
 
@@ -246,7 +246,7 @@ public class HttpRequestResultService(
             }
 
             // Save the curl command for debugging
-            await curlCommandSaver.SaveCurlCommandAsync(request, memberName, filePath, lineNumber).ConfigureAwait(false);
+            await _curlCommandSaver.SaveCurlCommandAsync(request, memberName, filePath, lineNumber).ConfigureAwait(false);
 
             // Step 4: Send the HTTP request
             _logger.LogDebug(

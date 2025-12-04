@@ -8,12 +8,12 @@ namespace WebSpark.HttpClientUtility.ClientService;
 /// </summary>
 public class HttpClientServiceTelemetry(IHttpClientService service) : IHttpClientService
 {
-    private readonly IHttpClientService service = service;
+    private readonly IHttpClientService _service = service;
 
     /// <inheritdoc/>
     public HttpClient CreateConfiguredClient()
     {
-        return service.CreateConfiguredClient();
+        return _service.CreateConfiguredClient();
     }
 
     /// <inheritdoc/>
@@ -26,7 +26,7 @@ public class HttpClientServiceTelemetry(IHttpClientService service) : IHttpClien
         sw.Start();
         try
         {
-            statusCall = await service.DeleteAsync<TResult>(requestUri, cancellationToken).ConfigureAwait(false);
+            statusCall = await _service.DeleteAsync<TResult>(requestUri, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -48,7 +48,7 @@ public class HttpClientServiceTelemetry(IHttpClientService service) : IHttpClien
         sw.Start();
         try
         {
-            statusCall = await service.GetAsync<T>(requestUri, cancellationToken).ConfigureAwait(false);
+            statusCall = await _service.GetAsync<T>(requestUri, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -70,7 +70,7 @@ public class HttpClientServiceTelemetry(IHttpClientService service) : IHttpClien
         sw.Start();
         try
         {
-            statusCall = await service.PostAsync<T, TResult>(requestUri, payload, cancellationToken).ConfigureAwait(false);
+            statusCall = await _service.PostAsync<T, TResult>(requestUri, payload, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -93,7 +93,7 @@ public class HttpClientServiceTelemetry(IHttpClientService service) : IHttpClien
         sw.Start();
         try
         {
-            statusCall = await service.PostAsync<T, TResult>(requestUri, payload, headers, cancellationToken).ConfigureAwait(false);
+            statusCall = await _service.PostAsync<T, TResult>(requestUri, payload, headers, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -115,7 +115,7 @@ public class HttpClientServiceTelemetry(IHttpClientService service) : IHttpClien
         sw.Start();
         try
         {
-            statusCall = await service.PutAsync<T, TResult>(requestUri, payload, cancellationToken).ConfigureAwait(false);
+            statusCall = await _service.PutAsync<T, TResult>(requestUri, payload, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

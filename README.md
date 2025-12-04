@@ -1,16 +1,78 @@
 # WebSpark.HttpClientUtility
 
+**Drop-in HttpClient wrapper with Polly resilience, response caching, and OpenTelemetry for .NET 8-10+ APIs—configured in one line**
+
 [![NuGet Version](https://img.shields.io/nuget/v/WebSpark.HttpClientUtility.svg)](https://www.nuget.org/packages/WebSpark.HttpClientUtility/)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/WebSpark.HttpClientUtility.svg)](https://www.nuget.org/packages/WebSpark.HttpClientUtility/)
 [![Crawler Package](https://img.shields.io/nuget/v/WebSpark.HttpClientUtility.Crawler.svg?label=Crawler)](https://www.nuget.org/packages/WebSpark.HttpClientUtility.Crawler/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://github.com/MarkHazleton/HttpClientUtility/actions/workflows/publish-nuget.yml/badge.svg)](https://github.com/MarkHazleton/HttpClientUtility/actions/workflows/publish-nuget.yml)
-[![.NET 8-10](https://img.shields.io/badge/.NET-8--10-blue.svg)](https://dotnet.microsoft.com/download/dotnet)
+[![.NET 8-10](https://img.shields.io/badge/.NET-8--10-512BD4.svg)](https://dotnet.microsoft.com/download/dotnet)
 [![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://markhazleton.github.io/WebSpark.HttpClientUtility/)
 
-**A production-ready HttpClient wrapper for .NET 8-10 that makes HTTP calls simple, resilient, and observable.**
+---
 
-Stop writing boilerplate HTTP code. Get built-in resilience, caching, telemetry, and structured logging out of the box.
+Stop writing 50+ lines of HttpClient setup. Get enterprise-grade resilience (retries, circuit breakers), intelligent caching, structured logging with correlation IDs, and OpenTelemetry tracing in a single `AddHttpClientUtility()` call. Perfect for microservices, background workers, and web scrapers.
+
+---
+
+## 🚀 Why Choose WebSpark.HttpClientUtility?
+
+**Your HTTP setup in 1 line vs. 50+**
+
+| Feature | WebSpark.HttpClientUtility | Raw HttpClient | RestSharp | Refit |
+|---------|---------------------------|----------------|-----------|-------|
+| Setup Complexity | ⭐ One line | ⭐⭐⭐ 50+ lines manual | ⭐⭐ Low | ⭐⭐ Low |
+| Built-in Retry/Circuit Breaker | ✅ Polly integrated | ❌ Manual Polly setup | ❌ Manual | ❌ Manual |
+| Response Caching | ✅ Configurable, in-memory | ❌ Manual | ❌ Manual | ❌ Manual |
+| Correlation IDs | ✅ Automatic | ❌ Manual middleware | ❌ Manual | ❌ Manual |
+| OpenTelemetry | ✅ Built-in | ❌ Manual ActivitySource | ❌ Manual | ❌ Manual |
+| Structured Logging | ✅ Rich context | ❌ Manual ILogger | ⭐⭐ Basic | ⭐⭐ Basic |
+| Web Crawling | ✅ Separate package | ❌ No | ❌ No | ❌ No |
+| Production Trust | ✅ 252+ tests, LTS support | ✅ Microsoft-backed | ✅ Popular (7M+ downloads) | ✅ Popular (10M+ downloads) |
+
+**When to use WebSpark:**
+
+- ✅ Building microservices with distributed tracing requirements
+- ✅ Need resilience patterns without writing Polly boilerplate
+- ✅ Want intelligent caching for API rate-limit compliance
+- ✅ Building web scrapers or crawlers (with Crawler package)
+
+**When NOT to use WebSpark:**
+
+- ❌ You need declarative, type-safe API clients (use Refit)
+- ❌ You want maximum control and minimal magic (use raw HttpClient)
+- ❌ Legacy .NET Framework 4.x projects (WebSpark requires .NET 8+)
+
+---
+
+## 🛡️ Production Trust
+
+**Battle-Tested & Production-Ready**
+
+- ✅ **252+ unit tests** with 100% passing - tested on .NET 8, 9, and 10
+- ✅ **Continuous Integration** via GitHub Actions - every commit tested
+- ✅ **Semantic Versioning** - predictable, safe upgrades
+- ✅ **Zero breaking changes** within major versions - backward compatibility guaranteed
+- ✅ **Framework Support:** .NET 8 LTS (supported until Nov 2026), .NET 9, .NET 10 (Preview)
+- ✅ **MIT Licensed** - free for commercial use
+
+**Support & Maintenance**
+
+- 🔄 **Active development** - regular updates and improvements
+- 📅 **Long-term support** - each major version supported for 18+ months
+- 💬 **Community support** - GitHub Discussions for questions and best practices
+- 📖 **Comprehensive documentation** - [Full docs site](https://markhazleton.github.io/WebSpark.HttpClientUtility/)
+
+**Breaking Change Commitment**
+
+We follow semantic versioning strictly:
+
+- **Patch versions (2.0.x):** Bug fixes only, zero breaking changes
+- **Minor versions (2.x.0):** New features, backward compatible
+- **Major versions (x.0.0):** Breaking changes with detailed migration guides
+
+---
 
 ## 📦 v2.0 - Now in Two Focused Packages!
 
@@ -34,47 +96,142 @@ The complete documentation site includes:
 - Code examples
 - Best practices
 
-## ⚡ Quick Start
-
-### Core HTTP Features (Base Package)
+## ⚡ 30-Second Quick Start
 
 **Install**
+
 ```bash
 dotnet add package WebSpark.HttpClientUtility
 ```
 
-**5-Minute Example**
+**Minimal Example (Absolute Minimum)**
+
 ```csharp
-// Program.cs - Register services (ONE LINE!)
+// Program.cs
+var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClientUtility();
+var app = builder.Build();
 
-// YourService.cs - Make requests
-public class WeatherService
+app.MapGet("/weather", async (IHttpRequestResultService http) =>
 {
-    private readonly IHttpRequestResultService _httpService;
-    
-    public WeatherService(IHttpRequestResultService httpService) => _httpService = httpService;
-
-    public async Task<WeatherData?> GetWeatherAsync(string city)
+    var request = new HttpRequestResult<WeatherData>
     {
-        var request = new HttpRequestResult<WeatherData>
-        {
-     RequestPath = $"https://api.weather.com/forecast?city={city}",
-     RequestMethod = HttpMethod.Get
-        };
- 
-        var result = await _httpService.HttpSendRequestResultAsync(request);
-        return result.IsSuccessStatusCode ? result.ResponseResults : null;
-    }
-}
+        RequestPath = "https://api.weather.com/forecast?city=Seattle",
+        RequestMethod = HttpMethod.Get
+    };
+    var result = await http.HttpSendRequestResultAsync(request);
+    return result.IsSuccessStatusCode ? Results.Ok(result.ResponseResults) : Results.Problem();
+});
+
+app.Run();
+
+record WeatherData(string City, int Temp);
 ```
 
 That's it! You now have:
+
 - ✅ Automatic correlation IDs for tracing
 - ✅ Structured logging with request/response details
 - ✅ Request timing telemetry
 - ✅ Proper error handling and exception management
 - ✅ Support for .NET 8 LTS, .NET 9, and .NET 10 (Preview)
+
+<details>
+<summary>📖 Show more: Service-based pattern with error handling</summary>
+
+```csharp
+// Program.cs
+builder.Services.AddHttpClientUtility(options =>
+{
+    options.EnableCaching = true;      // Cache responses
+    options.EnableResilience = true;   // Retry on failure
+});
+
+// WeatherService.cs
+public class WeatherService
+{
+    private readonly IHttpRequestResultService _http;
+    private readonly ILogger<WeatherService> _logger;
+
+    public WeatherService(
+        IHttpRequestResultService http,
+        ILogger<WeatherService> logger)
+    {
+        _http = http;
+        _logger = logger;
+    }
+
+    public async Task<WeatherData?> GetWeatherAsync(string city)
+    {
+        var request = new HttpRequestResult<WeatherData>
+        {
+            RequestPath = $"https://api.weather.com/forecast?city={city}",
+            RequestMethod = HttpMethod.Get,
+            CacheDurationMinutes = 10  // Cache for 10 minutes
+        };
+
+        var result = await _http.HttpSendRequestResultAsync(request);
+
+        if (!result.IsSuccessStatusCode)
+        {
+            _logger.LogError(
+                "Weather API failed: {StatusCode} - {Error}",
+                result.StatusCode,
+                result.ErrorDetails
+            );
+            return null;
+        }
+
+        return result.ResponseResults;
+    }
+}
+```
+
+</details>
+
+<details>
+<summary>📖 Show more: Full-featured with auth and observability</summary>
+
+```csharp
+// Program.cs - Advanced configuration
+builder.Services.AddHttpClientUtility(options =>
+{
+    options.EnableCaching = true;
+    options.EnableResilience = true;
+    options.ResilienceOptions.MaxRetryAttempts = 3;
+    options.ResilienceOptions.RetryDelay = TimeSpan.FromSeconds(2);
+    options.DefaultTimeout = TimeSpan.FromSeconds(30);
+});
+
+// WeatherService.cs - Advanced usage
+public async Task<WeatherData?> GetWeatherWithAuthAsync(string city, string apiKey)
+{
+    var request = new HttpRequestResult<WeatherData>
+    {
+        RequestPath = $"https://api.weather.com/forecast?city={city}",
+        RequestMethod = HttpMethod.Get,
+        CacheDurationMinutes = 10,
+        Headers = new Dictionary<string, string>
+        {
+            ["X-API-Key"] = apiKey,
+            ["Accept"] = "application/json"
+        }
+    };
+
+    var result = await _http.HttpSendRequestResultAsync(request);
+
+    // Correlation ID is automatically logged and propagated
+    _logger.LogInformation(
+        "Weather request completed in {Duration}ms with correlation {CorrelationId}",
+        result.RequestDuration,
+        result.CorrelationId
+    );
+
+    return result.IsSuccessStatusCode ? result.ResponseResults : null;
+}
+```
+
+</details>
 
 ### Web Crawling Features (Crawler Package)
 
@@ -112,17 +269,6 @@ public class SiteAnalyzer
     }
 }
 ```
-
-## 🎯 Why Choose This Library?
-
-| Challenge | Solution |
-|-----------|----------|
-| **Boilerplate Code** | One-line service registration replaces 50+ lines of manual setup |
-| **Transient Failures** | Built-in Polly integration for retries and circuit breakers |
-| **Repeated API Calls** | Automatic response caching with customizable duration |
-| **Observability** | Correlation IDs, structured logging, and OpenTelemetry support |
-| **Testing** | All services are interface-based for easy mocking |
-| **Package Size** | Modular design - install only what you need |
 
 ## 🚀 Features
 
@@ -243,18 +389,6 @@ Explore working examples in the [samples directory](samples/):
 - **ConcurrentRequests** - Parallel request processing
 - **WebCrawler** - Site crawling example
 
-## 🆚 Comparison to Alternatives
-
-| Feature | WebSpark.HttpClientUtility | Raw HttpClient | RestSharp | Refit |
-|---------|---------------------------|----------------|-----------|-------|
-| Setup Complexity | ⭐ One line | ⭐⭐⭐ Manual | ⭐⭐ Low | ⭐⭐ Low |
-| Built-in Caching | ✅ Yes | ❌ Manual | ❌ Manual | ⚠️ Plugin |
-| Built-in Resilience | ✅ Yes | ❌ Manual | ❌ Manual | ❌ Manual |
-| Telemetry | ✅ Built-in | ⚠️ Manual | ⚠️ Manual | ⚠️ Manual |
-| Type Safety | ✅ Yes | ⚠️ Partial | ✅ Yes | ✅ Yes |
-| Web Crawling | ✅ Yes | ❌ No | ❌ No | ❌ No |
-| .NET 8-10 Support | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-
 ## 🤝 Contributing
 
 Contributions are welcome! See our [Contributing Guide](documentation/CONTRIBUTING.md) for details.
@@ -274,7 +408,23 @@ Contributions are welcome! See our [Contributing Guide](documentation/CONTRIBUTI
 
 ## 📦 Related Packages
 
-- [WebSpark.HttpClientUtility.Testing](https://nuget.org/packages/WebSpark.HttpClientUtility.Testing) - Test helpers (coming soon)
+| Package | Purpose | Status |
+|---------|---------|--------|
+| [WebSpark.HttpClientUtility.Testing](https://nuget.org/packages/WebSpark.HttpClientUtility.Testing) | Test helpers & fakes for unit testing | ✅ Available (v2.1.0+) |
+
+**Testing Package Features:**
+
+- **FakeHttpResponseHandler** - Mock HTTP responses without network calls
+- **Fluent API** - Easy test setup with `ForRequest().RespondWith()`
+- **Sequential Responses** - Test retry behavior with multiple responses
+- **Request Verification** - Assert requests were made correctly
+- **Latency Simulation** - Test timeout scenarios
+
+```bash
+dotnet add package WebSpark.HttpClientUtility.Testing
+```
+
+See the [Testing documentation](https://markhazleton.github.io/WebSpark.HttpClientUtility/testing/) for examples.
 
 ## 📄 License
 

@@ -6,23 +6,23 @@ namespace WebSpark.HttpClientUtility.Test.MemoryCache;
 [TestClass]
 public class MemoryCacheManagerTests
 {
-    private IMemoryCache memoryCache = null!;
+    private IMemoryCache _memoryCache = null!;
 
     [TestInitialize]
     public void TestInitialize()
     {
-        memoryCache = new Microsoft.Extensions.Caching.Memory.MemoryCache(new Microsoft.Extensions.Caching.Memory.MemoryCacheOptions());
+        _memoryCache = new Microsoft.Extensions.Caching.Memory.MemoryCache(new Microsoft.Extensions.Caching.Memory.MemoryCacheOptions());
     }
 
     private MemoryCacheManager CreateManager()
     {
-        return new MemoryCacheManager(memoryCache);
+        return new MemoryCacheManager(_memoryCache);
     }
 
     [TestCleanup]
     public void TestCleanup()
     {
-        memoryCache.Dispose();
+        _memoryCache.Dispose();
     }
 
     [TestMethod]
@@ -32,7 +32,7 @@ public class MemoryCacheManagerTests
         var key = "test-key";
         var value = "test-value";
         manager.Set(key, value, 10);
-        Assert.IsTrue(memoryCache.TryGetValue(key, out var cachedValue));
+        Assert.IsTrue(_memoryCache.TryGetValue(key, out var cachedValue));
         Assert.AreEqual(value, cachedValue);
     }
 
@@ -42,7 +42,7 @@ public class MemoryCacheManagerTests
         var manager = CreateManager();
         var key = "test-key";
         var value = "cached-value";
-        memoryCache.Set(key, value);
+        _memoryCache.Set(key, value);
         var result = manager.Get(key, () => "new-value", 10);
         Assert.AreEqual(value, result);
     }
@@ -54,7 +54,7 @@ public class MemoryCacheManagerTests
         var key = "test-key";
         var result = manager.Get(key, () => "new-value", 10);
         Assert.AreEqual("new-value", result);
-        Assert.IsTrue(memoryCache.TryGetValue(key, out var cachedValue));
+        Assert.IsTrue(_memoryCache.TryGetValue(key, out var cachedValue));
         Assert.AreEqual("new-value", cachedValue);
     }
 
@@ -65,7 +65,7 @@ public class MemoryCacheManagerTests
         var key = "test-key";
         manager.Set(key, "value", 10);
         manager.Remove(key);
-        Assert.IsFalse(memoryCache.TryGetValue(key, out _));
+        Assert.IsFalse(_memoryCache.TryGetValue(key, out _));
     }
 
     [TestMethod]
@@ -77,8 +77,8 @@ public class MemoryCacheManagerTests
         manager.Set(key1, "v1", 10);
         manager.Set(key2, "v2", 10);
         manager.Clear();
-        Assert.IsFalse(memoryCache.TryGetValue(key1, out _));
-        Assert.IsFalse(memoryCache.TryGetValue(key2, out _));
+        Assert.IsFalse(_memoryCache.TryGetValue(key1, out _));
+        Assert.IsFalse(_memoryCache.TryGetValue(key2, out _));
         Assert.AreEqual(0, manager.GetKeys().Count);
     }
 
@@ -87,7 +87,7 @@ public class MemoryCacheManagerTests
     {
         var manager = CreateManager();
         var key = "test-key";
-        memoryCache.Set(key, "exists");
+        _memoryCache.Set(key, "exists");
         Assert.IsTrue(manager.IsSet(key));
     }
 
@@ -119,7 +119,7 @@ public class MemoryCacheManagerTests
         var result = manager.PerformActionWithLock(key, TimeSpan.FromSeconds(1), () => actionCalled = true);
         Assert.IsTrue(result);
         Assert.IsTrue(actionCalled);
-        Assert.IsFalse(memoryCache.TryGetValue(key, out _));
+        Assert.IsFalse(_memoryCache.TryGetValue(key, out _));
     }
 
     [TestMethod]

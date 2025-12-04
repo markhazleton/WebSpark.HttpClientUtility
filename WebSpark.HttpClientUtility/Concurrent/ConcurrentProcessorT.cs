@@ -20,7 +20,7 @@ public abstract class ConcurrentProcessor<T>(Func<int, T> taskDataFactory) where
     /// Max Task Count
     /// </summary>
     protected int MaxTaskCount = 1;
-    private readonly List<Task<T>> tasks = [];
+    private readonly List<Task<T>> _tasks = [];
 
     /// <summary>
     /// Asynchronously waits for a semaphore and returns the elapsed ticks.
@@ -117,20 +117,20 @@ public abstract class ConcurrentProcessor<T>(Func<int, T> taskDataFactory) where
         while (taskData is not null)
         {
             long semaphoreWait = await AwaitSemaphoreAsync(semaphore, ct).ConfigureAwait(false);
-            Task<T> task = ManageProcessAsync(taskData.TaskId, tasks.Count, semaphoreWait, semaphore, ct);
-            tasks.Add(task);
+            Task<T> task = ManageProcessAsync(taskData.TaskId, _tasks.Count, semaphoreWait, semaphore, ct);
+            _tasks.Add(task);
 
             taskData = GetNextTaskData(taskData);
 
-            if (tasks.Count >= MaxConcurrency)
+            if (_tasks.Count >= MaxConcurrency)
             {
-                Task<T> finishedTask = await Task.WhenAny(tasks).ConfigureAwait(false);
+                Task<T> finishedTask = await Task.WhenAny(_tasks).ConfigureAwait(false);
                 results.Add(await finishedTask.ConfigureAwait(false));
-                tasks.Remove(finishedTask);
+                _tasks.Remove(finishedTask);
             }
         }
-        await Task.WhenAll(tasks).ConfigureAwait(false);
-        foreach (var task in tasks)
+        await Task.WhenAll(_tasks).ConfigureAwait(false);
+        foreach (var task in _tasks)
         {
             results.Add(await task.ConfigureAwait(false));
         }

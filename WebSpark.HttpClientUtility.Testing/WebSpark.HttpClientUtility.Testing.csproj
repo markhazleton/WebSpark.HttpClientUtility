@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<!-- Target .NET 8 LTS, .NET 9, and .NET 10 Preview for maximum compatibility -->
+		<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+
+		<!-- Package-specific Properties -->
+		<PackageId>WebSpark.HttpClientUtility.Testing</PackageId>
+		<OutputType>Library</OutputType>
+		<IsPackable>true</IsPackable>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+
+		<!-- Package Metadata -->
+		<Title>WebSpark.HttpClientUtility.Testing - Test Helpers &amp; Fakes</Title>
+		<Authors>Mark Hazleton</Authors>
+		<Company>WebSpark</Company>
+		<Summary>Test helpers and fakes for WebSpark.HttpClientUtility. Includes mock HTTP handlers, in-memory cache, request/response builders, and xUnit fixtures for easy unit testing of HTTP-dependent code.</Summary>
+		<Description>Test helpers and fakes for WebSpark.HttpClientUtility. Includes FakeHttpResponseHandler for mocking HTTP responses, FakeMemoryCache for cache testing, fluent request/response builders, and xUnit test fixtures. Makes unit testing HTTP-dependent code simple and maintainable. Supports .NET 8 LTS, .NET 9, and .NET 10 (Preview). Requires WebSpark.HttpClientUtility base package [2.1.0].</Description>
+		<PackageTags>httpclient;testing;mocking;fake;unit-testing;xunit;test-helpers;test-doubles;http-testing;integration-testing;dotnet;aspnetcore;net8;net9;net10</PackageTags>
+		<PackageReleaseNotes>
+			2.1.0 - Initial release of Testing package. Includes FakeHttpResponseHandler, FakeMemoryCache, fluent builders, and xUnit fixtures. Supports .NET 8, 9, and 10. Requires base package [2.1.0].
+		</PackageReleaseNotes>
+		<PackageReadmeFile>README-Testing.md</PackageReadmeFile>
+		<PackageProjectUrl>https://markhazleton.github.io/WebSpark.HttpClientUtility/testing/</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/MarkHazleton/HttpClientUtility</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageIcon>icon.png</PackageIcon>
+
+		<!-- Package Validation -->
+		<EnablePackageValidation>true</EnablePackageValidation>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="README-Testing.md" Pack="true" PackagePath="\" Condition="Exists('README-Testing.md')" />
+		<None Include="..\WebSpark.HttpClientUtility\images\icon.png" Pack="true" PackagePath="\" Condition="Exists('..\WebSpark.HttpClientUtility\images\icon.png')" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Base Package Dependency (Project Reference for development) -->
+		<ProjectReference Include="..\WebSpark.HttpClientUtility\WebSpark.HttpClientUtility.csproj" />
+
+		<!-- Testing Framework Dependencies -->
+		<PackageReference Include="xunit.abstractions" Version="2.0.3" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
+	</ItemGroup>
+
+</Project>

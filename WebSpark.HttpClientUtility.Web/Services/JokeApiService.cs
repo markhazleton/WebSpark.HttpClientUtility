@@ -13,7 +13,7 @@ public class JokeApiService
   private readonly IHttpClientService _httpClientService;
     private readonly IHttpRequestResultService _requestResultService;
     private readonly ILogger<JokeApiService> _logger;
-    private const string BaseUrl = "https://v2.jokeapi.dev";
+    private const string _baseUrl = "https://v2.jokeapi.dev";
 
     public JokeApiService(
         IHttpClientService httpClientService,
@@ -35,7 +35,7 @@ public class JokeApiService
         var stopwatch = Stopwatch.StartNew();
 try
         {
-            var requestUri = new Uri($"{BaseUrl}/joke/{category}?safe-mode");
+            var requestUri = new Uri($"{_baseUrl}/joke/{category}?safe-mode");
    var result = await _httpClientService.GetAsync<JokeResponse>(requestUri, CancellationToken.None);
 
    stopwatch.Stop();
@@ -75,7 +75,7 @@ try
         try
         {
         // Note: Joke API doesn't have a POST endpoint, this is for demonstration
-            var requestUri = new Uri($"{BaseUrl}/submit");
+            var requestUri = new Uri($"{_baseUrl}/submit");
         var payload = new { joke = jokeText, category = "Programming" };
 
             // This will fail (404) but demonstrates the POST pattern
@@ -123,7 +123,7 @@ catch (Exception ex)
     {
         var request = new HttpRequestResult<JokeResponse>
         {
-            RequestPath = $"{BaseUrl}/joke/{category}?safe-mode",
+            RequestPath = $"{_baseUrl}/joke/{category}?safe-mode",
  RequestMethod = HttpMethod.Get,
    IsDebugEnabled = true
         };
@@ -158,7 +158,7 @@ Metrics = new Dictionary<string, object>
     {
         var request = new HttpRequestResult<JokeResponse>
         {
-            RequestPath = $"{BaseUrl}/joke/Any?safe-mode",
+            RequestPath = $"{_baseUrl}/joke/Any?safe-mode",
             RequestMethod = HttpMethod.Get,
   RequestHeaders = new Dictionary<string, string>
    {
@@ -194,7 +194,7 @@ Metrics = new Dictionary<string, object>
     {
         var request = new HttpRequestResult<JokeResponse>
     {
-            RequestPath = $"{BaseUrl}/joke/{category}?safe-mode&id=1",
+            RequestPath = $"{_baseUrl}/joke/{category}?safe-mode&id=1",
       RequestMethod = HttpMethod.Get,
           CacheDurationMinutes = 5 // Cache for 5 minutes
         };
@@ -237,7 +237,7 @@ CorrelationId = result.CorrelationId,
       // Using an invalid endpoint to trigger retries
         var request = new HttpRequestResult<JokeResponse>
         {
-            RequestPath = $"{BaseUrl}/joke/InvalidCategory",
+            RequestPath = $"{_baseUrl}/joke/InvalidCategory",
       RequestMethod = HttpMethod.Get,
         IsDebugEnabled = true
         };
@@ -283,7 +283,7 @@ CorrelationId = result.CorrelationId,
 {
          var request = new HttpRequestResult<JokeResponse>
         {
-          RequestPath = $"{BaseUrl}/joke/{categories[i]}?safe-mode",
+          RequestPath = $"{_baseUrl}/joke/{categories[i]}?safe-mode",
           RequestMethod = HttpMethod.Get
             };
             tasks.Add(_requestResultService.HttpSendRequestResultAsync(request));
@@ -305,7 +305,7 @@ var results = await Task.WhenAll(tasks);
             Data = jokes,
             DurationMs = stopwatch.ElapsedMilliseconds,
             StatusCode = System.Net.HttpStatusCode.OK,
-            RequestUrl = $"{BaseUrl}/joke/[Multiple]",
+            RequestUrl = $"{_baseUrl}/joke/[Multiple]",
             Metrics = new Dictionary<string, object>
       {
         ["TotalRequests"] = count,

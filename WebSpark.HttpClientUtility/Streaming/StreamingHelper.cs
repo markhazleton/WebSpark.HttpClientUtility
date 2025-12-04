@@ -16,7 +16,7 @@ public static class StreamingHelper
     /// <summary>
     /// Buffer size for stream reading operations.
     /// </summary>
-    private const int BufferSize = 8192; // 8 KB buffer
+    private const int _bufferSize = 8192; // 8 KB buffer
 
     /// <summary>
     /// Processes an HTTP response using streaming for large payloads and efficient memory usage.

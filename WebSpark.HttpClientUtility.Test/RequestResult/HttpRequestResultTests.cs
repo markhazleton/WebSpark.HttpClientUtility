@@ -21,12 +21,12 @@ public class Product
 [TestClass]
 public class HttpRequestResultTests
 {
-    private MockRepository? mockRepository;
+    private MockRepository? _mockRepository;
 
     [TestInitialize]
     public void TestInitialize()
     {
-        mockRepository = new MockRepository(MockBehavior.Strict);
+        _mockRepository = new MockRepository(MockBehavior.Strict);
     }
 
     [TestMethod]

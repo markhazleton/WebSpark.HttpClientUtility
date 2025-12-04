@@ -9,29 +9,29 @@ namespace WebSpark.HttpClientUtility.Test.CurlService
     [TestClass]
     public class CurlCommandSaverTests
     {
-     private Mock<ILogger> mockLogger = null!;
-        private Mock<IConfiguration> mockConfiguration = null!;
-    private string tempDirectory = null!;
+     private Mock<ILogger> _mockLogger = null!;
+        private Mock<IConfiguration> _mockConfiguration = null!;
+    private string _tempDirectory = null!;
 
         [TestInitialize]
         public void TestInitialize()
         {
   // Use Loose mocking to avoid strict verification issues
-            mockLogger = new Mock<ILogger>(MockBehavior.Loose);
-       mockConfiguration = new Mock<IConfiguration>(MockBehavior.Loose);
+            _mockLogger = new Mock<ILogger>(MockBehavior.Loose);
+       _mockConfiguration = new Mock<IConfiguration>(MockBehavior.Loose);
 
             // Create a temporary directory for testing
-    tempDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-         Directory.CreateDirectory(tempDirectory);
+    _tempDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+         Directory.CreateDirectory(_tempDirectory);
         }
 
         [TestCleanup]
         public void TestCleanup()
         {
             // Clean up the temporary directory after tests
-     if (Directory.Exists(tempDirectory))
+     if (Directory.Exists(_tempDirectory))
             {
-   Directory.Delete(tempDirectory, true);
+   Directory.Delete(_tempDirectory, true);
             }
         }
 
@@ -40,28 +40,28 @@ namespace WebSpark.HttpClientUtility.Test.CurlService
    if (configureValidFolder)
             {
        // Setup the base CsvOutputFolder configuration
-    mockConfiguration.Setup(x => x["CsvOutputFolder"]).Returns(tempDirectory);
-          mockConfiguration.Setup(x => x["CsvFileName"]).Returns("curl_commands");
+    _mockConfiguration.Setup(x => x["CsvOutputFolder"]).Returns(_tempDirectory);
+          _mockConfiguration.Setup(x => x["CsvFileName"]).Returns("curl_commands");
 
     // Setup the configuration section approach for other settings
        var mockSection = new Mock<IConfigurationSection>(MockBehavior.Loose);
         mockSection.Setup(x => x.Value).Returns("false"); // UseBatchProcessing = false
-           mockConfiguration.Setup(x => x.GetSection("CurlCommandSaver:UseBatchProcessing")).Returns(mockSection.Object);
+           _mockConfiguration.Setup(x => x.GetSection("CurlCommandSaver:UseBatchProcessing")).Returns(mockSection.Object);
        }
        else
      {
-   mockConfiguration.Setup(x => x["CsvOutputFolder"]).Returns((string?)null);
-          mockConfiguration.Setup(x => x["CsvFileName"]).Returns("curl_commands");
+   _mockConfiguration.Setup(x => x["CsvOutputFolder"]).Returns((string?)null);
+          _mockConfiguration.Setup(x => x["CsvFileName"]).Returns("curl_commands");
 
    // Setup the configuration section approach for other settings
        var mockSection = new Mock<IConfigurationSection>(MockBehavior.Loose);
      mockSection.Setup(x => x.Value).Returns("false"); // UseBatchProcessing = false
-             mockConfiguration.Setup(x => x.GetSection("CurlCommandSaver:UseBatchProcessing")).Returns(mockSection.Object);
+             _mockConfiguration.Setup(x => x.GetSection("CurlCommandSaver:UseBatchProcessing")).Returns(mockSection.Object);
   }
 
    return new CurlCommandSaver(
-  mockLogger.Object,
-     mockConfiguration.Object);
+  _mockLogger.Object,
+     _mockConfiguration.Object);
         }
 
         [TestMethod]
@@ -74,7 +74,7 @@ namespace WebSpark.HttpClientUtility.Test.CurlService
     Assert.IsNotNull(curlCommandSaver, "CurlCommandSaver should be created even without output folder configured");
 
         // Verify that warning was logged
-     mockLogger.Verify(x => x.Log(
+     _mockLogger.Verify(x => x.Log(
      LogLevel.Warning,
                 It.IsAny<EventId>(),
        It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("CsvOutputFolder is not configured")),
@@ -82,7 +82,7 @@ namespace WebSpark.HttpClientUtility.Test.CurlService
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
 
         // Verify initialization log
-  mockLogger.Verify(x => x.Log(
+  _mockLogger.Verify(x => x.Log(
         LogLevel.Information,
      It.IsAny<EventId>(),
             It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("CurlCommandSaver initialized")),
@@ -99,14 +99,14 @@ namespace WebSpark.HttpClientUtility.Test.CurlService
 
             // Act
  await curlCommandSaver.SaveCurlCommandAsync(request);
-        await curlCommandSaver.FlushAsync();
+ await curlCommandSaver.FlushAsync();
 
        // Assert
-        string csvFilePath = Path.Combine(tempDirectory, "curl_commands.csv");
+        string csvFilePath = Path.Combine(_tempDirectory, "curl_commands.csv");
  Assert.IsFalse(File.Exists(csvFilePath), "CSV file should NOT be created when configuration is missing");
 
             // Verify that curl command was still created (logged) but not saved to file
-            mockLogger.Verify(x => x.Log(
+            _mockLogger.Verify(x => x.Log(
        LogLevel.Information,
      It.IsAny<EventId>(),
           It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("Created curl command")),
@@ -135,7 +135,7 @@ namespace WebSpark.HttpClientUtility.Test.CurlService
    await curlCommandSaver.FlushAsync();
 
             // Assert
-  string jsonlFilePath = Path.Combine(tempDirectory, "curl_commands.jsonl");
+  string jsonlFilePath = Path.Combine(_tempDirectory, "curl_commands.jsonl");
          Assert.IsTrue(File.Exists(jsonlFilePath), "JSONL file should have been created");
      string fileContent = File.ReadAllText(jsonlFilePath);
 
@@ -157,13 +157,13 @@ namespace WebSpark.HttpClientUtility.Test.CurlService
       await curlCommandSaver.SaveCurlCommandAsync(request);
 
 // Make sure any batched records are processed
-    await curlCommandSaver.FlushAsync();
+   await curlCommandSaver.FlushAsync();
 
-     // Assert
- string jsonlFilePath = Path.Combine(tempDirectory, "curl_commands.jsonl");
-            Assert.IsTrue(File.Exists(jsonlFilePath), "JSONL file should have been created");
-            string fileContent = File.ReadAllText(jsonlFilePath);
-         Assert.IsTrue(fileContent.Contains("-X POST"), "JSONL should contain the POST method");
+    // Assert
+string jsonlFilePath = Path.Combine(_tempDirectory, "curl_commands.jsonl");
+           Assert.IsTrue(File.Exists(jsonlFilePath), "JSONL file should have been created");
+           string fileContent = File.ReadAllText(jsonlFilePath);
+        Assert.IsTrue(fileContent.Contains("-X POST"), "JSONL should contain the POST method");
  }
 
         [TestMethod]
@@ -183,7 +183,7 @@ await curlCommandSaver.SaveCurlCommandAsync(request);
             await curlCommandSaver.FlushAsync();
 
             // Assert
-    string jsonlFilePath = Path.Combine(tempDirectory, "curl_commands.jsonl");
+    string jsonlFilePath = Path.Combine(_tempDirectory, "curl_commands.jsonl");
       Assert.IsTrue(File.Exists(jsonlFilePath), "JSONL file should have been created");
             string fileContent = File.ReadAllText(jsonlFilePath);
      Assert.IsTrue(fileContent.Contains("-d"), "JSONL should contain the data parameter");
@@ -207,7 +207,7 @@ await curlCommandSaver.SaveCurlCommandAsync(request);
             await curlCommandSaver.FlushAsync();
 
        // Assert
-            string jsonlFilePath = Path.Combine(tempDirectory, "curl_commands.jsonl");
+            string jsonlFilePath = Path.Combine(_tempDirectory, "curl_commands.jsonl");
    Assert.IsTrue(File.Exists(jsonlFilePath), "JSONL file should have been created");
      string fileContent = File.ReadAllText(jsonlFilePath);
       Assert.IsTrue(fileContent.Contains("api/first"), "JSONL should contain the first request");
@@ -232,7 +232,7 @@ await curlCommandSaver.SaveCurlCommandAsync(request);
             await curlCommandSaver.FlushAsync();
 
    // Assert
-         string jsonlFilePath = Path.Combine(tempDirectory, "curl_commands.jsonl");
+         string jsonlFilePath = Path.Combine(_tempDirectory, "curl_commands.jsonl");
    Assert.IsTrue(File.Exists(jsonlFilePath), "JSONL file should have been created even with null request");
 
        // Additional validation for null request handling
