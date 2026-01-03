@@ -81,7 +81,15 @@
   <main class="main-content">
     <div class="container">
       <h1>API Reference</h1>
-<p>Complete reference documentation for WebSpark.HttpClientUtility.</p>
+<p>Complete reference documentation for WebSpark.HttpClientUtility v2.2.0.</p>
+
+<h2>Package Organization (v2.0+)</h2>
+<p>Starting with v2.0, the library is split into two packages:</p>
+<ul>
+<li><strong>WebSpark.HttpClientUtility</strong> - Core HTTP features (this page covers base package APIs)</li>
+<li><strong>WebSpark.HttpClientUtility.Crawler</strong> - Web crawling extension (see Crawler section below)</li>
+</ul>
+
 <h2>Core Interfaces</h2>
 <h3>IHttpRequestResultService</h3>
 <p>Main interface for making HTTP requests.</p>
@@ -96,6 +104,7 @@
 <ul>
 <li><code>HttpSendRequestResultAsync&lt;T&gt;</code> - Sends an HTTP request and returns a typed result</li>
 </ul>
+
 <h2>Core Classes</h2>
 <h3>HttpRequestResult&lt;T&gt;</h3>
 <p>Represents an HTTP request and its response.</p>

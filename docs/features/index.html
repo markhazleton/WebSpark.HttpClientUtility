@@ -82,6 +82,60 @@
     <div class="container">
       <h1>Features</h1>
 <p>WebSpark.HttpClientUtility provides a comprehensive set of features designed to simplify HTTP client usage in .NET applications.</p>
+
+<h2>v2.2.0 Quality Enhancements</h2>
+<h3>🔍 Source Link & Symbol Packages</h3>
+<p>Step-through debugging of library code with full source navigation:</p>
+<ul>
+<li><strong>Source Link Enabled</strong>: Debug library code directly from NuGet packages</li>
+<li><strong>Symbol Packages (.snupkg)</strong>: Enhanced debugging experience with embedded source files</li>
+<li><strong>Deterministic Builds</strong>: Reproducible builds with repository metadata</li>
+</ul>
+
+<h3>🚀 Trimming & AOT Ready</h3>
+<p>Native AOT and IL trimming compatibility for minimal deployment sizes:</p>
+<ul>
+<li><strong>Trim Analyzers Enabled</strong>: Automatic detection of trimming-unsafe code</li>
+<li><strong>Annotated APIs</strong>: All reflection-based code marked with RequiresUnreferencedCode/RequiresDynamicCode</li>
+<li><strong>Self-Contained Deployment</strong>: Optimized for Native AOT and single-file applications</li>
+</ul>
+
+<h3>✅ Package Validation</h3>
+<p>Baseline validation ensures no breaking changes within versions:</p>
+<ul>
+<li><strong>API Compatibility Checking</strong>: Automated detection of breaking changes</li>
+<li><strong>Semantic Versioning</strong>: Strict adherence to SemVer 2.0</li>
+<li><strong>Backward Compatibility</strong>: Zero breaking changes within major versions</li>
+</ul>
+
+<h2>Package Architecture (v2.0+)</h2>
+<h3>📦 Base Package - WebSpark.HttpClientUtility</h3>
+<p><strong>Size:</strong> 163 KB | <strong>Dependencies:</strong> 10</p>
+<p>Core HTTP utilities for authentication, caching, resilience, and telemetry:</p>
+<ul>
+<li>HTTP request/response handling</li>
+<li>Authentication providers (Bearer, Basic, API Key)</li>
+<li>Response caching with IMemoryCache</li>
+<li>Polly resilience (retry, circuit breaker)</li>
+<li>OpenTelemetry integration</li>
+<li>Concurrent requests</li>
+<li>Fire-and-forget operations</li>
+<li>CURL command generation</li>
+<li>Mock services for testing</li>
+</ul>
+
+<h3>🕷️ Crawler Package - WebSpark.HttpClientUtility.Crawler</h3>
+<p><strong>Size:</strong> 75 KB | <strong>Dependencies:</strong> Base package + 4 crawler-specific</p>
+<p>Web crawling extension with robots.txt compliance and progress tracking:</p>
+<ul>
+<li>SiteCrawler and SimpleSiteCrawler</li>
+<li>Robots.txt parsing and compliance</li>
+<li>HTML link extraction (HtmlAgilityPack)</li>
+<li>Sitemap generation (Markdig)</li>
+<li>CSV export (CsvHelper)</li>
+<li>Real-time SignalR progress updates</li>
+</ul>
+
 <h2>Core Features</h2>
 <h3>🚀 Simple Service Registration</h3>
 <p>One-line setup with fluent configuration:</p>
@@ -211,7 +265,8 @@ Assert.IsTrue(result.IsSuccessStatusCode);
 <h4>Request/Response Streaming</h4>
 <p>Support for streaming large files and real-time data.</p>
 <h4>CURL Command Generation</h4>
-<p>Save requests as CURL commands for debugging and sharing.</p>
+<p>Save requests as CURL commands in JSON Lines format for debugging and sharing.</p>
+
 <h2>Decorator Pattern Architecture</h2>
 <p>The library uses a decorator pattern for composable features:</p>
 <ol>
@@ -229,17 +284,23 @@ Assert.IsTrue(result.IsSuccessStatusCode);
 </ul>
 <h2>Framework Support</h2>
 <ul>
-<li>✅ .NET 8.0 (LTS - Long-Term Support)</li>
+<li>✅ .NET 8.0 (LTS - Long-Term Support until Nov 2026)</li>
 <li>✅ .NET 9.0 (Latest)</li>
+<li>✅ .NET 10.0 (Preview)</li>
 </ul>
 <h2>Production Ready</h2>
 <ul>
-<li><strong>252+ Passing Tests</strong>: Comprehensive test coverage with MSTest</li>
+<li><strong>237+ Passing Tests</strong>: 711 test runs across .NET 8, 9, and 10 with comprehensive MSTest coverage</li>
 <li><strong>Strong Naming</strong>: Assembly is signed for enterprise scenarios</li>
 <li><strong>Nullable Reference Types</strong>: Full nullability annotations</li>
-<li><strong>Code Analysis</strong>: Warning level 5 with .NET analyzers enabled</li>
-<li><strong>Multi-Targeting</strong>: Supports both .NET 8 LTS and .NET 9</li>
+<li><strong>Code Analysis</strong>: Warning level 5 with .NET analyzers enabled, zero-warning builds</li>
+<li><strong>Multi-Targeting</strong>: Supports .NET 8 LTS, .NET 9, and .NET 10 Preview</li>
+<li><strong>Source Link Debugging</strong>: Step through library code with full source navigation</li>
+<li><strong>Symbol Packages</strong>: Enhanced debugging with .snupkg packages</li>
+<li><strong>Trimming/AOT Ready</strong>: Annotated for Native AOT and IL trimming</li>
+<li><strong>Package Validation</strong>: Baseline validation ensures API compatibility</li>
 </ul>
+
 <h2>Next Steps</h2>
 <div class="cta-buttons">
   <a href="/getting-started/" class="button primary">Get Started</a>
@@ -254,7 +315,7 @@ Assert.IsTrue(result.IsSuccessStatusCode);
     <div class="footer-content">
       <div class="footer-section">
         <h3>WebSpark.HttpClientUtility</h3>
-        <p>Version 2.1.2</p>
+        <p>Version 2.2.0</p>
         
       </div>
       
@@ -270,7 +331,13 @@ Assert.IsTrue(result.IsSuccessStatusCode);
           
           <li>
             <a href="https://www.nuget.org/packages/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
-              NuGet
+              NuGet (Base)
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.nuget.org/packages/WebSpark.HttpClientUtility.Crawler" target="_blank" rel="noopener noreferrer">
+              NuGet (Crawler)
             </a>
           </li>
           
