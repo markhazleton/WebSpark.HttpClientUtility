@@ -91,7 +91,6 @@
 <li><strong>Improve Observability</strong>: Comprehensive telemetry and distributed tracing</li>
 <li><strong>Simplify Testing</strong>: Mock service for easy unit testing</li>
 </ul>
-
 <h2>Architecture</h2>
 <p>The library uses a <strong>decorator pattern</strong> to compose features. This design allows you to:</p>
 <ul>
@@ -100,7 +99,6 @@
 <li>Extend with custom decorators</li>
 <li>Test each layer independently</li>
 </ul>
-
 <h3>Decorator Chain</h3>
 <pre><code>User Code
     ↓
@@ -115,77 +113,45 @@ HttpRequestResultServiceCache (Optional - Caching)
 HttpRequestResultService (Base - Core HTTP)
 </code></pre>
 <p>Each decorator wraps the layer below it, adding functionality while maintaining the same interface.</p>
-
 <h2>Technology Stack</h2>
 <ul>
-<li><strong>Frameworks</strong>: .NET 8.0 (LTS), .NET 9.0, .NET 10.0 (Preview)</li>
+<li><strong>Frameworks</strong>: .NET 8.0 (LTS), .NET 9.0</li>
 <li><strong>Resilience</strong>: Polly for retry and circuit breaker patterns</li>
 <li><strong>Caching</strong>: Microsoft.Extensions.Caching.Memory</li>
 <li><strong>Telemetry</strong>: OpenTelemetry with OTLP support</li>
 <li><strong>Testing</strong>: MSTest with Moq for mocking</li>
-<li><strong>Crawling</strong>: HtmlAgilityPack, Markdig, CsvHelper (Crawler package)</li>
 </ul>
-
 <h2>Version History</h2>
-<h3>v2.2.0 (Current - January 2026)</h3>
-<ul>
-<li>Enhanced package quality with Source Link debugging and symbol packages (.snupkg)</li>
-<li>Trimming and AOT readiness with RequiresUnreferencedCode/RequiresDynamicCode annotations</li>
-<li>Package validation against baseline versions</li>
-<li>Modern Vite/NPM build pipeline for demo application</li>
-<li>Zero-warning build policy with ESLint, Stylelint, Prettier</li>
-<li>All 237 tests passing (711 test runs across .NET 8, 9, and 10)</li>
-</ul>
-
-<h3>v2.1.2 (December 2025)</h3>
-<ul>
-<li>Security fixes for js-yaml and glob vulnerabilities</li>
-<li>All Dependabot alerts resolved</li>
-</ul>
-
-<h3>v2.1.1 (November 2025)</h3>
-<ul>
-<li>Fixed GitHub Actions package verification step</li>
-</ul>
-
-<h3>v2.1.0 (November 2025)</h3>
-<ul>
-<li>Added .NET 10 (Preview) multi-targeting support</li>
-<li>Updated Microsoft.Extensions packages to 10.0.0</li>
-<li>All 291 tests passing on all three frameworks</li>
-</ul>
-
-<h3>v2.0.0 (Major Release)</h3>
-<ul>
-<li>Package split into base + crawler (163 KB base, 75 KB crawler)</li>
-<li>Reduced dependencies from 13 to 10 for base package</li>
-<li>Zero breaking changes for core HTTP users</li>
-<li>Web crawling moved to separate package</li>
-<li>CurlCommandSaver now uses JSON Lines format</li>
-<li>All 474 tests passing</li>
-</ul>
-
-<h3>v1.4.0</h3>
+<h3>v1.4.0 (Current)</h3>
 <ul>
 <li>Added .NET 8 LTS support alongside .NET 9</li>
 <li>Simplified DI registration with multiple quick-start methods</li>
 <li>Improved documentation and test coverage</li>
 </ul>
-
+<h3>v1.3.2</h3>
+<ul>
+<li>Fixed test reliability and improved mock patterns</li>
+<li>Enhanced code quality with stricter analysis</li>
+</ul>
+<h3>v1.3.1</h3>
+<ul>
+<li>Enhanced CurlCommandSaver with batch processing</li>
+<li>Added file rotation for CURL command storage</li>
+</ul>
+<h3>v1.3.0</h3>
+<ul>
+<li>Removed deprecated Jaeger exporter</li>
+<li>Modernized OpenTelemetry to use OTLP standard</li>
+<li>Breaking change: Updated telemetry configuration</li>
+</ul>
 <h2>Quality Assurance</h2>
 <ul>
-<li><strong>237+ Passing Tests</strong>: 711 test runs across .NET 8, 9, and 10 with comprehensive MSTest coverage</li>
+<li><strong>252+ Passing Tests</strong>: Comprehensive test coverage with MSTest</li>
 <li><strong>Strong Naming</strong>: Assembly signed for enterprise scenarios</li>
 <li><strong>Nullable Reference Types</strong>: Full nullability annotations</li>
-<li><strong>Code Analysis</strong>: Warning level 5 with .NET analyzers enabled, zero-warning builds</li>
-<li><strong>Multi-Targeting</strong>: .NET 8 LTS, .NET 9, and .NET 10 Preview supported</li>
-<li><strong>Source Link Debugging</strong>: Step through library code with full source navigation</li>
-<li><strong>Symbol Packages</strong>: Enhanced debugging with .snupkg packages</li>
-<li><strong>Trimming/AOT Ready</strong>: Annotated for Native AOT and IL trimming</li>
-<li><strong>Package Validation</strong>: Baseline validation ensures API compatibility</li>
-<li><strong>Continuous Integration</strong>: GitHub Actions for automated builds and testing</li>
+<li><strong>Code Analysis</strong>: Warning level 5 with .NET analyzers enabled</li>
+<li><strong>Multi-Targeting</strong>: Both .NET 8 LTS and .NET 9 supported</li>
 </ul>
-
 <h2>Contributing</h2>
 <p>We welcome contributions! Here's how you can help:</p>
 <ol>
@@ -210,10 +176,10 @@ dotnet test --configuration Release
 <p>This project follows the <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility/blob/main/CODE_OF_CONDUCT.md">Contributor Covenant Code of Conduct</a>.</p>
 <h2>License</h2>
 <p>MIT License - free for commercial and open-source use.</p>
-<pre><code>Copyright (c) 2025 Mark Hazleton
+<pre><code>Copyright (c) 2024 Mark Hazleton
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
+of this software and associated documentation files (the &quot;Software&quot;), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -256,11 +222,10 @@ copies or substantial portions of the Software.
 </ul>
 <h2>Statistics</h2>
 <ul>
-<li><strong>Current Version</strong>: 2.2.0</li>
-<li><strong>Target Frameworks</strong>: .NET 8.0 LTS, .NET 9.0, .NET 10.0 Preview</li>
-<li><strong>Test Coverage</strong>: 237+ tests passing (711 test runs)</li>
-<li><strong>Base Package Size</strong>: 163 KB (10 dependencies)</li>
-<li><strong>Crawler Package Size</strong>: 75 KB (requires base package)</li>
+<li><strong>Version</strong>: 2.2.0</li>
+<li><strong>Total Downloads</strong>: 3.4K</li>
+<li><strong>Target Frameworks</strong>: .NET 8.0, .NET 9.0</li>
+<li><strong>Test Coverage</strong>: 252+ tests passing</li>
 <li><strong>License</strong>: MIT</li>
 </ul>
 <h2>Next Steps</h2>
@@ -293,13 +258,7 @@ copies or substantial portions of the Software.
           
           <li>
             <a href="https://www.nuget.org/packages/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
-              NuGet (Base)
-            </a>
-          </li>
-          
-          <li>
-            <a href="https://www.nuget.org/packages/WebSpark.HttpClientUtility.Crawler" target="_blank" rel="noopener noreferrer">
-              NuGet (Crawler)
+              NuGet
             </a>
           </li>
           

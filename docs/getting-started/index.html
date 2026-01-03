@@ -82,38 +82,13 @@
     <div class="container">
       <h1>Getting Started</h1>
 <p>Get up and running with WebSpark.HttpClientUtility in minutes.</p>
-
 <h2>Installation</h2>
-<h3>Base Package (Required)</h3>
-<p>Install the core HTTP client utilities package:</p>
+<p>Install via NuGet Package Manager:</p>
 <pre><code class="language-powershell">dotnet add package WebSpark.HttpClientUtility
 </code></pre>
 <p>Or via Package Manager Console:</p>
 <pre><code class="language-powershell">Install-Package WebSpark.HttpClientUtility
 </code></pre>
-
-<h3>Crawler Package (Optional)</h3>
-<p>If you need web crawling features, install the crawler extension:</p>
-<pre><code class="language-powershell">dotnet add package WebSpark.HttpClientUtility.Crawler
-</code></pre>
-
-<h2>Package Split (v2.0+)</h2>
-<p>Starting with v2.0, the library is split into two focused packages:</p>
-<ul>
-<li><strong>WebSpark.HttpClientUtility</strong> - Core HTTP features (163 KB, 10 dependencies)</li>
-<li><strong>WebSpark.HttpClientUtility.Crawler</strong> - Web crawling extension (75 KB, requires base package)</li>
-</ul>
-<p><strong>Upgrading from v1.x?</strong> If you don't use crawler features, you need no code changes! Just update the package version.</p>
-<p>If you use crawler features, install the Crawler package and add <code>services.AddHttpClientCrawler()</code> after <code>services.AddHttpClientUtility()</code>.</p>
-
-<h2>Supported Frameworks</h2>
-<p>WebSpark.HttpClientUtility v2.2.0 targets:</p>
-<ul>
-<li>.NET 8.0 LTS (Long-Term Support - until Nov 2026)</li>
-<li>.NET 9.0 (Latest)</li>
-<li>.NET 10.0 (Preview)</li>
-</ul>
-
 <h2>Basic Setup</h2>
 <h3>Step 1: Register Services</h3>
 <p>In your <code>Program.cs</code> or <code>Startup.cs</code>:</p>
@@ -126,23 +101,6 @@ builder.Services.AddHttpClientUtility();
 
 var app = builder.Build();
 </code></pre>
-
-<h3>Step 1b: Register Crawler (Optional)</h3>
-<p>If you installed the Crawler package:</p>
-<pre><code class="language-csharp">using WebSpark.HttpClientUtility;
-using WebSpark.HttpClientUtility.Crawler;
-
-var builder = WebApplication.CreateBuilder(args);
-
-// Register base services
-builder.Services.AddHttpClientUtility();
-
-// Register crawler services
-builder.Services.AddHttpClientCrawler();
-
-var app = builder.Build();
-</code></pre>
-
 <h3>Step 2: Inject and Use</h3>
 <pre><code class="language-csharp">using WebSpark.HttpClientUtility.RequestResult;
 
@@ -334,7 +292,6 @@ Console.WriteLine($&quot;Request took {result.RequestDuration}ms&quot;);
   <a href="/examples/" class="button secondary">See More Examples</a>
   <a href="/api-reference/" class="button secondary">API Reference</a>
 </div>
-
 <h2>Need Help?</h2>
 <ul>
 <li>📖 <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility">View the README</a></li>
@@ -350,7 +307,7 @@ Console.WriteLine($&quot;Request took {result.RequestDuration}ms&quot;);
     <div class="footer-content">
       <div class="footer-section">
         <h3>WebSpark.HttpClientUtility</h3>
-        <p>Version 2.1.2</p>
+        <p>Version 2.2.0</p>
         
       </div>
       

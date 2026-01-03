@@ -4,18 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home | WebSpark.HttpClientUtility</title>
-  <meta name="description" content="A production-ready HttpClient wrapper for .NET 8-10+ with resilience, caching, telemetry, and web crawling capabilities.">
+  <meta name="description" content="A production-ready HttpClient wrapper for .NET 8+ with resilience, caching, telemetry, and web crawling capabilities.">
   
   <!-- Open Graph -->
   <meta property="og:title" content="Home">
-  <meta property="og:description" content="A production-ready HttpClient wrapper for .NET 8-10+ with resilience, caching, telemetry, and web crawling capabilities.">
+  <meta property="og:description" content="A production-ready HttpClient wrapper for .NET 8+ with resilience, caching, telemetry, and web crawling capabilities.">
   <meta property="og:url" content="https://markhazleton.github.io/WebSpark.HttpClientUtility/">
   <meta property="og:type" content="website">
   
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Home">
-  <meta name="twitter:description" content="A production-ready HttpClient wrapper for .NET 8-10+ with resilience, caching, telemetry, and web crawling capabilities.">
+  <meta name="twitter:description" content="A production-ready HttpClient wrapper for .NET 8+ with resilience, caching, telemetry, and web crawling capabilities.">
   
   <!-- Canonical -->
   <link rel="canonical" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/">
@@ -86,12 +86,11 @@
 			caching, and OpenTelemetry. One-line setup eliminates boilerplate for retries, circuit
 			breakers, correlation IDs, and structured logging. Perfect for microservices, APIs, and
 			web scrapers. Includes authentication providers (Bearer, Basic, API Key), concurrent
-			requests, fire-and-forget operations, and streaming support. MIT licensed, 237+ tests.
+			requests, fire-and-forget operations, and streaming support. MIT licensed, 252+ tests.
 			For web crawling features, see WebSpark.HttpClientUtility.Crawler package.</p>
   <div class="hero-stats">
     <span class="stat">v2.2.0</span>
-    <span class="stat">.NET 8/9/10</span>
-    <span class="stat">237+ tests</span>
+    <span class="stat">3.4K downloads</span>
   </div>
   <div class="hero-cta">
     <code>dotnet add package WebSpark.HttpClientUtility</code>
@@ -100,10 +99,9 @@
 <h2>Why Choose This Library?</h2>
 <ul>
 <li><strong>One-Line Setup</strong>: Simple service registration with <code>AddHttpClientUtility()</code></li>
-<li><strong>Battle-Tested</strong>: 237+ passing tests (711 runs across .NET 8, 9, and 10), production-ready</li>
+<li><strong>Battle-Tested</strong>: 252+ passing tests, production-ready for .NET 8 LTS and .NET 9</li>
 <li><strong>Zero Boilerplate</strong>: Eliminate repetitive HTTP client code</li>
-<li><strong>Enterprise-Grade</strong>: Source Link debugging, symbol packages, trimming/AOT ready</li>
-<li><strong>Two Focused Packages</strong>: Base package (163 KB) + optional Crawler extension (75 KB)</li>
+<li><strong>Enterprise-Grade</strong>: Used in production applications with proven reliability</li>
 </ul>
 <h2>Features</h2>
 <p>✅ <strong>Simple one-line service registration</strong><br>
@@ -114,12 +112,10 @@ Automatic retry policies, circuit breakers, and timeout handling out of the box.
 Intelligent caching with configurable duration and cache invalidation strategies.</p>
 <p>✅ <strong>Comprehensive telemetry and logging</strong><br>
 OpenTelemetry integration with correlation IDs for distributed tracing.</p>
-<p>✅ <strong>Web crawling capabilities (Crawler package)</strong><br>
+<p>✅ <strong>Web crawling capabilities</strong><br>
 Robots.txt parsing, SignalR progress updates, and concurrent crawling support.</p>
 <p>✅ <strong>Flexible authentication</strong><br>
 Built-in providers for Bearer tokens, Basic auth, and API keys.</p>
-<p>✅ <strong>Production-Ready Quality</strong><br>
-Source Link debugging, symbol packages (.snupkg), trimming/AOT annotations, zero-warning builds.</p>
 <h2>Quick Example</h2>
 <pre><code class="language-csharp">// Register services with optional features
 builder.Services.AddHttpClientUtility(options =&gt; {
@@ -172,15 +168,8 @@ if (result.IsSuccessStatusCode)
 <p>This design allows you to enable only the features you need while maintaining clean, testable code.</p>
 <h2>Targets</h2>
 <ul>
-<li>.NET 8.0 LTS (Long-Term Support - until Nov 2026)</li>
+<li>.NET 8.0 LTS (Long-Term Support)</li>
 <li>.NET 9.0 (Latest)</li>
-<li>.NET 10.0 (Preview)</li>
-</ul>
-<h2>Package Split (v2.0+)</h2>
-<p>Starting with v2.0, the library is split into two focused packages:</p>
-<ul>
-<li><strong>WebSpark.HttpClientUtility</strong> (163 KB): Core HTTP features - authentication, caching, resilience, telemetry</li>
-<li><strong>WebSpark.HttpClientUtility.Crawler</strong> (75 KB): Web crawling extension - robots.txt, sitemap generation, SignalR progress</li>
 </ul>
 <h2>License</h2>
 <p>Licensed under MIT. Free for commercial and open-source use.</p>
@@ -209,13 +198,7 @@ if (result.IsSuccessStatusCode)
           
           <li>
             <a href="https://www.nuget.org/packages/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
-              NuGet (Base)
-            </a>
-          </li>
-          
-          <li>
-            <a href="https://www.nuget.org/packages/WebSpark.HttpClientUtility.Crawler" target="_blank" rel="noopener noreferrer">
-              NuGet (Crawler)
+              NuGet
             </a>
           </li>
           
@@ -235,6 +218,7 @@ if (result.IsSuccessStatusCode)
     </div>
   </div>
 </footer>
+
   
   <!-- Scripts -->
   <script src="assets/js/prism.min.js" defer></script>
