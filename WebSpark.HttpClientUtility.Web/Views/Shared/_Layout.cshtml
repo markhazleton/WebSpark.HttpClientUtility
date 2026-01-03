@@ -1,13 +1,42 @@
+@using System.IO
+@inject IWebHostEnvironment HostEnvironment
+@{
+    var manifestPath = System.IO.Path.Combine(HostEnvironment.WebRootPath, "dist", ".vite", "manifest.json");
+    var useVite = System.IO.File.Exists(manifestPath);
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - WebSpark.HttpClientUtility</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    
+    @* All styles from Vite build (site.css includes Bootstrap + Bootstrap Icons) *@
+    @if (useVite)
+    {
+        <vite-style entry="site.css" />
+    }
+    else
+    {
+        @* Warning: Vite assets not built. Run 'npm run build' in WebSpark.HttpClientUtility.Web *@
+        <style>
+            body { 
+                background: #fff3cd; 
+                padding: 20px; 
+                font-family: system-ui, -apple-system, sans-serif; 
+            }
+            .warning-banner { 
+                background: #dc3545; 
+                color: white; 
+                padding: 15px; 
+                border-radius: 5px; 
+                margin: 20px auto; 
+                max-width: 800px;
+                text-align: center;
+            }
+        </style>
+    }
+    
     <link rel="stylesheet" href="~/WebSpark.HttpClientUtility.Web.styles.css" asp-append-version="true" />
     
     <!-- Favicon -->
@@ -16,6 +45,14 @@
     <link rel="apple-touch-icon" sizes="180x180" href="~/icon.png">
 </head>
 <body>
+    @if (!useVite)
+    {
+        <div class="warning-banner">
+            <strong>⚠️ Build Warning:</strong> Vite assets not found. 
+            Run <code>npm install && npm run build</code> in the WebSpark.HttpClientUtility.Web directory.
+        </div>
+    }
+    
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
       <div class="container-fluid">
@@ -88,14 +125,18 @@
         </p>
        <p class="small text-muted mb-0">
 <span class="badge bg-primary">v2.0.0</span>
-    <span class="badge bg-secondary">.NET 8 & 9</span>
+    <span class="badge bg-secondary">.NET 8 & 9 & 10</span>
        <span class="badge bg-success">MIT License</span>
  </p>
       </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    @* All JavaScript from Vite build (main.js includes Bootstrap + site logic) *@
+    @if (useVite)
+    {
+        <vite-script entry="main.js" />
+    }
+    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

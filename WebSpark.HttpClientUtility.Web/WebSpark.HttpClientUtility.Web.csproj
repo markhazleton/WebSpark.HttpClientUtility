@@ -18,4 +18,46 @@
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 
+  <!-- NPM Build Integration -->
+  <PropertyGroup>
+    <NpmCommand Condition="'$(OS)' == 'Windows_NT'">npm.cmd</NpmCommand>
+    <NpmCommand Condition="'$(OS)' != 'Windows_NT'">npm</NpmCommand>
+    <NodeEnv Condition="'$(Configuration)' == 'Debug'">development</NodeEnv>
+    <NodeEnv Condition="'$(Configuration)' == 'Release'">production</NodeEnv>
+    <SkipNpmBuild Condition="'$(SkipNpmBuild)' == ''">false</SkipNpmBuild>
+  </PropertyGroup>
+
+  <!-- Exclude ClientApp and node_modules from build -->
+  <ItemGroup>
+    <Content Remove="ClientApp\**" />
+    <Compile Remove="ClientApp\**" />
+    <EmbeddedResource Remove="ClientApp\**" />
+    <None Include="ClientApp\**" Exclude="ClientApp\node_modules\**" />
+  </ItemGroup>
+
+  <!-- NPM Install - Only if node_modules doesn't exist and NPM build is enabled -->
+  <Target Name="NpmInstall" BeforeTargets="Build" Condition="!Exists('node_modules') AND '$(SkipNpmBuild)' == 'false' AND Exists('package.json')">
+    <Message Importance="high" Text="Running npm install..." />
+    <Exec Command="$(NpmCommand) install" WorkingDirectory="$(ProjectDir)" />
+  </Target>
+
+  <!-- NPM Build - Before ASP.NET Core build -->
+  <Target Name="NpmBuild" BeforeTargets="Build" DependsOnTargets="NpmInstall" Condition="'$(SkipNpmBuild)' == 'false' AND Exists('node_modules') AND Exists('package.json')">
+    <Message Importance="high" Text="Running Vite build ($(NodeEnv))..." />
+    <Exec Command="$(NpmCommand) run build" WorkingDirectory="$(ProjectDir)" EnvironmentVariables="NODE_ENV=$(NodeEnv)" />
+  </Target>
+
+  <!-- Clean NPM artifacts -->
+  <Target Name="NpmClean" AfterTargets="Clean">
+    <Message Importance="high" Text="Cleaning Vite build artifacts..." />
+    <RemoveDir Directories="$(ProjectDir)wwwroot\dist" />
+  </Target>
+
+  <!-- Deep Clean - Removes node_modules (use sparingly) -->
+  <Target Name="NpmDeepClean" Condition="'$(DeepClean)' == 'true'">
+    <Message Importance="high" Text="Deep cleaning node_modules..." />
+    <RemoveDir Directories="$(ProjectDir)node_modules" />
+    <Delete Files="$(ProjectDir)package-lock.json" />
+  </Target>
+
 </Project>

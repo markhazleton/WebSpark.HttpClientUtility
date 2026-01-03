@@ -423,6 +423,17 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# Vite build output and cache
+**/wwwroot/dist/
+.vite/
+*.local
+
+# Package manager lock files (keep package-lock.json for reproducible builds)
+# Uncomment the following line if you want to ignore lock files
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
 # Documentation site cache (Eleventy)
 src/.cache/
 src/.eleventy-cache/

@@ -1,0 +1,38 @@
+{
+  "name": "webspark-httpclientutility-web",
+  "version": "2.0.0",
+  "description": "Demo application for WebSpark.HttpClientUtility - Modern NPM build pipeline",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "clean": "node -e \"require('fs').rmSync('wwwroot/dist', { recursive: true, force: true })\"",
+    "prebuild": "npm run clean"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
+    "@popperjs/core": "^2.11.8"
+  },
+  "devDependencies": {
+    "vite": "^6.0.5",
+    "vite-plugin-static-copy": "^2.1.0",
+    "sass": "^1.83.4",
+    "terser": "^5.36.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "httpclient",
+    "asp.net-core",
+    "demo",
+    "vite",
+    "bootstrap"
+  ],
+  "author": "WebSpark",
+  "license": "MIT"
+}
