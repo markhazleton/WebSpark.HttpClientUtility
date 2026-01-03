@@ -36,6 +36,9 @@
 		<!-- Mocking Framework -->
 		<PackageReference Include="Moq" Version="4.20.72" />
 		
+		<!-- SDK-provided package override -->
+		<PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="10.0.1" />
+		
 		<!-- Projects Under Test -->
 		<ProjectReference Include="..\WebSpark.HttpClientUtility\WebSpark.HttpClientUtility.csproj" />
 		<ProjectReference Include="..\WebSpark.HttpClientUtility.Crawler\WebSpark.HttpClientUtility.Crawler.csproj" />

@@ -71,6 +71,9 @@
 		<!-- Base Package Dependency (Project Reference for development) -->
 		<ProjectReference Include="..\WebSpark.HttpClientUtility\WebSpark.HttpClientUtility.csproj" />
 
+		<!-- SDK-provided package override -->
+		<PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="10.0.1" />
+
 		<!-- Crawler-Specific Dependencies -->
 		<PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
 		<PackageReference Include="Markdig" Version="0.44.0" />
