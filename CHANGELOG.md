@@ -5,6 +5,61 @@ All notable changes to the WebSpark.HttpClientUtility project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2026-01-03
+
+### 🚀 Added
+
+- **Modern Vite/NPM Build Pipeline**: Completely migrated WebSpark.HttpClientUtility.Web demo application from LibMan/CDN to NPM-managed Vite build system
+  - Automated bundling, minification, and tree-shaking for JavaScript and CSS
+  - Cache-busted hashed filenames with manifest-based asset injection
+  - Custom ViteAssetTagHelper for seamless Razor integration
+  - Auto-run npm install/build during .NET build process
+- **Enhanced NuGet Package Quality**: Production-ready package improvements
+  - Enabled Source Link for step-through debugging of library code
+  - Added symbol packages (.snupkg) for enhanced debugging experience
+  - Enabled package validation against baseline versions
+  - Repository URL and commit metadata embedded in packages
+- **Trimming and AOT Readiness**: Native AOT and trimming compatibility
+  - Added IL trimming and AOT analyzers to all library projects
+  - Annotated all reflection-based APIs with `RequiresUnreferencedCode` and `RequiresDynamicCode`
+  - Created global suppressions for test and demo projects
+  - Documented trimming-safe usage patterns
+- **Zero-Warning Build Pipeline**: Strict code quality enforcement
+  - Added ESLint, Stylelint, and Prettier with strict configurations
+  - Implemented zero-warning policy for both .NET and NPM builds
+  - Build fails on any lint warnings for maximum code quality
+  - Comprehensive linting and formatting documentation
+
+### 🔧 Changed
+
+- **Explicit Linker Version**: Added explicit Microsoft.NET.ILLink.Tasks 10.0.1 reference to all projects for consistent trimming behavior
+- **Demo Application Assets**: Replaced all CDN/LibMan dependencies with NPM-managed Bootstrap, Bootstrap Icons, and custom code
+- **Build Configuration**: Enhanced .csproj files with automated asset building and cleaning
+
+### 📝 Documentation
+
+- Added detailed build pipeline documentation for Vite workflow
+- Created migration summaries and verification checklists
+- Documented trimming annotation patterns and remaining work
+- Added NPM quick reference guide
+- Created comprehensive build status summaries
+
+### ✅ Verified
+
+- All 237 unique tests passing (210 base + 27 crawler) with 711 total test runs across .NET 8, 9, and 10
+- Zero compiler warnings with `TreatWarningsAsErrors=true`
+- Zero ESLint, Stylelint, and Prettier warnings
+- Vite builds produce optimized, minified, cache-busted assets
+- Package validation passes for both base and crawler packages
+
+### 📝 Notes
+
+- **No Breaking Changes**: All improvements are backward compatible
+- **Library Code Unchanged**: Enhancements focus on packaging, tooling, and demo application
+- **Trimming Support**: Library is now trim-compatible but not yet fully trim-safe (see remaining annotation work)
+- **Demo Application Only**: Vite/NPM changes only affect WebSpark.HttpClientUtility.Web demo app, not the library packages
+- Both base and crawler packages use lockstep versioning (both are 2.2.0)
+
 ## [2.1.2] - 2025-12-03
 
 ### 🔒 Security

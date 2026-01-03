@@ -27,6 +27,11 @@
 			requests, fire-and-forget operations, and streaming support. MIT licensed, 252+ tests.
 			For web crawling features, see WebSpark.HttpClientUtility.Crawler package.</Description>
 		<PackageReleaseNotes>
+			2.2.0 - Quality &amp; Tooling: Added Source Link debugging, symbol packages (.snupkg),
+			trimming/AOT readiness with RequiresUnreferencedCode/RequiresDynamicCode annotations,
+			package baseline validation, explicit ILLink.Tasks 10.0.1 reference, zero-warning build
+			policy. Demo app migrated to Vite/NPM with ESLint/Stylelint/Prettier. All 237 tests
+			passing (711 runs across net8.0, net9.0, net10.0). Zero breaking changes.
 			2.1.2 - Security patch: Fixed js-yaml prototype pollution (GHSA-mh29-5h37-fv8m,
 			MODERATE) and glob command injection (GHSA-5j98-mcp5-4vw2, HIGH) in documentation build
 			dependencies. All Dependabot alerts resolved. Zero breaking changes.

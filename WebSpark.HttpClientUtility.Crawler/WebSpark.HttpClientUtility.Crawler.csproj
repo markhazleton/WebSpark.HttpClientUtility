@@ -22,12 +22,17 @@
 			SimpleSiteCrawler with robots.txt compliance, HTML link extraction (HtmlAgilityPack),
 			sitemap generation (Markdig), CSV export (CsvHelper), and real-time SignalR progress
 			updates. Perfect for web scraping, SEO audits, and site analysis. Supports .NET 8 LTS,
-			.NET 9, and .NET 10 (Preview). Requires WebSpark.HttpClientUtility base package [2.1.0].
+			.NET 9, and .NET 10 (Preview). Requires WebSpark.HttpClientUtility base package [2.2.0].
 			Install both packages and call AddHttpClientUtility() + AddHttpClientCrawler() in your
 			DI registration.</Description>
 		<PackageTags>
 			web-crawler;crawler;web-scraping;site-crawler;sitemap;sitemap-generator;robots-txt;html-parser;htmlagilitypack;signalr;csv-export;link-extraction;seo;seo-audit;content-migration;dotnet;aspnetcore;net8;net9;net10</PackageTags>
 		<PackageReleaseNotes>
+			2.2.0 - Quality &amp; Tooling: Added Source Link debugging, symbol packages (.snupkg), 
+			trimming/AOT readiness with RequiresUnreferencedCode/RequiresDynamicCode annotations, 
+			package baseline validation, explicit ILLink.Tasks 10.0.1 reference. Requires base 
+			package [2.2.0]. All 27 crawler tests passing (81 runs across net8.0, net9.0, net10.0). 
+			Zero breaking changes.
 			2.1.2 - Security patch: Updated to match base package version for lockstep versioning.
 			Fixed js-yaml and glob vulnerabilities in documentation dependencies. Requires base
 			package [2.1.2]. Zero breaking changes.

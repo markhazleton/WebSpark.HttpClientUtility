@@ -50,7 +50,11 @@ Stop writing 50+ lines of HttpClient setup. Get enterprise-grade resilience (ret
 
 **Battle-Tested & Production-Ready**
 
-- ✅ **252+ unit tests** with 100% passing - tested on .NET 8, 9, and 10
+- ✅ **237+ unit tests** (711 test runs across 3 frameworks) with 100% passing - tested on .NET 8, 9, and 10
+- ✅ **Source Link enabled** - step-through debugging with symbol packages (.snupkg)
+- ✅ **Trimming & AOT ready** - annotated for Native AOT and IL trimming compatibility
+- ✅ **Package validation** - baseline validation ensures no breaking changes
+- ✅ **Zero-warning builds** - strict code quality with `TreatWarningsAsErrors=true`
 - ✅ **Continuous Integration** via GitHub Actions - every commit tested
 - ✅ **Semantic Versioning** - predictable, safe upgrades
 - ✅ **Zero breaking changes** within major versions - backward compatibility guaranteed
@@ -287,6 +291,9 @@ public class SiteAnalyzer
 - **Streaming** - Efficient handling of large responses
 - **OpenTelemetry** - Full observability integration (optional)
 - **CURL Export** - Generate CURL commands for debugging
+- **Source Link** - Step-through debugging with symbol packages
+- **Trimming/AOT Ready** - Compatible with Native AOT and IL trimming
+- **Package Validation** - Baseline validation ensures stability
 
 ### Crawler Package Features
 - **Site Crawling** - Full website crawling with depth control
