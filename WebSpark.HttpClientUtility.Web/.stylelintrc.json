@@ -1,0 +1,25 @@
+{
+  "extends": ["stylelint-config-standard"],
+  "rules": {
+    "selector-class-pattern": null,
+    "no-descending-specificity": null,
+    "property-no-vendor-prefix": null,
+    "value-no-vendor-prefix": null,
+    "import-notation": "string",
+    "media-feature-range-notation": "prefix",
+    "no-duplicate-selectors": null,
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": ["global"]
+      }
+    ]
+  },
+  "ignoreFiles": [
+    "wwwroot/**",
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    "**/*.min.css"
+  ]
+}

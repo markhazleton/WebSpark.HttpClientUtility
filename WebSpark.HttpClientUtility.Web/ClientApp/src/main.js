@@ -15,4 +15,5 @@ import './site.js';
 // Import custom styles (will be processed by Vite)
 import './site.css';
 
+// eslint-disable-next-line no-console
 console.log('WebSpark.HttpClientUtility.Web - Build pipeline active');
