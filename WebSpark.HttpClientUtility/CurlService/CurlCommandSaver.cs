@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
@@ -172,6 +173,8 @@ public class CurlCommandSaver : IDisposable
     /// <param name="filePath">File path of the calling code (automatically populated)</param>
     /// <param name="lineNumber">Line number of the calling code (automatically populated)</param>
     /// <returns>A task representing the asynchronous operation</returns>
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "CurlCommandRecord is a simple DTO with known properties, trim-safe")]
+    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "CurlCommandRecord is a simple DTO with known properties, AOT-compatible")]
     public async Task SaveCurlCommandAsync(HttpRequestMessage? request,
         [CallerMemberName] string memberName = "",
         [CallerFilePath] string filePath = "",
@@ -394,6 +397,13 @@ try
         await SaveRecordsBatchToCsvWithRetryAsync(new List<CurlCommandRecord> { record });
     }
 
+    /// <summary>
+    /// Saves multiple curl command records to the CSV file with retry logic.
+    /// </summary>
+    /// <param name="records">Collection of curl command records to save</param>
+    /// <returns>A task representing the asynchronous operation</returns>
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "CurlCommandRecord is a simple DTO with known properties, trim-safe")]
+    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "CurlCommandRecord is a simple DTO with known properties, AOT-compatible")]
     private async Task SaveRecordsBatchToCsvWithRetryAsync(List<CurlCommandRecord> records)
     {
         ArgumentNullException.ThrowIfNull(records);

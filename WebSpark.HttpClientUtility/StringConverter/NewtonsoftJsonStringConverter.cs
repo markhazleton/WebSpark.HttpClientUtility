@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
 namespace WebSpark.HttpClientUtility.StringConverter;
@@ -6,6 +7,8 @@ namespace WebSpark.HttpClientUtility.StringConverter;
 /// Converts strings to and from JSON using Newtonsoft.Json library.
 /// </summary>
 /// <remarks>
+/// This converter uses reflection-based JSON serialization and is not compatible with Native AOT.
+/// Newtonsoft.Json relies on dynamic types that may be removed during trimming.
 /// Initializes a new instance of the <see cref="NewtonsoftJsonStringConverter"/> class.
 /// </remarks>
 /// <param name="settings">The JSON serializer settings.</param>
@@ -21,6 +24,8 @@ public class NewtonsoftJsonStringConverter(JsonSerializerSettings? settings = nu
     /// <returns>The converted object of type <typeparamref name="T"/>.</returns>
     /// <exception cref="ArgumentException">Thrown when the value is null or whitespace.</exception>
     /// <exception cref="InvalidOperationException">Thrown when deserialization fails or the result is null.</exception>
+    [RequiresUnreferencedCode("Newtonsoft.Json uses reflection which may be incompatible with trimming.")]
+    [RequiresDynamicCode("Newtonsoft.Json requires dynamic code generation which is not compatible with Native AOT.")]
     public T ConvertFromString<T>(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -46,6 +51,8 @@ public class NewtonsoftJsonStringConverter(JsonSerializerSettings? settings = nu
     /// <param name="model">The model object to convert.</param>
     /// <returns>The JSON string representation of the model object.</returns>
     /// <exception cref="InvalidOperationException">Thrown when serialization fails or the result is null.</exception>
+    [RequiresUnreferencedCode("Newtonsoft.Json uses reflection which may be incompatible with trimming.")]
+    [RequiresDynamicCode("Newtonsoft.Json requires dynamic code generation which is not compatible with Native AOT.")]
     public string ConvertFromModel<T>(T model)
     {
         try

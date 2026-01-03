@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -56,6 +57,8 @@ public class HttpClientService : IHttpClientService
     /// <param name="correlationId">The correlation ID for request tracking.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An instance of HttpResponseContent containing the response content and status code.</returns>
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Suppressed at IStringConverter interface boundary")]
+    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Suppressed at IStringConverter interface boundary")]
     private async Task<HttpResponseContent<T>> ExecuteRequestAsync<T>(
         Func<Task<HttpResponseMessage>> httpRequest,
         string method,
@@ -199,6 +202,8 @@ public class HttpClientService : IHttpClientService
         };
     }
 
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Suppressed at IStringConverter interface boundary")]
+    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Suppressed at IStringConverter interface boundary")]
     private async Task<HttpResponseContent<TResult>> SendAsync<T, TResult>(
         HttpMethod method,
         Uri requestUri,

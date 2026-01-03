@@ -13,6 +13,12 @@
     <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- This is a demo/test web application, not a library - disable trimming/AOT analyzers -->
+    <IsTrimmable>false</IsTrimmable>
+    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
+    <EnableSingleFileAnalyzer>false</EnableSingleFileAnalyzer>
+    <EnableAOTAnalyzer>false</EnableAOTAnalyzer>
+    <IsPackable>false</IsPackable>
     <!-- Suppress XML documentation warnings for demo application -->
     <!-- CS1591: Missing XML comment for publicly visible type or member -->
     <NoWarn>$(NoWarn);CS1591</NoWarn>

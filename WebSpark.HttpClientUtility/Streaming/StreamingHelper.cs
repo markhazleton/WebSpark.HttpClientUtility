@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 
@@ -6,6 +7,10 @@ namespace WebSpark.HttpClientUtility.Streaming;
 /// <summary>
 /// Provides streaming capabilities for HTTP responses to handle large payloads efficiently.
 /// </summary>
+/// <remarks>
+/// This helper uses reflection-based JSON deserialization. For Native AOT scenarios,
+/// consumers should use System.Text.Json source generators.
+/// </remarks>
 public static class StreamingHelper
 {
     /// <summary>
@@ -29,6 +34,8 @@ public static class StreamingHelper
     /// <param name="correlationId">Correlation ID for tracking the operation.</param>
     /// <param name="cancellationToken">Cancellation token for the operation.</param>
     /// <returns>The deserialized object of type T, or null if deserialization fails.</returns>
+    [RequiresUnreferencedCode("JSON deserialization uses reflection. For AOT scenarios, use System.Text.Json source generators.")]
+    [RequiresDynamicCode("JSON deserialization may require runtime code generation. For AOT scenarios, use System.Text.Json source generators.")]
     public static async Task<T?> ProcessResponseAsync<T>(
         HttpResponseMessage response,
         long streamingThreshold,
@@ -95,6 +102,8 @@ public static class StreamingHelper
     /// <summary>
     /// Processes the response using streaming for large payloads.
     /// </summary>
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Suppressed at public API boundary (ProcessResponseAsync)")]
+    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Suppressed at public API boundary (ProcessResponseAsync)")]
     private static async Task<T?> ProcessResponseWithStreamingAsync<T>(
         HttpResponseMessage response,
         JsonSerializerOptions jsonOptions,
@@ -130,6 +139,8 @@ public static class StreamingHelper
     /// <summary>
     /// Processes the response without streaming for smaller payloads.
     /// </summary>
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Suppressed at public API boundary (ProcessResponseAsync)")]
+    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Suppressed at public API boundary (ProcessResponseAsync)")]
     private static async Task<T?> ProcessResponseWithoutStreamingAsync<T>(
         HttpResponseMessage response,
         JsonSerializerOptions jsonOptions,

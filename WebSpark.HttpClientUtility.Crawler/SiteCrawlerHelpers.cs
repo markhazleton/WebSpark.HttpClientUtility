@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace WebSpark.HttpClientUtility.Crawler;
@@ -239,7 +240,7 @@ public static class SiteCrawlerHelpers
     /// <param name="filePath">The path to the CSV file</param>
     /// <exception cref="ArgumentNullException">Thrown when data or filePath is null</exception>
     /// <exception cref="IOException">Thrown when there's an error writing to the file</exception>
-    public static void WriteToCsv<T>(IEnumerable<T> data, string filePath)
+    public static void WriteToCsv<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(IEnumerable<T> data, string filePath)
     {
         if (data == null)
         {

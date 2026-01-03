@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -17,6 +18,10 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The IServiceCollection to add services to</param>
     /// <returns>The IServiceCollection so that additional calls can be chained</returns>
+    /// <remarks>
+    /// SignalR is used for real-time crawler progress updates and is not currently compatible with Native AOT.
+    /// </remarks>
+    [RequiresUnreferencedCode("SignalR does not currently support trimming or native AOT. See https://aka.ms/aspnet/trimming")]
     public static IServiceCollection AddHttpClientCrawler(this IServiceCollection services)
     {
         // Register SignalR hub
@@ -86,7 +91,10 @@ public static class ServiceCollectionExtensions
         // Register options
         services.AddSingleton(options);
 
-        // Add the services
-        return AddHttpClientCrawler(services);
+        // Add the services - suppressed as SignalR warning already at AddHttpClientCrawler
+        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Suppressed at AddHttpClientCrawler boundary")]
+        static IServiceCollection AddCrawlerInternal(IServiceCollection svc) => AddHttpClientCrawler(svc);
+        
+        return AddCrawlerInternal(services);
     }
 }

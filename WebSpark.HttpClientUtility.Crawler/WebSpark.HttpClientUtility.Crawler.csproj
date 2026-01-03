@@ -38,8 +38,25 @@
 			three frameworks (243 test runs, 0 failures). Zero breaking changes.
 		</PackageReleaseNotes>
 		<PackageReadmeFile>README-Crawler.md</PackageReadmeFile>
-		<!-- <PackageIcon>icon-crawler.png</PackageIcon> --> <!-- Optional: Create crawler icon
-		variant -->
+		<PackageIcon>icon.png</PackageIcon>
+
+		<!-- Source Link and Symbols (inherit from Directory.Build.props but ensure explicit) -->
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+
+		<!-- Deterministic Build -->
+		<Deterministic>true</Deterministic>
+
+		<!-- Repository Information -->
+		<RepositoryUrl>https://github.com/MarkHazleton/HttpClientUtility</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageProjectUrl>https://markhazleton.github.io/WebSpark.HttpClientUtility/</PackageProjectUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Copyright>Copyright © 2025 Mark Hazleton</Copyright>
+		<NeutralLanguage>en-US</NeutralLanguage>
 
 		<!-- Package Validation -->
 		<EnablePackageValidation>true</EnablePackageValidation>
@@ -47,8 +64,7 @@
 
 	<ItemGroup>
 		<None Include="README-Crawler.md" Pack="true" PackagePath="\" />
-		<!-- <None Include="images\icon-crawler.png" Pack="true" PackagePath="\"
-		Condition="Exists('images\icon-crawler.png')" /> -->
+		<None Include="..\WebSpark.HttpClientUtility\images\icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 	<ItemGroup>

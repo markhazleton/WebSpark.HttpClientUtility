@@ -52,9 +52,9 @@
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-		<!-- Package Validation (Disabled for v2.0.0 intentional breaking changes) -->
-		<EnablePackageValidation>false</EnablePackageValidation>
-		<PackageValidationBaselineVersion>1.4.0</PackageValidationBaselineVersion>
+		<!-- Package Validation (Re-enabled for v2.2+ after intentional v2.0.0 breaking changes) -->
+		<EnablePackageValidation>true</EnablePackageValidation>
+		<PackageValidationBaselineVersion>2.1.1</PackageValidationBaselineVersion>
 		<!-- Source Link: Enables debugging the source through the NuGet Package -->
 		<ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
 		<SignAssembly>true</SignAssembly>

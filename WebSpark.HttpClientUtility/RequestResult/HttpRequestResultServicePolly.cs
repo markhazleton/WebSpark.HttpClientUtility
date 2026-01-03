@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using Polly;
@@ -155,7 +156,7 @@ public class HttpRequestResultServicePolly : IHttpRequestResultService
 
     /// <summary>
     /// Sends an HTTP request asynchronously using the HttpRequestResultServicePolly implementation.
-    /// </summary>
+    /// /// </summary>
     /// <typeparam name="T">The type of the response content.</typeparam>
     /// <param name="statusCall">The HttpRequestResult object representing the request.</param>
     /// <param name="memberName">Name of the calling member (automatically populated)</param>
@@ -172,6 +173,8 @@ public class HttpRequestResultServicePolly : IHttpRequestResultService
     /// The method wraps the inner service call with Polly policies and maintains a consistent
     /// correlation ID throughout the whole request lifecycle for observability.
     /// </remarks>
+    [RequiresUnreferencedCode("JSON serialization uses reflection. For AOT scenarios, use System.Text.Json source generators.")]
+    [RequiresDynamicCode("JSON serialization may require runtime code generation. For AOT scenarios, use System.Text.Json source generators.")]
     public async Task<HttpRequestResult<T>> HttpSendRequestResultAsync<T>(
         HttpRequestResult<T> statusCall,
         [CallerMemberName] string memberName = "",

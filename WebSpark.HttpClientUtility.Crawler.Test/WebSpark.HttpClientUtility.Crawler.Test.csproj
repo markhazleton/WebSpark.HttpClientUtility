@@ -10,6 +10,12 @@
 		<IsTestProject>true</IsTestProject>
 		<GenerateDocumentationFile>false</GenerateDocumentationFile>
 		
+		<!-- Test projects don't need trimming/AOT analysis -->
+		<IsTrimmable>false</IsTrimmable>
+		<EnableTrimAnalyzer>false</EnableTrimAnalyzer>
+		<EnableSingleFileAnalyzer>false</EnableSingleFileAnalyzer>
+		<EnableAOTAnalyzer>false</EnableAOTAnalyzer>
+		
 		<!-- Suppress warnings not relevant for test projects -->
 		<!-- CA2007: ConfigureAwait not needed in test code -->
 		<!-- CS1591: Missing XML documentation (not required for tests) -->

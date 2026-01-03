@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using WebSpark.HttpClientUtility.RequestResult;
 
 namespace WebSpark.HttpClientUtility.Concurrent;
@@ -68,6 +69,8 @@ public class HttpClientConcurrentProcessor(Func<int, HttpClientConcurrentModel> 
     /// The processed task data includes the complete HTTP response and timing information,
     /// which can be used for reporting, logging, or further processing.
     /// </remarks>
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Suppressed at IHttpRequestResultService interface boundary")]
+    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Suppressed at IHttpRequestResultService interface boundary")]
     protected override async Task<HttpClientConcurrentModel> ProcessAsync(
         HttpClientConcurrentModel taskData,
         CancellationToken ct = default)

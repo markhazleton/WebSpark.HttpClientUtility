@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace WebSpark.HttpClientUtility.StringConverter;
@@ -6,6 +7,8 @@ namespace WebSpark.HttpClientUtility.StringConverter;
 /// Converts objects to and from JSON strings using the System.Text.Json library.
 /// </summary>
 /// <remarks>
+/// This converter uses reflection-based JSON serialization and is not compatible with Native AOT.
+/// For AOT scenarios, use System.Text.Json source generators instead.
 /// Initializes a new instance of the <see cref="SystemJsonStringConverter"/> class.
 /// </remarks>
 /// <param name="options">The JSON serializer options.</param>
@@ -20,6 +23,8 @@ public class SystemJsonStringConverter(JsonSerializerOptions? options = null) : 
     /// <param name="model">The model object to convert.</param>
     /// <returns>The JSON string representation of the model object.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the serialization fails.</exception>
+    [RequiresUnreferencedCode("JSON serialization uses reflection which may be incompatible with trimming. Consider using System.Text.Json source generators.")]
+    [RequiresDynamicCode("JSON serialization may require runtime code generation. Consider using System.Text.Json source generators for AOT scenarios.")]
     public string ConvertFromModel<T>(T model)
     {
         try
@@ -40,6 +45,8 @@ public class SystemJsonStringConverter(JsonSerializerOptions? options = null) : 
     /// <returns>The object of the specified type.</returns>
     /// <exception cref="ArgumentException">Thrown when the value is null or whitespace.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the deserialization fails or the result is null.</exception>
+    [RequiresUnreferencedCode("JSON deserialization uses reflection which may be incompatible with trimming. Consider using System.Text.Json source generators.")]
+    [RequiresDynamicCode("JSON deserialization may require runtime code generation. Consider using System.Text.Json source generators for AOT scenarios.")]
     public T ConvertFromString<T>(string value)
     {
         if (string.IsNullOrWhiteSpace(value))

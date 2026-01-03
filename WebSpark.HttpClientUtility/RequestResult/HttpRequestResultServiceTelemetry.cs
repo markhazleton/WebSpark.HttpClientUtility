@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 
@@ -26,6 +27,8 @@ public class HttpRequestResultServiceTelemetry(ILogger<HttpRequestResultServiceT
     /// <param name="lineNumber">Line number of the calling code (automatically populated)</param>
     /// <param name="ct">Cancellation token to cancel the operation</param>
     /// <returns>A task representing the asynchronous operation with the HTTP request result</returns>
+    [RequiresUnreferencedCode("JSON serialization uses reflection. For AOT scenarios, use System.Text.Json source generators.")]
+    [RequiresDynamicCode("JSON serialization may require runtime code generation. For AOT scenarios, use System.Text.Json source generators.")]
     public async Task<HttpRequestResult<T>> HttpSendRequestResultAsync<T>(
         HttpRequestResult<T> statusCall,
         [CallerMemberName] string memberName = "",

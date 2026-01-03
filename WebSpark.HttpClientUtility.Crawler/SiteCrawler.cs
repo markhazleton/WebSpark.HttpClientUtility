@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.SignalR;
@@ -105,6 +106,8 @@ public class SiteCrawler : ISiteCrawler
     /// <param name="userAgent">User agent string to use for the request</param>
     /// <param name="ct">Cancellation token to stop the operation</param>
     /// <returns>A CrawlResult containing information about the crawled page</returns>
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Suppressed at IHttpRequestResultService interface boundary")]
+    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Suppressed at IHttpRequestResultService interface boundary")]
     private async Task<CrawlResult> CrawlPageAsync(string url, int depth, string userAgent, CancellationToken ct = default)
     {
         var crawlRequest = new CrawlResult

@@ -6,6 +6,12 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     
+    <!-- Test projects don't need trimming/AOT analysis -->
+    <IsTrimmable>false</IsTrimmable>
+    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
+    <EnableSingleFileAnalyzer>false</EnableSingleFileAnalyzer>
+    <EnableAOTAnalyzer>false</EnableAOTAnalyzer>
+    
     <!-- Suppress warnings that are not relevant for test projects -->
     <!-- CA2007: ConfigureAwait is not needed in test code -->
     <!-- CS8618: Non-nullable fields are initialized in [TestInitialize] methods -->

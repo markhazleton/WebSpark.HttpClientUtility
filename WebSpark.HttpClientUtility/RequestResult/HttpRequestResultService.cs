@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -27,9 +28,12 @@ public class HttpRequestResultService(
     private readonly HttpClient _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
     private readonly ILogger<HttpRequestResultService> _logger = _logger ?? throw new ArgumentNullException(nameof(_logger));
     private readonly CurlCommandSaver _curlCommandSaver = new(_logger, _configuration);
-    // Streaming configuration
+    // Streaming configuration - GetValue<T> for primitive types is trim-safe
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "GetValue<long> is safe for primitive types - no reflection needed")]
     private readonly long _streamingThreshold = _configuration?.GetValue<long>("HttpClient:StreamingThreshold") ?? 10 * 1024 * 1024; // 10 MB default
 
+    [RequiresUnreferencedCode("JSON serialization uses reflection. For AOT scenarios, use System.Text.Json source generators.")]
+    [RequiresDynamicCode("JSON serialization may require runtime code generation. For AOT scenarios, use System.Text.Json source generators.")]
     private async Task<HttpRequestResult<T>> ProcessHttpResponseAsync<T>(HttpResponseMessage? response, HttpRequestResult<T> httpSendResults, CancellationToken ct)
     {
         ArgumentNullException.ThrowIfNull(httpSendResults);
@@ -172,11 +176,14 @@ public class HttpRequestResultService(
     /// 4. Client errors (4xx) are logged as warnings and returned with original status code
     /// 5. Unexpected errors are logged as critical and returned as InternalServerError
     /// </remarks>
-    public async Task<HttpRequestResult<T>> HttpSendRequestResultAsync<T>(HttpRequestResult<T> httpSendResults,
+    [RequiresUnreferencedCode("JSON serialization uses reflection. For AOT scenarios, use System.Text.Json source generators.")]
+    [RequiresDynamicCode("JSON serialization may require runtime code generation. For AOT scenarios, use System.Text.Json source generators.")]
+    public async Task<HttpRequestResult<T>> HttpSendRequestResultAsync<T>(
+        HttpRequestResult<T> httpSendResults,
         [CallerMemberName] string memberName = "",
         [CallerFilePath] string filePath = "",
         [CallerLineNumber] int lineNumber = 0,
-         CancellationToken ct = default)
+        CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(httpSendResults);
 

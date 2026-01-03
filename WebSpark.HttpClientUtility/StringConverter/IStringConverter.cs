@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace WebSpark.HttpClientUtility.StringConverter;
 
 /// <summary>
@@ -7,6 +9,7 @@ namespace WebSpark.HttpClientUtility.StringConverter;
 /// This interface abstracts the serialization and deserialization operations, 
 /// allowing the application to switch between different JSON libraries (such as 
 /// System.Text.Json and Newtonsoft.Json) without changing the consuming code.
+/// Note: Implementations use reflection-based JSON serialization and are not compatible with Native AOT.
 /// </remarks>
 public interface IStringConverter
 {
@@ -18,6 +21,8 @@ public interface IStringConverter
     /// <returns>An instance of type T created from the provided string value.</returns>
     /// <exception cref="System.Text.Json.JsonException">Thrown when the deserialization fails with System.Text.Json.</exception>
     /// <exception cref="Newtonsoft.Json.JsonException">Thrown when the deserialization fails with Newtonsoft.Json.</exception>
+    [RequiresUnreferencedCode("JSON deserialization uses reflection. For AOT scenarios, use System.Text.Json source generators.")]
+    [RequiresDynamicCode("JSON deserialization may require runtime code generation. For AOT scenarios, use System.Text.Json source generators.")]
     T ConvertFromString<T>(string value);
 
     /// <summary>
@@ -28,5 +33,7 @@ public interface IStringConverter
     /// <returns>The string representation of the provided model.</returns>
     /// <exception cref="System.Text.Json.JsonException">Thrown when the serialization fails with System.Text.Json.</exception>
     /// <exception cref="Newtonsoft.Json.JsonException">Thrown when the serialization fails with Newtonsoft.Json.</exception>
+    [RequiresUnreferencedCode("JSON serialization uses reflection. For AOT scenarios, use System.Text.Json source generators.")]
+    [RequiresDynamicCode("JSON serialization may require runtime code generation. For AOT scenarios, use System.Text.Json source generators.")]
     string ConvertFromModel<T>(T model);
 }
