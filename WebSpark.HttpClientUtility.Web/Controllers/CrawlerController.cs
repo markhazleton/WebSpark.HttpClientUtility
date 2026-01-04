@@ -34,12 +34,28 @@ public class CrawlerController : Controller
     }
 
     /// <summary>
-    /// Initiates a web crawl with specified options
+    /// Test page to verify Scripts section rendering
+    /// </summary>
+    public IActionResult Test()
+    {
+        return View();
+    }
+
+    /// <summary>
+    /// Full diagnostic page
+    /// </summary>
+    public IActionResult Diagnostic()
+    {
+        return View();
+    }
+
+    /// <summary>
+    /// Initiates a web crawl with specified options (runs asynchronously in background)
     /// </summary>
     /// <param name="request">Crawl request with URL and options</param>
-    /// <returns>Crawl results including all discovered pages</returns>
+    /// <returns>Acknowledgment that crawl has started (use SignalR for progress updates)</returns>
     [HttpPost]
-    public async Task<IActionResult> Crawl([FromBody] CrawlRequest request)
+    public IActionResult Crawl([FromBody] CrawlRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.Url))
         {
@@ -53,50 +69,74 @@ public class CrawlerController : Controller
 
         _logger.LogInformation("Starting crawl of {Url}", request.Url);
 
-        try
+        var options = new CrawlerOptions
         {
-            var options = new CrawlerOptions
+            MaxDepth = request.MaxDepth ?? 2,
+            MaxPages = request.MaxPages ?? 50,
+            RespectRobotsTxt = request.RespectRobotsTxt ?? true,
+            DiscoverFromSitemapAndRss = request.DiscoverFromSitemap ?? true,
+            UserAgent = request.UserAgent ?? "WebSpark.HttpClientUtility.Crawler/2.0.0",
+            RequestDelayMs = request.DelayMs ?? 1000
+        };
+
+        // Start crawl in background - don't await!
+        _ = Task.Run(async () =>
+        {
+            try
             {
-                MaxDepth = request.MaxDepth ?? 2,
-                MaxPages = request.MaxPages ?? 50,
-                RespectRobotsTxt = request.RespectRobotsTxt ?? true,
-                DiscoverFromSitemapAndRss = request.DiscoverFromSitemap ?? true,
-                UserAgent = request.UserAgent ?? "WebSpark.HttpClientUtility.Crawler/2.0.0",
-                RequestDelayMs = request.DelayMs ?? 1000
-            };
+                var result = await _crawler.CrawlAsync(request.Url, options);
 
-            var result = await _crawler.CrawlAsync(request.Url, options);
+                _logger.LogInformation(
+                    "Crawl completed: {PageCount} pages, {ErrorCount} errors",
+                    result.CrawlResults.Count(r => r.IsSuccessStatusCode),
+                    result.CrawlResults.Count(r => !r.IsSuccessStatusCode));
 
-            _logger.LogInformation(
-                "Crawl completed: {PageCount} pages, {ErrorCount} errors",
-                result.CrawlResults.Count(r => r.IsSuccessStatusCode),
-                result.CrawlResults.Count(r => !r.IsSuccessStatusCode));
-
-            // Convert to a serializable DTO
-            var response = new CrawlResultDto
-            {
-                StartUrl = request.Url,
-                TotalPages = result.CrawlResults.Count,
-                SuccessfulPages = result.CrawlResults.Count(r => r.IsSuccessStatusCode),
-                FailedPages = result.CrawlResults.Count(r => !r.IsSuccessStatusCode),
-                CrawlResults = result.CrawlResults.Select(r => new CrawlPageDto
+                // Send results via SignalR
+                var resultDto = new
                 {
-                    RequestPath = r.RequestPath ?? string.Empty,
-                    IsSuccessStatusCode = r.IsSuccessStatusCode,
-                    StatusCode = (int)r.StatusCode,
-                    PageTitle = ExtractPageTitle(r),
-                    Depth = r.Depth,
-                    LinksFound = r.CrawlLinks?.Count ?? 0
-                }).ToList()
-            };
+                    startUrl = request.Url,
+                    totalPages = result.CrawlResults.Count,
+                    successfulPages = result.CrawlResults.Count(r => r.IsSuccessStatusCode),
+                    failedPages = result.CrawlResults.Count(r => !r.IsSuccessStatusCode),
+                    crawlResults = result.CrawlResults.Select(r => new
+                    {
+                        requestPath = r.RequestPath ?? string.Empty,
+                        isSuccessStatusCode = r.IsSuccessStatusCode,
+                        statusCode = (int)r.StatusCode,
+                        pageTitle = ExtractPageTitle(r),
+                        depth = r.Depth,
+                        linksFound = r.CrawlLinks?.Count ?? 0
+                    }).ToList()
+                };
 
-            return Ok(response);
-        }
-        catch (Exception ex)
+                // Send complete results to all connected clients
+                await _hubContext.Clients.All.SendAsync("CrawlResults", resultDto);
+                
+                _logger.LogInformation("Sent crawl results to SignalR clients: {PageCount} pages", result.CrawlResults.Count);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during background crawl of {Url}", request.Url);
+                
+                // Send error via SignalR
+                await _hubContext.Clients.All.SendAsync("CrawlError", new
+                {
+                    url = request.Url,
+                    error = ex.Message,
+                    timestamp = DateTime.UtcNow
+                });
+            }
+        });
+
+        // Return immediately with 202 Accepted
+        return Accepted(new
         {
-            _logger.LogError(ex, "Error during crawl of {Url}", request.Url);
-            return StatusCode(500, new { error = "An error occurred during the crawl", message = ex.Message });
-        }
+            message = "Crawl started successfully. Monitor progress via SignalR connection.",
+            url = request.Url,
+            maxPages = options.MaxPages,
+            maxDepth = options.MaxDepth,
+            note = "Connect to SignalR hub '/crawlHub' with event 'UrlFound' for real-time updates"
+        });
     }
 
     /// <summary>

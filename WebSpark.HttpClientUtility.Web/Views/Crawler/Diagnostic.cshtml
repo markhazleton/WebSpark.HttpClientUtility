@@ -1,0 +1,88 @@
+@{
+    ViewData["Title"] = "Full Diagnostic";
+    var manifestPath = System.IO.Path.Combine(Context.RequestServices.GetRequiredService<IWebHostEnvironment>().WebRootPath, "dist", ".vite", "manifest.json");
+    var manifestExists = System.IO.File.Exists(manifestPath);
+    string? manifestContent = null;
+    if (manifestExists)
+    {
+        manifestContent = System.IO.File.ReadAllText(manifestPath);
+    }
+}
+
+<div class="container mt-5">
+    <h1>Full Diagnostic Page</h1>
+    
+    <div class="card mb-3">
+        <div class="card-header">Manifest Check</div>
+        <div class="card-body">
+            <p><strong>Path:</strong> <code>@manifestPath</code></p>
+            <p><strong>Exists:</strong> @(manifestExists ? "✅ YES" : "❌ NO")</p>
+            @if (manifestExists && manifestContent != null)
+            {
+                <details>
+                    <summary>Manifest Content</summary>
+                    <pre>@manifestContent</pre>
+                </details>
+            }
+        </div>
+    </div>
+    
+    <div class="card mb-3">
+        <div class="card-header">JavaScript Test</div>
+        <div class="card-body">
+            <p id="jsTest">❌ JavaScript NOT running</p>
+            <p id="signalRTest">❌ SignalR NOT loaded</p>
+            <p id="scriptsTest">❌ Scripts section NOT executed</p>
+        </div>
+    </div>
+    
+    <div class="card mb-3">
+        <div class="card-header">Instructions</div>
+        <div class="card-body">
+            <p><strong>Next Steps:</strong></p>
+            <ol>
+                <li>Open browser DevTools (F12)</li>
+                <li>Go to <strong>Console</strong> tab - look for errors</li>
+                <li>Go to <strong>Network</strong> tab</li>
+                <li>Reload this page</li>
+                <li>Look for a file named <code>main.*.js</code></li>
+                <li>If it's there: Click it and check status (200 OK or error)</li>
+                <li>If it's NOT there: The vite-script tag helper isn't working</li>
+            </ol>
+            <p><strong>Check browser console for:</strong></p>
+            <ul>
+                <li><code>[DIAGNOSTIC] Inline script running</code> - Should see this</li>
+                <li><code>WebSpark.HttpClientUtility.Web - Build pipeline active</code> - Should see this if main.js loads</li>
+                <li><code>SignalR loaded: true</code> - Should see this if main.js loads</li>
+                <li><code>[DIAGNOSTIC] Scripts section running</code> - Should see this if Scripts section works</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    // This runs immediately (not in Scripts section)
+    console.log("[DIAGNOSTIC] Inline script running");
+    document.getElementById('jsTest').textContent = '✅ JavaScript IS running';
+    document.getElementById('jsTest').className = 'text-success';
+    
+    // Check SignalR after a short delay to allow module to load
+    setTimeout(function() {
+        if (typeof signalR !== 'undefined') {
+            console.log("[DIAGNOSTIC] SignalR is available!");
+            document.getElementById('signalRTest').textContent = '✅ SignalR IS loaded';
+            document.getElementById('signalRTest').className = 'text-success';
+        } else {
+            console.error("[DIAGNOSTIC] SignalR is STILL NOT available after 500ms - module didn't load");
+        }
+    }, 500);
+</script>
+
+@section Scripts {
+    <script>
+        console.log("[DIAGNOSTIC] Scripts section running");
+        alert("DIAGNOSTIC: Scripts section is executing!");
+        document.getElementById('scriptsTest').textContent = '✅ Scripts section IS executed';
+        document.getElementById('scriptsTest').className = 'text-success';
+    </script>
+}

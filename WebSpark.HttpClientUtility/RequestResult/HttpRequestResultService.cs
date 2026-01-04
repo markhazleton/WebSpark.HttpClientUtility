@@ -264,17 +264,25 @@ public class HttpRequestResultService(
 
             HttpResponseMessage? response = await _httpClient.SendAsync(request, ct).ConfigureAwait(false);
 
-            // Step 5: Handle response for redirects
-            if (response?.StatusCode == HttpStatusCode.MovedPermanently)
+            // Step 5: Handle response - HttpClient automatically follows redirects when AllowAutoRedirect=true
+            // The final response after following redirects is what we receive here
+            // If we still get a redirect status, log it for diagnostic purposes
+            if (response?.StatusCode == HttpStatusCode.MovedPermanently || 
+                response?.StatusCode == HttpStatusCode.Redirect ||
+                response?.StatusCode == HttpStatusCode.RedirectKeepVerb ||
+                response?.StatusCode == HttpStatusCode.RedirectMethod)
             {
-                httpSendResults.StatusCode = HttpStatusCode.MovedPermanently;
-                httpSendResults.AddError($"Redirected from {request.RequestUri} to {response?.RequestMessage?.RequestUri}");
-
-                _logger.LogWarning(
-                    "Request redirected from {OriginalUrl} to {NewUrl} [CorrelationId: {CorrelationId}]",
+                // This should rarely happen if AllowAutoRedirect is enabled
+                // Log as informational since HttpClient should have followed it
+                _logger.LogInformation(
+                    "Redirect response received (Status: {StatusCode}). Original: {OriginalUrl}, Final: {FinalUrl} [CorrelationId: {CorrelationId}]",
+                    response.StatusCode,
                     LoggingUtility.SanitizeUrl(request.RequestUri?.ToString() ?? string.Empty),
-                    LoggingUtility.SanitizeUrl(response?.RequestMessage?.RequestUri?.ToString() ?? "unknown"),
+                    LoggingUtility.SanitizeUrl(response.RequestMessage?.RequestUri?.ToString() ?? "unknown"),
                     httpSendResults.CorrelationId);
+                
+                // Don't treat as error - HttpClient handles redirects automatically
+                httpSendResults.StatusCode = response.StatusCode;
             }
 
             // Step 6: Process the response

@@ -172,94 +172,132 @@ services.AddHttpClientCrawler();</code></pre>
 </div>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@@7.0.0/dist/browser/signalr.min.js"></script>
     <script>
+        console.log("[Crawler] Scripts section loaded - waiting for SignalR module to load...");
         let connection;
 
-        // Initialize SignalR connection
-        function initializeSignalR() {
-            connection = new signalR.HubConnectionBuilder()
-                .withUrl("/crawlHub")
-                .withAutomaticReconnect()
-                .build();
-
-            connection.on("UrlFound", function (message) {
-                updateProgressFromMessage(message);
-            });
-
-            connection.start().then(() => {
-                console.log("SignalR connected");
-            }).catch(function (err) {
-                console.error("SignalR connection error:", err);
-            });
+        // Wait for SignalR module to load (ES modules load asynchronously)
+        function waitForSignalR(callback, maxAttempts = 50) {
+            let attempts = 0;
+            const checkSignalR = setInterval(() => {
+                attempts++;
+                if (typeof signalR !== 'undefined') {
+                    clearInterval(checkSignalR);
+                    console.log(`[Crawler] ✅ SignalR loaded after ${attempts} checks`);
+                    callback();
+                } else if (attempts >= maxAttempts) {
+                    clearInterval(checkSignalR);
+                    console.error(`[Crawler] ❌ SignalR failed to load after ${maxAttempts} attempts (${maxAttempts * 100}ms)`);
+                }
+            }, 100);
         }
 
-        // Parse and update progress from message
-        function updateProgressFromMessage(message) {
-            // Message format: "Crawled: X | Queue: Y | Found: url"
-            const match = message.match(/Crawled: (\d+) \| Queue: (\d+) \| Found: (.+)/);
-            if (match) {
-                const crawled = parseInt(match[1]);
-                const queue = parseInt(match[2]);
-                const url = match[3];
-                
-                const maxPages = parseInt($('#maxPages').val()) || 50;
-                const totalDiscovered = crawled + queue;
-                const remaining = Math.max(0, Math.min(queue, maxPages - crawled));
-                const percent = Math.min(Math.round((crawled / maxPages) * 100), 100);
-                
-                $('#progressBar').css('width', percent + '%')
-                    .attr('aria-valuenow', percent)
-                    .text(percent + '%');
-                
-                $('#progressText').html(`
-                    <div class="row text-center mb-2">
-                        <div class="col-4">
-                            <h5 class="text-success mb-0">${crawled}</h5>
-                            <small class="text-muted">Crawled</small>
+        // Initialize SignalR connection immediately
+        function initializeSignalR() {
+            console.log("[Crawler] initializeSignalR called");
+            
+            try {
+                connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/crawlHub")
+                    .withAutomaticReconnect()
+                    .configureLogging(signalR.LogLevel.Information)
+                    .build();
+
+                console.log("[Crawler] SignalR connection object created");
+
+                // Progress updates during crawl
+                connection.on("UrlFound", function (message) {
+                    console.log("[Crawler] SignalR UrlFound:", message);
+                    updateProgressFromMessage(message);
+                });
+
+                // Final results when crawl completes
+                connection.on("CrawlResults", function (results) {
+                    console.log("[Crawler] SignalR CrawlResults:", results);
+                    displayResults(results);
+                });
+
+                // Error handling
+                connection.on("CrawlError", function (error) {
+                    console.error("[Crawler] SignalR CrawlError:", error);
+                    document.getElementById('resultsContent').innerHTML = `
+                        <div class="alert alert-danger">
+                            <h5><i class="bi bi-exclamation-triangle"></i> Crawl Error</h5>
+                            <p><strong>URL:</strong> ${error.url}</p>
+                            <p><strong>Error:</strong> ${error.error}</p>
+                            <p class="small mb-0">Timestamp: ${error.timestamp}</p>
                         </div>
-                        <div class="col-4">
-                            <h5 class="text-primary mb-0">${totalDiscovered}</h5>
-                            <small class="text-muted">Discovered</small>
-                        </div>
-                        <div class="col-4">
-                            <h5 class="text-warning mb-0">${remaining}</h5>
-                            <small class="text-muted">Queued</small>
-                        </div>
-                    </div>
-                    <div class="small text-muted mb-1">
-                        <i class="bi bi-info-circle"></i> Max Pages: ${maxPages} | 
-                        Will stop at: ${Math.min(totalDiscovered, maxPages)}
-                    </div>
-                    <p class="small mb-0">Latest: <code class="text-break">${url}</code></p>
-                `);
-            } else if (message.startsWith("Crawl Complete:")) {
-                $('#progressBar').removeClass('progress-bar-animated').addClass('bg-success');
-                $('#progressText').html(`<p class="text-success mb-0"><i class="bi bi-check-circle"></i> ${message}</p>`);
+                    `;
+                    document.getElementById('resultsSection').style.display = 'block';
+                    document.getElementById('progressSection').style.display = 'none';
+                    
+                    const startBtn = document.getElementById('startCrawlBtn');
+                    startBtn.disabled = false;
+                    startBtn.innerHTML = '<i class="bi bi-play-circle"></i> Start Crawl';
+                });
+
+                console.log("[Crawler] Starting SignalR connection...");
+                connection.start().then(() => {
+                    console.log("[Crawler] ✅ SignalR connected successfully!");
+                    console.log("[Crawler] Connection ID:", connection.connectionId);
+                }).catch(function (err) {
+                    console.error("[Crawler] ❌ SignalR connection error:", err);
+                    console.error("[Crawler] Error details:", err.message);
+                });
+            } catch (error) {
+                console.error("[Crawler] ❌ Error initializing SignalR:", error);
+                console.error("[Crawler] Error details:", error.message);
             }
         }
 
-        // Handle form submission
-        $('#crawlerForm').on('submit', async function (e) {
-            e.preventDefault();
+        // Initialize when DOM is ready AND SignalR module is loaded
+        if (document.readyState === 'loading') {
+            console.log("[Crawler] Waiting for DOM...");
+            document.addEventListener('DOMContentLoaded', () => {
+                waitForSignalR(initializeSignalR);
+            });
+        } else {
+            console.log("[Crawler] DOM already ready, waiting for SignalR...");
+            waitForSignalR(initializeSignalR);
+        }
 
+        // Handle form submission
+        document.getElementById('crawlerForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            
+            console.log("[Crawler] Form submitted");
+            
+            // Get form values
             const request = {
-                url: $('#url').val(),
-                maxDepth: parseInt($('#maxDepth').val()),
-                maxPages: parseInt($('#maxPages').val()),
-                respectRobotsTxt: $('#respectRobotsTxt').is(':checked'),
-                discoverFromSitemap: $('#discoverFromSitemap').is(':checked'),
-                userAgent: $('#userAgent').val(),
-                delayMs: parseInt($('#delayMs').val())
+                url: document.getElementById('url').value,
+                maxDepth: parseInt(document.getElementById('maxDepth').value),
+                maxPages: parseInt(document.getElementById('maxPages').value),
+                delayMs: parseInt(document.getElementById('delayMs').value),
+                respectRobotsTxt: document.getElementById('respectRobotsTxt').checked,
+                discoverFromSitemap: document.getElementById('discoverFromSitemap').checked,
+                userAgent: document.getElementById('userAgent').value
             };
 
-            // Show progress, hide results
-            $('#progressSection').show();
-            $('#resultsSection').hide();
-            $('#progressBar').removeClass('bg-success').addClass('progress-bar-animated')
-                .css('width', '0%').attr('aria-valuenow', 0).text('0%');
-            $('#progressText').html('<p class="mb-0">Starting crawl...</p>');
-            $('#startCrawlBtn').prop('disabled', true).html('<i class="bi bi-hourglass"></i> Crawling...');
+            console.log("[Crawler] Request:", request);
+
+            // Show progress section
+            document.getElementById('progressSection').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+
+            // Reset progress
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = '0%';
+            progressBar.setAttribute('aria-valuenow', 0);
+            progressBar.textContent = '0%';
+            progressBar.classList.add('progress-bar-animated');
+            progressBar.classList.remove('bg-success');
+
+            document.getElementById('progressText').innerHTML = '<p class="mb-0">Initializing crawler...</p>';
+
+            // Disable button
+            const startBtn = document.getElementById('startCrawlBtn');
+            startBtn.disabled = true;
+            startBtn.innerHTML = '<i class="bi bi-hourglass"></i> Crawling...' ;
 
             try {
                 const response = await fetch('/Crawler/Crawl', {
@@ -276,115 +314,34 @@ services.AddHttpClientCrawler();</code></pre>
                 }
 
                 const result = await response.json();
-                displayResults(result);
+                
+                // Handle 202 Accepted - crawl started in background
+                if (response.status === 202) {
+                    console.log('[Crawler] Crawl started:', result.message);
+                    document.getElementById('progressText').innerHTML = `
+                        <p class="mb-0"><i class="bi bi-check-circle text-success"></i> ${result.message}</p>
+                        <p class="small mb-0">Watch the progress bar above for real-time updates...</p>
+                    `;
+                    // Don't call displayResults - let SignalR updates handle it
+                    // Results will show when "Crawl Complete" message is received
+                } else {
+                    // Fallback for synchronous response (shouldn't happen with new code)
+                    displayResults(result);
+                }
             } catch (error) {
-                console.error('Crawl error:', error);
-                $('#resultsContent').html(`
+                console.error('[Crawler] Crawl error:', error);
+                document.getElementById('resultsContent').innerHTML = `
                     <div class="alert alert-danger">
                         <h5><i class="bi bi-exclamation-triangle"></i> Error</h5>
                         <p><strong>Message:</strong> ${error.message}</p>
                         <p class="small mb-0">Check the browser console for more details.</p>
                     </div>
-                `);
-                $('#resultsSection').show();
-            } finally {
-                $('#progressSection').hide();
-                $('#startCrawlBtn').prop('disabled', false).html('<i class="bi bi-play-circle"></i> Start Crawl');
-            }
-        });
-
-        // Display crawl results
-        function displayResults(result) {
-            const successCount = result.successfulPages || 0;
-            const errorCount = result.failedPages || 0;
-            const totalCount = result.totalPages || 0;
-
-            let html = `
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <div class="card text-center">
-                            <div class="card-body">
-                                <h3 class="text-success">${successCount}</h3>
-                                <p class="mb-0">Successful</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card text-center">
-                            <div class="card-body">
-                                <h3 class="text-danger">${errorCount}</h3>
-                                <p class="mb-0">Errors</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card text-center">
-                            <div class="card-body">
-                                <h3 class="text-primary">${totalCount}</h3>
-                                <p class="mb-0">Total Pages</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <h5 class="mt-4">Crawled Pages:</h5>
-                <div class="table-responsive">
-                    <table class="table table-sm table-striped table-hover">
-                        <thead class="table-dark">
-                            <tr>
-                                <th style="width: 80px;">Status</th>
-                                <th style="width: 45%;">URL</th>
-                                <th style="width: 35%;">Title</th>
-                                <th style="width: 80px;" class="text-center">Links</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-
-            const pages = result.crawlResults || [];
-            pages.slice(0, 50).forEach(page => {
-                const statusBadge = page.isSuccessStatusCode 
-                    ? `<span class="badge bg-success">${page.statusCode}</span>` 
-                    : `<span class="badge bg-danger">${page.statusCode}</span>`;
-                
-                const truncateUrl = (url) => {
-                    if (url.length > 60) {
-                        return url.substring(0, 57) + '...';
-                    }
-                    return url;
-                };
-                
-                const truncateTitle = (title) => {
-                    if (!title || title === 'N/A') return '<em class="text-muted">No title</em>';
-                    if (title.length > 50) {
-                        return title.substring(0, 47) + '...';
-                    }
-                    return title;
-                };
-                
-                html += `
-                    <tr>
-                        <td class="text-center">${statusBadge}</td>
-                        <td class="small"><a href="${page.requestPath}" target="_blank" title="${page.requestPath}">${truncateUrl(page.requestPath)}</a></td>
-                        <td class="small" title="${page.pageTitle || ''}">${truncateTitle(page.pageTitle)}</td>
-                        <td class="text-center"><span class="badge bg-secondary">${page.linksFound || 0}</span></td>
-                    </tr>
                 `;
-            });
-
-            html += '</tbody></table></div>';
-
-            if (pages.length > 50) {
-                html += `<p class="text-muted small">Showing first 50 of ${pages.length} results</p>`;
+                document.getElementById('resultsSection').style.display = 'block';
+                document.getElementById('progressSection').style.display = 'none';
+                startBtn.disabled = false;
+                startBtn.innerHTML = '<i class="bi bi-play-circle"></i> Start Crawl';
             }
-
-            $('#resultsContent').html(html);
-            $('#resultsSection').show();
-        }
-
-        // Initialize on page load
-        $(document).ready(function () {
-            initializeSignalR();
         });
     </script>
 }

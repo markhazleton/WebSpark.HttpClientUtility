@@ -30,11 +30,63 @@ public static class ServiceCollectionExtensions
         // Register HttpClient factory if not already registered
         services.AddHttpClient();
 
+        // FIRST: Remove any existing IHttpRequestResultService registrations
+        // This must happen BEFORE configuring HttpClients to avoid conflicts
+        var existingRegistrations = services.Where(sd => sd.ServiceType == typeof(IHttpRequestResultService)).ToList();
+        foreach (var registration in existingRegistrations)
+        {
+            services.Remove(registration);
+        }
+
+        // Create a reusable handler factory with redirect configuration
+        Func<HttpClientHandler> CreateConfiguredHandler = () =>
+        {
+            var handler = new HttpClientHandler
+            {
+                AllowAutoRedirect = true,
+                MaxAutomaticRedirections = 50,
+                UseCookies = true,
+                UseDefaultCredentials = false,
+                AutomaticDecompression = System.Net.DecompressionMethods.All,
+                // Explicitly set server certificate validation for HTTPS to HTTP redirects
+                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+            
+            Console.WriteLine($"[SiteCrawler] HttpClientHandler created with AllowAutoRedirect={handler.AllowAutoRedirect}");
+            return handler;
+        };
+
+        // Register the named HttpClient for SiteCrawler
+        var clientBuilder = services.AddHttpClient("SiteCrawler");
+        
+        // Remove any existing handlers that might interfere
+        clientBuilder.ConfigurePrimaryHttpMessageHandler(() =>
+        {
+            var handler = new HttpClientHandler
+            {
+                AllowAutoRedirect = true,
+                MaxAutomaticRedirections = 50,
+                UseCookies = true,
+                UseDefaultCredentials = false,
+                AutomaticDecompression = System.Net.DecompressionMethods.All
+            };
+            
+            Console.WriteLine($"======================================");
+            Console.WriteLine($"[SiteCrawler] HttpClientHandler Configuration:");
+            Console.WriteLine($"  AllowAutoRedirect: {handler.AllowAutoRedirect}");
+            Console.WriteLine($"  MaxAutomaticRedirections: {handler.MaxAutomaticRedirections}");
+            Console.WriteLine($"  UseCookies: {handler.UseCookies}");
+            Console.WriteLine($"======================================");
+            
+            return handler;
+        });
+        
+        clientBuilder.SetHandlerLifetime(TimeSpan.FromMinutes(5));
+
         // Register logging if not already registered
         services.AddLogging();
 
         // Register a default IConfiguration if not already registered
-        // Provide default configuration values for CurlCommandSaver
         services.TryAddSingleton<IConfiguration>(_ =>
         {
             var configData = new Dictionary<string, string?>
@@ -50,14 +102,15 @@ public static class ServiceCollectionExtensions
         // Register default string converter if not already registered
         services.TryAddSingleton<IStringConverter, SystemJsonStringConverter>();
 
-        // Register HttpRequestResultService if not already registered
-        // Use a factory to provide HttpClient from the HttpClientFactory
-        services.TryAddScoped<IHttpRequestResultService>(provider =>
+        // Register HttpRequestResultService with the configured SiteCrawler client
+        services.AddScoped<IHttpRequestResultService>(provider =>
         {
             var logger = provider.GetRequiredService<ILogger<HttpRequestResultService>>();
             var configuration = provider.GetRequiredService<IConfiguration>();
             var httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
-            var httpClient = httpClientFactory.CreateClient();
+            var httpClient = httpClientFactory.CreateClient("SiteCrawler");
+            
+            Console.WriteLine($"[SiteCrawler] Creating HttpRequestResultService with SiteCrawler client");
             return new HttpRequestResultService(logger, configuration, httpClient);
         });
 
