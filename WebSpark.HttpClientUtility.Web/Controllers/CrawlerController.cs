@@ -9,16 +9,16 @@ namespace WebSpark.HttpClientUtility.Web.Controllers;
 /// </summary>
 public class CrawlerController : Controller
 {
-    private readonly ISiteCrawler _crawler;
+    private readonly IServiceScopeFactory _scopeFactory;
     private readonly IHubContext<CrawlHub> _hubContext;
     private readonly ILogger<CrawlerController> _logger;
 
     public CrawlerController(
-        ISiteCrawler crawler,
+        IServiceScopeFactory scopeFactory,
         IHubContext<CrawlHub> hubContext,
         ILogger<CrawlerController> logger)
     {
-        _crawler = crawler;
+        _scopeFactory = scopeFactory;
         _hubContext = hubContext;
         _logger = logger;
     }
@@ -79,25 +79,81 @@ public class CrawlerController : Controller
             RequestDelayMs = request.DelayMs ?? 1000
         };
 
-        // Start crawl in background - don't await!
+        var crawlStartTime = DateTime.UtcNow;
+        var successCount = 0;
+        var failureCount = 0;
+
         _ = Task.Run(async () =>
         {
+            using var scope = _scopeFactory.CreateScope();
+            var scopedCrawler = scope.ServiceProvider.GetRequiredService<ISiteCrawler>();
+
             try
             {
-                var result = await _crawler.CrawlAsync(request.Url, options);
+                // Send initial progress update
+                await _hubContext.Clients.All.SendAsync("CrawlProgress", new CrawlProgressUpdate
+                {
+                    PagesCrawled = 0,
+                    PagesInQueue = 0,
+                    SuccessfulPages = 0,
+                    FailedPages = 0,
+                    MaxPages = options.MaxPages,
+                    ProgressPercentage = 0,
+                    CurrentUrl = request.Url
+                });
+
+                var result = await scopedCrawler.CrawlAsync(request.Url, options);
+
+                var crawlDuration = DateTime.UtcNow - crawlStartTime;
+                successCount = result.CrawlResults.Count(r => r.IsSuccessStatusCode);
+                failureCount = result.CrawlResults.Count(r => !r.IsSuccessStatusCode);
 
                 _logger.LogInformation(
-                    "Crawl completed: {PageCount} pages, {ErrorCount} errors",
-                    result.CrawlResults.Count(r => r.IsSuccessStatusCode),
-                    result.CrawlResults.Count(r => !r.IsSuccessStatusCode));
+                    "Crawl completed: {PageCount} pages, {ErrorCount} errors in {Duration}",
+                    successCount,
+                    failureCount,
+                    crawlDuration);
 
-                // Send results via SignalR
+                // Send individual page events for all crawled pages
+                foreach (var crawlResult in result.CrawlResults)
+                {
+                    var pageEvent = new PageCrawledEvent
+                    {
+                        Url = crawlResult.RequestPath ?? string.Empty,
+                        StatusCode = (int)crawlResult.StatusCode,
+                        IsSuccess = crawlResult.IsSuccessStatusCode,
+                        Title = ExtractPageTitle(crawlResult),
+                        Depth = crawlResult.Depth,
+                        LinksFound = crawlResult.CrawlLinks?.Count ?? 0,
+                        Error = crawlResult.Errors.Any() ? string.Join("; ", crawlResult.Errors) : null
+                    };
+
+                    await _hubContext.Clients.All.SendAsync("PageCrawled", pageEvent);
+                }
+
+                // Send final statistics
+                var statistics = new CrawlStatistics
+                {
+                    TotalPages = result.CrawlResults.Count,
+                    SuccessfulPages = successCount,
+                    FailedPages = failureCount,
+                    Duration = crawlDuration,
+                    PagesPerSecond = crawlDuration.TotalSeconds > 0 
+                        ? result.CrawlResults.Count / crawlDuration.TotalSeconds 
+                        : 0
+                };
+
+                await _hubContext.Clients.All.SendAsync("CrawlStatistics", statistics);
+
+                // Send final results (for backward compatibility)
                 var resultDto = new
                 {
                     startUrl = request.Url,
                     totalPages = result.CrawlResults.Count,
-                    successfulPages = result.CrawlResults.Count(r => r.IsSuccessStatusCode),
-                    failedPages = result.CrawlResults.Count(r => !r.IsSuccessStatusCode),
+                    successfulPages = successCount,
+                    failedPages = failureCount,
+                    duration = crawlDuration.ToString(@"hh\:mm\:ss"),
+                    pagesPerSecond = statistics.PagesPerSecond,
                     crawlResults = result.CrawlResults.Select(r => new
                     {
                         requestPath = r.RequestPath ?? string.Empty,
@@ -109,16 +165,14 @@ public class CrawlerController : Controller
                     }).ToList()
                 };
 
-                // Send complete results to all connected clients
                 await _hubContext.Clients.All.SendAsync("CrawlResults", resultDto);
-                
+
                 _logger.LogInformation("Sent crawl results to SignalR clients: {PageCount} pages", result.CrawlResults.Count);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during background crawl of {Url}", request.Url);
-                
-                // Send error via SignalR
+
                 await _hubContext.Clients.All.SendAsync("CrawlError", new
                 {
                     url = request.Url,
@@ -135,7 +189,14 @@ public class CrawlerController : Controller
             url = request.Url,
             maxPages = options.MaxPages,
             maxDepth = options.MaxDepth,
-            note = "Connect to SignalR hub '/crawlHub' with event 'UrlFound' for real-time updates"
+            signalREvents = new[]
+            {
+                "CrawlProgress - Real-time progress updates",
+                "PageCrawled - Individual page crawl events",
+                "CrawlStatistics - Final statistics",
+                "CrawlResults - Complete results",
+                "CrawlError - Error notifications"
+            }
         });
     }
 
@@ -252,7 +313,7 @@ public class CrawlRequest
 public class CrawlerStatus
 {
     /// <summary>
-    /// Number of currently active crawls
+    /// Number of active crawls
     /// </summary>
     public int ActiveCrawls { get; set; }
 
@@ -273,19 +334,147 @@ public class CrawlerInfo
     public string Version { get; set; } = string.Empty;
 
     /// <summary>
-    /// List of supported features
+    /// Available features
     /// </summary>
     public string[] Features { get; set; } = Array.Empty<string>();
 
     /// <summary>
-    /// Maximum recommended pages to crawl
+    /// Maximum recommended pages
     /// </summary>
     public int MaxRecommendedPages { get; set; }
 
     /// <summary>
-    /// Maximum recommended crawl depth
+    /// Maximum recommended depth
     /// </summary>
     public int MaxRecommendedDepth { get; set; }
+}
+
+/// <summary>
+/// Event raised when a single page is crawled
+/// </summary>
+public class PageCrawledEvent
+{
+    /// <summary>
+    /// URL of the crawled page
+    /// </summary>
+    public string Url { get; set; } = string.Empty;
+
+    /// <summary>
+    /// HTTP status code
+    /// </summary>
+    public int StatusCode { get; set; }
+
+    /// <summary>
+    /// Whether the request was successful
+    /// </summary>
+    public bool IsSuccess { get; set; }
+
+    /// <summary>
+    /// Page title
+    /// </summary>
+    public string? Title { get; set; }
+
+    /// <summary>
+    /// Depth of the page in the crawl hierarchy
+    /// </summary>
+    public int Depth { get; set; }
+
+    /// <summary>
+    /// Number of links found on the page
+    /// </summary>
+    public int LinksFound { get; set; }
+
+    /// <summary>
+    /// Timestamp when the page was crawled
+    /// </summary>
+    public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+
+    /// <summary>
+    /// Error message if the crawl failed
+    /// </summary>
+    public string? Error { get; set; }
+}
+
+/// <summary>
+/// Progress update for the crawl operation
+/// </summary>
+public class CrawlProgressUpdate
+{
+    /// <summary>
+    /// Number of pages crawled so far
+    /// </summary>
+    public int PagesCrawled { get; set; }
+
+    /// <summary>
+    /// Number of pages in the queue
+    /// </summary>
+    public int PagesInQueue { get; set; }
+
+    /// <summary>
+    /// Number of successful pages
+    /// </summary>
+    public int SuccessfulPages { get; set; }
+
+    /// <summary>
+    /// Number of failed pages
+    /// </summary>
+    public int FailedPages { get; set; }
+
+    /// <summary>
+    /// Maximum pages to crawl
+    /// </summary>
+    public int MaxPages { get; set; }
+
+    /// <summary>
+    /// Current progress percentage (0-100)
+    /// </summary>
+    public int ProgressPercentage { get; set; }
+
+    /// <summary>
+    /// The URL being processed
+    /// </summary>
+    public string? CurrentUrl { get; set; }
+
+    /// <summary>
+    /// Timestamp of the update
+    /// </summary>
+    public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+}
+
+/// <summary>
+/// Statistics for the crawl operation
+/// </summary>
+public class CrawlStatistics
+{
+    /// <summary>
+    /// Total pages crawled
+    /// </summary>
+    public int TotalPages { get; set; }
+
+    /// <summary>
+    /// Successful pages
+    /// </summary>
+    public int SuccessfulPages { get; set; }
+
+    /// <summary>
+    /// Failed pages
+    /// </summary>
+    public int FailedPages { get; set; }
+
+    /// <summary>
+    /// Average response time in milliseconds
+    /// </summary>
+    public double AverageResponseTime { get; set; }
+
+    /// <summary>
+    /// Total crawl duration
+    /// </summary>
+    public TimeSpan Duration { get; set; }
+
+    /// <summary>
+    /// Pages per second
+    /// </summary>
+    public double PagesPerSecond { get; set; }
 }
 
 /// <summary>
