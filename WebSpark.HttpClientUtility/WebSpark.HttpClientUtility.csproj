@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<!-- Target .NET 8 LTS, .NET 9, and .NET 10 Preview for maximum compatibility -->
+		<!-- Target .NET 8 LTS (until Nov 2026), .NET 9, and .NET 10 LTS for maximum compatibility -->
 		<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -17,14 +17,15 @@
 		<Authors>Mark Hazleton</Authors>
 		<Company>WebSpark</Company>
 		<Copyright>Copyright © 2025 Mark Hazleton</Copyright>
-		<Summary>Drop-in HttpClient wrapper for .NET 8-10+ with Polly resilience, response caching,
+		<Summary>Drop-in HttpClient wrapper for .NET 8-10 LTS with Polly resilience, response caching,
 			and OpenTelemetry—configured in one line. Eliminates boilerplate setup for retries,
 			circuit breakers, correlation IDs, and structured logging.</Summary>
-		<Description>Drop-in HttpClient wrapper for .NET 8-10+ with Polly resilience, response
+		<Description>Drop-in HttpClient wrapper for .NET 8-10 LTS with Polly resilience, response
 			caching, and OpenTelemetry. One-line setup eliminates boilerplate for retries, circuit
 			breakers, correlation IDs, and structured logging. Perfect for microservices, APIs, and
 			web scrapers. Includes authentication providers (Bearer, Basic, API Key), concurrent
 			requests, fire-and-forget operations, and streaming support. MIT licensed, 252+ tests.
+			Supports .NET 8 LTS (until Nov 2026) and .NET 10 LTS (until Nov 2028).
 			For web crawling features, see WebSpark.HttpClientUtility.Crawler package.</Description>
 		<PackageReleaseNotes>
 			2.2.0 - Quality &amp; Tooling: Added Source Link debugging, symbol packages (.snupkg),

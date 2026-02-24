@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is a production-ready **NuGet library** that provides a comprehensive HttpClient wrapper with resilience, caching, telemetry, and web crawling capabilities. Target frameworks: .NET 8 LTS and .NET 9.
+This is a production-ready **NuGet library** that provides a comprehensive HttpClient wrapper with resilience, caching, telemetry, and web crawling capabilities. Target frameworks: .NET 8 LTS (until Nov 2026), .NET 9, and .NET 10 LTS (until Nov 2028).
 
 **Core Purpose**: Eliminate boilerplate HTTP code while providing enterprise-grade features through simple, fluent dependency injection.
 
@@ -38,7 +38,7 @@ IHttpRequestResultService service = HttpRequestResultService; // Base
 ### Building & Testing
 
 ```powershell
-# Restore and build (multi-targeting: net8.0, net9.0)
+# Restore and build (multi-targeting: net8.0, net9.0, net10.0)
 dotnet restore WebSpark.HttpClientUtility.sln
 dotnet build --configuration Release
 

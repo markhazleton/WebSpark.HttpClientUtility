@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<!-- Target .NET 8 LTS, .NET 9, and .NET 10 Preview for maximum compatibility -->
+		<!-- Target .NET 8 LTS (until Nov 2026), .NET 9, and .NET 10 LTS for maximum compatibility -->
 		<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>

@@ -1,13 +1,13 @@
 # WebSpark.HttpClientUtility
 
-**Drop-in HttpClient wrapper with Polly resilience, response caching, and OpenTelemetry for .NET 8-10+ APIs—configured in one line**
+**Drop-in HttpClient wrapper with Polly resilience, response caching, and OpenTelemetry for .NET 8-10 LTS APIs—configured in one line**
 
 [![NuGet Version](https://img.shields.io/nuget/v/WebSpark.HttpClientUtility.svg)](https://www.nuget.org/packages/WebSpark.HttpClientUtility/)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/WebSpark.HttpClientUtility.svg)](https://www.nuget.org/packages/WebSpark.HttpClientUtility/)
 [![Crawler Package](https://img.shields.io/nuget/v/WebSpark.HttpClientUtility.Crawler.svg?label=Crawler)](https://www.nuget.org/packages/WebSpark.HttpClientUtility.Crawler/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://github.com/MarkHazleton/HttpClientUtility/actions/workflows/publish-nuget.yml/badge.svg)](https://github.com/MarkHazleton/HttpClientUtility/actions/workflows/publish-nuget.yml)
-[![.NET 8-10](https://img.shields.io/badge/.NET-8--10-512BD4.svg)](https://dotnet.microsoft.com/download/dotnet)
+[![.NET 8-10 LTS](https://img.shields.io/badge/.NET-8--10%20LTS-512BD4.svg)](https://dotnet.microsoft.com/download/dotnet)
 [![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://markhazleton.github.io/WebSpark.HttpClientUtility/)
 
 ---
@@ -58,7 +58,7 @@ Stop writing 50+ lines of HttpClient setup. Get enterprise-grade resilience (ret
 - ✅ **Continuous Integration** via GitHub Actions - every commit tested
 - ✅ **Semantic Versioning** - predictable, safe upgrades
 - ✅ **Zero breaking changes** within major versions - backward compatibility guaranteed
-- ✅ **Framework Support:** .NET 8 LTS (supported until Nov 2026), .NET 9, .NET 10 (Preview)
+- ✅ **Framework Support:** .NET 8 LTS (until Nov 2026), .NET 9, .NET 10 LTS (until Nov 2028)
 - ✅ **MIT Licensed** - free for commercial use
 
 **Support & Maintenance**
