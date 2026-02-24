@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Text;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using WebSpark.HttpClientUtility.Utilities.Logging;
@@ -13,6 +14,7 @@ namespace WebSpark.HttpClientUtility.RequestResult;
 /// <remarks>
 /// This service implements standardized logging and error handling patterns
 /// to ensure consistent behavior across all HTTP requests that use caching.
+/// Cache keys are generated from HTTP method, URL, and relevant headers to prevent data leakage.
 /// </remarks>
 public sealed class HttpRequestResultServiceCache(
     IHttpRequestResultService service,
@@ -22,6 +24,62 @@ public sealed class HttpRequestResultServiceCache(
     private readonly IMemoryCache _cache = cache ?? throw new ArgumentNullException(nameof(cache));
     private readonly ILogger<HttpRequestResultServiceCache> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     private readonly IHttpRequestResultService _service = service ?? throw new ArgumentNullException(nameof(service));
+
+    /// <summary>
+    /// Generates a unique cache key for a request based on method, URL, and relevant headers.
+    /// </summary>
+    /// <typeparam name="T">The type of the expected response data</typeparam>
+    /// <param name="request">The HTTP request result object</param>
+    /// <returns>A unique cache key string</returns>
+    /// <remarks>
+    /// Cache keys include:
+    /// - HTTP Method (GET, POST, etc.)
+    /// - Request URL
+    /// - Authentication provider name (if present)
+    /// - Non-sensitive headers (Authorization excluded)
+    /// 
+    /// This prevents cache collisions where different requests to the same URL
+    /// would incorrectly share cached responses.
+    /// </remarks>
+    private string GenerateCacheKey<T>(HttpRequestResult<T> request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        var keyBuilder = new StringBuilder();
+
+        // Include HTTP method (GET /api/users != POST /api/users)
+        keyBuilder.Append(request.RequestMethod.Method);
+        keyBuilder.Append('|');
+
+        // Include request path
+        keyBuilder.Append(request.RequestPath);
+
+        // Include auth provider to prevent leakage between different authentication contexts
+        if (request.AuthenticationProvider != null)
+        {
+            keyBuilder.Append('|');
+            keyBuilder.Append("Auth:");
+            keyBuilder.Append(request.AuthenticationProvider.ProviderName);
+        }
+
+        // Include relevant headers (excluding sensitive ones like Authorization)
+        if (request.RequestHeaders != null && request.RequestHeaders.Count > 0)
+        {
+            var relevantHeaders = request.RequestHeaders
+                .Where(h => !h.Key.Equals("Authorization", StringComparison.OrdinalIgnoreCase))
+                .OrderBy(h => h.Key);
+
+            foreach (var header in relevantHeaders)
+            {
+                keyBuilder.Append('|');
+                keyBuilder.Append(header.Key);
+                keyBuilder.Append(':');
+                keyBuilder.Append(header.Value);
+            }
+        }
+
+        return keyBuilder.ToString();
+    }
 
     /// <summary>
     /// Sends an HTTP request asynchronously with caching support and returns the result.
@@ -45,11 +103,25 @@ public sealed class HttpRequestResultServiceCache(
         ArgumentNullException.ThrowIfNull(statusCall);
 
         var stopwatch = Stopwatch.StartNew();
-        var cacheKey = statusCall.RequestPath;
+
+        // Generate composite cache key to prevent collisions
+        var cacheKey = GenerateCacheKey(statusCall);
 
         // Store the operation name for consistent logging
         string operationName = $"Cached HTTP {statusCall.RequestMethod.Method}";
         string correlationId = statusCall.CorrelationId;
+
+        // Warn about caching POST/PUT/PATCH requests - generally not recommended
+        if (statusCall.CacheDurationMinutes > 0 &&
+            (statusCall.RequestMethod == HttpMethod.Post ||
+             statusCall.RequestMethod == HttpMethod.Put ||
+             statusCall.RequestMethod == HttpMethod.Patch))
+        {
+            _logger.LogWarning(
+                "Caching {Method} requests is generally not recommended as they may have side effects [CorrelationId: {CorrelationId}]",
+                statusCall.RequestMethod.Method,
+                correlationId);
+        }
 
         // Log the beginning of the request processing
         _logger.LogDebug(

@@ -29,6 +29,11 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     protected CancellationTokenSource _cancellationTokenSource = new();
 
     /// <summary>
+    /// Indicates whether this instance has been disposed
+    /// </summary>
+    private bool _disposed;
+
+    /// <summary>
     /// Remove all keys marked as not existing
     /// </summary>
     private void ClearKeys()
@@ -286,10 +291,28 @@ public class MemoryCacheManager(IMemoryCache cache) : IMemoryCacheManager, IDisp
     /// <param name="disposing">true if called from Dispose(); false if called from finalizer</param>
     protected virtual void Dispose(bool disposing)
     {
+        if (_disposed)
+        {
+            return;
+        }
+
         if (disposing)
         {
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource?.Dispose();
+            // Dispose managed resources
+            try
+            {
+                _cancellationTokenSource?.Cancel();
+                _cancellationTokenSource?.Dispose();
+            }
+            catch (ObjectDisposedException)
+            {
+                // Already disposed - ignore
+            }
+
+            // Clear the keys dictionary
+            _allKeys.Clear();
         }
+
+        _disposed = true;
     }
 }

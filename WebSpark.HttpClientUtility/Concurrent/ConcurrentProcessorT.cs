@@ -100,11 +100,13 @@ public abstract class ConcurrentProcessor<T>(Func<int, T> taskDataFactory) where
     /// <param name="maxConcurrency">The maximum concurrency level.</param>
     /// <param name="ct">The cancellation token.</param>
     /// <returns>A list of results from the processed tasks.</returns>
+    /// <remarks>
+    /// This method properly disposes the semaphore used for concurrency control to prevent resource leaks.
+    /// </remarks>
     public async Task<List<T>> RunAsync(int maxTaskCount, int maxConcurrency, CancellationToken ct = default)
     {
         MaxTaskCount = maxTaskCount;
         MaxConcurrency = maxConcurrency;
-        SemaphoreSlim semaphore = new(MaxConcurrency, MaxConcurrency);
 
         // Handle the edge case where maxTaskCount is 0 or negative
         if (maxTaskCount <= 0)
@@ -112,8 +114,12 @@ public abstract class ConcurrentProcessor<T>(Func<int, T> taskDataFactory) where
             return new List<T>();
         }
 
+        // Use 'using' to ensure semaphore is disposed even if exceptions occur
+        using var semaphore = new SemaphoreSlim(MaxConcurrency, MaxConcurrency);
+
         var taskData = taskDataFactory(1);
         List<T> results = [];
+
         while (taskData is not null)
         {
             long semaphoreWait = await AwaitSemaphoreAsync(semaphore, ct).ConfigureAwait(false);
@@ -129,11 +135,14 @@ public abstract class ConcurrentProcessor<T>(Func<int, T> taskDataFactory) where
                 _tasks.Remove(finishedTask);
             }
         }
+
         await Task.WhenAll(_tasks).ConfigureAwait(false);
+
         foreach (var task in _tasks)
         {
             results.Add(await task.ConfigureAwait(false));
         }
+
         return results;
     }
 }

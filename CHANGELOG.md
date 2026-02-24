@@ -5,6 +5,64 @@ All notable changes to the WebSpark.HttpClientUtility project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.1] - 2025-01-02
+
+### 🐛 Fixed
+
+- **CRITICAL**: Fixed cache key collision causing data leakage between authenticated requests
+  - Cache keys now include HTTP method, authentication provider, and relevant headers
+  - Authorization headers excluded from cache keys to prevent credential exposure
+  - Added warnings for caching POST/PUT/PATCH requests
+- **CRITICAL**: Fixed race condition in `BearerTokenAuthenticationProvider` token refresh
+  - Implemented thread-safe token refresh using semaphore-based locking
+  - Added double-check locking pattern to prevent multiple concurrent refresh calls
+  - Properly implemented IDisposable pattern for resource cleanup
+- **CRITICAL**: Fixed HttpClient instance sharing causing potential request interference
+  - Implemented named HttpClient ("WebSparkHttpClient") for better isolation
+  - Configured default settings (timeout: 100s, automatic decompression)
+  - Non-breaking change maintains backward compatibility
+- Fixed retry policy retrying non-transient HTTP errors (e.g., 404, 403)
+  - Now only retries transient failures: 408, 429, 500, 502, 503, 504
+  - Only retries timeouts and network errors without status codes
+  - Prevents wasting resources on permanent failures
+- Fixed resource leak in `ConcurrentProcessor` semaphore disposal
+  - Wrapped semaphore in `using` statement for automatic cleanup
+  - Prevents memory leaks on repeated calls to `RunAsync`
+- Fixed `MemoryCacheManager.Dispose` not fully implementing disposal pattern
+  - Added proper `_disposed` flag and double-dispose protection
+  - Safely disposes `CancellationTokenSource` with exception handling
+  - Clears `_allKeys` dictionary on disposal
+- Fixed duplicate content reading corrupting POST/PUT/PATCH request bodies
+  - Content string now read once and StringContent recreated
+  - Preserves original content type and encoding
+  - Fixes "stream already consumed" exception
+- Added configuration validation to prevent invalid options
+  - Validates `MaxRetryAttempts` (0-20), `RetryDelay` (0-5 min)
+  - Validates `CircuitBreakerThreshold` (> 0), `CircuitBreakerDuration` (0-1 hour)
+  - Fails fast with clear error messages on invalid configuration
+
+### 🔒 Security
+
+- Cache keys now exclude Authorization headers to prevent credential leakage
+- Token refresh operations are now thread-safe with proper locking
+- Composite cache key generation prevents data leakage between different users
+
+### 📝 Changed
+
+- Enhanced XML documentation for cache key generation strategy
+- Added comprehensive logging for cache operations and retry attempts
+- Improved error messages in configuration validation
+
+### ✅ Verified
+
+- All 711 existing tests passing (100% success rate)
+- No breaking changes introduced
+- Test coverage maintained at baseline levels
+- Build successful on all target frameworks (net8.0, net9.0, net10.0)
+- Zero compiler warnings with `TreatWarningsAsErrors=true`
+
+---
+
 ## [2.2.0] - 2026-01-03
 
 ### 🚀 Added

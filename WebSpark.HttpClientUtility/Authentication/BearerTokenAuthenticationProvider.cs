@@ -5,18 +5,21 @@ namespace WebSpark.HttpClientUtility.Authentication;
 
 /// <summary>
 /// Authentication provider for Bearer token authentication.
-/// Provides secure handling of bearer tokens with automatic header injection.
+/// Provides secure handling of bearer tokens with automatic header injection and thread-safe token refresh.
 /// </summary>
 /// <remarks>
 /// This provider adds an Authorization header with the format "Bearer {token}".
 /// Tokens are validated before use and can be refreshed if a refresh callback is provided.
+/// Token refresh operations are thread-safe using semaphore-based locking to prevent race conditions.
 /// </remarks>
-public class BearerTokenAuthenticationProvider : IAuthenticationProvider
+public class BearerTokenAuthenticationProvider : IAuthenticationProvider, IDisposable
 {
     private readonly ILogger<BearerTokenAuthenticationProvider> _logger;
     private readonly Func<CancellationToken, Task<string>>? _tokenRefreshCallback;
-    private string? _currentToken;
+    private readonly SemaphoreSlim _refreshLock = new(1, 1);
+    private volatile string? _currentToken;
     private DateTime _tokenExpiry = DateTime.MinValue;
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the BearerTokenAuthenticationProvider class with a static token.
@@ -68,15 +71,29 @@ public class BearerTokenAuthenticationProvider : IAuthenticationProvider
     /// <inheritdoc/>
     public async Task AddAuthenticationAsync(Dictionary<string, string> headers, CancellationToken cancellationToken = default)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
         ArgumentNullException.ThrowIfNull(headers);
 
-        // Ensure we have a valid token
+        // Fast path: Check if token is valid without locking
         if (!IsValid)
         {
             if (_tokenRefreshCallback != null)
             {
-                _logger.LogDebug("Token expired or invalid, attempting refresh");
-                await RefreshAsync(cancellationToken).ConfigureAwait(false);
+                // Acquire lock for token refresh
+                await _refreshLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+                try
+                {
+                    // Double-check after acquiring lock (another thread may have refreshed)
+                    if (!IsValid)
+                    {
+                        _logger.LogDebug("Token expired or invalid, attempting refresh");
+                        await RefreshInternalAsync(cancellationToken).ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    _refreshLock.Release();
+                }
             }
             else
             {
@@ -84,7 +101,9 @@ public class BearerTokenAuthenticationProvider : IAuthenticationProvider
             }
         }
 
-        if (string.IsNullOrWhiteSpace(_currentToken))
+        // Read token after refresh (if it occurred)
+        var token = _currentToken;
+        if (string.IsNullOrWhiteSpace(token))
         {
             throw new SecurityException("Unable to obtain a valid bearer token for authentication.");
         }
@@ -93,7 +112,7 @@ public class BearerTokenAuthenticationProvider : IAuthenticationProvider
         headers.Remove("Authorization");
 
         // Add the bearer token
-        headers["Authorization"] = $"Bearer {_currentToken}";
+        headers["Authorization"] = $"Bearer {token}";
 
         _logger.LogDebug("Bearer token authentication added to request headers");
     }
@@ -124,22 +143,44 @@ public class BearerTokenAuthenticationProvider : IAuthenticationProvider
     /// <inheritdoc/>
     public async Task RefreshAsync(CancellationToken cancellationToken = default)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         if (_tokenRefreshCallback == null)
         {
             throw new NotSupportedException("Token refresh is not supported for this bearer token provider instance.");
         }
 
+        await _refreshLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            await RefreshInternalAsync(cancellationToken).ConfigureAwait(false);
+        }
+        finally
+        {
+            _refreshLock.Release();
+        }
+    }
+
+    /// <summary>
+    /// Internal method to refresh the token without acquiring the lock.
+    /// Must only be called while holding _refreshLock.
+    /// </summary>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>A task representing the refresh operation</returns>
+    private async Task RefreshInternalAsync(CancellationToken cancellationToken)
+    {
         try
         {
             _logger.LogDebug("Refreshing bearer token");
 
-            var newToken = await _tokenRefreshCallback(cancellationToken).ConfigureAwait(false);
+            var newToken = await _tokenRefreshCallback!(cancellationToken).ConfigureAwait(false);
 
             if (string.IsNullOrWhiteSpace(newToken))
             {
                 throw new SecurityException("Token refresh callback returned null or empty token.");
             }
 
+            // Atomic update of token and expiry
             _currentToken = newToken;
             _tokenExpiry = DateTime.UtcNow.Add(TimeSpan.FromMinutes(55)); // Reset expiry
 
@@ -150,5 +191,40 @@ public class BearerTokenAuthenticationProvider : IAuthenticationProvider
             _logger.LogError(ex, "Failed to refresh bearer token");
             throw new SecurityException("Token refresh failed. See inner exception for details.", ex);
         }
+    }
+
+    /// <summary>
+    /// Disposes the resources used by the BearerTokenAuthenticationProvider.
+    /// </summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Disposes the resources used by the BearerTokenAuthenticationProvider.
+    /// </summary>
+    /// <param name="disposing">True if disposing managed resources</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            try
+            {
+                _refreshLock?.Dispose();
+            }
+            catch (ObjectDisposedException)
+            {
+                // Already disposed - ignore
+            }
+        }
+
+        _disposed = true;
     }
 }

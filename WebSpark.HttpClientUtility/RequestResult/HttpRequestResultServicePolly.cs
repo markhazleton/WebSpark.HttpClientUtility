@@ -53,9 +53,33 @@ public class HttpRequestResultServicePolly : IHttpRequestResultService
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _options = options ?? throw new ArgumentNullException(nameof(options));
 
-        // Configure the retry policy with enhanced logging
+        // Configure the retry policy with smart exception handling
+        // Only retry transient failures, not client errors (4xx) or non-retryable server errors
         _retryPolicy = Policy
-            .Handle<Exception>()
+            .Handle<HttpRequestException>(ex =>
+            {
+                // Retry only transient HTTP errors
+                if (ex.StatusCode.HasValue)
+                {
+                    var statusCode = (int)ex.StatusCode.Value;
+                    // Retry: 408 (Request Timeout), 429 (Too Many Requests), 500, 502, 503, 504
+                    return statusCode == 408 || statusCode == 429 ||
+                           statusCode == 500 || statusCode == 502 ||
+                           statusCode == 503 || statusCode == 504;
+                }
+                // Retry network errors (no status code - connection issues)
+                return true;
+            })
+            .Or<TaskCanceledException>(ex =>
+            {
+                // Only retry timeouts, not user-initiated cancellations
+                return ex.InnerException is TimeoutException;
+            })
+            .Or<OperationCanceledException>(ex =>
+            {
+                // Only retry timeouts, not user-initiated cancellations
+                return ex.InnerException is TimeoutException;
+            })
             .WaitAndRetryAsync(
                 options.MaxRetryAttempts,
                 retryAttempt => options.RetryDelay,
@@ -65,30 +89,49 @@ public class HttpRequestResultServicePolly : IHttpRequestResultService
                         ? context["correlationId"]?.ToString() ?? Guid.NewGuid().ToString()
                         : Guid.NewGuid().ToString();
 
+                    // Determine status code for logging
+                    var statusCodeInfo = exception is HttpRequestException httpEx && httpEx.StatusCode.HasValue
+                        ? $"HTTP {(int)httpEx.StatusCode.Value}"
+                        : "Network Error";
+
                     // Create rich logging context
                     var contextData = new Dictionary<string, object>
                     {
                         ["RetryCount"] = retryCount,
                         ["RetryDelay"] = timespan.TotalMilliseconds,
-                        ["MaxRetries"] = options.MaxRetryAttempts
+                        ["MaxRetries"] = options.MaxRetryAttempts,
+                        ["StatusCode"] = statusCodeInfo
                     };
 
                     // Log the retry with detailed information
                     _logger.LogWarning(
                         exception,
-                        "Retry {RetryCount}/{MaxRetries} after {RetryDelay}ms due to: {ErrorMessage} [CorrelationId: {CorrelationId}]",
+                        "Retry {RetryCount}/{MaxRetries} after {RetryDelay}ms for {StatusCode} due to: {ErrorMessage} [CorrelationId: {CorrelationId}]",
                         retryCount,
                         options.MaxRetryAttempts,
                         timespan.TotalMilliseconds,
+                        statusCodeInfo,
                         exception.Message,
                         correlationId);
 
-                    _errorList.Add($"Retry {retryCount}/{options.MaxRetryAttempts}: {exception.Message} [CorrelationId: {correlationId}]");
+                    _errorList.Add($"Retry {retryCount}/{options.MaxRetryAttempts} ({statusCodeInfo}): {exception.Message} [CorrelationId: {correlationId}]");
                 });
 
         // Configure the circuit breaker policy with enhanced logging
+        // Circuit breaker applies to same transient failures as retry policy
         _circuitBreakerPolicy = Policy
-            .Handle<Exception>()
+            .Handle<HttpRequestException>(ex =>
+            {
+                if (ex.StatusCode.HasValue)
+                {
+                    var statusCode = (int)ex.StatusCode.Value;
+                    return statusCode == 408 || statusCode == 429 ||
+                           statusCode >= 500;
+                }
+                return true;
+            })
+            .Or<TaskCanceledException>(ex => ex.InnerException is TimeoutException)
+            .Or<OperationCanceledException>(ex => ex.InnerException is TimeoutException)
             .CircuitBreakerAsync(
                 options.CircuitBreakerThreshold,
                 options.CircuitBreakerDuration,

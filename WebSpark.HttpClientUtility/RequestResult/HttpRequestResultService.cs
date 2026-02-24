@@ -240,15 +240,29 @@ public class HttpRequestResultService(
             // Add request body to the curl command if it's a POST, PUT, or PATCH request
             if (request.Content != null)
             {
-                var content = await request.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
-                curlCommand.Append(" -d '").Append(content.Replace("'", "\\'")).Append("'");
+                // Read content string ONCE and preserve original for the actual request
+                var contentString = await request.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
+
+                // Recreate the content so it can be sent with the actual HTTP request
+                // This prevents the "stream already consumed" issue
+                var originalContentType = request.Content.Headers.ContentType;
+                var encoding = originalContentType?.CharSet != null 
+                    ? Encoding.GetEncoding(originalContentType.CharSet) 
+                    : Encoding.UTF8;
+
+                request.Content = new StringContent(
+                    contentString,
+                    encoding,
+                    originalContentType?.MediaType ?? "application/json");
+
+                curlCommand.Append(" -d '").Append(contentString.Replace("'", "\\'")).Append("'");
 
                 if (httpSendResults.IsDebugEnabled)
                 {
                     _logger.LogDebug(
                         "Request Content [CorrelationId: {CorrelationId}]: {Content}",
                         httpSendResults.CorrelationId,
-                        content);
+                        contentString);
                 }
             }
 

@@ -88,35 +88,52 @@ public static class ServiceCollectionExtensions
         var options = new HttpClientUtilityOptions();
     configure(options);
 
-   // Register HttpClient factory (if not already registered)
-        services.AddHttpClient();
+        // Validate configuration options before proceeding
+        ValidateOptions(options);
 
-        // Register IConfiguration if not present (for test scenarios)
-   services.TryAddSingleton<IConfiguration>(sp => new ConfigurationBuilder().Build());
+       // Register HttpClient factory (if not already registered)
+           services.AddHttpClient();
+
+           // Register named HttpClient for WebSpark to ensure proper isolation
+           // This prevents request interference when multiple requests share the same scope
+           services.AddHttpClient("WebSparkHttpClient", client =>
+           {
+               // Set default timeout (can be overridden per request)
+               client.Timeout = TimeSpan.FromSeconds(100);
+
+               // Enable automatic decompression
+               // Note: HttpClient handles cookies and redirects by default
+           });
+
+           // Register IConfiguration if not present (for test scenarios)
+       services.TryAddSingleton<IConfiguration>(sp => new ConfigurationBuilder().Build());
 
 
-        // Register JSON converter
-      if (options.UseNewtonsoftJson)
-        {
-        services.TryAddSingleton<IStringConverter, NewtonsoftJsonStringConverter>();
-   }
-        else
-        {
-            services.TryAddSingleton<IStringConverter, SystemJsonStringConverter>();
-      }
+           // Register JSON converter
+         if (options.UseNewtonsoftJson)
+           {
+           services.TryAddSingleton<IStringConverter, NewtonsoftJsonStringConverter>();
+       }
+           else
+           {
+               services.TryAddSingleton<IStringConverter, SystemJsonStringConverter>();
+         }
 
-      // Register base services
-        services.TryAddScoped<IHttpClientService, HttpClientService>();
-        
-        // Register HttpRequestResultService with factory that provides HttpClient
-    services.TryAddScoped<HttpRequestResultService>(sp =>
-{
-            var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
-var logger = sp.GetRequiredService<ILogger<HttpRequestResultService>>();
-      var configuration = sp.GetRequiredService<IConfiguration>();
-var httpClient = httpClientFactory.CreateClient();
-  return new HttpRequestResultService(logger, configuration, httpClient);
-        });
+         // Register base services
+           services.TryAddScoped<IHttpClientService, HttpClientService>();
+
+           // Register HttpRequestResultService with factory that uses named HttpClient
+           // Using named client ensures proper isolation between concurrent requests
+       services.TryAddScoped<HttpRequestResultService>(sp =>
+   {
+               var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+   var logger = sp.GetRequiredService<ILogger<HttpRequestResultService>>();
+         var configuration = sp.GetRequiredService<IConfiguration>();
+
+               // Create a named client instance for better isolation
+   var httpClient = httpClientFactory.CreateClient("WebSparkHttpClient");
+     return new HttpRequestResultService(logger, configuration, httpClient);
+           });
 
      // Register caching infrastructure if enabled
         if (options.EnableCaching)
@@ -223,5 +240,77 @@ service,
             options.EnableResilience = true;
    options.EnableTelemetry = true;
  });
+    }
+
+    /// <summary>
+    /// Validates the HttpClientUtilityOptions configuration.
+    /// </summary>
+    /// <param name="options">The options to validate</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when configuration values are invalid</exception>
+    private static void ValidateOptions(HttpClientUtilityOptions options)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+
+        if (options.EnableResilience)
+        {
+            var resilience = options.ResilienceOptions;
+            ArgumentNullException.ThrowIfNull(resilience, nameof(options.ResilienceOptions));
+
+            if (resilience.MaxRetryAttempts < 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(resilience.MaxRetryAttempts),
+                    resilience.MaxRetryAttempts,
+                    "MaxRetryAttempts must be non-negative.");
+            }
+
+            if (resilience.MaxRetryAttempts > 20)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(resilience.MaxRetryAttempts),
+                    resilience.MaxRetryAttempts,
+                    "MaxRetryAttempts cannot exceed 20 to prevent excessive retry loops.");
+            }
+
+            if (resilience.RetryDelay < TimeSpan.Zero)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(resilience.RetryDelay),
+                    resilience.RetryDelay,
+                    "RetryDelay must be non-negative.");
+            }
+
+            if (resilience.RetryDelay > TimeSpan.FromMinutes(5))
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(resilience.RetryDelay),
+                    resilience.RetryDelay,
+                    "RetryDelay cannot exceed 5 minutes to prevent excessive wait times.");
+            }
+
+            if (resilience.CircuitBreakerThreshold <= 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(resilience.CircuitBreakerThreshold),
+                    resilience.CircuitBreakerThreshold,
+                    "CircuitBreakerThreshold must be positive.");
+            }
+
+            if (resilience.CircuitBreakerDuration < TimeSpan.Zero)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(resilience.CircuitBreakerDuration),
+                    resilience.CircuitBreakerDuration,
+                    "CircuitBreakerDuration must be non-negative.");
+            }
+
+            if (resilience.CircuitBreakerDuration > TimeSpan.FromHours(1))
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(resilience.CircuitBreakerDuration),
+                    resilience.CircuitBreakerDuration,
+                    "CircuitBreakerDuration cannot exceed 1 hour to prevent prolonged service outages.");
+            }
+        }
     }
 }
