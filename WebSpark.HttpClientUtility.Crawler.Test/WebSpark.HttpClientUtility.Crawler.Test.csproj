@@ -25,10 +25,10 @@
 
 	<ItemGroup>
 		<!-- Test Framework -->
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
-		<PackageReference Include="MSTest.TestAdapter" Version="4.0.2" />
-		<PackageReference Include="MSTest.TestFramework" Version="4.0.2" />
-		<PackageReference Include="coverlet.collector" Version="6.0.4">
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
+		<PackageReference Include="MSTest.TestAdapter" Version="4.1.0" />
+		<PackageReference Include="MSTest.TestFramework" Version="4.1.0" />
+		<PackageReference Include="coverlet.collector" Version="8.0.0">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
@@ -37,14 +37,14 @@
 		<PackageReference Include="Moq" Version="4.20.72" />
 		
 		<!-- SDK-provided package override -->
-		<PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="10.0.1" />
+		<PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="10.0.3" />
 		
 		<!-- Projects Under Test -->
 		<ProjectReference Include="..\WebSpark.HttpClientUtility\WebSpark.HttpClientUtility.csproj" />
 		<ProjectReference Include="..\WebSpark.HttpClientUtility.Crawler\WebSpark.HttpClientUtility.Crawler.csproj" />
 		
 		<!-- OpenTelemetry InMemory for testing (not in published packages) -->
-		<PackageReference Include="OpenTelemetry.Exporter.InMemory" Version="1.14.0" />
+		<PackageReference Include="OpenTelemetry.Exporter.InMemory" Version="1.15.0" />
 	</ItemGroup>
 
 </Project>

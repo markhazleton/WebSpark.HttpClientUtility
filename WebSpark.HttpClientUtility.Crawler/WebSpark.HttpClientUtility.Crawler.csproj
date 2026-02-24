@@ -77,15 +77,19 @@
 		<ProjectReference Include="..\WebSpark.HttpClientUtility\WebSpark.HttpClientUtility.csproj" />
 
 		<!-- SDK-provided package override -->
-		<PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="10.0.1" />
+		<PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="10.0.3" />
 
 		<!-- Crawler-Specific Dependencies -->
 		<PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
-		<PackageReference Include="Markdig" Version="0.44.0" />
+		<PackageReference Include="Markdig" Version="1.0.0" />
 		<PackageReference Include="CsvHelper" Version="33.1.0" />
 
 		<!-- ASP.NET Core for SignalR -->
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="Microsoft.SourceLink.GitHub" Version="10.0.103" />
 	</ItemGroup>
 
 </Project>
