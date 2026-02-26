@@ -2,675 +2,397 @@
     ViewData["Title"] = "Web Crawler";
 }
 
-<div class="row">
-    <div class="col-lg-12">
-        <h1 class="display-5">🕷️ Web Crawler</h1>
-        <p class="lead">@ViewData["Description"]</p>
-        
-        <div class="alert alert-info" role="alert">
-            <i class="bi bi-info-circle"></i>
-            <strong>Package Split Demo:</strong> This feature uses the <code>WebSpark.HttpClientUtility.Crawler</code> package,
-            which extends the base package with web crawling capabilities.
-        </div>
-        
-        <div class="alert alert-warning" role="alert">
-            <i class="bi bi-exclamation-triangle"></i>
-            <strong>Limitations:</strong> This crawler only works with <strong>server-rendered HTML</strong>. 
-            Single Page Applications (SPAs) that use JavaScript frameworks like React, Vue, or Angular will not be crawled correctly. 
-            Try sites like <code>https://example.com</code>, <code>https://httpbin.org/links/10</code>, or traditional server-rendered websites.
+<div class="container mt-4">
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1>Web Crawler</h1>
+            <p class="lead">
+                A focused demo of <code>WebSpark.HttpClientUtility.Crawler</code> — the companion NuGet package
+                that adds site crawling to the base HTTP utility.
+            </p>
         </div>
     </div>
-</div>
 
-<div class="row mt-4">
-    <div class="col-lg-8">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="bi bi-gear"></i> Crawler Configuration</h5>
+    <div class="row g-4">
+
+        <!-- Left: Form + Results -->
+        <div class="col-lg-8">
+
+            <!-- Config card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-play-circle"></i> Run a Crawl</h5>
+                </div>
+                <div class="card-body">
+                    <form id="crawlForm" onsubmit="return false;">
+                        <div class="mb-3">
+                            <label for="crawlUrl" class="form-label fw-semibold">Start URL</label>
+                            <input type="url" id="crawlUrl" class="form-control"
+                                   value="https://markhazleton.com" required
+                                   placeholder="https://example.com" />
+                            <div class="form-text">Crawls only same-domain links. SPAs (React/Vue/Angular) are not supported — use server-rendered sites.</div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-sm-6">
+                                <label for="maxPages" class="form-label fw-semibold">Max Pages</label>
+                                <select id="maxPages" class="form-select">
+                                    <option value="10">10 pages</option>
+                                    <option value="20" selected>20 pages</option>
+                                    <option value="25">25 pages (max)</option>
+                                </select>
+                                <div class="form-text">Demo cap: 25 pages</div>
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="maxDepth" class="form-label fw-semibold">Max Depth</label>
+                                <select id="maxDepth" class="form-select">
+                                    <option value="1">1 — home page only</option>
+                                    <option value="2" selected>2 — home + linked pages</option>
+                                    <option value="3">3 — one level deeper</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-sm-6">
+                                <div class="form-check form-switch mt-1">
+                                    <input class="form-check-input" type="checkbox" id="robotsTxt" checked>
+                                    <label class="form-check-label" for="robotsTxt">
+                                        <i class="bi bi-shield-check text-success"></i> Respect robots.txt
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-check form-switch mt-1">
+                                    <input class="form-check-input" type="checkbox" id="sitemapDiscover" checked>
+                                    <label class="form-check-label" for="sitemapDiscover">
+                                        <i class="bi bi-diagram-3 text-info"></i> Discover from sitemap/RSS
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" id="crawlBtn" class="btn btn-primary btn-lg w-100">
+                            <i class="bi bi-play-fill"></i> Start Crawl
+                        </button>
+                    </form>
+                </div>
             </div>
-            <div class="card-body">
-                <form id="crawlerForm">
-                    <div class="mb-3">
-                        <label for="url" class="form-label">Start URL</label>
-                        <input type="url" class="form-control" id="url" placeholder="https://example.com" value="https://example.com" required>
-                        <div class="form-text">The URL to start crawling from</div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="maxDepth" class="form-label">Max Depth</label>
-                            <input type="number" class="form-control" id="maxDepth" value="2" min="1" max="10">
-                            <div class="form-text">
-                                <i class="bi bi-info-circle"></i> Depth 1 = home, 2 = links from home, 3 = links from those pages
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="maxPages" class="form-label">Max Pages</label>
-                            <input type="number" class="form-control" id="maxPages" value="20" min="1" max="1000">
-                            <div class="form-text">
-                                <i class="bi bi-info-circle"></i> Crawler stops when this limit is reached
-                            </div>
-                        </div>
+            <!-- Spinner (hidden until crawl starts) -->
+            <div id="crawlingState" class="card border-info mb-4" style="display:none;">
+                <div class="card-body text-center py-4">
+                    <div class="spinner-border text-primary mb-3" role="status" style="width:3rem;height:3rem;">
+                        <span class="visually-hidden">Crawling...</span>
                     </div>
+                    <h5 id="crawlingMessage" class="mb-1">Crawling...</h5>
+                    <p class="text-muted mb-0 small">This may take 10–30 seconds depending on page count and delay settings.</p>
+                </div>
+            </div>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="delayMs" class="form-label">Delay (ms)</label>
-                            <input type="number" class="form-control" id="delayMs" value="100" min="100" max="5000" step="100">
-                            <div class="form-text">Delay between requests</div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <div class="form-check mt-4">
-                                <input class="form-check-input" type="checkbox" id="respectRobotsTxt" checked>
-                                <label class="form-check-label" for="respectRobotsTxt">
-                                    Respect robots.txt
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="discoverFromSitemap" checked>
-                                <label class="form-check-label" for="discoverFromSitemap">
-                                    <i class="bi bi-file-earmark-code"></i> Discover from sitemap/RSS
-                                </label>
+            <!-- Error state (hidden until error) -->
+            <div id="errorState" class="alert alert-danger" style="display:none;">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <strong>Crawl failed:</strong> <span id="errorMessage"></span>
+            </div>
+
+            <!-- Results (hidden until complete) -->
+            <div id="resultsState" style="display:none;">
+
+                <!-- Summary stats -->
+                <div class="row g-3 mb-4" id="statCards">
+                    <div class="col-6 col-md-3">
+                        <div class="card text-center border-primary h-100">
+                            <div class="card-body py-3">
+                                <div class="h2 mb-0 fw-bold text-primary" id="statTotal">0</div>
+                                <div class="small text-muted">Pages Crawled</div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="userAgent" class="form-label">User Agent</label>
-                        <input type="text" class="form-control" id="userAgent" value="WebSpark.HttpClientUtility.Crawler/2.0.0">
+                    <div class="col-6 col-md-3">
+                        <div class="card text-center border-success h-100">
+                            <div class="card-body py-3">
+                                <div class="h2 mb-0 fw-bold text-success" id="statSuccess">0</div>
+                                <div class="small text-muted">Successful</div>
+                            </div>
+                        </div>
                     </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card text-center border-danger h-100">
+                            <div class="card-body py-3">
+                                <div class="h2 mb-0 fw-bold text-danger" id="statFailed">0</div>
+                                <div class="small text-muted">Failed</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card text-center border-secondary h-100">
+                            <div class="card-body py-3">
+                                <div class="h2 mb-0 fw-bold" id="statDuration">0s</div>
+                                <div class="small text-muted">Duration</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary btn-lg" id="startCrawlBtn">
-                            <i class="bi bi-play-circle"></i> Start Crawl
+                <!-- Crawl metadata badges -->
+                <div class="mb-3" id="metaBadges"></div>
+
+                <!-- Results table -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-table"></i> Crawled Pages</h5>
+                        <button class="btn btn-sm btn-outline-light" id="crawlAgainBtn">
+                            <i class="bi bi-arrow-clockwise"></i> Crawl Again
                         </button>
                     </div>
-                </form>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width:2.5rem">#</th>
+                                    <th>URL &amp; Title</th>
+                                    <th style="width:5rem" class="text-center">Status</th>
+                                    <th style="width:4rem" class="text-center">Depth</th>
+                                    <th style="width:4.5rem" class="text-center">Links</th>
+                                    <th style="width:5rem" class="text-end">Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
+
         </div>
 
-        <!-- Real-Time Progress Section -->
-        <div id="progressSection" class="mt-4" style="display: none;">
-            <div class="card shadow-sm">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="bi bi-hourglass-split"></i> Crawling in Progress...</h5>
+        <!-- Right: Feature callouts -->
+        <div class="col-lg-4">
+
+            <div class="card mb-3">
+                <div class="card-header bg-dark text-white">
+                    <h6 class="mb-0"><i class="bi bi-box-seam"></i> Package Setup</h6>
                 </div>
                 <div class="card-body">
-                    <div class="progress" style="height: 30px;">
-                        <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" 
-                             role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                            0%
-                        </div>
-                    </div>
-                    
-                    <div class="row mt-3">
-                        <div class="col-md-3">
-                            <div class="text-center">
-                                <div class="h4 mb-0" id="pagesCount">0</div>
-                                <small class="text-muted">Pages Crawled</small>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="text-center">
-                                <div class="h4 mb-0 text-success" id="successCount">0</div>
-                                <small class="text-muted">Successful</small>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="text-center">
-                                <div class="h4 mb-0 text-danger" id="failureCount">0</div>
-                                <small class="text-muted">Failed</small>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="text-center">
-                                <div class="h4 mb-0 text-warning" id="queueCount">0</div>
-                                <small class="text-muted">In Queue</small>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div id="currentUrl" class="mt-3 text-center">
-                        <small class="text-muted">Ready to start...</small>
-                    </div>
+                    <p class="small mb-2 text-muted">Install both packages:</p>
+                    <pre class="bg-light p-2 rounded small mb-0"><code>dotnet add package WebSpark.HttpClientUtility
+dotnet add package WebSpark.HttpClientUtility.Crawler</code></pre>
+                    <hr class="my-2">
+                    <p class="small mb-2 text-muted">Register in Program.cs:</p>
+                    <pre class="bg-light p-2 rounded small mb-0"><code>services.AddHttpClientUtility();
+services.AddHttpClientCrawler();</code></pre>
                 </div>
             </div>
-        </div>
 
-        <!-- Live Pages List -->
-        <div id="livePagesSection" class="mt-4" style="display: none;">
-            <div class="card shadow-sm">
-                <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-list-ul"></i> Crawled Pages (Live)</h5>
-                    <button class="btn btn-sm btn-outline-light" id="clearPagesBtn">
-                        <i class="bi bi-trash"></i> Clear
-                    </button>
+            <div class="card mb-3">
+                <div class="card-header bg-secondary text-white">
+                    <h6 class="mb-0"><i class="bi bi-stars"></i> Crawler Features</h6>
                 </div>
                 <div class="card-body p-0">
-                    <div id="livePagesList" class="list-group list-group-flush" style="max-height: 400px; overflow-y: auto;">
-                        <!-- Pages will be added here dynamically -->
-                    </div>
+                    <ul class="list-group list-group-flush small">
+                        <li class="list-group-item">
+                            <i class="bi bi-shield-check text-success"></i>
+                            <strong>robots.txt compliance</strong>
+                            <div class="text-muted">Reads and respects <code>Disallow</code> rules before crawling any path</div>
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-diagram-3 text-info"></i>
+                            <strong>Sitemap &amp; RSS discovery</strong>
+                            <div class="text-muted">Auto-seeds the queue from <code>sitemap.xml</code>, <code>rss.xml</code>, <code>atom.xml</code></div>
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-link-45deg text-primary"></i>
+                            <strong>HTML link extraction</strong>
+                            <div class="text-muted">Parses <code>&lt;a href&gt;</code> tags via HtmlAgilityPack, same-domain only</div>
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-layers text-warning"></i>
+                            <strong>Depth-limited crawling</strong>
+                            <div class="text-muted">BFS with configurable <code>MaxDepth</code> and <code>MaxPages</code> guards</div>
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-speedometer text-danger"></i>
+                            <strong>Adaptive rate limiting</strong>
+                            <div class="text-muted">Adjusts delays based on server response times to avoid overloading hosts</div>
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-cpu text-secondary"></i>
+                            <strong>Concurrent requests</strong>
+                            <div class="text-muted">Configurable <code>MaxConcurrentRequests</code> for throughput control</div>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </div>
 
-        <!-- Final Results Section -->
-        <div id="resultsSection" class="mt-4" style="display: none;">
-            <div class="card shadow-sm">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="bi bi-check-circle"></i> Crawl Complete</h5>
+            <div class="card">
+                <div class="card-header bg-warning">
+                    <h6 class="mb-0"><i class="bi bi-code-slash"></i> Usage Example</h6>
                 </div>
                 <div class="card-body">
-                    <div id="crawlStatistics" class="mb-4"></div>
-                    <div id="resultsContent"></div>
+                    <pre class="small bg-light p-2 rounded mb-0"><code>var result = await crawler.CrawlAsync(
+    "https://markhazleton.com",
+    new CrawlerOptions {
+        MaxPages = 20,
+        MaxDepth = 2,
+        RespectRobotsTxt = true,
+        DiscoverFromSitemapAndRss = true,
+        RequestDelayMs = 300
+    });</code></pre>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="col-lg-4">
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-secondary text-white">
-                <h5 class="mb-0"><i class="bi bi-info-circle"></i> Features</h5>
-            </div>
-            <div class="card-body">
-                <ul class="list-unstyled">
-                    <li class="mb-2">✅ <strong>Real-Time Page Tracking</strong></li>
-                    <li class="mb-2">✅ <strong>Robots.txt Compliance</strong></li>
-                    <li class="mb-2">✅ <strong>HTML Link Extraction</strong></li>
-                    <li class="mb-2">✅ <strong>Depth-Limited Crawling</strong></li>
-                    <li class="mb-2">✅ <strong>Live Statistics</strong></li>
-                    <li class="mb-2">✅ <strong>SignalR Progress Updates</strong></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-warning">
-                <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Best Practices</h5>
-            </div>
-            <div class="card-body">
-                <ul class="small">
-                    <li>Start with small max pages (20-50)</li>
-                    <li>Use appropriate delays (1000ms+)</li>
-                    <li>Always respect robots.txt</li>
-                    <li>Monitor server load</li>
-                    <li>Test on your own sites first</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="card shadow-sm">
-            <div class="card-header bg-dark text-white">
-                <h5 class="mb-0"><i class="bi bi-code-square"></i> Package Info</h5>
-            </div>
-            <div class="card-body">
-                <p class="small mb-2"><strong>Base Package:</strong></p>
-                <code class="d-block mb-3 small">WebSpark.HttpClientUtility</code>
-                
-                <p class="small mb-2"><strong>Crawler Package:</strong></p>
-                <code class="d-block mb-3 small">WebSpark.HttpClientUtility.Crawler</code>
-                
-                <p class="small mb-0">
-                    <strong>DI Registration:</strong>
-                </p>
-                <pre class="small"><code>services.AddHttpClientUtility();
-services.AddHttpClientCrawler();</code></pre>
-            </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    <script>
-        console.log("[Crawler] Scripts section loaded - waiting for SignalR module to load...");
-        
-        // State management
-        let connection;
-        let crawledPagesMap = new Map();
-        let crawlStartTime = null;
-        
-        // SignalR Event Handlers
-        function handlePageCrawled(pageEvent) {
-            console.log('[Crawler] PageCrawled event:', pageEvent);
-            
-            // Add to map
-            crawledPagesMap.set(pageEvent.url, pageEvent);
-            
-            // Update live pages list
-            addPageToLiveList(pageEvent);
-        }
-        
-        function handleCrawlProgress(progressUpdate) {
-            console.log('[Crawler] CrawlProgress event:', progressUpdate);
-            
-            // Update progress bar
-            const progressBar = document.getElementById('progressBar');
-            const percent = progressUpdate.progressPercentage || 0;
-            
-            if (progressBar) {
-                progressBar.style.width = `${percent}%`;
-                progressBar.setAttribute('aria-valuenow', percent);
-                progressBar.textContent = `${percent}%`;
-            }
-            
-            // Update counters
-            updateCounter('pagesCount', progressUpdate.pagesCrawled);
-            updateCounter('successCount', progressUpdate.successfulPages);
-            updateCounter('failureCount', progressUpdate.failedPages);
-            updateCounter('queueCount', progressUpdate.pagesInQueue);
-            
-            // Update current URL
-            const currentUrl = document.getElementById('currentUrl');
-            if (currentUrl && progressUpdate.currentUrl) {
-                currentUrl.innerHTML = `<small class="text-muted">Currently crawling: <strong>${truncateUrl(progressUpdate.currentUrl)}</strong></small>`;
-            }
-        }
-        
-        function handleCrawlStatistics(statistics) {
-            console.log('[Crawler] CrawlStatistics event:', statistics);
-            
-            const statsDiv = document.getElementById('crawlStatistics');
-            if (!statsDiv) return;
-            
-            const durationFormatted = formatDuration(statistics.duration);
-            
-            statsDiv.innerHTML = `
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <div class="card border-primary">
-                            <div class="card-body text-center">
-                                <h3 class="mb-0">${statistics.totalPages}</h3>
-                                <small class="text-muted">Total Pages</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card border-success">
-                            <div class="card-body text-center">
-                                <h3 class="mb-0 text-success">${statistics.successfulPages}</h3>
-                                <small class="text-muted">Successful</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card border-danger">
-                            <div class="card-body text-center">
-                                <h3 class="mb-0 text-danger">${statistics.failedPages}</h3>
-                                <small class="text-muted">Failed</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card border-info">
-                            <div class="card-body text-center">
-                                <h3 class="mb-0">${statistics.pagesPerSecond.toFixed(2)}</h3>
-                                <small class="text-muted">Pages/Sec</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="alert alert-info mt-3 mb-0">
-                    <i class="bi bi-clock"></i> <strong>Duration:</strong> ${durationFormatted}
-                </div>
-            `;
-        }
-        
-        function handleCrawlResults(results) {
-            console.log('[Crawler] CrawlResults event:', results);
-            
-            const resultsContent = document.getElementById('resultsContent');
-            const progressSection = document.getElementById('progressSection');
-            const resultsSection = document.getElementById('resultsSection');
-            const startBtn = document.getElementById('startCrawlBtn');
-            
-            if (!resultsContent) return;
-            
-            // Build results table
-            const tableRows = results.crawlResults && results.crawlResults.length > 0
-                ? results.crawlResults.map((page, index) => {
-                    const statusBadge = page.isSuccessStatusCode
-                        ? `<span class="badge bg-success">${page.statusCode}</span>`
-                        : `<span class="badge bg-danger">${page.statusCode}</span>`;
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    'use strict';
 
-                    return `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td class="text-truncate" style="max-width: 320px;">
-                                <a href="${page.requestPath}" target="_blank" rel="noopener">${page.requestPath}</a>
-                            </td>
-                            <td>${statusBadge}</td>
-                            <td>${page.pageTitle || 'Untitled'}</td>
-                            <td>${page.depth || 0}</td>
-                            <td>${page.linksFound || 0}</td>
-                        </tr>`;
-                }).join('')
-                : '<tr><td colspan="6" class="text-center text-muted">No crawl results available.</td></tr>';
+    console.log('[Crawler] Script initializing');
 
-            const tableHtml = `
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>URL</th>
-                                <th>Status</th>
-                                <th>Title</th>
-                                <th>Depth</th>
-                                <th>Links</th>
-                            </tr>
-                        </thead>
-                        <tbody>${tableRows}</tbody>
-                    </table>
-                </div>`;
+    var crawlBtn       = document.getElementById('crawlBtn');
+    var crawlingState  = document.getElementById('crawlingState');
+    var crawlingMsg    = document.getElementById('crawlingMessage');
+    var errorState     = document.getElementById('errorState');
+    var errorMessage   = document.getElementById('errorMessage');
+    var resultsState   = document.getElementById('resultsState');
+    var crawlAgainBtn  = document.getElementById('crawlAgainBtn');
 
-            resultsContent.innerHTML = tableHtml;
-            
-            // Show results section and hide progress
-            if (resultsSection) resultsSection.style.display = 'block';
-            if (progressSection) progressSection.style.display = 'none';
-            
-            // Re-enable button
-            if (startBtn) {
-                startBtn.disabled = false;
-                startBtn.innerHTML = '<i class="bi bi-play-circle"></i> Start Crawl';
-            }
-        }
-        
-        function handleCrawlError(error) {
-            console.error('[Crawler] CrawlError event:', error);
-            
-            const resultsContent = document.getElementById('resultsContent');
-            const resultsSection = document.getElementById('resultsSection');
-            const progressSection = document.getElementById('progressSection');
-            const startBtn = document.getElementById('startCrawlBtn');
+    if (!crawlBtn) {
+        console.error('[Crawler] crawlBtn not found — aborting init');
+        return;
+    }
 
-            if (resultsContent && resultsSection) {
-                resultsContent.innerHTML = `
-                    <div class="alert alert-danger">
-                        <h5><i class="bi bi-exclamation-triangle"></i> Crawl Error</h5>
-                        <p><strong>URL:</strong> ${error.url}</p>
-                        <p><strong>Error:</strong> ${error.error}</p>
-                        <p class="small mb-0">Timestamp: ${new Date(error.timestamp).toLocaleString()}</p>
-                    </div>
-                `;
-                resultsSection.style.display = 'block';
-            }
-            
-            if (progressSection) progressSection.style.display = 'none';
-            
-            if (startBtn) {
-                startBtn.disabled = false;
-                startBtn.innerHTML = '<i class="bi bi-play-circle"></i> Start Crawl';
-            }
-        }
-        
-        // UI Helper Functions
-        function addPageToLiveList(pageEvent) {
-            const livePagesList = document.getElementById('livePagesList');
-            const livePagesSection = document.getElementById('livePagesSection');
-            
-            if (!livePagesList) return;
-            
-            // Show section if hidden
-            if (livePagesSection && livePagesSection.style.display === 'none') {
-                livePagesSection.style.display = 'block';
-            }
-            
-            const statusBadge = pageEvent.isSuccess 
-                ? `<span class="badge bg-success">${pageEvent.statusCode}</span>`
-                : `<span class="badge bg-danger">${pageEvent.statusCode}</span>`;
-            
-            const pageItem = document.createElement('div');
-            pageItem.className = 'list-group-item list-group-item-action';
-            pageItem.innerHTML = `
-                <div class="d-flex w-100 justify-content-between align-items-center">
-                    <div class="flex-grow-1" style="min-width: 0;">
-                        <h6 class="mb-1 text-truncate">${pageEvent.title || 'Untitled'}</h6>
-                        <small class="text-muted text-truncate d-block">${pageEvent.url}</small>
-                    </div>
-                    <div class="ms-2 text-end">
-                        ${statusBadge}
-                        <small class="d-block text-muted">Depth: ${pageEvent.depth}</small>
-                    </div>
-                </div>
-            `;
-            
-            // Add animation
-            pageItem.style.opacity = '0';
-            livePagesList.insertBefore(pageItem, livePagesList.firstChild);
-            
-            // Trigger animation
-            setTimeout(() => {
-                pageItem.style.transition = 'opacity 0.5s';
-                pageItem.style.opacity = '1';
-            }, 10);
-            
-            // Limit list to 50 items
-            while (livePagesList.children.length > 50) {
-                livePagesList.removeChild(livePagesList.lastChild);
-            }
-        }
-        
-        function updateCounter(elementId, value) {
-            const element = document.getElementById(elementId);
-            if (element) {
-                element.textContent = value;
-            }
-        }
-        
-        function truncateUrl(url, maxLength = 50) {
-            if (!url || url.length <= maxLength) return url;
-            return url.substring(0, maxLength) + '...';
-        }
-        
-        function formatDuration(duration) {
-            if (!duration) return 'N/A';
-            
-            // Handle TimeSpan format from C# (e.g., "00:01:23.4567890")
-            if (typeof duration === 'string') {
-                const parts = duration.split(':');
-                if (parts.length >= 3) {
-                    const hours = parseInt(parts[0]);
-                    const minutes = parseInt(parts[1]);
-                    const seconds = Math.floor(parseFloat(parts[2]));
-                    
-                    if (hours > 0) {
-                        return `${hours}h ${minutes}m ${seconds}s`;
-                    } else if (minutes > 0) {
-                        return `${minutes}m ${seconds}s`;
-                    } else {
-                        return `${seconds}s`;
-                    }
-                }
-            }
-            
-            return duration;
-        }
-        
-        function resetUI() {
-            // Clear maps
-            crawledPagesMap.clear();
-            crawlStartTime = null;
-            
-            // Reset counters
-            updateCounter('pagesCount', 0);
-            updateCounter('successCount', 0);
-            updateCounter('failureCount', 0);
-            updateCounter('queueCount', 0);
-            
-            // Reset progress bar
-            const progressBar = document.getElementById('progressBar');
-            if (progressBar) {
-                progressBar.style.width = '0%';
-                progressBar.setAttribute('aria-valuenow', 0);
-                progressBar.textContent = '0%';
-            }
-            
-            // Clear current URL
-            const currentUrl = document.getElementById('currentUrl');
-            if (currentUrl) {
-                currentUrl.innerHTML = '<small class="text-muted">Ready to start...</small>';
-            }
-            
-            // Clear live pages list
-            const livePagesList = document.getElementById('livePagesList');
-            if (livePagesList) {
-                livePagesList.innerHTML = '';
-            }
-            
-            // Hide sections
-            document.getElementById('resultsSection').style.display = 'none';
-            document.getElementById('livePagesSection').style.display = 'none';
-        }
-        
-        // SignalR Initialization
-        function initializeSignalR() {
-            console.log("[Crawler] initializeSignalR called");
-            
-            try {
-                connection = new signalR.HubConnectionBuilder()
-                    .withUrl("/crawlHub")
-                    .withAutomaticReconnect()
-                    .configureLogging(signalR.LogLevel.Information)
-                    .build();
+    console.log('[Crawler] All elements found, attaching handlers');
 
-                console.log("[Crawler] SignalR connection object created");
+    function showOnly(el) {
+        [crawlingState, errorState, resultsState].forEach(function (e) {
+            if (e) { e.style.display = 'none'; }
+        });
+        if (el) { el.style.display = ''; }
+    }
 
-                // Register event handlers
-                connection.on("PageCrawled", handlePageCrawled);
-                connection.on("CrawlProgress", handleCrawlProgress);
-                connection.on("CrawlStatistics", handleCrawlStatistics);
-                connection.on("CrawlResults", handleCrawlResults);
-                connection.on("CrawlError", handleCrawlError);
-                
-                // Legacy handler for backward compatibility
-                connection.on("UrlFound", function (message) {
-                    console.log("[Crawler] SignalR UrlFound (legacy):", message);
-                });
+    function setLoading(url) {
+        crawlBtn.disabled = true;
+        crawlBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Crawling...';
+        if (crawlingMsg) { crawlingMsg.textContent = 'Crawling ' + url + ' \u2014 please wait\u2026'; }
+        showOnly(crawlingState);
+    }
 
-                console.log("[Crawler] Starting SignalR connection...");
-                connection.start().then(() => {
-                    console.log("[Crawler] ✅ SignalR connected successfully!");
-                    console.log("[Crawler] Connection ID:", connection.connectionId);
-                }).catch(function (err) {
-                    console.error("[Crawler] ❌ SignalR connection error:", err);
-                });
-            } catch (error) {
-                console.error("[Crawler] ❌ Error initializing SignalR:", error);
-            }
-        }
-        
-        // Form Submission Handler
-        async function handleCrawlerFormSubmit(e) {
-            e.preventDefault();
-            console.log("[Crawler] Form submitted");
+    function resetButton() {
+        crawlBtn.disabled = false;
+        crawlBtn.innerHTML = '<i class="bi bi-play-fill"></i> Start Crawl';
+    }
 
-            const startBtn = document.getElementById('startCrawlBtn');
-            const progressSection = document.getElementById('progressSection');
-            
-            if (!startBtn) return;
-            
-            // Reset UI
-            resetUI();
-            
-            // Get form values
-            const request = {
-                url: document.getElementById('url')?.value || '',
-                maxDepth: parseInt(document.getElementById('maxDepth')?.value || '0', 10),
-                maxPages: parseInt(document.getElementById('maxPages')?.value || '0', 10),
-                delayMs: parseInt(document.getElementById('delayMs')?.value || '0', 10),
-                respectRobotsTxt: document.getElementById('respectRobotsTxt')?.checked || false,
-                discoverFromSitemap: document.getElementById('discoverFromSitemap')?.checked || false,
-                userAgent: document.getElementById('userAgent')?.value || ''
-            };
+    function formatMs(ms) {
+        if (!ms || ms < 1000) { return (ms || 0) + 'ms'; }
+        return (ms / 1000).toFixed(1) + 's';
+    }
 
-            if (!request.url) {
-                alert('Please enter a valid URL');
-                return;
-            }
+    function statusBadge(code, ok) {
+        return '<span class="badge ' + (ok ? 'bg-success' : 'bg-danger') + '">' + code + '</span>';
+    }
 
-            console.log("[Crawler] Request:", request);
+    function escHtml(str) {
+        if (!str) { return ''; }
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
 
-            // Show progress section
-            if (progressSection) progressSection.style.display = 'block';
+    function renderResults(data) {
+        document.getElementById('statTotal').textContent    = data.totalPages;
+        document.getElementById('statSuccess').textContent  = data.successCount;
+        document.getElementById('statFailed').textContent   = data.failureCount;
+        document.getElementById('statDuration').textContent = formatMs(data.durationMs);
 
-            // Disable button
-            startBtn.disabled = true;
-            startBtn.innerHTML = '<i class="bi bi-hourglass"></i> Crawling...';
-            
-            crawlStartTime = Date.now();
+        var badges = [];
+        if (data.robotsTxtRespected) { badges.push('<span class="badge bg-success me-1"><i class="bi bi-shield-check"></i> robots.txt</span>'); }
+        if (data.sitemapDiscovery)   { badges.push('<span class="badge bg-info text-dark me-1"><i class="bi bi-diagram-3"></i> sitemap/RSS</span>'); }
+        badges.push('<span class="badge bg-secondary me-1">depth \u2264 ' + data.maxDepth + '</span>');
+        badges.push('<span class="badge bg-secondary me-1">limit ' + data.maxPagesLimit + ' pages</span>');
+        document.getElementById('metaBadges').innerHTML = badges.join('');
 
-            try {
-                const response = await fetch('/Crawler/Crawl', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(request)
-                });
+        var tbody = document.getElementById('resultsTableBody');
+        tbody.innerHTML = '';
 
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-                    throw new Error(errorData.error || `HTTP ${response.status}`);
-                }
-
-                const result = await response.json();
-                console.log('[Crawler] Crawl initiated:', result);
-            } catch (error) {
-                console.error('[Crawler] Crawl error:', error);
-                alert(`Error starting crawl: ${error.message}`);
-                
-                startBtn.disabled = false;
-                startBtn.innerHTML = '<i class="bi bi-play-circle"></i> Start Crawl';
-                
-                if (progressSection) progressSection.style.display = 'none';
-            }
-        }
-        
-        // Wait for SignalR
-        function waitForSignalR(callback, maxAttempts = 50) {
-            let attempts = 0;
-            const checkSignalR = setInterval(() => {
-                attempts++;
-                if (typeof signalR !== 'undefined') {
-                    clearInterval(checkSignalR);
-                    console.log(`[Crawler] ✅ SignalR loaded after ${attempts} checks`);
-                    callback();
-                } else if (attempts >= maxAttempts) {
-                    clearInterval(checkSignalR);
-                    console.error(`[Crawler] ❌ SignalR failed to load after ${maxAttempts} attempts`);
-                }
-            }, 100);
-        }
-        
-        // Page Initialization
-        function initializeCrawlerPage() {
-            console.log("[Crawler] Initializing crawler page...");
-            waitForSignalR(initializeSignalR);
-
-            const crawlerForm = document.getElementById('crawlerForm');
-            if (crawlerForm) {
-                crawlerForm.addEventListener('submit', handleCrawlerFormSubmit);
-            }
-            
-            // Clear pages button
-            const clearPagesBtn = document.getElementById('clearPagesBtn');
-            if (clearPagesBtn) {
-                clearPagesBtn.addEventListener('click', () => {
-                    const livePagesList = document.getElementById('livePagesList');
-                    if (livePagesList) {
-                        livePagesList.innerHTML = '';
-                    }
-                });
-            }
-        }
-
-        if (document.readyState === 'loading') {
-            console.log("[Crawler] Waiting for DOM to finish loading...");
-            document.addEventListener('DOMContentLoaded', initializeCrawlerPage);
+        if (!data.pages || data.pages.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-3">No pages returned.</td></tr>';
         } else {
-            initializeCrawlerPage();
+            data.pages.forEach(function (p, i) {
+                var urlCell = '<a href="' + escHtml(p.url) + '" target="_blank" rel="noopener" class="text-truncate d-block" style="max-width:340px">' + escHtml(p.url) + '</a>';
+                if (p.title)  { urlCell += '<small class="text-muted">' + escHtml(p.title) + '</small>'; }
+                if (p.errors) { urlCell += '<br><small class="text-danger"><i class="bi bi-exclamation-circle"></i> ' + escHtml(p.errors) + '</small>'; }
+
+                tbody.insertAdjacentHTML('beforeend',
+                    '<tr>'
+                    + '<td class="text-muted">' + (i + 1) + '</td>'
+                    + '<td>' + urlCell + '</td>'
+                    + '<td class="text-center">' + statusBadge(p.statusCode, p.isSuccess) + '</td>'
+                    + '<td class="text-center">' + p.depth + '</td>'
+                    + '<td class="text-center">' + p.linksFound + '</td>'
+                    + '<td class="text-end small text-muted">' + formatMs(p.elapsedMs) + '</td>'
+                    + '</tr>');
+            });
         }
-    </script>
+
+        showOnly(resultsState);
+        console.log('[Crawler] Results rendered: ' + data.totalPages + ' pages');
+    }
+
+    crawlBtn.addEventListener('click', function () {
+        var url       = (document.getElementById('crawlUrl').value || '').trim();
+        var maxPages  = parseInt(document.getElementById('maxPages').value, 10);
+        var maxDepth  = parseInt(document.getElementById('maxDepth').value, 10);
+        var robotsTxt = document.getElementById('robotsTxt').checked;
+        var sitemap   = document.getElementById('sitemapDiscover').checked;
+
+        console.log('[Crawler] Starting crawl:', url, 'maxPages:', maxPages, 'maxDepth:', maxDepth);
+
+        if (!url) {
+            alert('Please enter a URL.');
+            return;
+        }
+
+        setLoading(url);
+
+        fetch('/Crawler/Crawl', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url: url, maxPages: maxPages, maxDepth: maxDepth, respectRobotsTxt: robotsTxt, discoverFromSitemap: sitemap })
+        })
+        .then(function (res) {
+            return res.json().then(function (body) { return { ok: res.ok, status: res.status, body: body }; });
+        })
+        .then(function (r) {
+            resetButton();
+            if (!r.ok) {
+                var msg = (r.body && r.body.error) ? r.body.error : ('HTTP ' + r.status);
+                console.error('[Crawler] Server error:', msg);
+                if (errorMessage) { errorMessage.textContent = msg; }
+                showOnly(errorState);
+            } else {
+                renderResults(r.body);
+            }
+        })
+        .catch(function (err) {
+            resetButton();
+            console.error('[Crawler] Fetch error:', err);
+            if (errorMessage) { errorMessage.textContent = err.message || 'Unexpected error'; }
+            showOnly(errorState);
+        });
+    });
+
+    if (crawlAgainBtn) {
+        crawlAgainBtn.addEventListener('click', function () {
+            showOnly(null);
+            var urlInput = document.getElementById('crawlUrl');
+            if (urlInput) { urlInput.focus(); }
+        });
+    }
+
+    console.log('[Crawler] Ready');
+});
+</script>
 }
