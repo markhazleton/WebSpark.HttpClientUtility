@@ -246,12 +246,12 @@ services.AddHttpClientCrawler();</code></pre>
     </div>
 </div>
 
-@section Scripts {
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    'use strict';
+console.log('[Crawler Page] Script loading...');
 
-    console.log('[Crawler] Script initializing');
+// Simple click handler - no DOMContentLoaded, no complexity
+document.getElementById('crawlBtn').addEventListener('click', function() {
+    console.log('[Crawler] Button clicked!');
 
     var crawlBtn       = document.getElementById('crawlBtn');
     var crawlingState  = document.getElementById('crawlingState');
@@ -260,13 +260,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var errorMessage   = document.getElementById('errorMessage');
     var resultsState   = document.getElementById('resultsState');
     var crawlAgainBtn  = document.getElementById('crawlAgainBtn');
-
-    if (!crawlBtn) {
-        console.error('[Crawler] crawlBtn not found — aborting init');
-        return;
-    }
-
-    console.log('[Crawler] All elements found, attaching handlers');
 
     function showOnly(el) {
         [crawlingState, errorState, resultsState].forEach(function (e) {
@@ -341,58 +334,56 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('[Crawler] Results rendered: ' + data.totalPages + ' pages');
     }
 
-    crawlBtn.addEventListener('click', function () {
-        var url       = (document.getElementById('crawlUrl').value || '').trim();
-        var maxPages  = parseInt(document.getElementById('maxPages').value, 10);
-        var maxDepth  = parseInt(document.getElementById('maxDepth').value, 10);
-        var robotsTxt = document.getElementById('robotsTxt').checked;
-        var sitemap   = document.getElementById('sitemapDiscover').checked;
+    // Get form values
+    var url       = (document.getElementById('crawlUrl').value || '').trim();
+    var maxPages  = parseInt(document.getElementById('maxPages').value, 10);
+    var maxDepth  = parseInt(document.getElementById('maxDepth').value, 10);
+    var robotsTxt = document.getElementById('robotsTxt').checked;
+    var sitemap   = document.getElementById('sitemapDiscover').checked;
 
-        console.log('[Crawler] Starting crawl:', url, 'maxPages:', maxPages, 'maxDepth:', maxDepth);
+    console.log('[Crawler] Starting crawl:', url, 'maxPages:', maxPages, 'maxDepth:', maxDepth);
 
-        if (!url) {
-            alert('Please enter a URL.');
-            return;
-        }
-
-        setLoading(url);
-
-        fetch('/Crawler/Crawl', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: url, maxPages: maxPages, maxDepth: maxDepth, respectRobotsTxt: robotsTxt, discoverFromSitemap: sitemap })
-        })
-        .then(function (res) {
-            return res.json().then(function (body) { return { ok: res.ok, status: res.status, body: body }; });
-        })
-        .then(function (r) {
-            resetButton();
-            if (!r.ok) {
-                var msg = (r.body && r.body.error) ? r.body.error : ('HTTP ' + r.status);
-                console.error('[Crawler] Server error:', msg);
-                if (errorMessage) { errorMessage.textContent = msg; }
-                showOnly(errorState);
-            } else {
-                renderResults(r.body);
-            }
-        })
-        .catch(function (err) {
-            resetButton();
-            console.error('[Crawler] Fetch error:', err);
-            if (errorMessage) { errorMessage.textContent = err.message || 'Unexpected error'; }
-            showOnly(errorState);
-        });
-    });
-
-    if (crawlAgainBtn) {
-        crawlAgainBtn.addEventListener('click', function () {
-            showOnly(null);
-            var urlInput = document.getElementById('crawlUrl');
-            if (urlInput) { urlInput.focus(); }
-        });
+    if (!url) {
+        alert('Please enter a URL.');
+        return;
     }
 
-    console.log('[Crawler] Ready');
+    setLoading(url);
+
+    fetch('/Crawler/Crawl', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: url, maxPages: maxPages, maxDepth: maxDepth, respectRobotsTxt: robotsTxt, discoverFromSitemap: sitemap })
+    })
+    .then(function (res) {
+        return res.json().then(function (body) { return { ok: res.ok, status: res.status, body: body }; });
+    })
+    .then(function (r) {
+        resetButton();
+        if (!r.ok) {
+            var msg = (r.body && r.body.error) ? r.body.error : ('HTTP ' + r.status);
+            console.error('[Crawler] Server error:', msg);
+            if (errorMessage) { errorMessage.textContent = msg; }
+            showOnly(errorState);
+        } else {
+            renderResults(r.body);
+        }
+    })
+    .catch(function (err) {
+        resetButton();
+        console.error('[Crawler] Fetch error:', err);
+        if (errorMessage) { errorMessage.textContent = err.message || 'Unexpected error'; }
+        showOnly(errorState);
+    });
 });
-</script>
+
+if (crawlAgainBtn) {
+    crawlAgainBtn.addEventListener('click', function () {
+        showOnly(null);
+        var urlInput = document.getElementById('crawlUrl');
+        if (urlInput) { urlInput.focus(); }
+    });
 }
+
+console.log('[Crawler] Page loaded - click handler attached');
+</script>

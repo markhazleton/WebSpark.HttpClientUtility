@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
     <ProjectReference Include="..\WebSpark.HttpClientUtility\WebSpark.HttpClientUtility.csproj" />
@@ -42,20 +42,16 @@
     <None Include="ClientApp\**" Exclude="ClientApp\node_modules\**" />
   </ItemGroup>
 
-  <!-- NPM Install - Only if node_modules doesn't exist and NPM build is enabled -->
-  <Target Name="NpmInstall" BeforeTargets="Build" Condition="!Exists('node_modules') AND '$(SkipNpmBuild)' == 'false' AND Exists('package.json')">
+  <!-- NPM Install - Runs on every build to ensure packages are up to date -->
+  <Target Name="NpmInstall" BeforeTargets="Build" Condition="'$(SkipNpmBuild)' == 'false' AND Exists('package.json')">
     <Message Importance="high" Text="Running npm install..." />
     <Exec Command="$(NpmCommand) install" WorkingDirectory="$(ProjectDir)" />
   </Target>
 
-  <!-- NPM Build - Before ASP.NET Core build -->
-  <Target Name="NpmBuild" BeforeTargets="Build" DependsOnTargets="NpmInstall" Condition="'$(SkipNpmBuild)' == 'false' AND Exists('node_modules') AND Exists('package.json')">
+  <!-- NPM Build - Runs on every build to ensure fresh Vite output -->
+  <Target Name="NpmBuild" BeforeTargets="Build" DependsOnTargets="NpmInstall" Condition="'$(SkipNpmBuild)' == 'false' AND Exists('package.json')">
     <Message Importance="high" Text="Running Vite build ($(NodeEnv))..." />
-    <!-- Allow build to continue even if npm fails (e.g., due to file locks in Visual Studio) -->
-    <!-- The build output is likely already present from a previous successful build -->
-    <Exec Command="$(NpmCommand) run build" WorkingDirectory="$(ProjectDir)" EnvironmentVariables="NODE_ENV=$(NodeEnv)" IgnoreExitCode="true" ContinueOnError="true" />
-    <!-- Verify dist folder exists (from current or previous build) -->
-    <Error Condition="!Exists('$(ProjectDir)wwwroot\dist')" Text="Vite build failed and no previous build output found in wwwroot\dist. Run 'npm run build' manually to fix." />
+    <Exec Command="$(NpmCommand) run build" WorkingDirectory="$(ProjectDir)" EnvironmentVariables="NODE_ENV=$(NodeEnv)" />
   </Target>
 
   <!-- Clean NPM artifacts with retry logic -->
