@@ -20,14 +20,18 @@
 		<Summary>Drop-in HttpClient wrapper for .NET 8-10 LTS with Polly resilience, response caching,
 			and OpenTelemetry—configured in one line. Eliminates boilerplate setup for retries,
 			circuit breakers, correlation IDs, and structured logging.</Summary>
-		<Description>Drop-in HttpClient wrapper for .NET 8-10 LTS with Polly resilience, response
+		<Description>Drop-in HttpClient wrapper for .NET 8-10 with Polly resilience, response
 			caching, and OpenTelemetry. One-line setup eliminates boilerplate for retries, circuit
 			breakers, correlation IDs, and structured logging. Perfect for microservices, APIs, and
 			web scrapers. Includes authentication providers (Bearer, Basic, API Key), concurrent
-			requests, fire-and-forget operations, and streaming support. MIT licensed, 252+ tests.
-			Supports .NET 8 LTS (until Nov 2026) and .NET 10 LTS (until Nov 2028).
+			requests, fire-and-forget operations, and streaming support. MIT licensed, 237 unique tests
+			(711 test runs across 3 frameworks). Supports .NET 8 LTS (until Nov 2026), .NET 9, and .NET 10.
 			For web crawling features, see WebSpark.HttpClientUtility.Crawler package.</Description>
 		<PackageReleaseNotes>
+			2.2.1 - Critical Fixes: Fixed cache key collision causing data leakage between authenticated
+			requests. Fixed race condition in BearerTokenAuthenticationProvider token refresh with thread-safe
+			implementation. Fixed HttpClient instance sharing and resource leaks. Fixed retry policy to only
+			retry transient errors. Added configuration validation. All 711 tests passing. Zero breaking changes.
 			2.2.0 - Quality &amp; Tooling: Added Source Link debugging, symbol packages (.snupkg),
 			trimming/AOT readiness with RequiresUnreferencedCode/RequiresDynamicCode annotations,
 			package baseline validation, explicit ILLink.Tasks 10.0.1 reference, zero-warning build
@@ -37,7 +41,7 @@
 			MODERATE) and glob command injection (GHSA-5j98-mcp5-4vw2, HIGH) in documentation build
 			dependencies. All Dependabot alerts resolved. Zero breaking changes.
 			2.1.1 - GitHub Actions: Fixed package verification step. Zero breaking changes.
-			2.1.0 - Added .NET 10 (Preview) multi-targeting support. All projects now target net8.0,
+			2.1.0 - Added .NET 10 multi-targeting support. All projects now target net8.0,
 			net9.0, and net10.0. Updated Microsoft.Extensions packages to 10.0.0. All 291 tests
 			passing on all three frameworks (873 test runs, 0 failures). Zero breaking changes.
 			2.0.0 - MAJOR: Package split into base + crawler. Base package now 163 KB with 10

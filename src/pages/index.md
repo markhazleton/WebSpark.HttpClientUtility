@@ -22,7 +22,7 @@ permalink: /
 ## Why Choose This Library?
 
 - **One-Line Setup**: Simple service registration with `AddHttpClientUtility()`
-- **Battle-Tested**: 252+ passing tests, production-ready for .NET 8 LTS and .NET 9
+- **Battle-Tested**: 237 unique tests (711 test runs across 3 frameworks), production-ready for .NET 8 LTS, .NET 9, and .NET 10
 - **Zero Boilerplate**: Eliminate repetitive HTTP client code
 - **Enterprise-Grade**: Used in production applications with proven reliability
 

@@ -29,7 +29,7 @@ Stop writing 50+ lines of HttpClient setup. Get enterprise-grade resilience (ret
 | OpenTelemetry | ✅ Built-in | ❌ Manual ActivitySource | ❌ Manual | ❌ Manual |
 | Structured Logging | ✅ Rich context | ❌ Manual ILogger | ⭐⭐ Basic | ⭐⭐ Basic |
 | Web Crawling | ✅ Separate package | ❌ No | ❌ No | ❌ No |
-| Production Trust | ✅ 252+ tests, LTS support | ✅ Microsoft-backed | ✅ Popular (7M+ downloads) | ✅ Popular (10M+ downloads) |
+| Production Trust | ✅ 237 unique tests, LTS support | ✅ Microsoft-backed | ✅ Popular (7M+ downloads) | ✅ Popular (10M+ downloads) |
 
 **When to use WebSpark:**
 
@@ -58,7 +58,7 @@ Stop writing 50+ lines of HttpClient setup. Get enterprise-grade resilience (ret
 - ✅ **Continuous Integration** via GitHub Actions - every commit tested
 - ✅ **Semantic Versioning** - predictable, safe upgrades
 - ✅ **Zero breaking changes** within major versions - backward compatibility guaranteed
-- ✅ **Framework Support:** .NET 8 LTS (until Nov 2026), .NET 9, .NET 10 LTS (until Nov 2028)
+- ✅ **Framework Support:** .NET 8 LTS (until Nov 2026), .NET 9, .NET 10
 - ✅ **MIT Licensed** - free for commercial use
 
 **Support & Maintenance**
@@ -138,7 +138,7 @@ That's it! You now have:
 - ✅ Structured logging with request/response details
 - ✅ Request timing telemetry
 - ✅ Proper error handling and exception management
-- ✅ Support for .NET 8 LTS, .NET 9, and .NET 10 (Preview)
+- ✅ Support for .NET 8 LTS, .NET 9, and .NET 10
 
 <details>
 <summary>📖 Show more: Service-based pattern with error handling</summary>
@@ -344,7 +344,7 @@ builder.Services.AddHttpClientUtilityWithAllFeatures();
 **No code changes required!** Simply upgrade:
 
 ```bash
-dotnet add package WebSpark.HttpClientUtility --version 2.0.0
+dotnet add package WebSpark.HttpClientUtility
 ```
 
 Your existing code continues to work exactly as before. All core HTTP features (authentication, caching, resilience, telemetry, etc.) are still in the base package with the same API.
@@ -355,7 +355,7 @@ Three simple steps to migrate:
 
 **Step 1**: Install the crawler package
 ```bash
-dotnet add package WebSpark.HttpClientUtility.Crawler --version 2.0.0
+dotnet add package WebSpark.HttpClientUtility.Crawler
 ```
 
 **Step 2**: Add using directive
@@ -408,8 +408,8 @@ Contributions are welcome! See our [Contributing Guide](documentation/CONTRIBUTI
 
 ## 📊 Project Stats
 
-- **252+ Unit Tests** - 100% passing
-- **Supports .NET 8 LTS, .NET 9, & .NET 10 (Preview)**
+- **237 Unique Unit Tests (711 test runs)** - 100% passing across .NET 8, 9, and 10
+- **Supports .NET 8 LTS, .NET 9, & .NET 10**
 - **MIT Licensed** - Free for commercial use
 - **Active Maintenance** - Regular updates
 

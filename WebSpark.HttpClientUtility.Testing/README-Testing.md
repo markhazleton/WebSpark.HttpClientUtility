@@ -95,7 +95,7 @@ For complete documentation, visit: [https://markhazleton.github.io/WebSpark.Http
 ## Requirements
 
 - .NET 8, .NET 9, or .NET 10
-- WebSpark.HttpClientUtility 2.1.0 or higher
+- WebSpark.HttpClientUtility 2.2.1 or higher
 
 ## License
 

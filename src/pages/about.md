@@ -48,7 +48,7 @@ Each decorator wraps the layer below it, adding functionality while maintaining 
 
 ## Technology Stack
 
-- **Frameworks**: .NET 8.0 (LTS), .NET 9.0
+- **Frameworks**: .NET 8.0 (LTS), .NET 9.0, .NET 10.0
 - **Resilience**: Polly for retry and circuit breaker patterns
 - **Caching**: Microsoft.Extensions.Caching.Memory
 - **Telemetry**: OpenTelemetry with OTLP support
@@ -56,31 +56,37 @@ Each decorator wraps the layer below it, adding functionality while maintaining 
 
 ## Version History
 
-### v1.4.0 (Current)
-- Added .NET 8 LTS support alongside .NET 9
-- Simplified DI registration with multiple quick-start methods
-- Improved documentation and test coverage
+### v2.2.1 (Current)
+- Critical bug fixes for cache key collision and thread safety
+- Enhanced security with proper credential handling
+- Fixed resource leaks and retry policy improvements
+- Zero breaking changes
 
-### v1.3.2
-- Fixed test reliability and improved mock patterns
-- Enhanced code quality with stricter analysis
+### v2.2.0
+- Modern Vite/NPM build pipeline for demo application
+- Enhanced NuGet package quality with Source Link and symbol packages
+- Trimming and AOT readiness annotations
+- Zero-warning build pipeline
 
-### v1.3.1
-- Enhanced CurlCommandSaver with batch processing
-- Added file rotation for CURL command storage
+### v2.1.0
+- Added .NET 10 multi-targeting support
+- Updated Microsoft.Extensions packages to 10.0.0
+- All tests passing on .NET 8, 9, and 10
 
-### v1.3.0
-- Removed deprecated Jaeger exporter
-- Modernized OpenTelemetry to use OTLP standard
-- Breaking change: Updated telemetry configuration
+### v2.0.0
+- Major: Package split into base + crawler packages
+- Base package reduced to 163 KB with 10 dependencies
+- Zero breaking changes for core HTTP users
 
 ## Quality Assurance
 
-- **252+ Passing Tests**: Comprehensive test coverage with MSTest
+- **237 Unique Tests (711 test runs)**: Comprehensive test coverage across .NET 8, 9, and 10 with MSTest
 - **Strong Naming**: Assembly signed for enterprise scenarios
 - **Nullable Reference Types**: Full nullability annotations
 - **Code Analysis**: Warning level 5 with .NET analyzers enabled
-- **Multi-Targeting**: Both .NET 8 LTS and .NET 9 supported
+- **Multi-Targeting**: .NET 8 LTS, .NET 9, and .NET 10 supported
+- **Source Link**: Step-through debugging with symbol packages
+- **Zero-Warning Builds**: Strict code quality enforcement
 
 ## Contributing
 

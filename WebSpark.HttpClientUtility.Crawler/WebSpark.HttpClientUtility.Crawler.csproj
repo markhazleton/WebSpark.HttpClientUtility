@@ -22,12 +22,14 @@
 			SimpleSiteCrawler with robots.txt compliance, HTML link extraction (HtmlAgilityPack),
 			sitemap generation (Markdig), CSV export (CsvHelper), and real-time SignalR progress
 			updates. Perfect for web scraping, SEO audits, and site analysis. Supports .NET 8 LTS
-			(until Nov 2026), .NET 9, and .NET 10 LTS (until Nov 2028). Requires WebSpark.HttpClientUtility
-			base package [2.2.0]. Install both packages and call AddHttpClientUtility() +
+			(until Nov 2026), .NET 9, and .NET 10. Requires WebSpark.HttpClientUtility
+			base package [2.2.1]. Install both packages and call AddHttpClientUtility() +
 			AddHttpClientCrawler() in your DI registration.</Description>
 		<PackageTags>
 			web-crawler;crawler;web-scraping;site-crawler;sitemap;sitemap-generator;robots-txt;html-parser;htmlagilitypack;signalr;csv-export;link-extraction;seo;seo-audit;content-migration;dotnet;aspnetcore;net8;net9;net10</PackageTags>
 		<PackageReleaseNotes>
+			2.2.1 - Version bump to maintain lockstep with base package. Requires base package [2.2.1].
+			All 27 crawler tests passing (81 runs across net8.0, net9.0, net10.0). Zero breaking changes.
 			2.2.0 - Quality &amp; Tooling: Added Source Link debugging, symbol packages (.snupkg), 
 			trimming/AOT readiness with RequiresUnreferencedCode/RequiresDynamicCode annotations, 
 			package baseline validation, explicit ILLink.Tasks 10.0.1 reference. Requires base 
@@ -38,7 +40,7 @@
 			package [2.1.2]. Zero breaking changes.
 			2.1.1 - Version bump to maintain lockstep with base package. Requires base package
 			[2.1.1]. Zero breaking changes.
-			2.1.0 - Added .NET 10 (Preview) multi-targeting support. All projects now target net8.0,
+			2.1.0 - Added .NET 10 multi-targeting support. All projects now target net8.0,
 			net9.0, and net10.0. Requires base package [2.1.0]. All 81 crawler tests passing on all
 			three frameworks (243 test runs, 0 failures). Zero breaking changes.
 		</PackageReleaseNotes>
