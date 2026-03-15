@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import path from 'path';
 import fs from 'fs';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default defineConfig({
   root: 'ClientApp',
@@ -22,7 +23,7 @@ export default defineConfig({
         entryFileNames: 'js/[name].[hash].js',
         chunkFileNames: 'js/[name].[hash].js',
         assetFileNames: (assetInfo) => {
-          const info = assetInfo.name.split('.');
+          const info = (assetInfo.names?.[0] ?? assetInfo.name ?? '').split('.');
           const extType = info[info.length - 1];
           
           if (/css/i.test(extType)) {
