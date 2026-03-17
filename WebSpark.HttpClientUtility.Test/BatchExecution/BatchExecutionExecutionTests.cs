@@ -84,7 +84,11 @@ public class BatchExecutionExecutionTests
                 It.IsAny<CancellationToken>()))
             .Returns<HttpRequestResult<string>, string, string, int, CancellationToken>((req, _, _, _, _) =>
             {
-                if (req.RequestPath.Contains("broken", StringComparison.OrdinalIgnoreCase))
+                var environmentName = req.RequestContext.TryGetValue("BatchEnvironment", out var value)
+                    ? value?.ToString()
+                    : null;
+
+                if (string.Equals(environmentName, "Broken", StringComparison.OrdinalIgnoreCase))
                 {
                     throw new HttpRequestException("Environment unreachable");
                 }
@@ -116,8 +120,16 @@ public class BatchExecutionExecutionTests
 
         Assert.AreEqual(6, result.TotalPlannedCount);
         Assert.AreEqual(6, result.CompletedCount);
-        Assert.IsTrue(result.Statistics.FailureCount > 0);
-        Assert.IsTrue(result.Statistics.SuccessCount > 0);
+        Assert.AreEqual(3, result.Statistics.FailureCount);
+        Assert.AreEqual(3, result.Statistics.SuccessCount);
+
+        var brokenResults = result.Results.Where(x => x.EnvironmentName == "Broken").ToArray();
+        Assert.AreEqual(3, brokenResults.Length);
+        Assert.IsTrue(brokenResults.All(x => !x.IsSuccess));
+
+        var healthyResults = result.Results.Where(x => x.EnvironmentName == "Healthy").ToArray();
+        Assert.AreEqual(3, healthyResults.Length);
+        Assert.IsTrue(healthyResults.All(x => x.IsSuccess));
     }
 
     private static BatchExecutionConfiguration CreateConfig(int count, int maxConcurrency)
