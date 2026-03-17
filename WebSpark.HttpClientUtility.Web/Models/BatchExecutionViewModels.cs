@@ -31,27 +31,35 @@ public sealed class DemoStartRunRequest
         {
             Environments =
             [
-                new BatchEnvironment { Name = "Local", BaseUrl = "https://localhost:5001" },
-                new BatchEnvironment { Name = "Staging", BaseUrl = "https://staging.example.com" }
+                new BatchEnvironment { Name = "SampleSparkUI Production", BaseUrl = "https://samplecrud.markhazleton.com" }
             ],
             Users =
             [
                 new BatchUserContext
                 {
-                    UserId = "john.doe",
+                    UserId = "sample.user",
                     Properties = new Dictionary<string, string>
                     {
-                        ["userId"] = "42",
-                        ["firstName"] = "John",
-                        ["lastName"] = "Doe"
+                        ["employeeId"] = "1"
                     }
                 }
             ],
             Requests =
             [
-                new BatchRequestDefinition { Name = "GetProfile", Method = "GET", PathTemplate = "/api/users/{userId}" }
+                new BatchRequestDefinition
+                {
+                    Name = "GetEmployeeList",
+                    Method = "GET",
+                    PathTemplate = "/api/employee?PageNumber=1&PageSize=10"
+                },
+                new BatchRequestDefinition
+                {
+                    Name = "GetEmployeeById",
+                    Method = "GET",
+                    PathTemplate = "/api/employee/{employeeId}"
+                }
             ],
-            Iterations = 2,
+            Iterations = 1,
             MaxConcurrency = 4
         };
     }
