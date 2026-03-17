@@ -82,15 +82,9 @@
     <div class="container">
       <div class="hero">
   <h1>WebSpark.HttpClientUtility</h1>
-  <p class="hero-tagline">Drop-in HttpClient wrapper for .NET 8-10 with Polly resilience, response
-			caching, and OpenTelemetry. One-line setup eliminates boilerplate for retries, circuit
-			breakers, correlation IDs, and structured logging. Perfect for microservices, APIs, and
-			web scrapers. Includes authentication providers (Bearer, Basic, API Key), concurrent
-			requests, fire-and-forget operations, and streaming support. MIT licensed, 237 unique tests
-			(711 test runs across 3 frameworks). Supports .NET 8 LTS (until Nov 2026), .NET 9, and .NET 10.
-			For web crawling features, see WebSpark.HttpClientUtility.Crawler package.</p>
+  <p class="hero-tagline">Drop-in HttpClient wrapper for .NET 8-10 with Polly resilience, response caching, OpenTelemetry, and batch execution orchestration. One-line setup eliminates boilerplate for retries, circuit breakers, correlation IDs, and structured logging. Perfect for microservices, APIs, and web scrapers. Includes authentication providers (Bearer, Basic, API Key), concurrent requests, fire-and-forget operations, streaming support, and environment x user x request batch runs with progress and statistics. Supports .NET 8 LTS (until Nov 2026), .NET 9, and .NET 10. For web crawling features, see WebSpark.HttpClientUtility.Crawler package.</p>
   <div class="hero-stats">
-    <span class="stat">v2.2.1</span>
+    <span class="stat">v2.5.0</span>
     <span class="stat">4.1K downloads</span>
   </div>
   <div class="hero-cta">
@@ -100,7 +94,7 @@
 <h2>Why Choose This Library?</h2>
 <ul>
 <li><strong>One-Line Setup</strong>: Simple service registration with <code>AddHttpClientUtility()</code></li>
-<li><strong>Battle-Tested</strong>: 237 unique tests (711 test runs across 3 frameworks), production-ready for .NET 8 LTS, .NET 9, and .NET 10</li>
+<li><strong>Battle-Tested</strong>: Comprehensive automated test coverage across .NET 8 LTS, .NET 9, and .NET 10</li>
 <li><strong>Zero Boilerplate</strong>: Eliminate repetitive HTTP client code</li>
 <li><strong>Enterprise-Grade</strong>: Used in production applications with proven reliability</li>
 </ul>
@@ -155,6 +149,7 @@ if (result.IsSuccessStatusCode)
 <li><strong>Resilience Layer</strong>: Polly-based retry and circuit breaker policies</li>
 <li><strong>Telemetry Layer</strong>: OpenTelemetry integration with metrics and tracing</li>
 <li><strong>Web Crawler</strong>: Full-featured web crawling with robots.txt support</li>
+<li><strong>Batch Execution</strong>: Environment x user x request orchestration with progress and percentiles</li>
 <li><strong>Authentication</strong>: Multiple authentication providers (Bearer, Basic, API Key)</li>
 <li><strong>Testing Utilities</strong>: Mock service for unit testing</li>
 </ul>
@@ -171,6 +166,7 @@ if (result.IsSuccessStatusCode)
 <ul>
 <li>.NET 8.0 LTS (Long-Term Support)</li>
 <li>.NET 9.0 (Latest)</li>
+<li>.NET 10.0 (Latest)</li>
 </ul>
 <h2>License</h2>
 <p>Licensed under MIT. Free for commercial and open-source use.</p>
@@ -183,7 +179,7 @@ if (result.IsSuccessStatusCode)
     <div class="footer-content">
       <div class="footer-section">
         <h3>WebSpark.HttpClientUtility</h3>
-        <p>Version 2.2.1</p>
+        <p>Version 2.5.0</p>
         
       </div>
       

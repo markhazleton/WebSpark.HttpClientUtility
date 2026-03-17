@@ -5,6 +5,46 @@ All notable changes to the WebSpark.HttpClientUtility project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2026-03-17
+
+### Added
+
+- Batch execution orchestration hardening and validation improvements
+  - Strengthened validation paths and result-statistics checks in test and demo flows
+  - Refined dependency resolution strategy in batch demo services for scoped lifetimes
+
+### Changed
+
+- Updated lockstep package versions for base and crawler packages to `2.5.0`
+- Updated package metadata and release notes to reflect cumulative 2.3.x-2.5.x changes
+
+### Security
+
+- Incorporated npm dependency updates and security-driven patch upgrades from recent Dependabot activity
+
+### Notes
+
+- Non-breaking release focused on stability, maintenance, and release metadata alignment
+
+## [2.4.0] - 2026-03-17
+
+### Added
+
+- Batch execution demo UX enhancements in the web app
+  - Improved tooltip/popover initialization and batch-run interaction flow
+  - Refined sample endpoint configuration and operator guidance text
+
+### Changed
+
+- Updated .NET and npm dependency sets across the solution
+  - NuGet dependency rollups across projects
+  - Vite, ESLint, Stylelint, Bootstrap, and related frontend toolchain upgrades
+- Regenerated documentation site outputs and updated published docs content
+
+### Notes
+
+- No breaking API changes; release focused on tooling, docs, and user experience improvements
+
 ## [2.3.0] - 2026-03-17
 
 ### Added

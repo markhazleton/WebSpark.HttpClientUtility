@@ -212,11 +212,10 @@ This design allows you to:
 
 ## Production Ready
 
-- **252+ Passing Tests**: Comprehensive test coverage with MSTest
+- **Comprehensive test coverage**: Verified across .NET 8, .NET 9, and .NET 10
 - **Strong Naming**: Assembly is signed for enterprise scenarios
 - **Nullable Reference Types**: Full nullability annotations
 - **Code Analysis**: Warning level 5 with .NET analyzers enabled
-- **Multi-Targeting**: Supports both .NET 8 LTS and .NET 9
 - **Multi-Targeting**: Supports .NET 8 LTS, .NET 9, and .NET 10
 
 ## Next Steps

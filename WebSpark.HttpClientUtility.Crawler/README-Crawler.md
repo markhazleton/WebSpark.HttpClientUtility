@@ -6,7 +6,7 @@ Web crawling extension for [WebSpark.HttpClientUtility](https://www.nuget.org/pa
 
 This package provides enterprise-grade web crawling capabilities with robots.txt compliance, HTML parsing, sitemap generation, and real-time progress tracking via SignalR.
 
-**Important**: This is an extension package. You must also install the base package `WebSpark.HttpClientUtility` version 2.2.1.
+**Important**: This is an extension package. You must also install the base package `WebSpark.HttpClientUtility` version 2.5.0.
 
 ## Features
 
@@ -184,7 +184,7 @@ options.RespectRobotsTxt = false; // Not recommended
 
 ## Requirements
 
-- **Base Package**: WebSpark.HttpClientUtility 2.2.1 (lockstep versioning - both packages must be same version)
+- **Base Package**: WebSpark.HttpClientUtility 2.5.0 (lockstep versioning - both packages must be same version)
 - **.NET Version**: .NET 8 LTS, .NET 9, or .NET 10
 - **ASP.NET Core**: Required for SignalR features
 

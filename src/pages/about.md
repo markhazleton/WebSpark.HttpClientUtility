@@ -56,11 +56,20 @@ Each decorator wraps the layer below it, adding functionality while maintaining 
 
 ## Version History
 
-### v2.2.1 (Current)
-- Critical bug fixes for cache key collision and thread safety
-- Enhanced security with proper credential handling
-- Fixed resource leaks and retry policy improvements
-- Zero breaking changes
+### v2.5.0 (Current)
+- Lockstep release metadata update across base, crawler, and testing packages
+- Documentation and demo site refreshed to current feature set and versioning
+- Stability and maintenance updates with no API breaking changes
+
+### v2.4.0
+- Tooling and dependency modernization across .NET and npm build pipelines
+- Demo UX updates for batch execution workflows
+- Documentation output refresh
+
+### v2.3.0
+- Added batch execution orchestration in the base package
+- Added template substitution, concurrency controls, progress, and streaming sinks
+- Added aggregate statistics with P50/P95/P99 latency percentiles
 
 ### v2.2.0
 - Modern Vite/NPM build pipeline for demo application
@@ -80,7 +89,7 @@ Each decorator wraps the layer below it, adding functionality while maintaining 
 
 ## Quality Assurance
 
-- **237 Unique Tests (711 test runs)**: Comprehensive test coverage across .NET 8, 9, and 10 with MSTest
+- **Comprehensive automated test coverage**: Validated across .NET 8, 9, and 10 with MSTest
 - **Strong Naming**: Assembly signed for enterprise scenarios
 - **Nullable Reference Types**: Full nullability annotations
 - **Code Analysis**: Warning level 5 with .NET analyzers enabled
@@ -174,8 +183,8 @@ Thank you to all contributors and users who have helped make this library better
 
 - **Version**: {{ nuget.version }}
 - **Total Downloads**: {{ nuget.displayDownloads }}
-- **Target Frameworks**: .NET 8.0, .NET 9.0
-- **Test Coverage**: 252+ tests passing
+- **Target Frameworks**: .NET 8.0, .NET 9.0, .NET 10.0
+- **Test Coverage**: Comprehensive automated coverage across .NET 8, .NET 9, and .NET 10
 - **License**: MIT
 
 ## Next Steps

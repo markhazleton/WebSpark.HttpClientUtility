@@ -23,11 +23,15 @@
 			sitemap generation (Markdig), CSV export (CsvHelper), and real-time SignalR progress
 			updates. Perfect for web scraping, SEO audits, and site analysis. Supports .NET 8 LTS
 			(until Nov 2026), .NET 9, and .NET 10. Requires WebSpark.HttpClientUtility
-			base package [2.3.0]. Install both packages and call AddHttpClientUtility() +
+			base package [2.5.0]. Install both packages and call AddHttpClientUtility() +
 			AddHttpClientCrawler() in your DI registration.</Description>
 		<PackageTags>
 			web-crawler;crawler;web-scraping;site-crawler;sitemap;sitemap-generator;robots-txt;html-parser;htmlagilitypack;signalr;csv-export;link-extraction;seo;seo-audit;content-migration;dotnet;aspnetcore;net8;net9;net10</PackageTags>
 		<PackageReleaseNotes>
+			2.5.0 - Lockstep version bump for stability/maintenance base-package improvements.
+			Requires base package [2.5.0]. No crawler API breaking changes.
+			2.4.0 - Lockstep version bump aligned with tooling/docs/UI modernization cycle.
+			Requires base package [2.4.0]. No crawler API breaking changes.
 			2.3.0 - Version bump to maintain lockstep with base package batch execution release.
 			Requires base package [2.3.0]. No crawler API breaking changes.
 			2.2.1 - Version bump to maintain lockstep with base package. Requires base package [2.2.1].

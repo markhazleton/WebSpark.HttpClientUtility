@@ -22,7 +22,7 @@ permalink: /
 ## Why Choose This Library?
 
 - **One-Line Setup**: Simple service registration with `AddHttpClientUtility()`
-- **Battle-Tested**: 237 unique tests (711 test runs across 3 frameworks), production-ready for .NET 8 LTS, .NET 9, and .NET 10
+- **Battle-Tested**: Comprehensive automated test coverage across .NET 8 LTS, .NET 9, and .NET 10
 - **Zero Boilerplate**: Eliminate repetitive HTTP client code
 - **Enterprise-Grade**: Used in production applications with proven reliability
 
@@ -90,6 +90,7 @@ The library provides a complete HTTP client wrapper with:
 - **Resilience Layer**: Polly-based retry and circuit breaker policies
 - **Telemetry Layer**: OpenTelemetry integration with metrics and tracing
 - **Web Crawler**: Full-featured web crawling with robots.txt support
+- **Batch Execution**: Environment x user x request orchestration with progress and percentiles
 - **Authentication**: Multiple authentication providers (Bearer, Basic, API Key)
 - **Testing Utilities**: Mock service for unit testing
 
@@ -108,6 +109,7 @@ This design allows you to enable only the features you need while maintaining cl
 
 - .NET 8.0 LTS (Long-Term Support)
 - .NET 9.0 (Latest)
+- .NET 10.0 (Latest)
 
 ## License
 

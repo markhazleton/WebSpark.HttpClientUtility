@@ -17,9 +17,10 @@
 		<Authors>Mark Hazleton</Authors>
 		<Company>WebSpark</Company>
 		<Summary>Test helpers and fakes for WebSpark.HttpClientUtility. Includes mock HTTP handlers, in-memory cache, request/response builders, and xUnit fixtures for easy unit testing of HTTP-dependent code.</Summary>
-		<Description>Test helpers and fakes for WebSpark.HttpClientUtility. Includes FakeHttpResponseHandler for mocking HTTP responses, FakeMemoryCache for cache testing, fluent request/response builders, and xUnit test fixtures. Makes unit testing HTTP-dependent code simple and maintainable. Supports .NET 8 LTS, .NET 9, and .NET 10 (Preview). Requires WebSpark.HttpClientUtility base package [2.1.0].</Description>
+		<Description>Test helpers and fakes for WebSpark.HttpClientUtility. Includes FakeHttpResponseHandler for mocking HTTP responses, FakeMemoryCache for cache testing, fluent request/response builders, and xUnit test fixtures. Makes unit testing HTTP-dependent code simple and maintainable. Supports .NET 8 LTS, .NET 9, and .NET 10. Requires WebSpark.HttpClientUtility base package [2.5.0].</Description>
 		<PackageTags>httpclient;testing;mocking;fake;unit-testing;xunit;test-helpers;test-doubles;http-testing;integration-testing;dotnet;aspnetcore;net8;net9;net10</PackageTags>
 		<PackageReleaseNotes>
+			2.5.0 - Lockstep version bump with base package. Requires base package [2.5.0].
 			2.1.0 - Initial release of Testing package. Includes FakeHttpResponseHandler, FakeMemoryCache, fluent builders, and xUnit fixtures. Supports .NET 8, 9, and 10. Requires base package [2.1.0].
 		</PackageReleaseNotes>
 		<PackageReadmeFile>README-Testing.md</PackageReadmeFile>

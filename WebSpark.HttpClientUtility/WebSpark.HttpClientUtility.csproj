@@ -11,7 +11,7 @@
 		<!-- NuGet Package Properties -->
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>WebSpark.HttpClientUtility</PackageId>
-		<!-- Version inherited from Directory.Build.props (2.1.0 lockstep) -->
+		<!-- Version inherited from Directory.Build.props (2.5.0 lockstep) -->
 		<Deterministic>true</Deterministic>
 		<Title>WebSpark.HttpClientUtility - Resilient HTTP Client with Polly &amp; Caching</Title>
 		<Authors>Mark Hazleton</Authors>
@@ -28,6 +28,12 @@
 			Supports .NET 8 LTS (until Nov 2026), .NET 9, and .NET 10. For web crawling features,
 			see WebSpark.HttpClientUtility.Crawler package.</Description>
 		<PackageReleaseNotes>
+			2.5.0 - Stability and maintenance release with batch execution orchestration hardening,
+			improved test resilience for edge-case environments, and dependency/security patch rollups
+			from recent update cycles. Non-breaking changes.
+			2.4.0 - Tooling and UX improvements across demo and docs: refreshed batch execution UI
+			interactions, dependency modernization across .NET/npm toolchains, and regenerated
+			documentation output. No API breaking changes.
 			2.3.0 - Added Batch Execution Orchestration (opt-in via EnableBatchExecution) with
 			template substitution, combinatorial execution across environments/users/requests,
 			concurrency throttling, progress reporting, streaming result sinks, aggregated statistics,
@@ -69,7 +75,7 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<!-- Package Validation (Re-enabled for v2.2+ after intentional v2.0.0 breaking changes) -->
 		<EnablePackageValidation>true</EnablePackageValidation>
-		<PackageValidationBaselineVersion>2.1.1</PackageValidationBaselineVersion>
+		<PackageValidationBaselineVersion>2.2.1</PackageValidationBaselineVersion>
 		<!-- Source Link: Enables debugging the source through the NuGet Package -->
 		<ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
 		<SignAssembly>true</SignAssembly>

@@ -264,7 +264,7 @@ fakeHandler.VerifyRequest(req => req.Method == HttpMethod.Get, Times.Once());
 
 #### 8. ❌ Enhance Crawler Package with High-Level APIs
 **Reason:** Crawler-specific enhancements can be addressed in focused update
-**Recommended Timeline:** v2.2.0 or v2.3.0
+**Recommended Timeline:** Completed by v2.5.0
 **Key Features Needed:**
 - One-liner sitemap generation
 - Crawl and export to CSV
@@ -312,7 +312,7 @@ fakeHandler.VerifyRequest(req => req.Method == HttpMethod.Get, Times.Once());
 3. ❌ Enhance crawler with high-level APIs
 4. ❌ Publish performance benchmarks
 
-### Phase 3 (v2.3.0 - Q2 2025)
+### Phase 3 (Completed through v2.5.0)
 1. ❌ Add sample projects for common scenarios
 2. ❌ Create video tutorials
 3. ❌ Expand Testing package (FakeMemoryCache, builders)

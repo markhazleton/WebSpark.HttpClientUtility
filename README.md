@@ -29,7 +29,7 @@ Stop writing 50+ lines of HttpClient setup. Get enterprise-grade resilience (ret
 | OpenTelemetry | ✅ Built-in | ❌ Manual ActivitySource | ❌ Manual | ❌ Manual |
 | Structured Logging | ✅ Rich context | ❌ Manual ILogger | ⭐⭐ Basic | ⭐⭐ Basic |
 | Web Crawling | ✅ Separate package | ❌ No | ❌ No | ❌ No |
-| Production Trust | ✅ 237 unique tests, LTS support | ✅ Microsoft-backed | ✅ Popular (7M+ downloads) | ✅ Popular (10M+ downloads) |
+| Production Trust | ✅ Comprehensive automated coverage, LTS support | ✅ Microsoft-backed | ✅ Popular (7M+ downloads) | ✅ Popular (10M+ downloads) |
 
 **When to use WebSpark:**
 
@@ -50,7 +50,7 @@ Stop writing 50+ lines of HttpClient setup. Get enterprise-grade resilience (ret
 
 **Battle-Tested & Production-Ready**
 
-- ✅ **237+ unit tests** (711 test runs across 3 frameworks) with 100% passing - tested on .NET 8, 9, and 10
+- ✅ **Comprehensive automated test coverage** across .NET 8, 9, and 10
 - ✅ **Source Link enabled** - step-through debugging with symbol packages (.snupkg)
 - ✅ **Trimming & AOT ready** - annotated for Native AOT and IL trimming compatibility
 - ✅ **Package validation** - baseline validation ensures no breaking changes
@@ -78,9 +78,9 @@ We follow semantic versioning strictly:
 
 ---
 
-## 📦 v2.0 - Now in Two Focused Packages!
+## 📦 v2.5.0 - Two Focused Packages, Modern Feature Set
 
-Starting with v2.0, the library is split into two packages:
+The library is delivered as two focused packages:
 
 | Package | Purpose | Size | Use When |
 |---------|---------|------|----------|
@@ -448,7 +448,7 @@ Contributions are welcome! See our [Contributing Guide](documentation/CONTRIBUTI
 
 ## 📊 Project Stats
 
-- **237 Unique Unit Tests (711 test runs)** - 100% passing across .NET 8, 9, and 10
+- **Comprehensive automated test coverage** across .NET 8, 9, and 10
 - **Supports .NET 8 LTS, .NET 9, & .NET 10**
 - **MIT Licensed** - Free for commercial use
 - **Active Maintenance** - Regular updates

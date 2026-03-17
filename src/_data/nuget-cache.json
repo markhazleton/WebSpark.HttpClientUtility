@@ -3,8 +3,8 @@
   "@type": "Package",
   "registration": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/index.json",
   "id": "WebSpark.HttpClientUtility",
-  "version": "2.2.1",
-  "description": "Drop-in HttpClient wrapper for .NET 8-10 with Polly resilience, response\n\t\t\tcaching, and OpenTelemetry. One-line setup eliminates boilerplate for retries, circuit\n\t\t\tbreakers, correlation IDs, and structured logging. Perfect for microservices, APIs, and\n\t\t\tweb scrapers. Includes authentication providers (Bearer, Basic, API Key), concurrent\n\t\t\trequests, fire-and-forget operations, and streaming support. MIT licensed, 237 unique tests\n\t\t\t(711 test runs across 3 frameworks). Supports .NET 8 LTS (until Nov 2026), .NET 9, and .NET 10.\n\t\t\tFor web crawling features, see WebSpark.HttpClientUtility.Crawler package.",
+  "version": "2.5.0",
+  "description": "Drop-in HttpClient wrapper for .NET 8-10 with Polly resilience, response caching, OpenTelemetry, and batch execution orchestration. One-line setup eliminates boilerplate for retries, circuit breakers, correlation IDs, and structured logging. Perfect for microservices, APIs, and web scrapers. Includes authentication providers (Bearer, Basic, API Key), concurrent requests, fire-and-forget operations, streaming support, and environment x user x request batch runs with progress and statistics. Supports .NET 8 LTS (until Nov 2026), .NET 9, and .NET 10. For web crawling features, see WebSpark.HttpClientUtility.Crawler package.",
   "summary": "",
   "title": "WebSpark.HttpClientUtility - Resilient HTTP Client with Polly & Caching",
   "iconUrl": "https://api.nuget.org/v3-flatcontainer/webspark.httpclientutility/2.2.1/icon",
@@ -143,5 +143,5 @@
     }
   ],
   "vulnerabilities": [],
-  "cachedAt": "2026-03-17T19:13:33.446Z"
+  "cachedAt": "2026-03-17T21:33:16.566Z"
 }
