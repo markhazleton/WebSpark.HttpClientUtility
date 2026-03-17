@@ -7,7 +7,7 @@ namespace WebSpark.HttpClientUtility.BatchExecution;
 /// </summary>
 public sealed class TemplateSubstitutionService : ITemplateSubstitutionService
 {
-    private static readonly Regex SingleBraceTokenRegex = new("\\{([^{}]+)\\}", RegexOptions.Compiled);
+    private static readonly Regex _singleBraceTokenRegex = new("\\{([^{}]+)\\}", RegexOptions.Compiled);
 
     /// <inheritdoc />
     public string Render(string template, BatchUserContext? userContext)
@@ -27,7 +27,7 @@ public sealed class TemplateSubstitutionService : ITemplateSubstitutionService
             return rendered;
         }
 
-        return SingleBraceTokenRegex.Replace(rendered, match =>
+        return _singleBraceTokenRegex.Replace(rendered, match =>
         {
             var key = match.Groups[1].Value;
             return properties.TryGetValue(key, out var value) ? value : match.Value;

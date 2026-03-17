@@ -20,7 +20,7 @@
     <NoWarn>$(NoWarn);CA2007;CS8618;CS1591;MSTEST0001;MSTEST0025;MSTEST0032;MSTEST0037</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="8.0.0">
+    <PackageReference Include="coverlet.collector" Version="8.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
