@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using WebSpark.HttpClientUtility.BatchExecution;
 using WebSpark.HttpClientUtility.Web.Controllers;
@@ -57,6 +58,11 @@ public class BatchExecutionDemoControllerTests
                     Statistics = new BatchExecutionStatistics()
                 });
 
-        return new BatchExecutionDemoService(mockBatch.Object, Mock.Of<Microsoft.Extensions.Logging.ILogger<BatchExecutionDemoService>>());
+            var services = new ServiceCollection();
+            services.AddScoped(_ => mockBatch.Object);
+            var provider = services.BuildServiceProvider();
+            var scopeFactory = provider.GetRequiredService<IServiceScopeFactory>();
+
+            return new BatchExecutionDemoService(scopeFactory, Mock.Of<Microsoft.Extensions.Logging.ILogger<BatchExecutionDemoService>>());
     }
 }

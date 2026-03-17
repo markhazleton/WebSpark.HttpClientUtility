@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using WebSpark.HttpClientUtility.BatchExecution;
 using WebSpark.HttpClientUtility.Web.Models;
@@ -13,7 +14,7 @@ public class BatchExecutionDemoServiceTests
     public async Task StartRunAsync_WhenPlannedCountExceedsCap_ReturnsError()
     {
         var mockBatch = new Mock<IBatchExecutionService>(MockBehavior.Strict);
-        var service = new BatchExecutionDemoService(mockBatch.Object, Mock.Of<ILogger<BatchExecutionDemoService>>());
+        var service = CreateService(mockBatch.Object);
 
         var request = DemoStartRunRequest.CreateDefault();
         request.Iterations = 30;
@@ -41,7 +42,7 @@ public class BatchExecutionDemoServiceTests
                 Statistics = new BatchExecutionStatistics { TotalCount = 2, SuccessCount = 2 }
             });
 
-        var service = new BatchExecutionDemoService(mockBatch.Object, Mock.Of<ILogger<BatchExecutionDemoService>>());
+        var service = CreateService(mockBatch.Object);
         var request = DemoStartRunRequest.CreateDefault();
 
         var result = await service.StartRunAsync(request);
@@ -49,5 +50,15 @@ public class BatchExecutionDemoServiceTests
         Assert.IsTrue(result.Accepted);
         Assert.IsNotNull(result.Response);
         Assert.AreEqual("Queued", result.Response.Status);
+    }
+
+    private static BatchExecutionDemoService CreateService(IBatchExecutionService batchExecutionService)
+    {
+        var services = new ServiceCollection();
+        services.AddScoped(_ => batchExecutionService);
+        var provider = services.BuildServiceProvider();
+        var scopeFactory = provider.GetRequiredService<IServiceScopeFactory>();
+
+        return new BatchExecutionDemoService(scopeFactory, Mock.Of<ILogger<BatchExecutionDemoService>>());
     }
 }

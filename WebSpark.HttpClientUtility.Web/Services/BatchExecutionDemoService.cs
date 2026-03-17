@@ -6,17 +6,17 @@ namespace WebSpark.HttpClientUtility.Web.Services;
 
 public sealed class BatchExecutionDemoService
 {
-    private readonly IBatchExecutionService _batchExecutionService;
+    private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<BatchExecutionDemoService> _logger;
     private readonly ConcurrentDictionary<string, DemoRunRecord> _runs = new(StringComparer.Ordinal);
 
     public const int DemoMaxPlannedRequests = 50;
 
     public BatchExecutionDemoService(
-        IBatchExecutionService batchExecutionService,
+        IServiceScopeFactory scopeFactory,
         ILogger<BatchExecutionDemoService> logger)
     {
-        _batchExecutionService = batchExecutionService;
+        _scopeFactory = scopeFactory;
         _logger = logger;
     }
 
@@ -62,7 +62,10 @@ public sealed class BatchExecutionDemoService
                 };
 
                 var progress = new Progress<BatchProgress>(p => record.LatestProgress = p);
-                record.FinalResult = await _batchExecutionService.ExecuteAsync(configuration, progress: progress, ct: ct).ConfigureAwait(false);
+
+                using var scope = _scopeFactory.CreateScope();
+                var batchExecutionService = scope.ServiceProvider.GetRequiredService<IBatchExecutionService>();
+                record.FinalResult = await batchExecutionService.ExecuteAsync(configuration, progress: progress, ct: ct).ConfigureAwait(false);
                 record.State = record.FinalResult.WasCancelled ? DemoRunState.Cancelled : DemoRunState.Completed;
             }
             catch (OperationCanceledException)
