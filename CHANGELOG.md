@@ -5,6 +5,31 @@ All notable changes to the WebSpark.HttpClientUtility project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2026-03-17
+
+### Added
+
+- Batch execution orchestration in the base package (opt-in via `EnableBatchExecution`)
+  - Environment x user x request x iteration combinatorial execution
+  - Template substitution for `{key}` placeholders and `{{encoded_user_name}}`
+  - Configurable concurrency throttling and cancellation boundaries
+  - Optional incremental progress reporting via `IProgress<BatchProgress>`
+  - Optional per-item streaming output via `IBatchExecutionResultSink`
+  - Thread-safe aggregated statistics with P50, P95, and P99 percentiles
+  - Deterministic response body hashing for comparison workflows
+- Interactive `BatchExecution` demo flow in the web app with capped runs and live polling updates
+
+### Changed
+
+- Updated NuGet package metadata to improve discoverability for batch orchestration
+  - Summary, description, package tags, and package release notes
+- Updated GitHub Pages source documentation and regenerated static docs output
+- Lockstep version bump for base and crawler packages to `2.3.0`
+
+### Notes
+
+- Minor feature release with no breaking changes
+
 ## [2.2.1] - 2025-01-02
 
 ### 🐛 Fixed

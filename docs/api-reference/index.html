@@ -224,6 +224,7 @@
     public bool EnableCaching { get; set; } = false;
     public bool EnableResilience { get; set; } = false;
     public bool EnableTelemetry { get; set; } = false;
+    public bool EnableBatchExecution { get; set; } = false;
     public HttpRequestResultPollyOptions ResilienceOptions { get; set; }
 }
 </code></pre>
@@ -235,6 +236,61 @@
     public TimeSpan RetryDelay { get; set; } = TimeSpan.FromSeconds(1);
     public int CircuitBreakerThreshold { get; set; } = 5;
     public TimeSpan CircuitBreakerDuration { get; set; } = TimeSpan.FromSeconds(30);
+}
+</code></pre>
+<h2>Batch Execution</h2>
+<h3>IBatchExecutionService</h3>
+<p>Main orchestrator interface for batch execution.</p>
+<pre><code class="language-csharp">public interface IBatchExecutionService
+{
+    Task&lt;BatchExecutionResult&gt; ExecuteAsync(
+        BatchExecutionConfiguration configuration,
+        IBatchExecutionResultSink? resultSink = null,
+        IProgress&lt;BatchProgress&gt;? progress = null,
+        CancellationToken ct = default);
+}
+</code></pre>
+<h3>BatchExecutionConfiguration</h3>
+<pre><code class="language-csharp">public sealed class BatchExecutionConfiguration
+{
+    public string? RunId { get; set; }
+    public IReadOnlyList&lt;BatchEnvironment&gt; Environments { get; set; } = [];
+    public IReadOnlyList&lt;BatchUserContext&gt; Users { get; set; } = [];
+    public IReadOnlyList&lt;BatchRequestDefinition&gt; Requests { get; set; } = [];
+    public int Iterations { get; set; } = 1;
+    public int MaxConcurrency { get; set; } = 10;
+}
+</code></pre>
+<h3>BatchExecutionResult</h3>
+<pre><code class="language-csharp">public sealed class BatchExecutionResult
+{
+    public string RunId { get; set; } = string.Empty;
+    public int TotalPlannedCount { get; set; }
+    public int CompletedCount { get; set; }
+    public bool WasCancelled { get; set; }
+    public BatchExecutionStatistics Statistics { get; set; } = new();
+    public IReadOnlyList&lt;BatchExecutionItemResult&gt; Results { get; set; } = [];
+}
+</code></pre>
+<h3>BatchProgress</h3>
+<pre><code class="language-csharp">public sealed class BatchProgress
+{
+    public string RunId { get; set; } = string.Empty;
+    public int CompletedCount { get; set; }
+    public int TotalPlannedCount { get; set; }
+    public BatchExecutionStatistics StatisticsSnapshot { get; set; } = new();
+}
+</code></pre>
+<h3>IBatchExecutionResultSink</h3>
+<pre><code class="language-csharp">public interface IBatchExecutionResultSink
+{
+    Task OnResultAsync(BatchExecutionItemResult result, CancellationToken ct = default);
+}
+</code></pre>
+<h3>ITemplateSubstitutionService</h3>
+<pre><code class="language-csharp">public interface ITemplateSubstitutionService
+{
+    string Render(string template, BatchUserContext? userContext);
 }
 </code></pre>
 <h2>Authentication</h2>
@@ -423,12 +479,13 @@ var queryString = queryParams.ToQueryString(); // &quot;?page=1&amp;pageSize=50&
 <ul>
 <li>.NET 8.0 (LTS)</li>
 <li>.NET 9.0</li>
+<li>.NET 10.0</li>
 </ul>
 <h2>NuGet Package</h2>
 <ul>
 <li><strong>Package Name</strong>: <code>WebSpark.HttpClientUtility</code></li>
 <li><strong>Current Version</strong>: 2.2.1</li>
-<li><strong>Downloads</strong>: 4.0K</li>
+<li><strong>Downloads</strong>: 4.1K</li>
 </ul>
 <h2>Source Code</h2>
 <p>View the complete source code and contribute on <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility">GitHub</a>.</p>

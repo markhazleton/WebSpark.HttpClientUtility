@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using WebSpark.HttpClientUtility.ClientService;
+using WebSpark.HttpClientUtility.BatchExecution;
 using WebSpark.HttpClientUtility.RequestResult;
 using WebSpark.HttpClientUtility.StringConverter;
 
@@ -44,6 +45,11 @@ public class HttpClientUtilityOptions
     /// Use Newtonsoft.Json for serialization. Default is false (uses System.Text.Json).
     /// </summary>
     public bool UseNewtonsoftJson { get; set; } = false;
+
+    /// <summary>
+    /// Enables batch execution orchestration services.
+    /// </summary>
+    public bool EnableBatchExecution { get; set; } = false;
 }
 
 /// <summary>
@@ -178,6 +184,13 @@ service,
 
             return service;
         });
+
+        if (options.EnableBatchExecution)
+        {
+            services.TryAddScoped<ITemplateSubstitutionService, TemplateSubstitutionService>();
+            services.TryAddScoped<IBatchExecutionService, BatchExecutionService>();
+            services.TryAddScoped<BatchStatisticsCollector>();
+        }
 
         return services;
     }

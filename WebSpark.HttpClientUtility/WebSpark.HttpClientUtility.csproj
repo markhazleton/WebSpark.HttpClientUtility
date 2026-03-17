@@ -18,16 +18,21 @@
 		<Company>WebSpark</Company>
 		<Copyright>Copyright © 2025 Mark Hazleton</Copyright>
 		<Summary>Drop-in HttpClient wrapper for .NET 8-10 LTS with Polly resilience, response caching,
-			and OpenTelemetry—configured in one line. Eliminates boilerplate setup for retries,
-			circuit breakers, correlation IDs, and structured logging.</Summary>
+			OpenTelemetry, and batch execution orchestration—configured in one line.</Summary>
 		<Description>Drop-in HttpClient wrapper for .NET 8-10 with Polly resilience, response
-			caching, and OpenTelemetry. One-line setup eliminates boilerplate for retries, circuit
-			breakers, correlation IDs, and structured logging. Perfect for microservices, APIs, and
-			web scrapers. Includes authentication providers (Bearer, Basic, API Key), concurrent
-			requests, fire-and-forget operations, and streaming support. MIT licensed, 237 unique tests
-			(711 test runs across 3 frameworks). Supports .NET 8 LTS (until Nov 2026), .NET 9, and .NET 10.
-			For web crawling features, see WebSpark.HttpClientUtility.Crawler package.</Description>
+			caching, OpenTelemetry, and batch execution orchestration. One-line setup eliminates
+			boilerplate for retries, circuit breakers, correlation IDs, and structured logging.
+			Perfect for microservices, APIs, and web scrapers. Includes authentication providers
+			(Bearer, Basic, API Key), concurrent requests, fire-and-forget operations, streaming
+			support, and environment x user x request batch runs with progress and statistics.
+			Supports .NET 8 LTS (until Nov 2026), .NET 9, and .NET 10. For web crawling features,
+			see WebSpark.HttpClientUtility.Crawler package.</Description>
 		<PackageReleaseNotes>
+			2.3.0 - Added Batch Execution Orchestration (opt-in via EnableBatchExecution) with
+			template substitution, combinatorial execution across environments/users/requests,
+			concurrency throttling, progress reporting, streaming result sinks, aggregated statistics,
+			and deterministic response hashing. Added interactive BatchExecution demo flow and updated
+			documentation for package and GitHub Pages. Minor feature release; no breaking changes.
 			2.2.1 - Critical Fixes: Fixed cache key collision causing data leakage between authenticated
 			requests. Fixed race condition in BearerTokenAuthenticationProvider token refresh with thread-safe
 			implementation. Fixed HttpClient instance sharing and resource leaks. Fixed retry policy to only
@@ -51,7 +56,7 @@
 		</PackageReleaseNotes>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<PackageTags>
-			httpclient;polly;resilience;retry;circuit-breaker;caching;opentelemetry;observability;correlation-id;distributed-tracing;structured-logging;httpclientfactory;web-scraping;microservices;api-client;rest-api;bearer-token;authentication;api-key;production-ready;dotnet;aspnetcore;net8;net9;net10</PackageTags>
+			httpclient;polly;resilience;retry;circuit-breaker;caching;opentelemetry;observability;correlation-id;distributed-tracing;structured-logging;httpclientfactory;web-scraping;microservices;api-client;rest-api;bearer-token;authentication;api-key;batch-execution;orchestration;progress-reporting;load-testing;production-ready;dotnet;aspnetcore;net8;net9;net10</PackageTags>
 		<RepositoryUrl>https://github.com/MarkHazleton/HttpClientUtility</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageProjectUrl>https://markhazleton.github.io/WebSpark.HttpClientUtility/</PackageProjectUrl>

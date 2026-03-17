@@ -88,6 +88,28 @@ Features:
 - **Metrics**: Success rate, response time, error counts
 - **OTLP Support**: Modern OpenTelemetry Protocol integration
 
+### 🧩 Batch Execution Orchestration
+
+Execute environment x user x request combinations with progress and aggregate statistics:
+
+```csharp
+services.AddHttpClientUtility(options =>
+{
+    options.EnableBatchExecution = true;
+    options.EnableResilience = true;
+});
+
+var result = await batchExecutionService.ExecuteAsync(configuration, resultSink, progress, cancellationToken);
+```
+
+Features:
+- **Combinatorial Expansion**: Runs all environment, user, request, and iteration combinations
+- **Template Substitution**: Applies `{key}` and `{{encoded_user_name}}` tokens for per-user requests
+- **Concurrency Control**: Semaphore-based max in-flight request throttling
+- **Progress Updates**: Optional `IProgress<BatchProgress>` callback with running snapshots
+- **Streaming Results**: Optional `IBatchExecutionResultSink` receives per-item outcomes as they complete
+- **Statistics & Percentiles**: Total/success/failure plus P50, P95, and P99 timings
+
 ### 🕷️ Web Crawling
 
 Full-featured web crawler with robots.txt support:
@@ -186,6 +208,7 @@ This design allows you to:
 
 - ✅ .NET 8.0 (LTS - Long-Term Support)
 - ✅ .NET 9.0 (Latest)
+- ✅ .NET 10.0 (Latest)
 
 ## Production Ready
 
@@ -194,6 +217,7 @@ This design allows you to:
 - **Nullable Reference Types**: Full nullability annotations
 - **Code Analysis**: Warning level 5 with .NET analyzers enabled
 - **Multi-Targeting**: Supports both .NET 8 LTS and .NET 9
+- **Multi-Targeting**: Supports .NET 8 LTS, .NET 9, and .NET 10
 
 ## Next Steps
 

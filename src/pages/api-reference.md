@@ -113,6 +113,7 @@ public class HttpClientUtilityOptions
     public bool EnableCaching { get; set; } = false;
     public bool EnableResilience { get; set; } = false;
     public bool EnableTelemetry { get; set; } = false;
+    public bool EnableBatchExecution { get; set; } = false;
     public HttpRequestResultPollyOptions ResilienceOptions { get; set; }
 }
 ```
@@ -128,6 +129,81 @@ public class HttpRequestResultPollyOptions
     public TimeSpan RetryDelay { get; set; } = TimeSpan.FromSeconds(1);
     public int CircuitBreakerThreshold { get; set; } = 5;
     public TimeSpan CircuitBreakerDuration { get; set; } = TimeSpan.FromSeconds(30);
+}
+```
+
+## Batch Execution
+
+### IBatchExecutionService
+
+Main orchestrator interface for batch execution.
+
+```csharp
+public interface IBatchExecutionService
+{
+    Task<BatchExecutionResult> ExecuteAsync(
+        BatchExecutionConfiguration configuration,
+        IBatchExecutionResultSink? resultSink = null,
+        IProgress<BatchProgress>? progress = null,
+        CancellationToken ct = default);
+}
+```
+
+### BatchExecutionConfiguration
+
+```csharp
+public sealed class BatchExecutionConfiguration
+{
+    public string? RunId { get; set; }
+    public IReadOnlyList<BatchEnvironment> Environments { get; set; } = [];
+    public IReadOnlyList<BatchUserContext> Users { get; set; } = [];
+    public IReadOnlyList<BatchRequestDefinition> Requests { get; set; } = [];
+    public int Iterations { get; set; } = 1;
+    public int MaxConcurrency { get; set; } = 10;
+}
+```
+
+### BatchExecutionResult
+
+```csharp
+public sealed class BatchExecutionResult
+{
+    public string RunId { get; set; } = string.Empty;
+    public int TotalPlannedCount { get; set; }
+    public int CompletedCount { get; set; }
+    public bool WasCancelled { get; set; }
+    public BatchExecutionStatistics Statistics { get; set; } = new();
+    public IReadOnlyList<BatchExecutionItemResult> Results { get; set; } = [];
+}
+```
+
+### BatchProgress
+
+```csharp
+public sealed class BatchProgress
+{
+    public string RunId { get; set; } = string.Empty;
+    public int CompletedCount { get; set; }
+    public int TotalPlannedCount { get; set; }
+    public BatchExecutionStatistics StatisticsSnapshot { get; set; } = new();
+}
+```
+
+### IBatchExecutionResultSink
+
+```csharp
+public interface IBatchExecutionResultSink
+{
+    Task OnResultAsync(BatchExecutionItemResult result, CancellationToken ct = default);
+}
+```
+
+### ITemplateSubstitutionService
+
+```csharp
+public interface ITemplateSubstitutionService
+{
+    string Render(string template, BatchUserContext? userContext);
 }
 ```
 
@@ -324,6 +400,7 @@ public static class OpenTelemetryExtensions
 
 - .NET 8.0 (LTS)
 - .NET 9.0
+- .NET 10.0
 
 ## NuGet Package
 

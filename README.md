@@ -290,6 +290,7 @@ public class SiteAnalyzer
 - **Fire-and-Forget** - Background request execution
 - **Streaming** - Efficient handling of large responses
 - **OpenTelemetry** - Full observability integration (optional)
+- **Batch Execution** - Environment x user x request orchestration with progress and statistics (optional)
 - **CURL Export** - Generate CURL commands for debugging
 - **Source Link** - Step-through debugging with symbol packages
 - **Trimming/AOT Ready** - Compatible with Native AOT and IL trimming
@@ -330,6 +331,45 @@ builder.Services.AddHttpClientUtility(options =>
   options.ResilienceOptions.MaxRetryAttempts = 3;
     options.ResilienceOptions.RetryDelay = TimeSpan.FromSeconds(2);
 });
+```
+
+### Enable Batch Execution Orchestration
+```csharp
+builder.Services.AddHttpClientUtility(options =>
+{
+    options.EnableBatchExecution = true;
+    options.EnableResilience = true;
+});
+
+var configuration = new BatchExecutionConfiguration
+{
+    Environments =
+    [
+        new BatchEnvironment { Name = "Local", BaseUrl = "https://localhost:5001" }
+    ],
+    Users =
+    [
+        new BatchUserContext
+        {
+            UserId = "john.doe",
+            Properties = new Dictionary<string, string> { ["userId"] = "42" }
+        }
+    ],
+    Requests =
+    [
+        new BatchRequestDefinition
+        {
+            Name = "GetProfile",
+            Method = "GET",
+            PathTemplate = "/api/users/{userId}"
+        }
+    ],
+    Iterations = 1,
+    MaxConcurrency = 4
+};
+
+var batchService = serviceProvider.GetRequiredService<IBatchExecutionService>();
+var result = await batchService.ExecuteAsync(configuration);
 ```
 
 ### All Features Enabled

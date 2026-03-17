@@ -1,0 +1,44 @@
+@model WebSpark.HttpClientUtility.Web.Models.BatchExecutionPageViewModel
+@using System.Text.Json
+@{
+    ViewData["Title"] = "Batch Execution Demo";
+    var sampleJson = JsonSerializer.Serialize(Model.SampleRequest, new JsonSerializerOptions { WriteIndented = true });
+}
+
+<div class="container py-4">
+    <h1 class="mb-3">Batch Execution Demo</h1>
+    <p class="text-muted">Submit a batch run and watch live progress updates from polling endpoints.</p>
+
+    <div class="alert alert-info">
+        Demo runs are capped at <strong>@Model.DemoMaxPlannedRequests</strong> planned requests.
+        This sample is preconfigured for SampleSparkUI employee endpoints.
+        <a href="https://samplecrud.markhazleton.com" target="_blank" rel="noopener noreferrer">Visit SampleSparkUI API website</a>
+        or review
+        <a href="https://samplecrud.markhazleton.com/swagger/v1/swagger.json" target="_blank" rel="noopener noreferrer">Swagger JSON</a>.
+    </div>
+
+    <div class="mb-3">
+        <label for="batchInput" class="form-label">Batch Configuration JSON</label>
+        <textarea id="batchInput" class="form-control" rows="16">@sampleJson</textarea>
+    </div>
+
+    <button id="startRunButton" class="btn btn-primary">Start Run</button>
+
+    <hr class="my-4" />
+
+    <div id="statusPanel" class="d-none">
+        <h2 class="h4">Run Status</h2>
+        <p><strong>Run ID:</strong> <span id="runId">-</span></p>
+        <p><strong>Status:</strong> <span id="runStatus">-</span></p>
+        <p><strong>Progress:</strong> <span id="runProgress">0/0</span></p>
+        <p><strong>Success:</strong> <span id="successCount">0</span> | <strong>Failure:</strong> <span id="failureCount">0</span></p>
+        <p><strong>P95 (ms):</strong> <span id="p95">0</span></p>
+    </div>
+
+    <div id="resultPanel" class="d-none">
+        <h2 class="h4 mt-4">Completed Results</h2>
+        <pre id="resultJson" class="bg-light border p-3 rounded" style="max-height: 320px; overflow:auto;"></pre>
+    </div>
+</div>
+
+
