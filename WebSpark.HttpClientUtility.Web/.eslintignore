@@ -1,0 +1,7 @@
+node_modules/
+wwwroot/dist/
+wwwroot/lib/
+dist/
+build/
+coverage/
+*.min.js

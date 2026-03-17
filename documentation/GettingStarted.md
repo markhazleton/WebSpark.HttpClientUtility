@@ -147,6 +147,48 @@ builder.Services.AddHttpClientUtility(options =>
 builder.Services.AddHttpClientUtilityWithAllFeatures();
 ```
 
+### Batch Execution Orchestration
+
+```csharp
+builder.Services.AddHttpClientUtility(options =>
+{
+    options.EnableBatchExecution = true;
+    options.EnableTelemetry = true;
+});
+
+var batchService = serviceProvider.GetRequiredService<IBatchExecutionService>();
+
+var batchConfiguration = new BatchExecutionConfiguration
+{
+    Environments =
+    [
+        new BatchEnvironment { Name = "Local", BaseUrl = "https://localhost:5001" }
+    ],
+    Users =
+    [
+        new BatchUserContext
+        {
+            UserId = "john.doe",
+            Properties = new Dictionary<string, string> { ["userId"] = "42" }
+        }
+    ],
+    Requests =
+    [
+        new BatchRequestDefinition
+        {
+            Name = "GetProfile",
+            Method = "GET",
+            PathTemplate = "/api/users/{userId}"
+        }
+    ],
+    Iterations = 1,
+    MaxConcurrency = 4
+};
+
+var result = await batchService.ExecuteAsync(batchConfiguration);
+Console.WriteLine($"Completed {result.CompletedCount}/{result.TotalPlannedCount}");
+```
+
 ## Making Requests
 
 ### GET Request

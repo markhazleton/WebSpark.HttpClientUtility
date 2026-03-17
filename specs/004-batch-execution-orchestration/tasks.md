@@ -22,8 +22,8 @@
 
 **Purpose**: Create the source, test, and demo scaffolding for the feature before shared implementation begins.
 
-- [ ] T001 [P] Create the batch execution source and test folders under WebSpark.HttpClientUtility/BatchExecution/ and WebSpark.HttpClientUtility.Test/BatchExecution/
-- [ ] T002 [P] Create the demo MVC scaffolding files WebSpark.HttpClientUtility.Web/Controllers/BatchExecutionController.cs, WebSpark.HttpClientUtility.Web/Models/BatchExecutionViewModels.cs, WebSpark.HttpClientUtility.Web/Services/BatchExecutionDemoService.cs, and WebSpark.HttpClientUtility.Web/Views/BatchExecution/Index.cshtml
+- [X] T001 [P] Create the batch execution source and test folders under WebSpark.HttpClientUtility/BatchExecution/ and WebSpark.HttpClientUtility.Test/BatchExecution/
+- [X] T002 [P] Create the demo MVC scaffolding files WebSpark.HttpClientUtility.Web/Controllers/BatchExecutionController.cs, WebSpark.HttpClientUtility.Web/Models/BatchExecutionViewModels.cs, WebSpark.HttpClientUtility.Web/Services/BatchExecutionDemoService.cs, and WebSpark.HttpClientUtility.Web/Views/BatchExecution/Index.cshtml
 
 **Checkpoint**: Source, test, and demo locations exist and are ready for shared contracts.
 
@@ -35,13 +35,13 @@
 
 **⚠️ CRITICAL**: No user story work should begin until this phase is complete.
 
-- [ ] T003 Add `EnableBatchExecution` to `HttpClientUtilityOptions` in WebSpark.HttpClientUtility/ServiceCollectionExtensions.cs
-- [ ] T004 Create the public batch execution contracts in WebSpark.HttpClientUtility/BatchExecution/IBatchExecutionService.cs, WebSpark.HttpClientUtility/BatchExecution/IBatchExecutionResultSink.cs, and WebSpark.HttpClientUtility/BatchExecution/ITemplateSubstitutionService.cs
-- [ ] T005 [P] Create the shared batch models in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionConfiguration.cs, WebSpark.HttpClientUtility/BatchExecution/BatchEnvironment.cs, WebSpark.HttpClientUtility/BatchExecution/BatchUserContext.cs, WebSpark.HttpClientUtility/BatchExecution/BatchRequestDefinition.cs, WebSpark.HttpClientUtility/BatchExecution/BatchExecutionItemResult.cs, WebSpark.HttpClientUtility/BatchExecution/BatchExecutionResult.cs, WebSpark.HttpClientUtility/BatchExecution/BatchExecutionStatistics.cs, and WebSpark.HttpClientUtility/BatchExecution/BatchProgress.cs
-- [ ] T006 [P] Create the thread-safe statistics helper shell in WebSpark.HttpClientUtility/BatchExecution/BatchStatisticsCollector.cs
-- [ ] T007 Create the orchestrator shell and conditional DI wiring in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs and WebSpark.HttpClientUtility/ServiceCollectionExtensions.cs
-- [ ] T008 Create opt-in registration coverage in WebSpark.HttpClientUtility.Test/BatchExecution/ServiceCollectionExtensionsBatchExecutionTests.cs
-- [ ] T041 [P] Write input validation tests covering invalid Iterations (<0), invalid MaxConcurrency (<1), malformed base URLs, and empty collections in WebSpark.HttpClientUtility.Test/BatchExecution/ServiceCollectionExtensionsBatchExecutionTests.cs and implement validation logic in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
+- [X] T003 Add `EnableBatchExecution` to `HttpClientUtilityOptions` in WebSpark.HttpClientUtility/ServiceCollectionExtensions.cs
+- [X] T004 Create the public batch execution contracts in WebSpark.HttpClientUtility/BatchExecution/IBatchExecutionService.cs, WebSpark.HttpClientUtility/BatchExecution/IBatchExecutionResultSink.cs, and WebSpark.HttpClientUtility/BatchExecution/ITemplateSubstitutionService.cs
+- [X] T005 [P] Create the shared batch models in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionConfiguration.cs, WebSpark.HttpClientUtility/BatchExecution/BatchEnvironment.cs, WebSpark.HttpClientUtility/BatchExecution/BatchUserContext.cs, WebSpark.HttpClientUtility/BatchExecution/BatchRequestDefinition.cs, WebSpark.HttpClientUtility/BatchExecution/BatchExecutionItemResult.cs, WebSpark.HttpClientUtility/BatchExecution/BatchExecutionResult.cs, WebSpark.HttpClientUtility/BatchExecution/BatchExecutionStatistics.cs, and WebSpark.HttpClientUtility/BatchExecution/BatchProgress.cs
+- [X] T006 [P] Create the thread-safe statistics helper shell in WebSpark.HttpClientUtility/BatchExecution/BatchStatisticsCollector.cs
+- [X] T007 Create the orchestrator shell and conditional DI wiring in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs and WebSpark.HttpClientUtility/ServiceCollectionExtensions.cs
+- [X] T008 Create opt-in registration coverage in WebSpark.HttpClientUtility.Test/BatchExecution/ServiceCollectionExtensionsBatchExecutionTests.cs
+- [X] T041 [P] Write input validation tests covering invalid Iterations (<0), invalid MaxConcurrency (<1), malformed base URLs, and empty collections in WebSpark.HttpClientUtility.Test/BatchExecution/ServiceCollectionExtensionsBatchExecutionTests.cs and implement validation logic in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
 
 **Checkpoint**: Feature flag, contracts, models, service shell, DI guardrails, and input validation are in place.
 
@@ -55,13 +55,13 @@
 
 ### Tests for User Story 1
 
-- [ ] T009 [US1] Write template rendering tests for path substitution, body substitution, missing keys, raw `{{encoded_user_name}}` substitution, and no extra URL encoding in WebSpark.HttpClientUtility.Test/BatchExecution/TemplateSubstitutionServiceTests.cs
+- [X] T009 [US1] Write template rendering tests for path substitution, body substitution, missing keys, raw `{{encoded_user_name}}` substitution, and no extra URL encoding in WebSpark.HttpClientUtility.Test/BatchExecution/TemplateSubstitutionServiceTests.cs
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] Implement `ITemplateSubstitutionService` with single-pass rendering rules in WebSpark.HttpClientUtility/BatchExecution/TemplateSubstitutionService.cs
-- [ ] T011 [US1] Apply rendered path and body composition from request definitions and user properties in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
-- [ ] T012 [US1] Add nested-brace, empty-value, and legacy-token regression coverage in WebSpark.HttpClientUtility.Test/BatchExecution/TemplateSubstitutionServiceTests.cs
+- [X] T010 [US1] Implement `ITemplateSubstitutionService` with single-pass rendering rules in WebSpark.HttpClientUtility/BatchExecution/TemplateSubstitutionService.cs
+- [X] T011 [US1] Apply rendered path and body composition from request definitions and user properties in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
+- [X] T012 [US1] Add nested-brace, empty-value, and legacy-token regression coverage in WebSpark.HttpClientUtility.Test/BatchExecution/TemplateSubstitutionServiceTests.cs
 
 **Checkpoint**: Template substitution works independently for outbound path and body rendering.
 
@@ -75,15 +75,15 @@
 
 ### Tests for User Story 2
 
-- [ ] T013 [P] [US2] Write combinatorial expansion, planned-count, zero-work, and explicit custom-method body-capability tests in WebSpark.HttpClientUtility.Test/BatchExecution/BatchExecutionExpansionTests.cs
-- [ ] T014 [P] [US2] Write concurrency throttling, cancellation, progress callback, and correlation-ID propagation tests in WebSpark.HttpClientUtility.Test/BatchExecution/BatchExecutionExecutionTests.cs
-- [ ] T042 [P] [US2] Write unreachable-environment edge case test verifying that when one environment is completely unreachable, execution continues for other environments and statistics reflect the failures in WebSpark.HttpClientUtility.Test/BatchExecution/BatchExecutionExecutionTests.cs
+- [X] T013 [P] [US2] Write combinatorial expansion, planned-count, zero-work, and explicit custom-method body-capability tests in WebSpark.HttpClientUtility.Test/BatchExecution/BatchExecutionExpansionTests.cs
+- [X] T014 [P] [US2] Write concurrency throttling, cancellation, progress callback, and correlation-ID propagation tests in WebSpark.HttpClientUtility.Test/BatchExecution/BatchExecutionExecutionTests.cs
+- [X] T042 [P] [US2] Write unreachable-environment edge case test verifying that when one environment is completely unreachable, execution continues for other environments and statistics reflect the failures in WebSpark.HttpClientUtility.Test/BatchExecution/BatchExecutionExecutionTests.cs
 
 ### Implementation for User Story 2
 
-- [ ] T015 [US2] Implement environment, user, request, and iteration expansion plus planned-count calculation in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
-- [ ] T016 [US2] Implement semaphore-based dispatch, cancellation boundaries, and per-item execution through `IHttpRequestResultService` in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
-- [ ] T017 [US2] Map HTTP methods, explicit body-capability metadata for custom methods, conditional request bodies, headers, and correlation IDs into outbound requests in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
+- [X] T015 [US2] Implement environment, user, request, and iteration expansion plus planned-count calculation in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
+- [X] T016 [US2] Implement semaphore-based dispatch, cancellation boundaries, and per-item execution through `IHttpRequestResultService` in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
+- [X] T017 [US2] Map HTTP methods, explicit body-capability metadata for custom methods, conditional request bodies, headers, and correlation IDs into outbound requests in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
 
 **Checkpoint**: The orchestrator executes the full matrix correctly and respects configured concurrency and cancellation limits.
 
@@ -97,13 +97,13 @@
 
 ### Tests for User Story 3
 
-- [ ] T018 [P] [US3] Write percentile and per-dimension aggregation tests in WebSpark.HttpClientUtility.Test/BatchExecution/BatchStatisticsCollectorTests.cs
-- [ ] T019 [P] [US3] Write concurrent snapshot and empty-result regression tests in WebSpark.HttpClientUtility.Test/BatchExecution/BatchProgressTests.cs
+- [X] T018 [P] [US3] Write percentile and per-dimension aggregation tests in WebSpark.HttpClientUtility.Test/BatchExecution/BatchStatisticsCollectorTests.cs
+- [X] T019 [P] [US3] Write concurrent snapshot and empty-result regression tests in WebSpark.HttpClientUtility.Test/BatchExecution/BatchProgressTests.cs
 
 ### Implementation for User Story 3
 
-- [ ] T020 [US3] Implement thread-safe counts, breakdown dictionaries, and percentile snapshot calculations in WebSpark.HttpClientUtility/BatchExecution/BatchStatisticsCollector.cs
-- [ ] T021 [US3] Feed running statistics snapshots and final aggregates into batch results and progress updates in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
+- [X] T020 [US3] Implement thread-safe counts, breakdown dictionaries, and percentile snapshot calculations in WebSpark.HttpClientUtility/BatchExecution/BatchStatisticsCollector.cs
+- [X] T021 [US3] Feed running statistics snapshots and final aggregates into batch results and progress updates in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
 
 **Checkpoint**: Final results and progress updates expose accurate statistics under concurrent execution.
 
@@ -117,12 +117,12 @@
 
 ### Tests for User Story 4
 
-- [ ] T022 [US4] Write deterministic response hash tests for identical and different response bodies in WebSpark.HttpClientUtility.Test/BatchExecution/BatchExecutionHashingTests.cs
+- [X] T022 [US4] Write deterministic response hash tests for identical and different response bodies in WebSpark.HttpClientUtility.Test/BatchExecution/BatchExecutionHashingTests.cs
 
 ### Implementation for User Story 4
 
-- [ ] T023 [US4] Implement SHA-256 response body hashing for completed requests in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
-- [ ] T024 [US4] Populate response hash and comparison-ready metadata on `BatchExecutionItemResult` in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
+- [X] T023 [US4] Implement SHA-256 response body hashing for completed requests in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
+- [X] T024 [US4] Populate response hash and comparison-ready metadata on `BatchExecutionItemResult` in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
 
 **Checkpoint**: Each completed item includes a stable response hash suitable for comparison workflows.
 
@@ -136,12 +136,12 @@
 
 ### Tests for User Story 5
 
-- [ ] T025 [US5] Write incremental sink delivery tests for success and failure paths, asserting the full FR-016 item metadata contract in WebSpark.HttpClientUtility.Test/BatchExecution/BatchExecutionStreamingTests.cs
+- [X] T025 [US5] Write incremental sink delivery tests for success and failure paths, asserting the full FR-016 item metadata contract in WebSpark.HttpClientUtility.Test/BatchExecution/BatchExecutionStreamingTests.cs
 
 ### Implementation for User Story 5
 
-- [ ] T026 [US5] Invoke `IBatchExecutionResultSink` immediately after each completed item and populate full FR-016 metadata (environment, path, method, status, hash, duration, user, timestamp) in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
-- [ ] T027 [US5] Preserve sink delivery, progress reporting, and graceful partial results during cancellation in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
+- [X] T026 [US5] Invoke `IBatchExecutionResultSink` immediately after each completed item and populate full FR-016 metadata (environment, path, method, status, hash, duration, user, timestamp) in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
+- [X] T027 [US5] Preserve sink delivery, progress reporting, and graceful partial results during cancellation in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
 
 **Checkpoint**: Consumers can observe results as they complete without waiting for full batch completion.
 
@@ -155,16 +155,16 @@
 
 ### Tests for User Story 6
 
-- [ ] T028 [US6] Write automated controller and demo run-tracking MSTest coverage in WebSpark.HttpClientUtility.Test/BatchExecution/BatchExecutionDemoControllerTests.cs and WebSpark.HttpClientUtility.Test/BatchExecution/BatchExecutionDemoServiceTests.cs
+- [X] T028 [US6] Write automated controller and demo run-tracking MSTest coverage in WebSpark.HttpClientUtility.Test/BatchExecution/BatchExecutionDemoControllerTests.cs and WebSpark.HttpClientUtility.Test/BatchExecution/BatchExecutionDemoServiceTests.cs
 
 ### Implementation for User Story 6
 
-- [ ] T029 [US6] Create request, response, and run-state view models in WebSpark.HttpClientUtility.Web/Models/BatchExecutionViewModels.cs
-- [ ] T030 [US6] Implement capped in-memory demo run tracking and orchestration integration in WebSpark.HttpClientUtility.Web/Services/BatchExecutionDemoService.cs
-- [ ] T031 [US6] Implement `GET /BatchExecution`, `POST /BatchExecution/runs`, and `GET /BatchExecution/runs/{runId}` in WebSpark.HttpClientUtility.Web/Controllers/BatchExecutionController.cs
-- [ ] T032 [US6] Enable batch execution and register demo services in WebSpark.HttpClientUtility.Web/Program.cs
-- [ ] T033 [US6] Build the interactive BatchExecution Razor page with pre-populated samples, polling, and statistics rendering in WebSpark.HttpClientUtility.Web/Views/BatchExecution/Index.cshtml
-- [ ] T034 [US6] Add a Batch Execution navigation entry in WebSpark.HttpClientUtility.Web/Views/Shared/_Layout.cshtml
+- [X] T029 [US6] Create request, response, and run-state view models in WebSpark.HttpClientUtility.Web/Models/BatchExecutionViewModels.cs
+- [X] T030 [US6] Implement capped in-memory demo run tracking and orchestration integration in WebSpark.HttpClientUtility.Web/Services/BatchExecutionDemoService.cs
+- [X] T031 [US6] Implement `GET /BatchExecution`, `POST /BatchExecution/runs`, and `GET /BatchExecution/runs/{runId}` in WebSpark.HttpClientUtility.Web/Controllers/BatchExecutionController.cs
+- [X] T032 [US6] Enable batch execution and register demo services in WebSpark.HttpClientUtility.Web/Program.cs
+- [X] T033 [US6] Build the interactive BatchExecution Razor page with pre-populated samples, polling, and statistics rendering in WebSpark.HttpClientUtility.Web/Views/BatchExecution/Index.cshtml
+- [X] T034 [US6] Add a Batch Execution navigation entry in WebSpark.HttpClientUtility.Web/Views/Shared/_Layout.cshtml
 - [ ] T035 [US6] Manually validate the capped run flow and live update behavior against specs/004-batch-execution-orchestration/quickstart.md and specs/004-batch-execution-orchestration/contracts/batch-execution-demo-api-contract.md
 
 **Checkpoint**: The web demo demonstrates capped batch execution with live statistics and final results.
@@ -175,11 +175,11 @@
 
 **Purpose**: Finish documentation, API polish, and end-to-end validation across the library and demo app.
 
-- [ ] T036 [P] Update batch execution usage documentation in README.md and documentation/GettingStarted.md
-- [ ] T037 [P] Add XML documentation for public batch execution APIs in WebSpark.HttpClientUtility/BatchExecution/*.cs and WebSpark.HttpClientUtility/ServiceCollectionExtensions.cs
-- [ ] T038 Write batch pipeline integration tests covering resilience, caching, telemetry, and authentication compatibility when `EnableBatchExecution` is enabled in WebSpark.HttpClientUtility.Test/BatchExecution/BatchExecutionPipelineIntegrationTests.cs
-- [ ] T039 Run full solution `dotnet build` and `dotnet test` validation in Release mode across all configured target frameworks, including the new batch execution tests and the pre-existing regression suites
-- [ ] T040 Resolve any new analyzer or build warnings introduced by the batch execution feature before completion
+- [X] T036 [P] Update batch execution usage documentation in README.md and documentation/GettingStarted.md
+- [X] T037 [P] Add XML documentation for public batch execution APIs in WebSpark.HttpClientUtility/BatchExecution/*.cs and WebSpark.HttpClientUtility/ServiceCollectionExtensions.cs
+- [X] T038 Write batch pipeline integration tests covering resilience, caching, telemetry, and authentication compatibility when `EnableBatchExecution` is enabled in WebSpark.HttpClientUtility.Test/BatchExecution/BatchExecutionPipelineIntegrationTests.cs
+- [X] T039 Run full solution `dotnet build` and `dotnet test` validation in Release mode across all configured target frameworks, including the new batch execution tests and the pre-existing regression suites
+- [X] T040 Resolve any new analyzer or build warnings introduced by the batch execution feature before completion
 
 ---
 

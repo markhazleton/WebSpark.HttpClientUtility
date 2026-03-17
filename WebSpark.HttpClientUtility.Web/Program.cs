@@ -11,7 +11,10 @@ builder.Services.AddControllersWithViews();
 // Configure HttpClientUtility services (v2.0.0 Two-Package Pattern)
 // ========================================
 // Base package: Core HTTP utilities
-builder.Services.AddHttpClientUtility();
+builder.Services.AddHttpClientUtility(options =>
+{
+  options.EnableBatchExecution = true;
+});
 
 // Crawler package: Web crawling features (requires base package)
 builder.Services.AddHttpClientCrawler();
@@ -19,6 +22,7 @@ builder.Services.AddHttpClientCrawler();
 
 // Register demo services
 builder.Services.AddScoped<JokeApiService>();
+builder.Services.AddSingleton<BatchExecutionDemoService>();
 
 var app = builder.Build();
 
