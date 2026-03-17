@@ -150,6 +150,25 @@ var result = await _httpService.HttpSendRequestResultAsync(request);
 <li><strong>Metrics</strong>: Success rate, response time, error counts</li>
 <li><strong>OTLP Support</strong>: Modern OpenTelemetry Protocol integration</li>
 </ul>
+<h3>🧩 Batch Execution Orchestration</h3>
+<p>Execute environment x user x request combinations with progress and aggregate statistics:</p>
+<pre><code class="language-csharp">services.AddHttpClientUtility(options =&gt;
+{
+    options.EnableBatchExecution = true;
+    options.EnableResilience = true;
+});
+
+var result = await batchExecutionService.ExecuteAsync(configuration, resultSink, progress, cancellationToken);
+</code></pre>
+<p>Features:</p>
+<ul>
+<li><strong>Combinatorial Expansion</strong>: Runs all environment, user, request, and iteration combinations</li>
+<li><strong>Template Substitution</strong>: Applies <code>{key}</code> and `` tokens for per-user requests</li>
+<li><strong>Concurrency Control</strong>: Semaphore-based max in-flight request throttling</li>
+<li><strong>Progress Updates</strong>: Optional <code>IProgress&lt;BatchProgress&gt;</code> callback with running snapshots</li>
+<li><strong>Streaming Results</strong>: Optional <code>IBatchExecutionResultSink</code> receives per-item outcomes as they complete</li>
+<li><strong>Statistics &amp; Percentiles</strong>: Total/success/failure plus P50, P95, and P99 timings</li>
+</ul>
 <h3>🕷️ Web Crawling</h3>
 <p>Full-featured web crawler with robots.txt support:</p>
 <pre><code class="language-csharp">var options = new CrawlerOptions
@@ -231,6 +250,7 @@ Assert.IsTrue(result.IsSuccessStatusCode);
 <ul>
 <li>✅ .NET 8.0 (LTS - Long-Term Support)</li>
 <li>✅ .NET 9.0 (Latest)</li>
+<li>✅ .NET 10.0 (Latest)</li>
 </ul>
 <h2>Production Ready</h2>
 <ul>
@@ -239,6 +259,7 @@ Assert.IsTrue(result.IsSuccessStatusCode);
 <li><strong>Nullable Reference Types</strong>: Full nullability annotations</li>
 <li><strong>Code Analysis</strong>: Warning level 5 with .NET analyzers enabled</li>
 <li><strong>Multi-Targeting</strong>: Supports both .NET 8 LTS and .NET 9</li>
+<li><strong>Multi-Targeting</strong>: Supports .NET 8 LTS, .NET 9, and .NET 10</li>
 </ul>
 <h2>Next Steps</h2>
 <div class="cta-buttons">

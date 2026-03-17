@@ -300,6 +300,82 @@ foreach (var result in results)
     Console.WriteLine($&quot;Path: {result.RequestPath}, Success: {result.IsSuccessStatusCode}&quot;);
 }
 </code></pre>
+<h2>Batch Execution Orchestration</h2>
+<h3>Execute Environment x User x Request Matrix</h3>
+<pre><code class="language-csharp">using WebSpark.HttpClientUtility.BatchExecution;
+
+services.AddHttpClientUtility(options =&gt;
+{
+    options.EnableBatchExecution = true;
+    options.EnableResilience = true;
+    options.EnableTelemetry = true;
+});
+
+var config = new BatchExecutionConfiguration
+{
+    Environments =
+    [
+        new BatchEnvironment { Name = &quot;Local&quot;, BaseUrl = &quot;https://localhost:5001&quot; },
+        new BatchEnvironment { Name = &quot;Staging&quot;, BaseUrl = &quot;https://staging.example.com&quot; }
+    ],
+    Users =
+    [
+        new BatchUserContext
+        {
+            UserId = &quot;john.doe&quot;,
+            Properties = new Dictionary&lt;string, string&gt;
+            {
+                [&quot;userId&quot;] = &quot;42&quot;,
+                [&quot;firstName&quot;] = &quot;John&quot;
+            }
+        }
+    ],
+    Requests =
+    [
+        new BatchRequestDefinition
+        {
+            Name = &quot;GetProfile&quot;,
+            Method = &quot;GET&quot;,
+            PathTemplate = &quot;/api/users/{userId}&quot;
+        },
+        new BatchRequestDefinition
+        {
+            Name = &quot;PatchProfile&quot;,
+            Method = &quot;PATCH&quot;,
+            IsBodyCapable = true,
+            PathTemplate = &quot;/api/users/{userId}&quot;,
+            BodyTemplate = &quot;{ \&quot;firstName\&quot;: \&quot;{firstName}\&quot; }&quot;,
+            ContentType = &quot;application/json&quot;
+        }
+    ],
+    Iterations = 2,
+    MaxConcurrency = 4
+};
+
+var service = serviceProvider.GetRequiredService&lt;IBatchExecutionService&gt;();
+
+var progress = new Progress&lt;BatchProgress&gt;(p =&gt;
+{
+    Console.WriteLine($&quot;{p.CompletedCount}/{p.TotalPlannedCount} complete (P95={p.StatisticsSnapshot.P95Milliseconds}ms)&quot;);
+});
+
+var result = await service.ExecuteAsync(config, resultSink: null, progress: progress, ct: cancellationToken);
+
+Console.WriteLine($&quot;Success={result.Statistics.SuccessCount}, Failure={result.Statistics.FailureCount}&quot;);
+</code></pre>
+<h3>Stream Per-Request Results to a Sink</h3>
+<pre><code class="language-csharp">public sealed class ConsoleBatchSink : IBatchExecutionResultSink
+{
+    public Task OnResultAsync(BatchExecutionItemResult result, CancellationToken ct = default)
+    {
+        Console.WriteLine($&quot;[{result.EnvironmentName}] {result.HttpMethod} {result.RequestPath} =&gt; {result.StatusCode}&quot;);
+        return Task.CompletedTask;
+    }
+}
+
+var sink = new ConsoleBatchSink();
+var batchResult = await service.ExecuteAsync(config, sink, progress, cancellationToken);
+</code></pre>
 <h2>Web Crawling Example</h2>
 <h3>Basic Crawler Setup</h3>
 <pre><code class="language-csharp">using WebSpark.HttpClientUtility.Crawler;

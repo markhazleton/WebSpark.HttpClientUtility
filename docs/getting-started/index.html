@@ -164,6 +164,46 @@ builder.Services.AddWebSparkOpenTelemetry(tracerBuilder =&gt; {
     tracerBuilder.AddOtlpExporter();
 });
 </code></pre>
+<h3>Batch Execution Orchestration</h3>
+<pre><code class="language-csharp">using WebSpark.HttpClientUtility.BatchExecution;
+
+builder.Services.AddHttpClientUtility(options =&gt; {
+    options.EnableBatchExecution = true;
+    options.EnableResilience = true;
+});
+
+var batchService = serviceProvider.GetRequiredService&lt;IBatchExecutionService&gt;();
+
+var config = new BatchExecutionConfiguration
+{
+    Environments =
+    [
+        new BatchEnvironment { Name = &quot;Local&quot;, BaseUrl = &quot;https://localhost:5001&quot; }
+    ],
+    Users =
+    [
+        new BatchUserContext
+        {
+            UserId = &quot;john.doe&quot;,
+            Properties = new Dictionary&lt;string, string&gt; { [&quot;userId&quot;] = &quot;42&quot; }
+        }
+    ],
+    Requests =
+    [
+        new BatchRequestDefinition
+        {
+            Name = &quot;GetProfile&quot;,
+            Method = &quot;GET&quot;,
+            PathTemplate = &quot;/api/users/{userId}&quot;
+        }
+    ],
+    Iterations = 1,
+    MaxConcurrency = 4
+};
+
+var result = await batchService.ExecuteAsync(config);
+Console.WriteLine($&quot;Completed: {result.CompletedCount}/{result.TotalPlannedCount}&quot;);
+</code></pre>
 <h3>All Features Enabled</h3>
 <p>Quick setup with everything enabled:</p>
 <pre><code class="language-csharp">builder.Services.AddHttpClientUtilityWithAllFeatures();
@@ -285,6 +325,15 @@ var result2 = await _httpService.HttpSendRequestResultAsync(request);
 <h3>Track Request Performance</h3>
 <pre><code class="language-csharp">var result = await _httpService.HttpSendRequestResultAsync(request);
 Console.WriteLine($&quot;Request took {result.RequestDuration}ms&quot;);
+</code></pre>
+<h3>Track Batch Progress</h3>
+<pre><code class="language-csharp">var progress = new Progress&lt;BatchProgress&gt;(update =&gt;
+{
+    Console.WriteLine($&quot;{update.CompletedCount}/{update.TotalPlannedCount}&quot;);
+});
+
+var result = await batchService.ExecuteAsync(config, resultSink: null, progress: progress);
+Console.WriteLine($&quot;P95: {result.Statistics.P95Milliseconds}ms&quot;);
 </code></pre>
 <h2>Next Steps</h2>
 <div class="cta-buttons">

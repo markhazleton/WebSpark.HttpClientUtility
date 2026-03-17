@@ -167,6 +167,9 @@ As a developer evaluating the library, I want to see batch execution orchestrati
 - **FR-021**: The batch orchestrator MUST accept an optional progress reporting parameter that, when provided, delivers an update after each request completes containing the number of completed requests, the total planned request count, and a running statistics snapshot.
 - **FR-022**: The batch orchestrator MUST be registered via the existing `HttpClientUtilityOptions` pattern as an opt-in feature (`EnableBatchExecution`). When not enabled, no batch orchestration services are registered in the dependency injection container.
 - **FR-023**: The demo application MUST include automated MSTest coverage for the BatchExecution controller and demo run-tracking service, in addition to manual UI validation, so the feature remains compliant with the repository testing standards.
+- **FR-024**: The documentation source for the GitHub Pages site (`src/pages/`) MUST be updated to describe batch execution setup, API surface, and examples, and the generated static output (`docs/`) MUST be rebuilt from those updates.
+- **FR-025**: The NuGet-facing package documentation metadata for the base package MUST be updated for batch execution discoverability, including package summary/description/tags and release notes in `WebSpark.HttpClientUtility.csproj`.
+- **FR-026**: The release version for this feature MUST be incremented as a minor version bump with lockstep package versioning, including updates to shared version properties and changelog/release-note entries that describe batch execution for package consumers.
 
 ### Key Entities
 
@@ -191,6 +194,8 @@ As a developer evaluating the library, I want to see batch execution orchestrati
 - **SC-007**: All existing WebSpark.HttpClientUtility features (resilience, caching, telemetry, authentication) continue to function correctly when the batch orchestration features are enabled, verified by full automated regression suites and batch-specific integration tests passing on all configured target frameworks without modification to pre-existing tests.
 - **SC-008**: A developer can navigate to the BatchExecution demo page, execute the pre-populated sample batch, and see statistics results within the web UI without writing any code.
 - **SC-009**: Automated MSTest coverage for the BatchExecution controller and demo run-tracking service passes alongside manual browser validation, ensuring the demo remains covered by the standard repository quality gate.
+- **SC-010**: The GitHub Pages documentation site publishes batch execution content in Getting Started, Features, API Reference, and Examples pages, and the generated `docs/` output reflects the updated source pages.
+- **SC-011**: NuGet package metadata and release documentation for the base package explicitly mention batch execution orchestration, and the feature is released under a minor version increment with lockstep package versions.
 
 ### Assumptions
 

@@ -17,7 +17,7 @@ Add an opt-in batch execution feature to the base WebSpark.HttpClientUtility pac
 **Project Type**: Multi-project NuGet library solution with a demo web application  
 **Performance Goals**: Support a single batch call covering up to 1,000 planned requests, keep in-flight work at or below configured concurrency, and calculate P50/P95/P99 within the spec tolerance  
 **Constraints**: Preserve the existing decorator order, keep batch execution independent from `Concurrent/`, register only when `EnableBatchExecution` is enabled, leave unresolved placeholders intact, and cap the demo to a maximum of 50 requests per run  
-**Scale/Scope**: New batch execution namespace in the base package, focused tests in the existing test project, and one new MVC demo flow with start/progress/result endpoints
+**Scale/Scope**: New batch execution namespace in the base package, focused tests in the existing test project, one new MVC demo flow with start/progress/result endpoints, plus documentation and release metadata updates for GitHub Pages and NuGet
 
 ## Constitution Check
 
@@ -108,6 +108,24 @@ WebSpark.HttpClientUtility.Web/
 │       └── Index.cshtml
 ├── Views/Shared/_Layout.cshtml                  # Add navigation entry
 └── Program.cs                                   # Ensure batch execution is enabled for demo usage
+
+src/pages/
+├── getting-started.md                           # Add batch execution onboarding
+├── features.md                                  # Add batch execution feature coverage
+├── api-reference.md                             # Document batch public APIs/options
+└── examples.md                                  # Add orchestration examples
+
+docs/
+└── ...                                          # Generated static site output rebuilt from src/pages
+
+WebSpark.HttpClientUtility/
+└── WebSpark.HttpClientUtility.csproj            # Update package metadata/release notes for batch feature
+
+WebSpark.HttpClientUtility.Crawler/
+└── WebSpark.HttpClientUtility.Crawler.csproj    # Maintain lockstep version metadata for release
+
+Directory.Build.props                            # Apply lockstep minor version increment
+CHANGELOG.md                                     # Add release entry describing batch feature
 ```
 
 **Structure Decision**: The feature belongs in the base library package because RESTRunner needs to delegate batch orchestration without taking an additional package dependency. A dedicated `BatchExecution/` namespace is preferred over extending `Concurrent/` because the existing concurrent implementation is specialized around `SiteStatus` and simple parallel processing, while the new feature needs templating, cartesian expansion, incremental sinks, progress snapshots, and aggregate statistics.
@@ -117,6 +135,8 @@ WebSpark.HttpClientUtility.Web/
 - Unit coverage validates template rendering, expansion rules, cancellation, progress, explicit body-capability handling for custom methods, hashing, and full output-result metadata.
 - Integration coverage validates that batch execution continues to flow through the existing request pipeline so resilience, caching, telemetry, authentication, and correlation behavior remain compatible when batch execution is enabled.
 - Demo coverage includes automated MSTest validation for the BatchExecution controller and demo run-tracking service, followed by manual browser verification of the capped interactive flow.
+- Documentation validation includes updating GitHub Pages source pages under `src/pages/`, rebuilding generated static files under `docs/`, and verifying batch execution content appears in the published sections.
+- NuGet documentation validation includes updating package metadata/release notes in `.csproj` files, adding a changelog release entry, and applying a lockstep minor version bump in shared version properties.
 - Release validation requires `dotnet build` and `dotnet test` for the full solution in Release mode on every configured target framework, with no new warnings introduced by the feature work.
 
 ## Complexity Tracking

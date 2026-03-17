@@ -165,7 +165,7 @@
 - [X] T032 [US6] Enable batch execution and register demo services in WebSpark.HttpClientUtility.Web/Program.cs
 - [X] T033 [US6] Build the interactive BatchExecution Razor page with pre-populated samples, polling, and statistics rendering in WebSpark.HttpClientUtility.Web/Views/BatchExecution/Index.cshtml
 - [X] T034 [US6] Add a Batch Execution navigation entry in WebSpark.HttpClientUtility.Web/Views/Shared/_Layout.cshtml
-- [ ] T035 [US6] Manually validate the capped run flow and live update behavior against specs/004-batch-execution-orchestration/quickstart.md and specs/004-batch-execution-orchestration/contracts/batch-execution-demo-api-contract.md
+- [X] T035 [US6] Manually validate the capped run flow and live update behavior against specs/004-batch-execution-orchestration/quickstart.md and specs/004-batch-execution-orchestration/contracts/batch-execution-demo-api-contract.md
 
 **Checkpoint**: The web demo demonstrates capped batch execution with live statistics and final results.
 
@@ -180,6 +180,11 @@
 - [X] T038 Write batch pipeline integration tests covering resilience, caching, telemetry, and authentication compatibility when `EnableBatchExecution` is enabled in WebSpark.HttpClientUtility.Test/BatchExecution/BatchExecutionPipelineIntegrationTests.cs
 - [X] T039 Run full solution `dotnet build` and `dotnet test` validation in Release mode across all configured target frameworks, including the new batch execution tests and the pre-existing regression suites
 - [X] T040 Resolve any new analyzer or build warnings introduced by the batch execution feature before completion
+- [X] T043 [P] Update GitHub Pages source content for batch execution in src/pages/getting-started.md, src/pages/features.md, src/pages/api-reference.md, and src/pages/examples.md
+- [X] T044 Rebuild and validate the generated static docs output under docs/ from the updated src/pages batch execution content
+- [X] T045 [P] Update NuGet package metadata documentation for batch execution in WebSpark.HttpClientUtility/WebSpark.HttpClientUtility.csproj (Summary, Description, PackageTags, PackageReleaseNotes)
+- [X] T046 [P] Add release documentation entry for batch execution in CHANGELOG.md and align package release notes in WebSpark.HttpClientUtility.Crawler/WebSpark.HttpClientUtility.Crawler.csproj for lockstep communication
+- [X] T047 Apply lockstep minor version bump for the feature release in Directory.Build.props and verify both packages consume the updated version metadata
 
 ---
 
@@ -277,11 +282,11 @@ T033 WebSpark.HttpClientUtility.Web/Views/BatchExecution/Index.cshtml
 1. Add US3 next so executions return actionable statistics.
 2. Add US4 and US5 as follow-on library capabilities once the execution core is stable.
 3. Finish with US6 once both automated demo tests and the interactive page behavior are ready.
-4. Use Phase 9 for documentation, XML comments, pipeline compatibility coverage, full-solution validation, and warning cleanup.
+4. Use Phase 9 for documentation (README + GitHub Pages), XML comments, NuGet metadata/version updates, pipeline compatibility coverage, full-solution validation, and warning cleanup.
 
 ### Task Count Summary
 
-- Total tasks: 42
+- Total tasks: 47
 - Setup + Foundational: 10
 - US1: 4
 - US2: 6
@@ -289,7 +294,7 @@ T033 WebSpark.HttpClientUtility.Web/Views/BatchExecution/Index.cshtml
 - US4: 3
 - US5: 3
 - US6: 8
-- Polish: 5
+- Polish: 10
 
 ---
 

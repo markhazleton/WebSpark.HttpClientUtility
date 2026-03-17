@@ -119,6 +119,49 @@ builder.Services.AddWebSparkOpenTelemetry(tracerBuilder => {
 });
 ```
 
+### Batch Execution Orchestration
+
+```csharp
+using WebSpark.HttpClientUtility.BatchExecution;
+
+builder.Services.AddHttpClientUtility(options => {
+    options.EnableBatchExecution = true;
+    options.EnableResilience = true;
+});
+
+var batchService = serviceProvider.GetRequiredService<IBatchExecutionService>();
+
+var config = new BatchExecutionConfiguration
+{
+    Environments =
+    [
+        new BatchEnvironment { Name = "Local", BaseUrl = "https://localhost:5001" }
+    ],
+    Users =
+    [
+        new BatchUserContext
+        {
+            UserId = "john.doe",
+            Properties = new Dictionary<string, string> { ["userId"] = "42" }
+        }
+    ],
+    Requests =
+    [
+        new BatchRequestDefinition
+        {
+            Name = "GetProfile",
+            Method = "GET",
+            PathTemplate = "/api/users/{userId}"
+        }
+    ],
+    Iterations = 1,
+    MaxConcurrency = 4
+};
+
+var result = await batchService.ExecuteAsync(config);
+Console.WriteLine($"Completed: {result.CompletedCount}/{result.TotalPlannedCount}");
+```
+
 ### All Features Enabled
 
 Quick setup with everything enabled:
@@ -279,6 +322,18 @@ var result2 = await _httpService.HttpSendRequestResultAsync(request);
 ```csharp
 var result = await _httpService.HttpSendRequestResultAsync(request);
 Console.WriteLine($"Request took {result.RequestDuration}ms");
+```
+
+### Track Batch Progress
+
+```csharp
+var progress = new Progress<BatchProgress>(update =>
+{
+    Console.WriteLine($"{update.CompletedCount}/{update.TotalPlannedCount}");
+});
+
+var result = await batchService.ExecuteAsync(config, resultSink: null, progress: progress);
+Console.WriteLine($"P95: {result.Statistics.P95Milliseconds}ms");
 ```
 
 ## Next Steps

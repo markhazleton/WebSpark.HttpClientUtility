@@ -3,47 +3,47 @@
   "@type": "Package",
   "registration": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/index.json",
   "id": "WebSpark.HttpClientUtility",
-  "version": "1.4.0",
-  "description": "A utility library for simplifying HttpClient usage in .NET applications, including\n\t\t\tfeatures for telemetry, caching, Polly integration, concurrent requests, and web\n\t\t\tcrawling. Supports .NET 8 (LTS) and .NET 9.",
+  "version": "2.2.1",
+  "description": "Drop-in HttpClient wrapper for .NET 8-10 with Polly resilience, response\n\t\t\tcaching, and OpenTelemetry. One-line setup eliminates boilerplate for retries, circuit\n\t\t\tbreakers, correlation IDs, and structured logging. Perfect for microservices, APIs, and\n\t\t\tweb scrapers. Includes authentication providers (Bearer, Basic, API Key), concurrent\n\t\t\trequests, fire-and-forget operations, and streaming support. MIT licensed, 237 unique tests\n\t\t\t(711 test runs across 3 frameworks). Supports .NET 8 LTS (until Nov 2026), .NET 9, and .NET 10.\n\t\t\tFor web crawling features, see WebSpark.HttpClientUtility.Crawler package.",
   "summary": "",
-  "title": "WebSpark.HttpClientUtility",
-  "iconUrl": "https://api.nuget.org/v3-flatcontainer/webspark.httpclientutility/1.4.0/icon",
-  "licenseUrl": "https://www.nuget.org/packages/WebSpark.HttpClientUtility/1.4.0/license",
-  "projectUrl": "https://markhazleton.com/MarkHazleton/HttpClientUtility",
+  "title": "WebSpark.HttpClientUtility - Resilient HTTP Client with Polly & Caching",
+  "iconUrl": "https://api.nuget.org/v3-flatcontainer/webspark.httpclientutility/2.2.1/icon",
+  "licenseUrl": "https://www.nuget.org/packages/WebSpark.HttpClientUtility/2.2.1/license",
+  "projectUrl": "https://markhazleton.github.io/WebSpark.HttpClientUtility/",
   "tags": [
     "httpclient",
-    "utility",
-    "web",
-    "api",
-    "rest",
     "polly",
-    "cache",
-    "telemetry",
-    "concurrent",
-    "dotnet",
-    "aspnetcore",
-    "crawler",
-    "sitemap",
-    "http-resilience",
+    "resilience",
     "retry",
     "circuit-breaker",
     "caching",
-    "curl",
-    "fire-and-forget",
     "opentelemetry",
-    "streaming",
     "observability",
-    "tracing",
+    "correlation-id",
+    "distributed-tracing",
+    "structured-logging",
+    "httpclientfactory",
+    "web-scraping",
+    "microservices",
+    "api-client",
+    "rest-api",
+    "bearer-token",
+    "authentication",
+    "api-key",
+    "production-ready",
+    "dotnet",
+    "aspnetcore",
     "net8",
-    "net9"
+    "net9",
+    "net10"
   ],
   "authors": [
-    "MarkHazleton"
+    "Mark Hazleton"
   ],
   "owners": [
     "markhazleton"
   ],
-  "totalDownloads": 1602,
+  "totalDownloads": 4117,
   "verified": false,
   "packageTypes": [
     {
@@ -53,60 +53,95 @@
   "versions": [
     {
       "version": "1.0.2",
-      "downloads": 105,
+      "downloads": 146,
       "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.0.2.json"
     },
     {
       "version": "1.0.3",
-      "downloads": 110,
+      "downloads": 141,
       "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.0.3.json"
     },
     {
       "version": "1.0.4",
-      "downloads": 165,
+      "downloads": 199,
       "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.0.4.json"
     },
     {
       "version": "1.0.5",
-      "downloads": 308,
+      "downloads": 352,
       "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.0.5.json"
     },
     {
       "version": "1.0.8",
-      "downloads": 214,
+      "downloads": 247,
       "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.0.8.json"
     },
     {
       "version": "1.0.10",
-      "downloads": 114,
+      "downloads": 164,
       "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.0.10.json"
     },
     {
       "version": "1.1.0",
-      "downloads": 222,
+      "downloads": 268,
       "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.1.0.json"
     },
     {
       "version": "1.2.0",
-      "downloads": 124,
+      "downloads": 167,
       "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.2.0.json"
     },
     {
       "version": "1.3.0",
-      "downloads": 167,
+      "downloads": 212,
       "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.3.0.json"
     },
     {
       "version": "1.3.2",
-      "downloads": 0,
+      "downloads": 163,
       "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.3.2.json"
     },
     {
       "version": "1.4.0",
-      "downloads": 0,
+      "downloads": 228,
       "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.4.0.json"
+    },
+    {
+      "version": "1.5.0",
+      "downloads": 218,
+      "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.5.0.json"
+    },
+    {
+      "version": "1.5.1",
+      "downloads": 216,
+      "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/1.5.1.json"
+    },
+    {
+      "version": "2.0.0",
+      "downloads": 235,
+      "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/2.0.0.json"
+    },
+    {
+      "version": "2.1.1",
+      "downloads": 482,
+      "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/2.1.1.json"
+    },
+    {
+      "version": "2.1.2",
+      "downloads": 284,
+      "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/2.1.2.json"
+    },
+    {
+      "version": "2.2.0",
+      "downloads": 252,
+      "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/2.2.0.json"
+    },
+    {
+      "version": "2.2.1",
+      "downloads": 36,
+      "@id": "https://api.nuget.org/v3/registration5-semver1/webspark.httpclientutility/2.2.1.json"
     }
   ],
   "vulnerabilities": [],
-  "cachedAt": "2025-11-02T16:53:36.123Z"
+  "cachedAt": "2026-03-17T19:13:33.446Z"
 }

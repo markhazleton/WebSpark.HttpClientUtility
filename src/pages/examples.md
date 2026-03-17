@@ -277,6 +277,89 @@ foreach (var result in results)
 }
 ```
 
+## Batch Execution Orchestration
+
+### Execute Environment x User x Request Matrix
+
+```csharp
+using WebSpark.HttpClientUtility.BatchExecution;
+
+services.AddHttpClientUtility(options =>
+{
+    options.EnableBatchExecution = true;
+    options.EnableResilience = true;
+    options.EnableTelemetry = true;
+});
+
+var config = new BatchExecutionConfiguration
+{
+    Environments =
+    [
+        new BatchEnvironment { Name = "Local", BaseUrl = "https://localhost:5001" },
+        new BatchEnvironment { Name = "Staging", BaseUrl = "https://staging.example.com" }
+    ],
+    Users =
+    [
+        new BatchUserContext
+        {
+            UserId = "john.doe",
+            Properties = new Dictionary<string, string>
+            {
+                ["userId"] = "42",
+                ["firstName"] = "John"
+            }
+        }
+    ],
+    Requests =
+    [
+        new BatchRequestDefinition
+        {
+            Name = "GetProfile",
+            Method = "GET",
+            PathTemplate = "/api/users/{userId}"
+        },
+        new BatchRequestDefinition
+        {
+            Name = "PatchProfile",
+            Method = "PATCH",
+            IsBodyCapable = true,
+            PathTemplate = "/api/users/{userId}",
+            BodyTemplate = "{ \"firstName\": \"{firstName}\" }",
+            ContentType = "application/json"
+        }
+    ],
+    Iterations = 2,
+    MaxConcurrency = 4
+};
+
+var service = serviceProvider.GetRequiredService<IBatchExecutionService>();
+
+var progress = new Progress<BatchProgress>(p =>
+{
+    Console.WriteLine($"{p.CompletedCount}/{p.TotalPlannedCount} complete (P95={p.StatisticsSnapshot.P95Milliseconds}ms)");
+});
+
+var result = await service.ExecuteAsync(config, resultSink: null, progress: progress, ct: cancellationToken);
+
+Console.WriteLine($"Success={result.Statistics.SuccessCount}, Failure={result.Statistics.FailureCount}");
+```
+
+### Stream Per-Request Results to a Sink
+
+```csharp
+public sealed class ConsoleBatchSink : IBatchExecutionResultSink
+{
+    public Task OnResultAsync(BatchExecutionItemResult result, CancellationToken ct = default)
+    {
+        Console.WriteLine($"[{result.EnvironmentName}] {result.HttpMethod} {result.RequestPath} => {result.StatusCode}");
+        return Task.CompletedTask;
+    }
+}
+
+var sink = new ConsoleBatchSink();
+var batchResult = await service.ExecuteAsync(config, sink, progress, cancellationToken);
+```
+
 ## Web Crawling Example
 
 ### Basic Crawler Setup
