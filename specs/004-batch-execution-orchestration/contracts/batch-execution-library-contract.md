@@ -70,7 +70,7 @@ public interface ITemplateSubstitutionService
 
 ### Template Rendering Rules
 
-- Replace `{key}` tokens from `BatchUserContext.Properties`.
+- Replace `{key}` tokens from `BatchUserContext.Properties`. Key matching is **case-sensitive**.
 - Replace `{{encoded_user_name}}` from `BatchUserContext.UserId`.
 - Preserve unresolved placeholders exactly as written.
 - Apply rendering independently to path and body templates.
@@ -111,6 +111,13 @@ public sealed class BatchRequestDefinition
     public string Method { get; set; } = "GET";
     public string PathTemplate { get; set; } = string.Empty;
     public string? BodyTemplate { get; set; }
+    /// <summary>
+    /// Indicates whether this method may include a request body.
+    /// Defaults to true for POST, PUT, and PATCH; false for all others.
+    /// Consumers may override explicitly for custom HTTP methods.
+    /// When false, BodyTemplate is ignored and no body is attached (FR-009).
+    /// </summary>
+    public bool IsBodyCapable { get; set; }
     public IReadOnlyDictionary<string, string> Headers { get; set; } =
         new Dictionary<string, string>();
     public string? ContentType { get; set; }

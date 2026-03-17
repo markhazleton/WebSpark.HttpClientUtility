@@ -41,8 +41,9 @@
 - [ ] T006 [P] Create the thread-safe statistics helper shell in WebSpark.HttpClientUtility/BatchExecution/BatchStatisticsCollector.cs
 - [ ] T007 Create the orchestrator shell and conditional DI wiring in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs and WebSpark.HttpClientUtility/ServiceCollectionExtensions.cs
 - [ ] T008 Create opt-in registration coverage in WebSpark.HttpClientUtility.Test/BatchExecution/ServiceCollectionExtensionsBatchExecutionTests.cs
+- [ ] T041 [P] Write input validation tests covering invalid Iterations (<0), invalid MaxConcurrency (<1), malformed base URLs, and empty collections in WebSpark.HttpClientUtility.Test/BatchExecution/ServiceCollectionExtensionsBatchExecutionTests.cs and implement validation logic in WebSpark.HttpClientUtility/BatchExecution/BatchExecutionService.cs
 
-**Checkpoint**: Feature flag, contracts, models, service shell, and DI guardrails are in place.
+**Checkpoint**: Feature flag, contracts, models, service shell, DI guardrails, and input validation are in place.
 
 ---
 
@@ -76,6 +77,7 @@
 
 - [ ] T013 [P] [US2] Write combinatorial expansion, planned-count, zero-work, and explicit custom-method body-capability tests in WebSpark.HttpClientUtility.Test/BatchExecution/BatchExecutionExpansionTests.cs
 - [ ] T014 [P] [US2] Write concurrency throttling, cancellation, progress callback, and correlation-ID propagation tests in WebSpark.HttpClientUtility.Test/BatchExecution/BatchExecutionExecutionTests.cs
+- [ ] T042 [P] [US2] Write unreachable-environment edge case test verifying that when one environment is completely unreachable, execution continues for other environments and statistics reflect the failures in WebSpark.HttpClientUtility.Test/BatchExecution/BatchExecutionExecutionTests.cs
 
 ### Implementation for User Story 2
 
@@ -279,10 +281,10 @@ T033 WebSpark.HttpClientUtility.Web/Views/BatchExecution/Index.cshtml
 
 ### Task Count Summary
 
-- Total tasks: 40
-- Setup + Foundational: 8
+- Total tasks: 42
+- Setup + Foundational: 10
 - US1: 4
-- US2: 5
+- US2: 6
 - US3: 4
 - US4: 3
 - US5: 3

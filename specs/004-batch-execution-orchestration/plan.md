@@ -16,7 +16,7 @@ Add an opt-in batch execution feature to the base WebSpark.HttpClientUtility pac
 **Target Platform**: Cross-platform .NET library consumers plus the ASP.NET Core MVC demo app  
 **Project Type**: Multi-project NuGet library solution with a demo web application  
 **Performance Goals**: Support a single batch call covering up to 1,000 planned requests, keep in-flight work at or below configured concurrency, and calculate P50/P95/P99 within the spec tolerance  
-**Constraints**: Preserve the existing decorator order, keep batch execution independent from `Concurrent/`, register only when `EnableBatchExecution` is enabled, leave unresolved placeholders intact, and cap the demo to about 50 requests per run  
+**Constraints**: Preserve the existing decorator order, keep batch execution independent from `Concurrent/`, register only when `EnableBatchExecution` is enabled, leave unresolved placeholders intact, and cap the demo to a maximum of 50 requests per run  
 **Scale/Scope**: New batch execution namespace in the base package, focused tests in the existing test project, and one new MVC demo flow with start/progress/result endpoints
 
 ## Constitution Check
@@ -122,3 +122,8 @@ WebSpark.HttpClientUtility.Web/
 ## Complexity Tracking
 
 No constitutional violations require separate justification. The design adds a new orchestrator service rather than reworking the existing concurrent abstractions, which keeps complexity localized and preserves backward compatibility.
+
+### Design Decisions
+
+- **SHA-256 for response hashing**: The spec assumption states a cryptographically secure algorithm is not required — only fast, collision-resistant hashing. SHA-256 was chosen because it is available in all target frameworks via `System.Security.Cryptography.SHA256`, is deterministic, and provides excellent collision resistance. While it is technically a cryptographic hash, the performance overhead is negligible for the expected response body sizes, and using a well-known algorithm avoids introducing additional dependencies. Future maintainers may substitute a faster non-cryptographic hash (e.g., xxHash) if profiling indicates SHA-256 is a bottleneck.
+- **.NET target framework scope**: The constitutional minimum is .NET 8 and .NET 9. The solution also multi-targets .NET 10 via `Directory.Build.props`. Task T039 validates all configured targets, which inherently covers .NET 10 without requiring explicit plan-level callout.

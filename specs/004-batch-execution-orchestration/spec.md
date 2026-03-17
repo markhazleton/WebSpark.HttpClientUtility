@@ -9,7 +9,7 @@
 
 ### Session 2026-03-17
 
-- Q: What scope should the batch execution demo page cover in the web project? → A: Interactive orchestration — dedicated BatchExecution controller with form to configure environments, users, and request templates, execute a capped batch (max ~50 requests), and display live statistics (counts, percentiles, per-environment breakdown).
+- Q: What scope should the batch execution demo page cover in the web project? → A: Interactive orchestration — dedicated BatchExecution controller with form to configure environments, users, and request templates, execute a capped batch (maximum 50 requests), and display live statistics (counts, percentiles, per-environment breakdown).
 - Q: How should batch orchestration relate to the existing Concurrent/ feature? → A: Independent — batch orchestrator manages its own concurrency; existing Concurrent/ feature remains separate for simple parallel use cases.
 - Q: Should the batch orchestrator expose a progress reporting callback at the library level? → A: Yes — add an optional IProgress<BatchProgress> parameter reporting completed count, total count, and running statistics snapshot.
 - Q: How should the batch orchestrator be registered in dependency injection? → A: Opt-in via existing options — add EnableBatchExecution to HttpClientUtilityOptions; orchestrator registered only when true.
@@ -163,7 +163,7 @@ As a developer evaluating the library, I want to see batch execution orchestrati
 - **FR-017**: The batch orchestrator MUST integrate with the existing resilience features (retry and circuit breaker) for individual request execution when those features are enabled.
 - **FR-018**: The batch orchestrator MUST propagate correlation IDs from the existing telemetry layer to each request in the batch.
 - **FR-019**: The WebSpark.HttpClientUtility.Web demo application MUST include a dedicated BatchExecution page with an interactive form for configuring environments, user contexts, request templates, iteration count, and concurrency limit.
-- **FR-020**: The BatchExecution demo page MUST cap execution to a maximum of approximately 50 requests per run and display aggregated statistics (counts, percentiles, per-environment breakdown) upon completion.
+- **FR-020**: The BatchExecution demo page MUST cap execution to a maximum of 50 requests per run and display aggregated statistics (counts, percentiles, per-environment breakdown) upon completion.
 - **FR-021**: The batch orchestrator MUST accept an optional progress reporting parameter that, when provided, delivers an update after each request completes containing the number of completed requests, the total planned request count, and a running statistics snapshot.
 - **FR-022**: The batch orchestrator MUST be registered via the existing `HttpClientUtilityOptions` pattern as an opt-in feature (`EnableBatchExecution`). When not enabled, no batch orchestration services are registered in the dependency injection container.
 - **FR-023**: The demo application MUST include automated MSTest coverage for the BatchExecution controller and demo run-tracking service, in addition to manual UI validation, so the feature remains compliant with the repository testing standards.
@@ -197,7 +197,7 @@ As a developer evaluating the library, I want to see batch execution orchestrati
 - The batch orchestration features will be added to the existing `WebSpark.HttpClientUtility` NuGet package (not a separate package).
 - The iteration count default will be 1 if not specified by the consumer.
 - The concurrency limit default will be 10 if not specified by the consumer (matching the current RESTRunner behavior).
-- The deterministic hash algorithm does not need to be cryptographically secure; it needs to be fast and collision-resistant for comparison purposes.
-- Template substitution operates on raw strings only — no recursive substitution (a substituted value containing `{key}` is not re-expanded).
+- The deterministic hash algorithm does not need to be cryptographically secure; it needs to be fast and collision-resistant for comparison purposes. SHA-256 is chosen for its universal BCL availability and determinism; a faster non-cryptographic hash may be substituted if profiling warrants it.
+- Template substitution operates on raw strings only — no recursive substitution (a substituted value containing `{key}` is not re-expanded). Template key matching is case-sensitive (dictionary lookup semantics).
 - The batch orchestration feature is opt-in via `EnableBatchExecution = true` on `HttpClientUtilityOptions`, following the same pattern as `EnableCaching`, `EnableResilience`, and `EnableTelemetry`.
 - The batch orchestrator is independent of the existing `Concurrent/` namespace (`ConcurrentHttpRequestService`). The existing concurrent feature remains available for simple parallel request use cases. The batch orchestrator manages its own concurrency internally and uses the standard `IHttpRequestResultService` decorator chain for individual request execution.

@@ -45,8 +45,6 @@ Represents one orchestration request submitted by a library consumer.
 - `Requests: IReadOnlyList<BatchRequestDefinition>`
 - `Iterations: int`
 - `MaxConcurrency: int`
-- `StartedAtUtc: DateTimeOffset?`
-- `RequestedBy: string?`
 
 **Validation rules**:
 - `RunId` may be auto-generated when omitted.
@@ -54,6 +52,10 @@ Represents one orchestration request submitted by a library consumer.
 - `MaxConcurrency` must be `>= 1`.
 - Empty `Users` or `Requests` are valid and result in zero planned work.
 - Each environment must have a valid absolute base URL.
+
+**Internal state** (set by the orchestrator, not supplied by consumers):
+- `StartedAtUtc: DateTimeOffset?` — populated when execution begins.
+- `RequestedBy: string?` — optional operational metadata.
 
 **Relationships**:
 - Owns all environments, users, and request definitions for a single batch.
@@ -86,12 +88,11 @@ Represents a named execution persona plus substitution values.
 **Fields**:
 - `UserId: string`
 - `Properties: IReadOnlyDictionary<string, string>`
-- `DisplayName: string?`
 
 **Validation rules**:
 - `UserId` is required when user contexts are provided.
 - `Properties` may be empty.
-- Property keys are matched case-sensitively unless implementation documentation says otherwise.
+- Property keys are matched case-sensitively during template substitution.
 
 **Relationships**:
 - Supplies values to template rendering.
@@ -108,13 +109,15 @@ Represents one parameterized request template.
 - `Method: string`
 - `PathTemplate: string`
 - `BodyTemplate: string?`
+- `IsBodyCapable: bool`
 - `Headers: IReadOnlyDictionary<string, string>`
 - `ContentType: string?`
 
 **Validation rules**:
 - `Name`, `Method`, and `PathTemplate` are required.
 - `Method` must accept standard methods and arbitrary custom values.
-- `BodyTemplate` is optional and only applied when the method supports a body or the caller explicitly uses a custom method with a body.
+- `IsBodyCapable` defaults to `true` for standard body methods (POST, PUT, PATCH) and `false` for all others (GET, DELETE, HEAD, OPTIONS, custom methods). Consumers may override the default explicitly for custom methods.
+- `BodyTemplate` is optional and only attached to the outbound request when `IsBodyCapable` is `true`.
 
 **Relationships**:
 - Combined with every environment, user, and iteration.
@@ -135,8 +138,7 @@ Represents the outcome of one expanded execution work item.
 - `HttpMethod: string`
 - `RequestPath: string`
 - `CorrelationId: string`
-- `StartedAtUtc: DateTimeOffset`
-- `CompletedAtUtc: DateTimeOffset`
+- `TimestampUtc: DateTimeOffset`
 - `DurationMilliseconds: long`
 - `IsSuccess: bool`
 - `StatusCode: int?`
@@ -176,6 +178,29 @@ Represents aggregated metrics for a batch run.
 
 **Relationships**:
 - Included in both progress snapshots and final batch results.
+
+---
+
+### BatchExecutionResult
+
+Represents the final outcome of a complete batch run.
+
+**Fields**:
+- `RunId: string`
+- `TotalPlannedCount: int`
+- `CompletedCount: int`
+- `WasCancelled: bool`
+- `Statistics: BatchExecutionStatistics`
+- `Results: IReadOnlyList<BatchExecutionItemResult>`
+
+**Validation rules**:
+- `CompletedCount` must be between `0` and `TotalPlannedCount`.
+- `WasCancelled` is `true` when cancellation stopped dispatch before all work items completed.
+- `Statistics` reflects only completed work items.
+
+**Relationships**:
+- Returned by `IBatchExecutionService.ExecuteAsync` upon completion.
+- Referenced by `BatchExecutionDemoRun` for demo polling responses.
 
 ---
 
