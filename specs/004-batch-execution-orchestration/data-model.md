@@ -223,31 +223,6 @@ Represents an incremental progress update emitted after each completed request.
 - Delivered through `IProgress<BatchProgress>`.
 - Stored by the demo run tracker for polling.
 
----
-
-### BatchExecutionResult
-
-Represents the final outcome returned by the orchestrator.
-
-**Fields**:
-- `RunId: string`
-- `TotalPlannedCount: int`
-- `CompletedCount: int`
-- `WasCancelled: bool`
-- `StartedAtUtc: DateTimeOffset`
-- `CompletedAtUtc: DateTimeOffset`
-- `Results: IReadOnlyList<BatchExecutionItemResult>`
-- `Statistics: BatchExecutionStatistics`
-
-**Validation rules**:
-- `CompletedCount <= TotalPlannedCount`.
-- `WasCancelled` may be true with partial results.
-
-**Relationships**:
-- Final container returned by `IBatchExecutionService`.
-
----
-
 ## Demo-Only Entity
 
 ### BatchExecutionDemoRun
