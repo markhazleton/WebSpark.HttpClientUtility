@@ -31,6 +31,14 @@ This quickstart describes how maintainers execute the harvest plan from idea dis
 3. Confirm any breaking-impact adoption includes explicit migration communication.
 4. Confirm no sunset step begins before every adopt-now item is fully implemented.
 
+### Release-Ready Criteria
+
+An adopt-now candidate transitions to `release-ready` only when all three conditions are linked in `copilot/session-2026-03-30/adoption-work-items.md`:
+
+1. Automated verification evidence
+2. User-facing documentation evidence
+3. Migration guidance evidence (required only for breaking-impact decisions)
+
 ## 5. Prepare legacy repository sunset
 
 1. Publish a clear status notice in the legacy repository pointing users to the primary repository.

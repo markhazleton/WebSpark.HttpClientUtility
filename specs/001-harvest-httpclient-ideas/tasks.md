@@ -17,9 +17,9 @@
 
 **Purpose**: Prepare the harvest workspace and target documentation/example locations.
 
-- [ ] T001 Create the harvest working folder at `copilot/session-2026-03-30/`
-- [ ] T002 Create the initial audit notes file at `copilot/session-2026-03-30/httpclientdecoratorpattern-audit.md`
-- [ ] T003 [P] Create the harvested examples source folder structure under `src/pages/examples/`
+- [X] T001 Create the harvest working folder at `copilot/session-2026-03-30/`
+- [X] T002 Create the initial audit notes file at `copilot/session-2026-03-30/httpclientdecoratorpattern-audit.md`
+- [X] T003 [P] Create the harvested examples source folder structure under `src/pages/examples/`
 
 ---
 
@@ -29,11 +29,11 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T004 Create the candidate inventory document in `copilot/session-2026-03-30/harvest-candidate-inventory.md`
-- [ ] T005 Create the decision record register in `copilot/session-2026-03-30/harvest-decision-records.md`
-- [ ] T006 Create the adoption work item tracker in `copilot/session-2026-03-30/adoption-work-items.md`
-- [ ] T007 Create the sunset readiness tracker in `copilot/session-2026-03-30/sunset-readiness.md`
-- [ ] T007a Document release-readiness criteria in `specs/001-harvest-httpclient-ideas/quickstart.md`: a candidate transitions to `release-ready` only when automated verification evidence, user-facing documentation evidence, and migration guidance (if breaking-impact) are all linked in `copilot/session-2026-03-30/adoption-work-items.md` (satisfies FR-005)
+- [X] T004 Create the candidate inventory document in `copilot/session-2026-03-30/harvest-candidate-inventory.md`
+- [X] T005 Create the decision record register in `copilot/session-2026-03-30/harvest-decision-records.md`
+- [X] T006 Create the adoption work item tracker in `copilot/session-2026-03-30/adoption-work-items.md`
+- [X] T007 Create the sunset readiness tracker in `copilot/session-2026-03-30/sunset-readiness.md`
+- [X] T007a Document release-readiness criteria in `specs/001-harvest-httpclient-ideas/quickstart.md`: a candidate transitions to `release-ready` only when automated verification evidence, user-facing documentation evidence, and migration guidance (if breaking-impact) are all linked in `copilot/session-2026-03-30/adoption-work-items.md` (satisfies FR-005)
 
 **Checkpoint**: Foundation ready - user story implementation can now begin.
 
@@ -45,10 +45,10 @@
 
 **Independent Test**: Review `copilot/session-2026-03-30/harvest-candidate-inventory.md`, `copilot/session-2026-03-30/harvest-decision-records.md`, and `copilot/session-2026-03-30/adoption-work-items.md` and confirm every identified idea has a decision state, rationale, impact classification, and target area.
 
-- [ ] T008 [US1] Populate `copilot/session-2026-03-30/httpclientdecoratorpattern-audit.md` with the complete repository audit from `C:\GitHub\MarkHazleton\HttpClientDecoratorPattern`
-- [ ] T009 [US1] Populate `copilot/session-2026-03-30/harvest-candidate-inventory.md` with all unique harvest candidates and novelty assessments
-- [ ] T010 [P] [US1] Populate `copilot/session-2026-03-30/harvest-decision-records.md` using `specs/001-harvest-httpclient-ideas/contracts/decision-record-contract.md`
-- [ ] T011 [P] [US1] Populate `copilot/session-2026-03-30/adoption-work-items.md` with implementation targets, impact levels, and evidence requirements for every `adopt-now` candidate
+- [X] T008 [US1] Populate `copilot/session-2026-03-30/httpclientdecoratorpattern-audit.md` with the complete repository audit from `C:\GitHub\MarkHazleton\HttpClientDecoratorPattern`
+- [X] T009 [US1] Populate `copilot/session-2026-03-30/harvest-candidate-inventory.md` with all unique harvest candidates and novelty assessments
+- [X] T010 [P] [US1] Populate `copilot/session-2026-03-30/harvest-decision-records.md` using `specs/001-harvest-httpclient-ideas/contracts/decision-record-contract.md`
+- [X] T011 [P] [US1] Populate `copilot/session-2026-03-30/adoption-work-items.md` with implementation targets, impact levels, and evidence requirements for every `adopt-now` candidate
 
 **Checkpoint**: User Story 1 is complete when the harvest backlog and decision matrix are fully traceable and independently reviewable.
 
@@ -66,18 +66,18 @@
 
 > **NOTE: Write these tests first and ensure they fail before implementation.**
 
-- [ ] T012 [P] [US2] Add configuration binding tests for alternate seconds-based resilience keys in `WebSpark.HttpClientUtility.Test/ServiceCollectionExtensionsTests.cs`
-- [ ] T013 [P] [US2] Add regression tests for existing resilience option behavior in `WebSpark.HttpClientUtility.Test/RequestResult/HttpRequestResultTests.cs`
+- [X] T012 [P] [US2] Add configuration binding tests for alternate seconds-based resilience keys in `WebSpark.HttpClientUtility.Test/ServiceCollectionExtensionsTests.cs`
+- [X] T013 [P] [US2] Add regression tests for existing resilience option behavior in `WebSpark.HttpClientUtility.Test/RequestResult/HttpRequestResultTests.cs`
 
 ### Implementation for User Story 2
 
-- [ ] T014 [US2] Implement support for `RetryDelaySeconds` and `CircuitBreakerDurationSeconds` binding in `WebSpark.HttpClientUtility/ServiceCollectionExtensions.cs`
-- [ ] T015 [US2] Update XML documentation and option guidance in `WebSpark.HttpClientUtility/RequestResult/HttpRequestResultPollyOptions.cs`
-- [ ] T016 [P] [US2] Create a harvested circuit-breaker and concurrent-calls examples page in `src/pages/examples/httpclient-decorator-pattern-scenarios.md`
-- [ ] T017 [P] [US2] Create a harvested crawler-progress and site-analysis examples page in `src/pages/examples/crawler-harvested-scenarios.md`
-- [ ] T018 [US2] Update the examples index in `src/pages/examples.md`
-- [ ] T019 [US2] Update user-facing documentation in `README.md` and `documentation/GettingStarted.md` for the adopted configuration and examples
-- [ ] T020 [US2] Add release and migration guidance for adopted items in `CHANGELOG.md`; update the internal working summary in `copilot/session-2026-03-30/final-harvest-summary.md` with release-ready status and evidence links for each adopted candidate
+- [X] T014 [US2] Implement support for `RetryDelaySeconds` and `CircuitBreakerDurationSeconds` binding in `WebSpark.HttpClientUtility/ServiceCollectionExtensions.cs`
+- [X] T015 [US2] Update XML documentation and option guidance in `WebSpark.HttpClientUtility/RequestResult/HttpRequestResultPollyOptions.cs`
+- [X] T016 [P] [US2] Create a harvested circuit-breaker and concurrent-calls examples page in `src/pages/examples/httpclient-decorator-pattern-scenarios.md`
+- [X] T017 [P] [US2] Create a harvested crawler-progress and site-analysis examples page in `src/pages/examples/crawler-harvested-scenarios.md`
+- [X] T018 [US2] Update the examples index in `src/pages/examples.md`
+- [X] T019 [US2] Update user-facing documentation in `README.md` and `documentation/GettingStarted.md` for the adopted configuration and examples
+- [X] T020 [US2] Add release and migration guidance for adopted items in `CHANGELOG.md`; update the internal working summary in `copilot/session-2026-03-30/final-harvest-summary.md` with release-ready status and evidence links for each adopted candidate
 
 **Checkpoint**: User Story 2 is complete when adopted code changes are verified automatically and the primary repository documents the harvested examples and any migration implications.
 
@@ -89,11 +89,11 @@
 
 **Independent Test**: Review the legacy repository notice, the final harvest summary, and the sunset readiness tracker to confirm the archive gate cannot be satisfied until every adopt-now work item is shipped.
 
-- [ ] T021 [US3] Update the legacy repository notice in `../HttpClientDecoratorPattern/README.md` (assumes the legacy repository is checked out as a sibling of this repository; this task is performed manually and cannot run in GitHub Actions CI)
-- [ ] T022 [P] [US3] Draft the archive announcement and replacement guidance in `copilot/session-2026-03-30/httpclientdecoratorpattern-archive-issue.md`
-- [ ] T023 [P] [US3] Update `copilot/session-2026-03-30/sunset-readiness.md` using `specs/001-harvest-httpclient-ideas/contracts/sunset-readiness-contract.md`
-- [ ] T024 [US3] Publish the final harvest outcome summary: update internal working copy at `copilot/session-2026-03-30/final-harvest-summary.md` and create the consumer-facing version at `documentation/harvest-summary.md` (satisfies FR-010)
-- [ ] T025 [US3] Perform the archive-readiness review against `copilot/session-2026-03-30/adoption-work-items.md` and `copilot/session-2026-03-30/sunset-readiness.md`
+- [X] T021 [US3] Update the legacy repository notice in `../HttpClientDecoratorPattern/README.md` (assumes the legacy repository is checked out as a sibling of this repository; this task is performed manually and cannot run in GitHub Actions CI)
+- [X] T022 [P] [US3] Draft the archive announcement and replacement guidance in `copilot/session-2026-03-30/httpclientdecoratorpattern-archive-issue.md`
+- [X] T023 [P] [US3] Update `copilot/session-2026-03-30/sunset-readiness.md` using `specs/001-harvest-httpclient-ideas/contracts/sunset-readiness-contract.md`
+- [X] T024 [US3] Publish the final harvest outcome summary: update internal working copy at `copilot/session-2026-03-30/final-harvest-summary.md` and create the consumer-facing version at `documentation/harvest-summary.md` (satisfies FR-010)
+- [X] T025 [US3] Perform the archive-readiness review against `copilot/session-2026-03-30/adoption-work-items.md` and `copilot/session-2026-03-30/sunset-readiness.md`
 
 **Checkpoint**: User Story 3 is complete when the legacy repository can be clearly redirected and the archive gate is documented as satisfied only after all adopt-now work is shipped.
 
@@ -103,14 +103,14 @@
 
 **Purpose**: Final validation across stories and repository-wide release readiness.
 
-- [ ] T026 [P] Validate the harvested docs source files in `src/pages/examples/` and `src/pages/examples.md`
-- [ ] T027 Run solution-level build and test validation for `WebSpark.HttpClientUtility.sln`
-- [ ] T028 [P] Reconcile `copilot/session-2026-03-30/harvest-decision-records.md`, `copilot/session-2026-03-30/adoption-work-items.md`, and `copilot/session-2026-03-30/sunset-readiness.md` against `specs/001-harvest-httpclient-ideas/quickstart.md`
-- [ ] T029 Bump version in `WebSpark.HttpClientUtility/WebSpark.HttpClientUtility.csproj` (and `WebSpark.HttpClientUtility.Crawler/WebSpark.HttpClientUtility.Crawler.csproj` if crawler candidates were adopted): use MAJOR for any breaking-impact adoption, MINOR for backward-compatible additions; commit separately from all feature work per constitution release discipline
-- [ ] T030 [P] Verify SC-001: cross-reference every entry in `copilot/session-2026-03-30/harvest-candidate-inventory.md` against `copilot/session-2026-03-30/harvest-decision-records.md`; confirm zero uncategorized candidates remain
-- [ ] T031 [P] Verify SC-002 and SC-003: confirm every adopt-now entry in `copilot/session-2026-03-30/adoption-work-items.md` has linked automated verification evidence and user-facing documentation evidence; confirm every breaking-impact adoption has migration guidance in `CHANGELOG.md`
-- [ ] T032 [P] Verify SC-004: confirm `copilot/session-2026-03-30/sunset-readiness.md` shows all adopt-now work items as shipped and all communication prerequisites satisfied; confirm `documentation/harvest-summary.md` is published before approving archive readiness
-- [ ] T033 [P] Package governance check: confirm no new `.csproj` or package manifest was introduced during adoption work unless a compelling-separation Decision Record exists in `copilot/session-2026-03-30/harvest-decision-records.md` (satisfies FR-005b and FR-005c)
+- [X] T026 [P] Validate the harvested docs source files in `src/pages/examples/` and `src/pages/examples.md`
+- [X] T027 Run solution-level build and test validation for `WebSpark.HttpClientUtility.sln`
+- [X] T028 [P] Reconcile `copilot/session-2026-03-30/harvest-decision-records.md`, `copilot/session-2026-03-30/adoption-work-items.md`, and `copilot/session-2026-03-30/sunset-readiness.md` against `specs/001-harvest-httpclient-ideas/quickstart.md`
+- [X] T029 Bump version in `WebSpark.HttpClientUtility/WebSpark.HttpClientUtility.csproj` (and `WebSpark.HttpClientUtility.Crawler/WebSpark.HttpClientUtility.Crawler.csproj` if crawler candidates were adopted): use MAJOR for any breaking-impact adoption, MINOR for backward-compatible additions; commit separately from all feature work per constitution release discipline
+- [X] T030 [P] Verify SC-001: cross-reference every entry in `copilot/session-2026-03-30/harvest-candidate-inventory.md` against `copilot/session-2026-03-30/harvest-decision-records.md`; confirm zero uncategorized candidates remain
+- [X] T031 [P] Verify SC-002 and SC-003: confirm every adopt-now entry in `copilot/session-2026-03-30/adoption-work-items.md` has linked automated verification evidence and user-facing documentation evidence; confirm every breaking-impact adoption has migration guidance in `CHANGELOG.md`
+- [X] T032 [P] Verify SC-004: confirm `copilot/session-2026-03-30/sunset-readiness.md` shows all adopt-now work items as shipped and all communication prerequisites satisfied; confirm `documentation/harvest-summary.md` is published before approving archive readiness
+- [X] T033 [P] Package governance check: confirm no new `.csproj` or package manifest was introduced during adoption work unless a compelling-separation Decision Record exists in `copilot/session-2026-03-30/harvest-decision-records.md` (satisfies FR-005b and FR-005c)
 
 ---
 
@@ -152,24 +152,24 @@
 ## Parallel Example: User Story 1
 
 ```text
-- [ ] T010 [P] [US1] Populate copilot/session-2026-03-30/harvest-decision-records.md using specs/001-harvest-httpclient-ideas/contracts/decision-record-contract.md
-- [ ] T011 [P] [US1] Populate copilot/session-2026-03-30/adoption-work-items.md with implementation targets, impact levels, and evidence requirements for every adopt-now candidate
+- [X] T010 [P] [US1] Populate copilot/session-2026-03-30/harvest-decision-records.md using specs/001-harvest-httpclient-ideas/contracts/decision-record-contract.md
+- [X] T011 [P] [US1] Populate copilot/session-2026-03-30/adoption-work-items.md with implementation targets, impact levels, and evidence requirements for every adopt-now candidate
 ```
 
 ## Parallel Example: User Story 2
 
 ```text
-- [ ] T012 [P] [US2] Add configuration binding tests for alternate seconds-based resilience keys in WebSpark.HttpClientUtility.Test/ServiceCollectionExtensionsTests.cs
-- [ ] T013 [P] [US2] Add regression tests for existing resilience option behavior in WebSpark.HttpClientUtility.Test/RequestResult/HttpRequestResultTests.cs
-- [ ] T016 [P] [US2] Create a harvested circuit-breaker and concurrent-calls examples page in src/pages/examples/httpclient-decorator-pattern-scenarios.md
-- [ ] T017 [P] [US2] Create a harvested crawler-progress and site-analysis examples page in src/pages/examples/crawler-harvested-scenarios.md
+- [X] T012 [P] [US2] Add configuration binding tests for alternate seconds-based resilience keys in WebSpark.HttpClientUtility.Test/ServiceCollectionExtensionsTests.cs
+- [X] T013 [P] [US2] Add regression tests for existing resilience option behavior in WebSpark.HttpClientUtility.Test/RequestResult/HttpRequestResultTests.cs
+- [X] T016 [P] [US2] Create a harvested circuit-breaker and concurrent-calls examples page in src/pages/examples/httpclient-decorator-pattern-scenarios.md
+- [X] T017 [P] [US2] Create a harvested crawler-progress and site-analysis examples page in src/pages/examples/crawler-harvested-scenarios.md
 ```
 
 ## Parallel Example: User Story 3
 
 ```text
-- [ ] T022 [P] [US3] Draft the archive announcement and replacement guidance in copilot/session-2026-03-30/httpclientdecoratorpattern-archive-issue.md
-- [ ] T023 [P] [US3] Update copilot/session-2026-03-30/sunset-readiness.md using specs/001-harvest-httpclient-ideas/contracts/sunset-readiness-contract.md
+- [X] T022 [P] [US3] Draft the archive announcement and replacement guidance in copilot/session-2026-03-30/httpclientdecoratorpattern-archive-issue.md
+- [X] T023 [P] [US3] Update copilot/session-2026-03-30/sunset-readiness.md using specs/001-harvest-httpclient-ideas/contracts/sunset-readiness-contract.md
 ```
 
 ---
@@ -213,3 +213,4 @@
 - T029 (version bump) MUST be a separate commit from all feature work per constitution release discipline.
 - T030–T033 (verification and governance tasks) are prerequisite gates for release sign-off and archive approval.
 - T007a remains in Phase 2 to ensure release-readiness criteria are defined before any adoption work begins.
+
