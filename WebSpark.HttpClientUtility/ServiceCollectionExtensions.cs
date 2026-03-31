@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 using WebSpark.HttpClientUtility.ClientService;
 using WebSpark.HttpClientUtility.BatchExecution;
 using WebSpark.HttpClientUtility.RequestResult;
@@ -243,12 +244,20 @@ service,
         }
 
         // Legacy compatibility aliases from HttpClientDecoratorPattern.
-        if (double.TryParse(section["RetryDelaySeconds"], out var retryDelaySeconds))
+        if (double.TryParse(
+            section["RetryDelaySeconds"],
+            NumberStyles.Float,
+            CultureInfo.InvariantCulture,
+            out var retryDelaySeconds))
         {
             resilience.RetryDelay = TimeSpan.FromSeconds(retryDelaySeconds);
         }
 
-        if (double.TryParse(section["CircuitBreakerDurationSeconds"], out var circuitBreakerDurationSeconds))
+        if (double.TryParse(
+            section["CircuitBreakerDurationSeconds"],
+            NumberStyles.Float,
+            CultureInfo.InvariantCulture,
+            out var circuitBreakerDurationSeconds))
         {
             resilience.CircuitBreakerDuration = TimeSpan.FromSeconds(circuitBreakerDurationSeconds);
         }
