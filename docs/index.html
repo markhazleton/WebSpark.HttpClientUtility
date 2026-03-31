@@ -21,20 +21,20 @@
   <link rel="canonical" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/">
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="assets/css/main.css">
-  <link rel="stylesheet" href="assets/css/prism-tomorrow.css">
+  <link rel="stylesheet" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/assets/css/main.css">
+  <link rel="stylesheet" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/assets/css/prism-tomorrow.css">
   
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="icon.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+  <link rel="icon" type="image/x-icon" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/icon.png">
 </head>
 <body>
   <header class="site-header">
   <div class="container">
     <div class="header-content">
       <div class="site-logo">
-        <a href="">WebSpark.HttpClientUtility</a>
+        <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/">WebSpark.HttpClientUtility</a>
       </div>
       
       <nav class="main-nav">
@@ -48,27 +48,27 @@
         <ul class="nav-menu">
           
           <li class="nav-item active">
-            <a href="">Home</a>
+            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/">Home</a>
           </li>
           
           <li class="nav-item">
-            <a href="features/">Features</a>
+            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/features/">Features</a>
           </li>
           
           <li class="nav-item">
-            <a href="getting-started/">Getting Started</a>
+            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/getting-started/">Getting Started</a>
           </li>
           
           <li class="nav-item">
-            <a href="api-reference/">API Reference</a>
+            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/api-reference/">API Reference</a>
           </li>
           
           <li class="nav-item">
-            <a href="examples/">Examples</a>
+            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/examples/">Examples</a>
           </li>
           
           <li class="nav-item">
-            <a href="about/">About</a>
+            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/about/">About</a>
           </li>
           
         </ul>
@@ -117,14 +117,26 @@ OpenTelemetry integration with correlation IDs for distributed tracing.</p>
 <p>✅ <strong>Web crawling capabilities</strong><br>
 Robots.txt parsing, SignalR progress updates, and concurrent crawling support.</p>
 <p>✅ <strong>Flexible authentication</strong><br>
-Built-in providers for Bearer tokens, Basic auth, and API keys.</p>
+Built-in providers for Bearer tokens (with dynamic refresh), Basic auth, and API keys with factory helpers.</p>
+<p>✅ <strong>Batch execution orchestration</strong><br>
+Environment x user x request combinatorial execution with progress reporting, streaming sinks, and P50/P95/P99 percentile statistics.</p>
+<p>✅ <strong>JSON serialization choice</strong><br>
+System.Text.Json by default with optional Newtonsoft.Json support via <code>UseNewtonsoftJson</code> flag.</p>
+<p>✅ <strong>Advanced utilities</strong><br>
+Fire-and-forget execution, CURL command logging with sensitive header sanitization, streaming for large payloads, and concurrent request processing.</p>
 <h2>Quick Example</h2>
 <pre><code class="language-csharp">// Register services with optional features
 builder.Services.AddHttpClientUtility(options =&gt; {
     options.EnableCaching = true;
     options.EnableResilience = true;
     options.EnableTelemetry = true;
+    options.EnableBatchExecution = true;
 });
+
+// Or use convenience methods
+builder.Services.AddHttpClientUtilityWithCaching();
+builder.Services.AddHttpClientUtilityWithResilience(maxRetries: 3, retryDelaySeconds: 1.0);
+builder.Services.AddHttpClientUtilityWithAllFeatures();
 
 // Make HTTP requests with automatic retries and caching
 var request = new HttpRequestResult&lt;WeatherData&gt;
@@ -145,19 +157,25 @@ if (result.IsSuccessStatusCode)
 </code></pre>
 <h2>Get Started</h2>
 <div class="cta-buttons">
-  <a href="/getting-started/" class="button primary">Get Started</a>
-  <a href="/features/" class="button secondary">View Features</a>
+  <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/getting-started/" class="button primary">Get Started</a>
+  <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/features/" class="button secondary">View Features</a>
 </div>
 <h2>What's Included</h2>
 <p>The library provides a complete HTTP client wrapper with:</p>
 <ul>
 <li><strong>Core Services</strong>: <code>IHttpRequestResultService</code> for making HTTP requests</li>
+<li><strong>Client Service</strong>: <code>IHttpClientService</code> typed method-based alternative (Get, Post, Put, Delete)</li>
 <li><strong>Caching Layer</strong>: Automatic response caching with configurable expiration</li>
 <li><strong>Resilience Layer</strong>: Polly-based retry and circuit breaker policies</li>
 <li><strong>Telemetry Layer</strong>: OpenTelemetry integration with metrics and tracing</li>
-<li><strong>Web Crawler</strong>: Full-featured web crawling with robots.txt support</li>
-<li><strong>Batch Execution</strong>: Environment x user x request orchestration with progress and percentiles</li>
-<li><strong>Authentication</strong>: Multiple authentication providers (Bearer, Basic, API Key)</li>
+<li><strong>Web Crawler</strong>: Full-featured web crawling with robots.txt support (separate package)</li>
+<li><strong>Batch Execution</strong>: Environment x user x request orchestration with progress and P50/P95/P99 percentiles</li>
+<li><strong>Authentication</strong>: Multiple providers (Bearer with dynamic refresh, Basic, API Key) with validation and refresh support</li>
+<li><strong>JSON Serialization</strong>: System.Text.Json default with optional Newtonsoft.Json</li>
+<li><strong>Fire-and-Forget</strong>: Background task execution with structured logging</li>
+<li><strong>Streaming</strong>: Automatic streaming for large responses (10 MB+ threshold)</li>
+<li><strong>CURL Logging</strong>: Request capture as CURL commands with batch processing and sensitive header sanitization</li>
+<li><strong>Concurrent Requests</strong>: Parallel HTTP request execution with semaphore-based throttling</li>
 <li><strong>Testing Utilities</strong>: Mock service for unit testing</li>
 </ul>
 <h2>Architecture</h2>
@@ -216,7 +234,7 @@ if (result.IsSuccessStatusCode)
       </div>
       
       <div class="footer-section">
-        <p>&copy; 2025 <a href="https://markhazleton.com" target="_blank" rel="noopener noreferrer">Mark Hazleton</a></p>
+        <p>&copy; 2026 <a href="https://markhazleton.com" target="_blank" rel="noopener noreferrer">Mark Hazleton</a></p>
         <p>Licensed under MIT</p>
       </div>
     </div>
@@ -225,6 +243,6 @@ if (result.IsSuccessStatusCode)
 
   
   <!-- Scripts -->
-  <script src="assets/js/prism.min.js" defer></script>
+  <script src="https://markhazleton.github.io/WebSpark.HttpClientUtility/assets/js/prism.min.js" defer></script>
 </body>
 </html>

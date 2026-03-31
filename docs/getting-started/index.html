@@ -21,20 +21,20 @@
   <link rel="canonical" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/getting-started/">
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="../assets/css/main.css">
-  <link rel="stylesheet" href="../assets/css/prism-tomorrow.css">
+  <link rel="stylesheet" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/assets/css/main.css">
+  <link rel="stylesheet" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/assets/css/prism-tomorrow.css">
   
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="../favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="../icon.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="../icon.png">
+  <link rel="icon" type="image/x-icon" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/icon.png">
 </head>
 <body>
   <header class="site-header">
   <div class="container">
     <div class="header-content">
       <div class="site-logo">
-        <a href="../">WebSpark.HttpClientUtility</a>
+        <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/">WebSpark.HttpClientUtility</a>
       </div>
       
       <nav class="main-nav">
@@ -48,27 +48,27 @@
         <ul class="nav-menu">
           
           <li class="nav-item">
-            <a href="../">Home</a>
+            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/">Home</a>
           </li>
           
           <li class="nav-item">
-            <a href="../features/">Features</a>
+            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/features/">Features</a>
           </li>
           
           <li class="nav-item active">
-            <a href="../getting-started/">Getting Started</a>
+            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/getting-started/">Getting Started</a>
           </li>
           
           <li class="nav-item">
-            <a href="../api-reference/">API Reference</a>
+            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/api-reference/">API Reference</a>
           </li>
           
           <li class="nav-item">
-            <a href="../examples/">Examples</a>
+            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/examples/">Examples</a>
           </li>
           
           <li class="nav-item">
-            <a href="../about/">About</a>
+            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/about/">About</a>
           </li>
           
         </ul>
@@ -147,11 +147,24 @@ public class WeatherService
 };
 </code></pre>
 <h3>Resilience (Retry &amp; Circuit Breaker)</h3>
-<pre><code class="language-csharp">builder.Services.AddHttpClientUtility(options =&gt; {
+<pre><code class="language-csharp">// Full configuration
+builder.Services.AddHttpClientUtility(options =&gt; {
     options.EnableResilience = true;
     options.ResilienceOptions.MaxRetryAttempts = 3;
     options.ResilienceOptions.RetryDelay = TimeSpan.FromSeconds(1);
 });
+
+// Or use the shortcut
+builder.Services.AddHttpClientUtilityWithResilience(maxRetries: 3, retryDelaySeconds: 1.0);
+</code></pre>
+<p>Legacy seconds-based configuration aliases are also supported in <code>appsettings.json</code>:</p>
+<pre><code class="language-json">{
+  "HttpRequestResultPollyOptions": {
+    "MaxRetryAttempts": 3,
+    "RetryDelaySeconds": 1,
+    "CircuitBreakerDurationSeconds": 30
+  }
+}
 </code></pre>
 <h3>Telemetry</h3>
 <pre><code class="language-csharp">using WebSpark.HttpClientUtility.OpenTelemetry;
@@ -207,6 +220,12 @@ Console.WriteLine($&quot;Completed: {result.CompletedCount}/{result.TotalPlanned
 <h3>All Features Enabled</h3>
 <p>Quick setup with everything enabled:</p>
 <pre><code class="language-csharp">builder.Services.AddHttpClientUtilityWithAllFeatures();
+</code></pre>
+<h3>Newtonsoft.Json Serialization (Optional)</h3>
+<p>By default the library uses <code>System.Text.Json</code>. Opt in to <code>Newtonsoft.Json</code> if your APIs require it:</p>
+<pre><code class="language-csharp">builder.Services.AddHttpClientUtility(options =&gt; {
+    options.UseNewtonsoftJson = true;
+});
 </code></pre>
 <h2>Working with Requests</h2>
 <h3>POST Request with JSON</h3>
@@ -337,9 +356,9 @@ Console.WriteLine($&quot;P95: {result.Statistics.P95Milliseconds}ms&quot;);
 </code></pre>
 <h2>Next Steps</h2>
 <div class="cta-buttons">
-  <a href="/features/" class="button primary">View All Features</a>
-  <a href="/examples/" class="button secondary">See More Examples</a>
-  <a href="/api-reference/" class="button secondary">API Reference</a>
+  <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/features/" class="button primary">View All Features</a>
+  <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/examples/" class="button secondary">See More Examples</a>
+  <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/api-reference/" class="button secondary">API Reference</a>
 </div>
 <h2>Need Help?</h2>
 <ul>
@@ -386,7 +405,7 @@ Console.WriteLine($&quot;P95: {result.Statistics.P95Milliseconds}ms&quot;);
       </div>
       
       <div class="footer-section">
-        <p>&copy; 2025 <a href="https://markhazleton.com" target="_blank" rel="noopener noreferrer">Mark Hazleton</a></p>
+        <p>&copy; 2026 <a href="https://markhazleton.com" target="_blank" rel="noopener noreferrer">Mark Hazleton</a></p>
         <p>Licensed under MIT</p>
       </div>
     </div>
@@ -395,6 +414,6 @@ Console.WriteLine($&quot;P95: {result.Statistics.P95Milliseconds}ms&quot;);
 
   
   <!-- Scripts -->
-  <script src="../assets/js/prism.min.js" defer></script>
+  <script src="https://markhazleton.github.io/WebSpark.HttpClientUtility/assets/js/prism.min.js" defer></script>
 </body>
 </html>

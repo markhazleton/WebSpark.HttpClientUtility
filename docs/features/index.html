@@ -21,20 +21,20 @@
   <link rel="canonical" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/features/">
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="../assets/css/main.css">
-  <link rel="stylesheet" href="../assets/css/prism-tomorrow.css">
+  <link rel="stylesheet" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/assets/css/main.css">
+  <link rel="stylesheet" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/assets/css/prism-tomorrow.css">
   
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="../favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="../icon.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="../icon.png">
+  <link rel="icon" type="image/x-icon" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/icon.png">
 </head>
 <body>
   <header class="site-header">
   <div class="container">
     <div class="header-content">
       <div class="site-logo">
-        <a href="../">WebSpark.HttpClientUtility</a>
+        <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/">WebSpark.HttpClientUtility</a>
       </div>
       
       <nav class="main-nav">
@@ -48,27 +48,27 @@
         <ul class="nav-menu">
           
           <li class="nav-item">
-            <a href="../">Home</a>
+            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/">Home</a>
           </li>
           
           <li class="nav-item active">
-            <a href="../features/">Features</a>
+            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/features/">Features</a>
           </li>
           
           <li class="nav-item">
-            <a href="../getting-started/">Getting Started</a>
+            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/getting-started/">Getting Started</a>
           </li>
           
           <li class="nav-item">
-            <a href="../api-reference/">API Reference</a>
+            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/api-reference/">API Reference</a>
           </li>
           
           <li class="nav-item">
-            <a href="../examples/">Examples</a>
+            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/examples/">Examples</a>
           </li>
           
           <li class="nav-item">
-            <a href="../about/">About</a>
+            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/about/">About</a>
           </li>
           
         </ul>
@@ -91,6 +91,9 @@ services.AddHttpClientUtility();
 // With caching
 services.AddHttpClientUtilityWithCaching();
 
+// With resilience (shortcut)
+services.AddHttpClientUtilityWithResilience(maxRetries: 5, retryDelaySeconds: 2.0);
+
 // All features enabled
 services.AddHttpClientUtilityWithAllFeatures();
 
@@ -99,6 +102,8 @@ services.AddHttpClientUtility(options =&gt; {
     options.EnableCaching = true;
     options.EnableResilience = true;
     options.EnableTelemetry = true;
+    options.EnableBatchExecution = true;
+    options.UseNewtonsoftJson = false; // true to opt in to Newtonsoft.Json
     options.ResilienceOptions.MaxRetryAttempts = 5;
     options.ResilienceOptions.RetryDelay = TimeSpan.FromSeconds(2);
 });
@@ -118,6 +123,16 @@ services.AddHttpClientUtility(options =&gt; {
 <li><code>CircuitBreakerThreshold</code> (default: 5 failures)</li>
 <li><code>CircuitBreakerDuration</code> (default: 30 seconds)</li>
 </ul>
+<p>Legacy seconds-based aliases are also supported for configuration binding:</p>
+<pre><code class="language-json">{
+  "HttpRequestResultPollyOptions": {
+    "MaxRetryAttempts": 3,
+    "RetryDelaySeconds": 1,
+    "CircuitBreakerThreshold": 5,
+    "CircuitBreakerDurationSeconds": 30
+  }
+}
+</code></pre>
 <h3>💾 Response Caching</h3>
 <p>Intelligent caching with configurable duration:</p>
 <pre><code class="language-csharp">var request = new HttpRequestResult&lt;WeatherData&gt;
@@ -192,15 +207,29 @@ await crawler.CrawlAsync(cancellationToken);
 <li><strong>Concurrent Crawling</strong>: Parallel page processing</li>
 </ul>
 <h3>🔐 Authentication</h3>
-<p>Multiple authentication providers built-in:</p>
-<pre><code class="language-csharp">// Bearer Token
-var bearerAuth = new BearerTokenAuthenticationProvider(&quot;your-token&quot;);
+<p>Multiple authentication providers built-in with a rich <code>IAuthenticationProvider</code> interface supporting validation, refresh, and thread-safe token management:</p>
+<pre><code class="language-csharp">// Bearer Token (static)
+var bearerAuth = new BearerTokenAuthenticationProvider(&quot;your-token&quot;, logger);
+
+// Bearer Token (dynamic refresh with auto-expiry)
+var dynamicBearer = new BearerTokenAuthenticationProvider(
+    async ct =&gt; await GetFreshTokenAsync(ct),
+    logger,
+    providerName: &quot;MyIdP&quot;,
+    tokenExpiryWindow: TimeSpan.FromMinutes(5));
 
 // Basic Auth
-var basicAuth = new BasicAuthenticationProvider(&quot;username&quot;, &quot;password&quot;);
+var basicAuth = new BasicAuthenticationProvider(&quot;username&quot;, &quot;password&quot;, logger);
 
-// API Key
-var apiKeyAuth = new ApiKeyAuthenticationProvider(&quot;X-API-Key&quot;, &quot;your-key&quot;);
+// API Key (custom header)
+var apiKeyAuth = new ApiKeyAuthenticationProvider(&quot;my-key&quot;, &quot;X-API-Key&quot;, logger);
+
+// API Key (factory helpers)
+var xApiKey = ApiKeyAuthenticationProvider.CreateXApiKeyProvider(&quot;my-key&quot;, logger);
+var authApiKey = ApiKeyAuthenticationProvider.CreateAuthorizationApiKeyProvider(&quot;my-key&quot;, logger);
+
+// No-op provider
+var noAuth = new NoAuthenticationProvider();
 
 var request = new HttpRequestResult&lt;Data&gt;
 {
@@ -208,6 +237,14 @@ var request = new HttpRequestResult&lt;Data&gt;
     AuthenticationProvider = bearerAuth
 };
 </code></pre>
+<p>Provider capabilities:</p>
+<ul>
+<li><code>ProviderName</code> - Identifies the provider for logging</li>
+<li><code>IsValid</code> - Check if credentials are currently valid</li>
+<li><code>ValidateAsync()</code> - Validate credentials asynchronously</li>
+<li><code>RefreshAsync()</code> - Refresh expired credentials (e.g., token rotation)</li>
+<li><code>AddAuthenticationAsync()</code> - Apply credentials to request headers</li>
+</ul>
 <h3>🧪 Testing Support</h3>
 <p>Mock service for unit testing:</p>
 <pre><code class="language-csharp">var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
@@ -221,16 +258,53 @@ var result = await mockService.HttpSendRequestResultAsync(request);
 Assert.IsTrue(result.IsSuccessStatusCode);
 </code></pre>
 <h3>🔧 Advanced Features</h3>
-<h4>Object Pooling</h4>
-<p>Efficient memory management with object pool pattern for high-throughput scenarios.</p>
+<h4>JSON Serialization Abstraction</h4>
+<p>Choose between <code>System.Text.Json</code> (default) or <code>Newtonsoft.Json</code> via the <code>IStringConverter</code> interface:</p>
+<pre><code class="language-csharp">services.AddHttpClientUtility(options =&gt; {
+    options.UseNewtonsoftJson = true; // Opt in to Newtonsoft.Json
+});
+</code></pre>
+
 <h4>Fire-and-Forget Requests</h4>
-<p>Background HTTP requests without waiting for responses.</p>
+<p>Background HTTP requests without waiting for responses, with structured logging and correlation IDs:</p>
+<pre><code class="language-csharp">var fireAndForget = serviceProvider.GetRequiredService&lt;FireAndForgetUtility&gt;();
+
+fireAndForget.SafeFireAndForget(
+    _httpService.HttpSendRequestResultAsync(request),
+    operationName: &quot;SendAnalytics&quot;);
+</code></pre>
+
 <h4>Concurrent Requests</h4>
-<p>Execute multiple HTTP requests in parallel with automatic result aggregation.</p>
+<p>Execute multiple HTTP requests in parallel with automatic result aggregation using <code>ConcurrentProcessor&lt;T&gt;</code> or the concurrent service:</p>
+<pre><code class="language-csharp">var concurrent = serviceProvider.GetRequiredService&lt;IConcurrentHttpRequestResultService&gt;();
+var responses = await concurrent.ProcessRequestListAsync(requests, maxConcurrentRequests: 5);
+</code></pre>
+
 <h4>Request/Response Streaming</h4>
-<p>Support for streaming large files and real-time data.</p>
-<h4>CURL Command Generation</h4>
-<p>Save requests as CURL commands for debugging and sharing.</p>
+<p>The <code>StreamingHelper</code> automatically selects streaming vs. in-memory deserialization based on response size (default threshold: 10 MB). Large payloads are streamed for reduced memory pressure.</p>
+
+<h4>CURL Command Logging</h4>
+<p>Automatically log HTTP requests as CURL commands for debugging and sharing with <code>CurlCommandSaver</code>:</p>
+<pre><code class="language-csharp">// Configured via appsettings.json:
+// {
+//   "CurlCommandSaver": {
+//     "UseBatchProcessing": true,
+//     "SanitizeSensitiveInfo": true
+//   }
+// }
+</code></pre>
+<p>Features batch processing, file rotation (10 MB default), sensitive header sanitization, and JSON Lines output format.</p>
+
+<h4>Alternative HTTP Client API</h4>
+<p><code>IHttpClientService</code> provides a typed, method-based alternative to the decorator-chain approach:</p>
+<pre><code class="language-csharp">var clientService = serviceProvider.GetRequiredService&lt;IHttpClientService&gt;();
+var result = await clientService.GetAsync&lt;WeatherData&gt;(uri, cancellationToken);
+var postResult = await clientService.PostAsync&lt;RequestDto, ResponseDto&gt;(uri, payload, cancellationToken);
+</code></pre>
+<p>Returns <code>HttpResponseContent&lt;T&gt;</code> with <code>Content</code>, <code>IsSuccess</code>, <code>StatusCode</code>, <code>ErrorMessage</code>, and timing data.</p>
+
+<h4>Error Enrichment</h4>
+<p><code>ErrorHandlingUtility.EnrichException()</code> adds context data to exceptions for richer diagnostics in production.</p>
 <h2>Decorator Pattern Architecture</h2>
 <p>The library uses a decorator pattern for composable features:</p>
 <ol>
@@ -262,8 +336,8 @@ Assert.IsTrue(result.IsSuccessStatusCode);
 </ul>
 <h2>Next Steps</h2>
 <div class="cta-buttons">
-  <a href="/getting-started/" class="button primary">Get Started</a>
-  <a href="/examples/" class="button secondary">View Examples</a>
+  <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/getting-started/" class="button primary">Get Started</a>
+  <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/examples/" class="button secondary">View Examples</a>
 </div>
 
     </div>
@@ -304,7 +378,7 @@ Assert.IsTrue(result.IsSuccessStatusCode);
       </div>
       
       <div class="footer-section">
-        <p>&copy; 2025 <a href="https://markhazleton.com" target="_blank" rel="noopener noreferrer">Mark Hazleton</a></p>
+        <p>&copy; 2026 <a href="https://markhazleton.com" target="_blank" rel="noopener noreferrer">Mark Hazleton</a></p>
         <p>Licensed under MIT</p>
       </div>
     </div>
@@ -313,6 +387,6 @@ Assert.IsTrue(result.IsSuccessStatusCode);
 
   
   <!-- Scripts -->
-  <script src="../assets/js/prism.min.js" defer></script>
+  <script src="https://markhazleton.github.io/WebSpark.HttpClientUtility/assets/js/prism.min.js" defer></script>
 </body>
 </html>
