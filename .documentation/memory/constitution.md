@@ -1,7 +1,7 @@
 <!--
 Sync Impact Report:
-Version: 0.0.0 → 1.0.0
-Modified Principles: Initial constitution creation
+Version: 1.0.0 → 1.0.1
+Modified Principles: AI Agent Output Organization scope guard for public /docs
 Added Sections: All sections (initial creation)
 Removed Sections: None
 Templates Status:
@@ -190,6 +190,7 @@ AI-generated documentation MUST follow these rules:
 - **No Root Clutter**: Never create `.md` files in repository root (except updating existing files)
 - **Date Format**: Use ISO format `YYYY-MM-DD` for session folders (e.g., `/copilot/session-2025-11-02/`)
 - **Exceptions**: Only update existing root-level docs (`README.md`, `CHANGELOG.md`) when explicitly requested
+- **Public Pages Boundary**: `/docs` is the GitHub Pages publishing folder and public-facing source. Do not include `/docs` content in site-documentation harvesting, archival, or memory-harvest workflows unless explicitly requested for a direct docs-site change.
 
 **Rationale**: Keeps AI-generated documentation organized and separate from official project documentation. Prevents repository clutter.
 
@@ -236,4 +237,4 @@ For detailed development guidance during implementation, refer to `.github/copil
 - Testing patterns and standards
 - Questions to ask before implementing
 
-**Version**: 1.0.0 | **Ratified**: 2025-11-02 | **Last Amended**: 2025-11-02
+**Version**: 1.0.1 | **Ratified**: 2025-11-02 | **Last Amended**: 2026-03-31
