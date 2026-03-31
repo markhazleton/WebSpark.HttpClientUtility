@@ -11,7 +11,7 @@
 		<!-- NuGet Package Properties -->
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>WebSpark.HttpClientUtility</PackageId>
-		<!-- Version inherited from Directory.Build.props (2.5.0 lockstep) -->
+		<!-- Version inherited from Directory.Build.props (2.6.0 lockstep) -->
 		<Deterministic>true</Deterministic>
 		<Title>WebSpark.HttpClientUtility - Resilient HTTP Client with Polly &amp; Caching</Title>
 		<Authors>Mark Hazleton</Authors>
@@ -28,6 +28,10 @@
 			Supports .NET 8 LTS (until Nov 2026), .NET 9, and .NET 10. For web crawling features,
 			see WebSpark.HttpClientUtility.Crawler package.</Description>
 		<PackageReleaseNotes>
+			2.6.0 - Added compatibility binding for RetryDelaySeconds and CircuitBreakerDurationSeconds
+			under HttpRequestResultPollyOptions while preserving existing TimeSpan-based keys.
+			Added harvested scenario documentation for resilience/concurrency and crawler progress guidance.
+			Non-breaking minor release.
 			2.5.0 - Stability and maintenance release with batch execution orchestration hardening,
 			improved test resilience for edge-case environments, and dependency/security patch rollups
 			from recent update cycles. Non-breaking changes.

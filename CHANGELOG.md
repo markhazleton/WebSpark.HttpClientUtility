@@ -5,6 +5,29 @@ All notable changes to the WebSpark.HttpClientUtility project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0] - 2026-03-30
+
+### Added
+
+- Compatibility support for legacy resilience configuration aliases in `HttpRequestResultPollyOptions`
+  - `RetryDelaySeconds` now binds to `RetryDelay`
+  - `CircuitBreakerDurationSeconds` now binds to `CircuitBreakerDuration`
+- New harvested documentation scenarios:
+  - `src/pages/examples/httpclient-decorator-pattern-scenarios.md`
+  - `src/pages/examples/crawler-harvested-scenarios.md`
+
+### Changed
+
+- Updated `README.md` and `documentation/GettingStarted.md` with TimeSpan and seconds-based resilience configuration examples
+- Updated examples index (`src/pages/examples.md`) to link harvested scenarios
+- Lockstep version bump to `2.6.0` for base and crawler packages
+
+### Verified
+
+- Added coverage for resilience config binding behavior in `WebSpark.HttpClientUtility.Test/ServiceCollectionExtensionsTests.cs`
+- Added regression coverage in `WebSpark.HttpClientUtility.Test/RequestResult/HttpRequestResultTests.cs`
+- Verified `WebSpark.HttpClientUtility.Test` passes across net8.0/net9.0/net10.0
+
 ## [2.5.0] - 2026-03-17
 
 ### Added

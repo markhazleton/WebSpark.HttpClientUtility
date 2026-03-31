@@ -333,6 +333,32 @@ builder.Services.AddHttpClientUtility(options =>
 });
 ```
 
+#### Configuration Binding (TimeSpan and Seconds Aliases)
+
+Both configuration styles are supported under `HttpRequestResultPollyOptions`:
+
+```json
+{
+    "HttpRequestResultPollyOptions": {
+        "MaxRetryAttempts": 3,
+        "RetryDelay": "00:00:02",
+        "CircuitBreakerThreshold": 5,
+        "CircuitBreakerDuration": "00:00:30"
+    }
+}
+```
+
+```json
+{
+    "HttpRequestResultPollyOptions": {
+        "MaxRetryAttempts": 3,
+        "RetryDelaySeconds": 2,
+        "CircuitBreakerThreshold": 5,
+        "CircuitBreakerDurationSeconds": 30
+    }
+}
+```
+
 ### Enable Batch Execution Orchestration
 ```csharp
 builder.Services.AddHttpClientUtility(options =>
@@ -426,6 +452,8 @@ That's it! Your crawler code (ISiteCrawler, SiteCrawler, SimpleSiteCrawler, etc.
 - **[Web Crawling](documentation/WebCrawling.md)** - Site crawler features
 - **[Migration Guide](documentation/Migration.md)** - From raw HttpClient
 - **[API Reference](documentation/ApiReference.md)** - Complete API documentation
+- **[Harvested Decorator Scenarios](src/pages/examples/httpclient-decorator-pattern-scenarios.md)** - Resilience and concurrent-calls scenarios
+- **[Harvested Crawler Scenarios](src/pages/examples/crawler-harvested-scenarios.md)** - Crawler progress and site-analysis scenarios
 
 ## 🎓 Sample Projects
 
