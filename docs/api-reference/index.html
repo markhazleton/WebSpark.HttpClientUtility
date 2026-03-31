@@ -21,20 +21,20 @@
   <link rel="canonical" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/api-reference/">
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/assets/css/main.css">
-  <link rel="stylesheet" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/assets/css/prism-tomorrow.css">
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/prism-tomorrow.css">
   
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/icon.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/icon.png">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="../icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../icon.png">
 </head>
 <body>
   <header class="site-header">
   <div class="container">
     <div class="header-content">
       <div class="site-logo">
-        <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/">WebSpark.HttpClientUtility</a>
+        <a href="../">WebSpark.HttpClientUtility</a>
       </div>
       
       <nav class="main-nav">
@@ -48,27 +48,27 @@
         <ul class="nav-menu">
           
           <li class="nav-item">
-            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/">Home</a>
+            <a href="../">Home</a>
           </li>
           
           <li class="nav-item">
-            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/features/">Features</a>
+            <a href="../features/">Features</a>
           </li>
           
           <li class="nav-item">
-            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/getting-started/">Getting Started</a>
+            <a href="../getting-started/">Getting Started</a>
           </li>
           
           <li class="nav-item active">
-            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/api-reference/">API Reference</a>
+            <a href="../api-reference/">API Reference</a>
           </li>
           
           <li class="nav-item">
-            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/examples/">Examples</a>
+            <a href="../examples/">Examples</a>
           </li>
           
           <li class="nav-item">
-            <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/about/">About</a>
+            <a href="../about/">About</a>
           </li>
           
         </ul>
@@ -213,11 +213,6 @@
     public static IServiceCollection AddHttpClientUtilityWithCaching(
         this IServiceCollection services);
 
-    public static IServiceCollection AddHttpClientUtilityWithResilience(
-        this IServiceCollection services,
-        int maxRetries = 3,
-        double retryDelaySeconds = 1.0);
-
     public static IServiceCollection AddHttpClientUtilityWithAllFeatures(
         this IServiceCollection services);
 }
@@ -228,9 +223,8 @@
 {
     public bool EnableCaching { get; set; } = false;
     public bool EnableResilience { get; set; } = false;
-    public bool EnableTelemetry { get; set; } = true;
+    public bool EnableTelemetry { get; set; } = false;
     public bool EnableBatchExecution { get; set; } = false;
-    public bool UseNewtonsoftJson { get; set; } = false;
     public HttpRequestResultPollyOptions ResilienceOptions { get; set; }
 }
 </code></pre>
@@ -242,10 +236,6 @@
     public TimeSpan RetryDelay { get; set; } = TimeSpan.FromSeconds(1);
     public int CircuitBreakerThreshold { get; set; } = 5;
     public TimeSpan CircuitBreakerDuration { get; set; } = TimeSpan.FromSeconds(30);
-
-    // Legacy configuration aliases (bind from appsettings.json)
-    public double RetryDelaySeconds { set =&gt; RetryDelay = TimeSpan.FromSeconds(value); }
-    public double CircuitBreakerDurationSeconds { set =&gt; CircuitBreakerDuration = TimeSpan.FromSeconds(value); }
 }
 </code></pre>
 <h2>Batch Execution</h2>
@@ -308,51 +298,32 @@
 <p>Interface for authentication providers.</p>
 <pre><code class="language-csharp">public interface IAuthenticationProvider
 {
-    string ProviderName { get; }
-    bool IsValid { get; }
-    Task AddAuthenticationAsync(Dictionary&lt;string, string&gt; headers, CancellationToken ct = default);
-    Task ValidateAsync(CancellationToken ct = default);
-    Task RefreshAsync(CancellationToken ct = default);
+    Task ApplyAuthenticationAsync(HttpRequestMessage request);
 }
 </code></pre>
 <h3>BearerTokenAuthenticationProvider</h3>
-<p>Bearer token authentication with optional dynamic refresh. Implements <code>IDisposable</code>.</p>
-<pre><code class="language-csharp">public class BearerTokenAuthenticationProvider : IAuthenticationProvider, IDisposable
+<p>Bearer token authentication.</p>
+<pre><code class="language-csharp">public class BearerTokenAuthenticationProvider : IAuthenticationProvider
 {
-    // Static token
-    public BearerTokenAuthenticationProvider(string token, ILogger logger);
-
-    // Dynamic token refresh with auto-expiry
-    public BearerTokenAuthenticationProvider(
-        Func&lt;CancellationToken, Task&lt;string&gt;&gt; tokenRefreshFunc,
-        ILogger logger,
-        string? providerName = null,
-        TimeSpan? tokenExpiryWindow = null);
+    public BearerTokenAuthenticationProvider(string token);
+    public Task ApplyAuthenticationAsync(HttpRequestMessage request);
 }
 </code></pre>
 <h3>BasicAuthenticationProvider</h3>
-<p>Basic authentication (username/password) per RFC 7617.</p>
+<p>Basic authentication (username/password).</p>
 <pre><code class="language-csharp">public class BasicAuthenticationProvider : IAuthenticationProvider
 {
-    public BasicAuthenticationProvider(string username, string password, ILogger logger);
+    public BasicAuthenticationProvider(string username, string password);
+    public Task ApplyAuthenticationAsync(HttpRequestMessage request);
 }
 </code></pre>
 <h3>ApiKeyAuthenticationProvider</h3>
-<p>API key authentication with configurable header name and optional value prefix.</p>
+<p>API key authentication.</p>
 <pre><code class="language-csharp">public class ApiKeyAuthenticationProvider : IAuthenticationProvider
 {
-    public ApiKeyAuthenticationProvider(string apiKey, string headerName, ILogger logger, string? headerValuePrefix = null);
-
-    // Factory: X-API-Key header
-    public static ApiKeyAuthenticationProvider CreateXApiKeyProvider(string apiKey, ILogger logger);
-
-    // Factory: Authorization: ApiKey {key}
-    public static ApiKeyAuthenticationProvider CreateAuthorizationApiKeyProvider(string apiKey, ILogger logger);
+    public ApiKeyAuthenticationProvider(string headerName, string apiKey);
+    public Task ApplyAuthenticationAsync(HttpRequestMessage request);
 }
-</code></pre>
-<h3>NoAuthenticationProvider</h3>
-<p>No-op implementation for scenarios where authentication is not required.</p>
-<pre><code class="language-csharp">public class NoAuthenticationProvider : IAuthenticationProvider { }
 </code></pre>
 <h2>Web Crawling</h2>
 <h3>CrawlerOptions</h3>
@@ -447,110 +418,6 @@ var queryString = queryParams.ToQueryString(); // &quot;?page=1&amp;pageSize=50&
         Action&lt;TracerProviderBuilder&gt;? configure = null);
 }
 </code></pre>
-<h2>Client Service (Alternative API)</h2>
-<h3>IHttpClientService</h3>
-<p>Typed, method-based HTTP client alternative to the decorator-chain approach.</p>
-<pre><code class="language-csharp">public interface IHttpClientService
-{
-    HttpClient CreateConfiguredClient();
-    Task&lt;HttpResponseContent&lt;T&gt;&gt; GetAsync&lt;T&gt;(Uri requestUri, CancellationToken ct);
-    Task&lt;HttpResponseContent&lt;TResult&gt;&gt; PostAsync&lt;T, TResult&gt;(Uri requestUri, T payload, CancellationToken ct = default);
-    Task&lt;HttpResponseContent&lt;TResult&gt;&gt; PutAsync&lt;T, TResult&gt;(Uri requestUri, T payload, CancellationToken ct = default);
-    Task&lt;HttpResponseContent&lt;TResult&gt;&gt; DeleteAsync&lt;TResult&gt;(Uri requestUri, CancellationToken ct = default);
-}
-</code></pre>
-<h3>HttpResponseContent&lt;T&gt;</h3>
-<p>Typed response model returned by <code>IHttpClientService</code>.</p>
-<pre><code class="language-csharp">public class HttpResponseContent&lt;T&gt;
-{
-    public T? Content { get; set; }
-    public bool IsSuccess { get; set; }
-    public HttpStatusCode StatusCode { get; set; }
-    public string? ErrorMessage { get; set; }
-    public long ElapsedMilliseconds { get; set; }
-    public DateTime? CompletionDate { get; set; }
-    public int CacheDurationMinutes { get; set; }
-    public string CorrelationId { get; set; }
-
-    // Factory methods
-    public static HttpResponseContent&lt;T&gt; Success(T content, HttpStatusCode statusCode);
-    public static HttpResponseContent&lt;T&gt; Failure(string errorMessage, HttpStatusCode statusCode);
-}
-</code></pre>
-<h2>Fire-and-Forget</h2>
-<h3>FireAndForgetUtility</h3>
-<p>Execute background tasks without awaiting, with structured logging and correlation IDs.</p>
-<pre><code class="language-csharp">public class FireAndForgetUtility
-{
-    public FireAndForgetUtility(ILogger&lt;FireAndForgetUtility&gt; logger);
-
-    public void SafeFireAndForget(Task task, string operationName = "Unnamed Operation", CancellationToken ct = default);
-    public void SafeFireAndForget&lt;T&gt;(Task&lt;T&gt; task, string operationName = "Unnamed Operation", CancellationToken ct = default);
-}
-</code></pre>
-<h2>CURL Command Logging</h2>
-<h3>CurlCommandSaver</h3>
-<p>Automatically logs HTTP requests as CURL commands in JSON Lines format. Implements <code>IDisposable</code>.</p>
-<pre><code class="language-csharp">public class CurlCommandSaver : IDisposable
-{
-    public CurlCommandSaver(ILogger logger, IConfiguration configuration);
-
-    public Task SaveCurlCommandAsync(
-        HttpRequestMessage? request,
-        [CallerMemberName] string memberName = "",
-        [CallerFilePath] string filePath = "",
-        [CallerLineNumber] int lineNumber = 0);
-}
-</code></pre>
-<h3>CurlCommandSaverOptions</h3>
-<pre><code class="language-csharp">public class CurlCommandSaverOptions
-{
-    public string OutputFolder { get; set; }
-    public string FileName { get; set; } = "curl_commands";
-    public long MaxFileSize { get; set; } = 10_485_760; // 10 MB
-    public bool SanitizeSensitiveInfo { get; set; } = true;
-    public bool UseBatchProcessing { get; set; } = true;
-    public int BatchSize { get; set; } = 100;
-    public int BatchFlushIntervalMs { get; set; } = 5000;
-    public List&lt;string&gt; SensitiveHeaders { get; set; } // Authorization, Api-Key, etc.
-}
-</code></pre>
-<h2>Streaming</h2>
-<h3>StreamingHelper</h3>
-<p>Automatically selects streaming vs. in-memory deserialization based on response size.</p>
-<pre><code class="language-csharp">public static class StreamingHelper
-{
-    public const long DefaultStreamingThreshold = 10 * 1024 * 1024; // 10 MB
-
-    public static Task&lt;T?&gt; ProcessResponseAsync&lt;T&gt;(
-        HttpResponseMessage response,
-        long streamingThreshold,
-        JsonSerializerOptions jsonOptions,
-        ILogger logger,
-        string correlationId,
-        CancellationToken cancellationToken = default);
-}
-</code></pre>
-<h2>Cache Management</h2>
-<h3>IMemoryCacheManager</h3>
-<pre><code class="language-csharp">public interface IMemoryCacheManager
-{
-    CacheEntry? GetCacheEntry(string cacheKey);
-    void SetCacheEntry(string cacheKey, CacheEntry entry);
-    bool RemoveCacheEntry(string cacheKey);
-    void ClearCache();
-}
-</code></pre>
-<h2>Error Handling</h2>
-<h3>ErrorHandlingUtility</h3>
-<pre><code class="language-csharp">public static class ErrorHandlingUtility
-{
-    public static Exception EnrichException(
-        Exception exception,
-        string contextMessage,
-        Dictionary&lt;string, object&gt;? contextData = null);
-}
-</code></pre>
 <h2>Common Status Codes</h2>
 <table>
 <thead>
@@ -624,8 +491,8 @@ var queryString = queryParams.ToQueryString(); // &quot;?page=1&amp;pageSize=50&
 <p>View the complete source code and contribute on <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility">GitHub</a>.</p>
 <h2>Next Steps</h2>
 <div class="cta-buttons">
-  <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/examples/" class="button primary">View Examples</a>
-  <a href="https://markhazleton.github.io/WebSpark.HttpClientUtility/getting-started/" class="button secondary">Get Started</a>
+  <a href="/examples/" class="button primary">View Examples</a>
+  <a href="/getting-started/" class="button secondary">Get Started</a>
 </div>
 
     </div>
@@ -666,7 +533,7 @@ var queryString = queryParams.ToQueryString(); // &quot;?page=1&amp;pageSize=50&
       </div>
       
       <div class="footer-section">
-        <p>&copy; 2026 <a href="https://markhazleton.com" target="_blank" rel="noopener noreferrer">Mark Hazleton</a></p>
+        <p>&copy; 2025 <a href="https://markhazleton.com" target="_blank" rel="noopener noreferrer">Mark Hazleton</a></p>
         <p>Licensed under MIT</p>
       </div>
     </div>
@@ -675,6 +542,6 @@ var queryString = queryParams.ToQueryString(); // &quot;?page=1&amp;pageSize=50&
 
   
   <!-- Scripts -->
-  <script src="https://markhazleton.github.io/WebSpark.HttpClientUtility/assets/js/prism.min.js" defer></script>
+  <script src="../assets/js/prism.min.js" defer></script>
 </body>
 </html>
