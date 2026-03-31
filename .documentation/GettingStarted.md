@@ -141,6 +141,40 @@ builder.Services.AddHttpClientUtility(options =>
 });
 ```
 
+### Resilience Configuration from appsettings.json
+
+The library supports both TimeSpan keys and legacy seconds-based aliases.
+
+TimeSpan format:
+
+```json
+{
+    "HttpRequestResultPollyOptions": {
+        "MaxRetryAttempts": 3,
+        "RetryDelay": "00:00:01",
+        "CircuitBreakerThreshold": 5,
+        "CircuitBreakerDuration": "00:00:30"
+    }
+}
+```
+
+Seconds alias format:
+
+```json
+{
+    "HttpRequestResultPollyOptions": {
+        "MaxRetryAttempts": 3,
+        "RetryDelaySeconds": 1,
+        "CircuitBreakerThreshold": 5,
+        "CircuitBreakerDurationSeconds": 30
+    }
+}
+```
+
+See also:
+- `src/pages/examples/httpclient-decorator-pattern-scenarios.md`
+- `src/pages/examples/crawler-harvested-scenarios.md`
+
 ### All Features Enabled
 
 ```csharp

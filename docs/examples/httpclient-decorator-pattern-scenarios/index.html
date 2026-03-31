@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HttpClient Decorator Pattern Scenarios | WebSpark.HttpClientUtility</title>
+  <meta name="description" content="Harvested resilience and concurrency examples from the legacy HttpClientDecoratorPattern repository.">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="HttpClient Decorator Pattern Scenarios">
+  <meta property="og:description" content="Harvested resilience and concurrency examples from the legacy HttpClientDecoratorPattern repository.">
+  <meta property="og:url" content="https://markhazleton.github.io/WebSpark.HttpClientUtility/examples/httpclient-decorator-pattern-scenarios/">
+  <meta property="og:type" content="website">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="HttpClient Decorator Pattern Scenarios">
+  <meta name="twitter:description" content="Harvested resilience and concurrency examples from the legacy HttpClientDecoratorPattern repository.">
+  
+  <!-- Canonical -->
+  <link rel="canonical" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/examples/httpclient-decorator-pattern-scenarios/">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/prism-tomorrow.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="../icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../icon.png">
+</head>
+<body>
+  <header class="site-header">
+  <div class="container">
+    <div class="header-content">
+      <div class="site-logo">
+        <a href="../">WebSpark.HttpClientUtility</a>
+      </div>
+      
+      <nav class="main-nav">
+        <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+        <label for="nav-toggle" class="nav-toggle-label">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+        
+        <ul class="nav-menu">
+          
+          <li class="nav-item">
+            <a href="../">Home</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../features/">Features</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../getting-started/">Getting Started</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../api-reference/">API Reference</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../examples/">Examples</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../about/">About</a>
+          </li>
+          
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
+  
+  <main class="main-content">
+    <div class="container">
+      <h1>HttpClient Decorator Pattern Scenarios</h1>
+<p>This page captures practical runtime scenarios harvested from the legacy demo and mapped to the current package-first API surface.</p>
+<h2>Resilience Configuration with Seconds-Based Aliases</h2>
+<p>The current package supports both TimeSpan-style settings and legacy seconds-based aliases under <code>HttpRequestResultPollyOptions</code>.</p>
+<pre><code class="language-json">{
+  &quot;HttpRequestResultPollyOptions&quot;: {
+    &quot;MaxRetryAttempts&quot;: 3,
+    &quot;RetryDelaySeconds&quot;: 1,
+    &quot;CircuitBreakerThreshold&quot;: 5,
+    &quot;CircuitBreakerDurationSeconds&quot;: 30
+  }
+}
+</code></pre>
+<p>Equivalent TimeSpan form:</p>
+<pre><code class="language-json">{
+  &quot;HttpRequestResultPollyOptions&quot;: {
+    &quot;MaxRetryAttempts&quot;: 3,
+    &quot;RetryDelay&quot;: &quot;00:00:01&quot;,
+    &quot;CircuitBreakerThreshold&quot;: 5,
+    &quot;CircuitBreakerDuration&quot;: &quot;00:00:30&quot;
+  }
+}
+</code></pre>
+<h2>Circuit Breaker Scenario</h2>
+<pre><code class="language-csharp">builder.Services.AddHttpClientUtility(options =&gt;
+{
+    options.EnableResilience = true;
+    options.ResilienceOptions.MaxRetryAttempts = 3;
+    options.ResilienceOptions.CircuitBreakerThreshold = 5;
+    options.ResilienceOptions.CircuitBreakerDuration = TimeSpan.FromSeconds(30);
+});
+
+var result = await httpService.HttpSendRequestResultAsync(new HttpRequestResult&lt;StatusPayload&gt;
+{
+    RequestPath = &quot;https://api.example.com/status&quot;,
+    RequestMethod = HttpMethod.Get
+});
+
+if (!result.IsSuccessStatusCode)
+{
+    logger.LogWarning(&quot;Request failed with {StatusCode}; retries applied by Polly&quot;, result.StatusCode);
+}
+</code></pre>
+<h2>Concurrent Calls Scenario</h2>
+<pre><code class="language-csharp">using WebSpark.HttpClientUtility.Concurrent;
+
+var requests = new List&lt;HttpRequestResult&lt;ApiResult&gt;&gt;
+{
+    new() { RequestPath = &quot;https://api.example.com/a&quot;, RequestMethod = HttpMethod.Get },
+    new() { RequestPath = &quot;https://api.example.com/b&quot;, RequestMethod = HttpMethod.Get },
+    new() { RequestPath = &quot;https://api.example.com/c&quot;, RequestMethod = HttpMethod.Get }
+};
+
+var concurrent = serviceProvider.GetRequiredService&lt;IConcurrentHttpRequestResultService&gt;();
+var responses = await concurrent.ProcessRequestListAsync(requests, maxConcurrentRequests: 3);
+</code></pre>
+<h2>Notes</h2>
+<ul>
+<li>Keep decorator order unchanged: base -&gt; cache -&gt; polly -&gt; telemetry.</li>
+<li>Prefer one-line DI registration (<code>AddHttpClientUtility</code>) and opt in to features through options.</li>
+<li>Use automated tests when changing resilience settings to preserve compatibility.</li>
+</ul>
+
+    </div>
+  </main>
+  
+  <footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>WebSpark.HttpClientUtility</h3>
+        <p>Version 2.6.0</p>
+        
+      </div>
+      
+      <div class="footer-section">
+        <h3>Links</h3>
+        <ul class="footer-links">
+          
+          <li>
+            <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
+              GitHub
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.nuget.org/packages/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
+              NuGet
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility/issues" target="_blank" rel="noopener noreferrer">
+              Issues
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <p>&copy; 2025 <a href="https://markhazleton.com" target="_blank" rel="noopener noreferrer">Mark Hazleton</a></p>
+        <p>Licensed under MIT</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+  <!-- Scripts -->
+  <script src="../assets/js/prism.min.js" defer></script>
+</body>
+</html>

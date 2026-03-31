@@ -326,6 +326,25 @@ public class HttpRequestResultTests
     }
 
     [TestMethod]
+    public void HttpRequestResultPollyOptions_WithTimeSpanValues_PreservesDurations()
+    {
+        // Arrange
+        var options = new HttpRequestResultPollyOptions
+        {
+            MaxRetryAttempts = 3,
+            RetryDelay = TimeSpan.FromSeconds(2),
+            CircuitBreakerThreshold = 5,
+            CircuitBreakerDuration = TimeSpan.FromSeconds(30)
+        };
+
+        // Assert
+        Assert.AreEqual(3, options.MaxRetryAttempts);
+        Assert.AreEqual(TimeSpan.FromSeconds(2), options.RetryDelay);
+        Assert.AreEqual(5, options.CircuitBreakerThreshold);
+        Assert.AreEqual(TimeSpan.FromSeconds(30), options.CircuitBreakerDuration);
+    }
+
+    [TestMethod]
     public void AddError_AddsErrorMessageWithCorrelationId()
     {
         // Arrange

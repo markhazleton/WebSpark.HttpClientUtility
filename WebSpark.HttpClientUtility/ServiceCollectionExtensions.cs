@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 using WebSpark.HttpClientUtility.ClientService;
 using WebSpark.HttpClientUtility.BatchExecution;
 using WebSpark.HttpClientUtility.RequestResult;
@@ -92,6 +93,13 @@ public static class ServiceCollectionExtensions
       ArgumentNullException.ThrowIfNull(configure);
 
         var options = new HttpClientUtilityOptions();
+                var configuration = TryGetExistingConfiguration(services);
+
+                if (configuration is not null)
+                {
+                        ApplyResilienceOptionsFromConfiguration(configuration, options);
+                }
+
     configure(options);
 
         // Validate configuration options before proceeding
@@ -193,6 +201,66 @@ service,
         }
 
         return services;
+    }
+
+    private static IConfiguration? TryGetExistingConfiguration(IServiceCollection services)
+    {
+        var descriptor = services.LastOrDefault(static d => d.ServiceType == typeof(IConfiguration));
+        return descriptor?.ImplementationInstance as IConfiguration;
+    }
+
+    private static void ApplyResilienceOptionsFromConfiguration(
+        IConfiguration configuration,
+        HttpClientUtilityOptions options)
+    {
+        var section = configuration.GetSection("HttpRequestResultPollyOptions");
+        if (!section.Exists())
+        {
+            return;
+        }
+
+        var resilience = options.ResilienceOptions;
+
+        if (int.TryParse(section["MaxRetryAttempts"], out var maxRetryAttempts))
+        {
+            resilience.MaxRetryAttempts = maxRetryAttempts;
+        }
+
+        if (int.TryParse(section["CircuitBreakerThreshold"], out var circuitBreakerThreshold))
+        {
+            resilience.CircuitBreakerThreshold = circuitBreakerThreshold;
+        }
+
+        var retryDelay = section["RetryDelay"];
+        if (!string.IsNullOrWhiteSpace(retryDelay) && TimeSpan.TryParse(retryDelay, out var parsedRetryDelay))
+        {
+            resilience.RetryDelay = parsedRetryDelay;
+        }
+
+        var circuitBreakerDuration = section["CircuitBreakerDuration"];
+        if (!string.IsNullOrWhiteSpace(circuitBreakerDuration) && TimeSpan.TryParse(circuitBreakerDuration, out var parsedCircuitBreakerDuration))
+        {
+            resilience.CircuitBreakerDuration = parsedCircuitBreakerDuration;
+        }
+
+        // Legacy compatibility aliases from HttpClientDecoratorPattern.
+        if (double.TryParse(
+            section["RetryDelaySeconds"],
+            NumberStyles.Float,
+            CultureInfo.InvariantCulture,
+            out var retryDelaySeconds))
+        {
+            resilience.RetryDelay = TimeSpan.FromSeconds(retryDelaySeconds);
+        }
+
+        if (double.TryParse(
+            section["CircuitBreakerDurationSeconds"],
+            NumberStyles.Float,
+            CultureInfo.InvariantCulture,
+            out var circuitBreakerDurationSeconds))
+        {
+            resilience.CircuitBreakerDuration = TimeSpan.FromSeconds(circuitBreakerDurationSeconds);
+        }
     }
 
     /// <summary>

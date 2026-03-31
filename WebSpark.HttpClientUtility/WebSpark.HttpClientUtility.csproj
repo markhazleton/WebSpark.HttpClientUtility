@@ -11,7 +11,7 @@
 		<!-- NuGet Package Properties -->
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>WebSpark.HttpClientUtility</PackageId>
-		<!-- Version inherited from Directory.Build.props (2.5.0 lockstep) -->
+		<!-- Version inherited from Directory.Build.props (lockstep) -->
 		<Deterministic>true</Deterministic>
 		<Title>WebSpark.HttpClientUtility - Resilient HTTP Client with Polly &amp; Caching</Title>
 		<Authors>Mark Hazleton</Authors>
@@ -108,11 +108,11 @@
 		<PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="10.0.5" />
 
 		<!-- OpenTelemetry -->
-		<PackageReference Include="OpenTelemetry" Version="1.15.0" />
+		<PackageReference Include="OpenTelemetry" Version="1.15.1" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.15.0" />
-		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.15.0" />
-		<PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.15.0" />
-		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.0" />
+		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.15.1" />
+		<PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.15.1" />
+		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.1" />
 
 		<!-- Resilience -->
 		<PackageReference Include="Polly" Version="8.6.6" />

@@ -1,8 +1,16 @@
 namespace WebSpark.HttpClientUtility.RequestResult;
 
 /// <summary>
-/// Represents the options for HttpClientSendPolly.
+/// Represents resilience options for retry and circuit breaker behavior.
 /// </summary>
+/// <remarks>
+/// Configuration can be provided through the <c>HttpRequestResultPollyOptions</c> section.
+/// For backward compatibility with legacy configuration, the following alias keys are also supported:
+/// <list type="bullet">
+/// <item><description><c>RetryDelaySeconds</c> as an alternative to <c>RetryDelay</c></description></item>
+/// <item><description><c>CircuitBreakerDurationSeconds</c> as an alternative to <c>CircuitBreakerDuration</c></description></item>
+/// </list>
+/// </remarks>
 public class HttpRequestResultPollyOptions
 {
     /// <summary>

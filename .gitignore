@@ -428,6 +428,11 @@ lerna-debug.log*
 .vite/
 *.local
 
+# Universal OS/editor artifacts
+.DS_Store
+Thumbs.db
+.idea/
+
 # Package manager lock files (keep package-lock.json for reproducible builds)
 # Uncomment the following line if you want to ignore lock files
 # package-lock.json

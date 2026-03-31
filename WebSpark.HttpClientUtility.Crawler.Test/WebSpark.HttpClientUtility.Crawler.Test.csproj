@@ -44,7 +44,7 @@
 		<ProjectReference Include="..\WebSpark.HttpClientUtility.Crawler\WebSpark.HttpClientUtility.Crawler.csproj" />
 		
 		<!-- OpenTelemetry InMemory for testing (not in published packages) -->
-		<PackageReference Include="OpenTelemetry.Exporter.InMemory" Version="1.15.0" />
+		<PackageReference Include="OpenTelemetry.Exporter.InMemory" Version="1.15.1" />
 	</ItemGroup>
 
 </Project>

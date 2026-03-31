@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crawler Harvested Scenarios | WebSpark.HttpClientUtility</title>
+  <meta name="description" content="Harvested crawler progress and site-analysis examples from the legacy HttpClientDecoratorPattern demo.">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Crawler Harvested Scenarios">
+  <meta property="og:description" content="Harvested crawler progress and site-analysis examples from the legacy HttpClientDecoratorPattern demo.">
+  <meta property="og:url" content="https://markhazleton.github.io/WebSpark.HttpClientUtility/examples/crawler-harvested-scenarios/">
+  <meta property="og:type" content="website">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Crawler Harvested Scenarios">
+  <meta name="twitter:description" content="Harvested crawler progress and site-analysis examples from the legacy HttpClientDecoratorPattern demo.">
+  
+  <!-- Canonical -->
+  <link rel="canonical" href="https://markhazleton.github.io/WebSpark.HttpClientUtility/examples/crawler-harvested-scenarios/">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/prism-tomorrow.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="../icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../icon.png">
+</head>
+<body>
+  <header class="site-header">
+  <div class="container">
+    <div class="header-content">
+      <div class="site-logo">
+        <a href="../">WebSpark.HttpClientUtility</a>
+      </div>
+      
+      <nav class="main-nav">
+        <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+        <label for="nav-toggle" class="nav-toggle-label">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+        
+        <ul class="nav-menu">
+          
+          <li class="nav-item">
+            <a href="../">Home</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../features/">Features</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../getting-started/">Getting Started</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../api-reference/">API Reference</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../examples/">Examples</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../about/">About</a>
+          </li>
+          
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
+  
+  <main class="main-content">
+    <div class="container">
+      <h1>Crawler Harvested Scenarios</h1>
+<p>This page captures crawler scenarios moved from the legacy demo into the current documentation set.</p>
+<h2>Register Crawler Services</h2>
+<pre><code class="language-csharp">builder.Services.AddHttpClientUtility();
+builder.Services.AddHttpClientCrawler();
+builder.Services.AddSignalR();
+</code></pre>
+<h2>Run a Site Analysis Crawl</h2>
+<pre><code class="language-csharp">var crawler = serviceProvider.GetRequiredService&lt;ISiteCrawler&gt;();
+
+var options = new CrawlerOptions
+{
+    BaseUrl = &quot;https://example.com&quot;,
+    MaxDepth = 3,
+    MaxPages = 250,
+    RespectRobotsTxt = true,
+    CrawlDelayMs = 200
+};
+
+var result = await crawler.CrawlAsync(options.BaseUrl, options);
+</code></pre>
+<h2>Stream Progress to SignalR</h2>
+<pre><code class="language-csharp">public class CrawlHub : Hub
+{
+}
+
+// During crawl processing
+await hubContext.Clients.All.SendAsync(&quot;UrlFound&quot;, pagesDiscovered, cancellationToken);
+</code></pre>
+<h2>Operational Guidance</h2>
+<ul>
+<li>Keep crawl depth/page limits conservative in shared or production environments.</li>
+<li>Respect robots.txt and identify your crawler user agent.</li>
+<li>Use progress broadcasts for operator feedback rather than blocking UI calls.</li>
+<li>Persist summary output (CSV or structured logs) for auditability.</li>
+</ul>
+
+    </div>
+  </main>
+  
+  <footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>WebSpark.HttpClientUtility</h3>
+        <p>Version 2.6.0</p>
+        
+      </div>
+      
+      <div class="footer-section">
+        <h3>Links</h3>
+        <ul class="footer-links">
+          
+          <li>
+            <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
+              GitHub
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.nuget.org/packages/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
+              NuGet
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility/issues" target="_blank" rel="noopener noreferrer">
+              Issues
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <p>&copy; 2025 <a href="https://markhazleton.com" target="_blank" rel="noopener noreferrer">Mark Hazleton</a></p>
+        <p>Licensed under MIT</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+  <!-- Scripts -->
+  <script src="../assets/js/prism.min.js" defer></script>
+</body>
+</html>

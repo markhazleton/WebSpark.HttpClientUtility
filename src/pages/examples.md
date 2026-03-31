@@ -9,6 +9,11 @@ permalink: /examples/
 
 Practical examples for common scenarios.
 
+## Harvested Scenarios
+
+- [HttpClient Decorator Pattern Scenarios](/examples/httpclient-decorator-pattern-scenarios/)
+- [Crawler Harvested Scenarios](/examples/crawler-harvested-scenarios/)
+
 ## Basic HTTP Requests
 
 ### Simple GET Request
