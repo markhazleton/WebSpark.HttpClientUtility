@@ -33,6 +33,7 @@
 - [ ] T005 Create the decision record register in `copilot/session-2026-03-30/harvest-decision-records.md`
 - [ ] T006 Create the adoption work item tracker in `copilot/session-2026-03-30/adoption-work-items.md`
 - [ ] T007 Create the sunset readiness tracker in `copilot/session-2026-03-30/sunset-readiness.md`
+- [ ] T007a Document release-readiness criteria in `specs/001-harvest-httpclient-ideas/quickstart.md`: a candidate transitions to `release-ready` only when automated verification evidence, user-facing documentation evidence, and migration guidance (if breaking-impact) are all linked in `copilot/session-2026-03-30/adoption-work-items.md` (satisfies FR-005)
 
 **Checkpoint**: Foundation ready - user story implementation can now begin.
 
@@ -57,6 +58,8 @@
 
 **Goal**: Implement the approved adopt-now candidates in the primary repository with automated verification and user-facing documentation.
 
+> **Pre-Vetting Note**: T012–T018 target the `RetryDelaySeconds`/`CircuitBreakerDurationSeconds` configuration binding and related example pages based on pre-approved candidates identified in `specs/001-harvest-httpclient-ideas/research.md` (Decision 5). These are not speculative; they reflect research completed before Phase 3. If Phase 3 uncovers additional or different adopt-now candidates, create corresponding test and implementation tasks following the same pattern before proceeding with T012–T018.
+
 **Independent Test**: Verify the resilience configuration enhancement works through automated tests, then confirm the harvested example pages and documentation updates describe the adopted ideas and any migration guidance without relying on the legacy repository.
 
 ### Tests for User Story 2 ⚠️
@@ -74,7 +77,7 @@
 - [ ] T017 [P] [US2] Create a harvested crawler-progress and site-analysis examples page in `src/pages/examples/crawler-harvested-scenarios.md`
 - [ ] T018 [US2] Update the examples index in `src/pages/examples.md`
 - [ ] T019 [US2] Update user-facing documentation in `README.md` and `documentation/GettingStarted.md` for the adopted configuration and examples
-- [ ] T020 [US2] Add release and migration guidance for adopted items in `CHANGELOG.md` and `copilot/session-2026-03-30/final-harvest-summary.md`
+- [ ] T020 [US2] Add release and migration guidance for adopted items in `CHANGELOG.md`; update the internal working summary in `copilot/session-2026-03-30/final-harvest-summary.md` with release-ready status and evidence links for each adopted candidate
 
 **Checkpoint**: User Story 2 is complete when adopted code changes are verified automatically and the primary repository documents the harvested examples and any migration implications.
 
@@ -86,10 +89,10 @@
 
 **Independent Test**: Review the legacy repository notice, the final harvest summary, and the sunset readiness tracker to confirm the archive gate cannot be satisfied until every adopt-now work item is shipped.
 
-- [ ] T021 [US3] Update the legacy repository notice in `C:\GitHub\MarkHazleton\HttpClientDecoratorPattern\README.md`
+- [ ] T021 [US3] Update the legacy repository notice in `../HttpClientDecoratorPattern/README.md` (assumes the legacy repository is checked out as a sibling of this repository; this task is performed manually and cannot run in GitHub Actions CI)
 - [ ] T022 [P] [US3] Draft the archive announcement and replacement guidance in `copilot/session-2026-03-30/httpclientdecoratorpattern-archive-issue.md`
 - [ ] T023 [P] [US3] Update `copilot/session-2026-03-30/sunset-readiness.md` using `specs/001-harvest-httpclient-ideas/contracts/sunset-readiness-contract.md`
-- [ ] T024 [US3] Publish the final harvest outcome summary in `copilot/session-2026-03-30/final-harvest-summary.md`
+- [ ] T024 [US3] Publish the final harvest outcome summary: update internal working copy at `copilot/session-2026-03-30/final-harvest-summary.md` and create the consumer-facing version at `documentation/harvest-summary.md` (satisfies FR-010)
 - [ ] T025 [US3] Perform the archive-readiness review against `copilot/session-2026-03-30/adoption-work-items.md` and `copilot/session-2026-03-30/sunset-readiness.md`
 
 **Checkpoint**: User Story 3 is complete when the legacy repository can be clearly redirected and the archive gate is documented as satisfied only after all adopt-now work is shipped.
@@ -103,6 +106,11 @@
 - [ ] T026 [P] Validate the harvested docs source files in `src/pages/examples/` and `src/pages/examples.md`
 - [ ] T027 Run solution-level build and test validation for `WebSpark.HttpClientUtility.sln`
 - [ ] T028 [P] Reconcile `copilot/session-2026-03-30/harvest-decision-records.md`, `copilot/session-2026-03-30/adoption-work-items.md`, and `copilot/session-2026-03-30/sunset-readiness.md` against `specs/001-harvest-httpclient-ideas/quickstart.md`
+- [ ] T029 Bump version in `WebSpark.HttpClientUtility/WebSpark.HttpClientUtility.csproj` (and `WebSpark.HttpClientUtility.Crawler/WebSpark.HttpClientUtility.Crawler.csproj` if crawler candidates were adopted): use MAJOR for any breaking-impact adoption, MINOR for backward-compatible additions; commit separately from all feature work per constitution release discipline
+- [ ] T030 [P] Verify SC-001: cross-reference every entry in `copilot/session-2026-03-30/harvest-candidate-inventory.md` against `copilot/session-2026-03-30/harvest-decision-records.md`; confirm zero uncategorized candidates remain
+- [ ] T031 [P] Verify SC-002 and SC-003: confirm every adopt-now entry in `copilot/session-2026-03-30/adoption-work-items.md` has linked automated verification evidence and user-facing documentation evidence; confirm every breaking-impact adoption has migration guidance in `CHANGELOG.md`
+- [ ] T032 [P] Verify SC-004: confirm `copilot/session-2026-03-30/sunset-readiness.md` shows all adopt-now work items as shipped and all communication prerequisites satisfied; confirm `documentation/harvest-summary.md` is published before approving archive readiness
+- [ ] T033 [P] Package governance check: confirm no new `.csproj` or package manifest was introduced during adoption work unless a compelling-separation Decision Record exists in `copilot/session-2026-03-30/harvest-decision-records.md` (satisfies FR-005b and FR-005c)
 
 ---
 
@@ -115,7 +123,7 @@
 - **User Story 1 (Phase 3)**: Depends on Foundational completion
 - **User Story 2 (Phase 4)**: Depends on User Story 1 because adopt-now implementation targets come from the decision matrix
 - **User Story 3 (Phase 5)**: Depends on User Story 2 because sunset cannot begin until all adopt-now items are fully implemented
-- **Polish (Phase 6)**: Depends on all desired user stories being complete
+- **Polish (Phase 6)**: Depends on all desired user stories being complete; includes T029 (version bump), T030–T032 (success criteria verification), T033 (package governance gate)
 
 ### User Story Dependencies
 
@@ -135,7 +143,7 @@
 
 - T003 can run in parallel with T001-T002
 - T010 and T011 can run in parallel after T009 completes
-- T016 and T017 can run in parallel after T014-T015 begin stabilizing
+- T016 and T017 can run in parallel once T014 implementation is complete; they may overlap with T015 XML documentation updates since they target different files
 - T022 and T023 can run in parallel once User Story 3 starts
 - T026 and T028 can run in parallel during Polish
 
@@ -202,3 +210,6 @@
 - User Story 1 is the recommended MVP scope.
 - User Story 2 contains the only required automated test tasks because it includes adopted runtime changes.
 - User Story 3 must not be completed before User Story 2 is fully shipped.
+- T029 (version bump) MUST be a separate commit from all feature work per constitution release discipline.
+- T030–T033 (verification and governance tasks) are prerequisite gates for release sign-off and archive approval.
+- T007a remains in Phase 2 to ensure release-readiness criteria are defined before any adoption work begins.

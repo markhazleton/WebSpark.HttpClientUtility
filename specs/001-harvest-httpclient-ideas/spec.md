@@ -75,19 +75,19 @@ As the package maintainer, I want a controlled deprecation and archival path for
 
 ### Functional Requirements
 
-- **FR-001**: The process MUST produce a complete inventory of candidate features, requirements, and notable patterns from HttpClientDecoratorPattern relevant to this repository.
+- **FR-001**: The process MUST produce a complete inventory of candidate features, requirements, and notable patterns from HttpClientDecoratorPattern relevant to this repository. Minimum audit scope covers all C# source files, README, documentation files, and example projects; git history and GitHub issue comments are excluded unless they surface unique patterns not represented elsewhere.
 - **FR-002**: Each candidate MUST be classified into one decision state: adopt now, defer, docs-only, or reject.
 - **FR-003**: Each candidate decision MUST include explicit rationale and consumer impact classification.
 - **FR-004**: For every adopt-now candidate, implementation work MUST include automated verification evidence and user-facing documentation updates.
-- **FR-005**: The process MUST define release-readiness criteria for adopted candidates before package publication.
-- **FR-005a**: The process MUST allow breaking-impact candidates to be adopted in the current harvest cycle when explicit migration guidance is included in release communications.
-- **FR-005b**: The process MUST keep harvested ideas within the existing package and documentation set unless a candidate demonstrates compelling separation that justifies a new package.
-- **FR-005c**: A candidate demonstrates compelling separation only when it serves a distinct consumer need and can be versioned and released with clear standalone value.
+- **FR-005** (Adoption Governance): The process MUST define release-readiness criteria for adopted candidates before package publication. Criteria MUST be documented in `specs/001-harvest-httpclient-ideas/quickstart.md` and gate all `release-ready` status transitions in the adoption work item tracker.
+  - **FR-005a** (Breaking Changes): Accept breaking-impact candidates in the current harvest cycle only when explicit migration guidance is included in release communications.
+  - **FR-005b** (Package Scope): Route harvested work into existing packages and documentation by default; allow a new package only when compelling separation is formally demonstrated in a Decision Record.
+  - **FR-005c** (Compelling Separation): Compelling separation requires both a distinct consumer need and the ability to version and release the capability with clear standalone value.
 - **FR-006**: The process MUST define sunset prerequisites for the legacy repository, requiring completion of every adopt-now candidate and communication requirements.
 - **FR-007**: The process MUST include a migration communication artifact that directs users of the legacy repository to the maintained packages and documentation.
 - **FR-008**: The process MUST preserve traceability from harvested candidate to final outcome (implemented, deferred, docs-only, rejected).
 - **FR-009**: The process MUST prevent archival of the legacy repository until sunset prerequisites are satisfied.
-- **FR-010**: The process MUST produce a final harvest summary that can be reviewed by maintainers and consumers.
+- **FR-010**: The process MUST produce a final harvest summary. A maintainer-internal working copy MUST be saved to `copilot/session-2026-03-30/final-harvest-summary.md`. A consumer-facing version MUST be published to `documentation/harvest-summary.md` so consumers can understand the outcome of the harvest cycle and the status of the legacy repository.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -112,4 +112,4 @@ As the package maintainer, I want a controlled deprecation and archival path for
 - **SC-002**: 100% of adopt-now candidates include linked automated verification evidence and user-facing documentation updates before release sign-off.
 - **SC-003**: 100% of breaking-impact adoptions include explicit migration guidance in release communications.
 - **SC-004**: Legacy repository archival occurs only after every adopt-now candidate is fully implemented, all sunset prerequisites are marked complete, and the status is publicly documented.
-- **SC-005**: Within one release cycle after archival, maintainers report no unresolved user-navigation confusion caused by the repository transition.
+- **SC-005**: Within 30 days of legacy repository archival, zero open GitHub issues or user-feedback items in this repository reference the legacy repository as an authoritative or active source. Measured by reviewing the open issue tracker and confirming no navigation-confusion reports remain unresolved at the 30-day mark.
