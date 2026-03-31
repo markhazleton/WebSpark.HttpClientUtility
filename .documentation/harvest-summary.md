@@ -2,6 +2,17 @@
 
 This summary records the outcomes of harvesting ideas from the legacy `HttpClientDecoratorPattern` repository into `WebSpark.HttpClientUtility`.
 
+## Traceability (2026-03-31)
+
+- Completed specification knowledge has been consolidated into living documentation and changelog traceability entries.
+- Completed spec sets identified for archival:
+  - `001-harvest-httpclient-ideas`
+  - `003-split-nuget-packages`
+  - `004-batch-execution-orchestration`
+- Active draft spec sets intentionally retained in place:
+  - `001-static-docs-site`
+  - `002-clean-compiler-warnings`
+
 ## Adopted
 
 - Added compatibility binding for legacy resilience aliases:

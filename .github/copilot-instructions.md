@@ -243,24 +243,22 @@ See `CHANGELOG.md` for full history.
 4. What's the backward compatibility impact? (This is a published library)
 5. Do I need to update README, CHANGELOG, and XML docs?
 
-## Planned Feature: Package Split (v2.0.0)
+## Package Split Status (Implemented)
 
-**Status**: Specification and planning complete (see `specs/003-split-nuget-packages/`)
+**Status**: Implemented and released. The repository now operates as a two-package architecture.
 
-**Objective**: Refactor the monolithic NuGet package into two separate packages to reduce size and improve modularity.
+**Objective**: Keep core HTTP functionality focused in the base package while crawler features remain isolated in the crawler extension package.
 
 ### Target Architecture
 
 - **WebSpark.HttpClientUtility** (Base package):
   - Core HTTP utilities: authentication, caching, resilience, telemetry, concurrent requests, streaming, CURL, mock services
-  - 9 dependencies (down from 13)
-  - 38% smaller for users who don't need crawler features
+  - Reduced dependency footprint versus legacy monolithic packaging
   - **100% backward compatible** for non-crawler users (zero breaking changes)
 
 - **WebSpark.HttpClientUtility.Crawler** (Crawler extension):
   - All web crawling functionality: SiteCrawler, SimpleSiteCrawler, robots.txt, SignalR progress, CSV export
-  - 5 dependencies (base package + 4 crawler-specific deps)
-  - Requires base package [2.0.0] (exact version match)
+  - Depends on `WebSpark.HttpClientUtility` with exact version match for lockstep releases
   - **Breaking change** for crawler users: must install crawler package and add `services.AddHttpClientCrawler()` call
 
 ### Key Decisions
@@ -271,14 +269,14 @@ See `CHANGELOG.md` for full history.
 - **Test Split**: ~400 base tests + ~130 crawler tests in separate MSTest projects
 - **Migration Path**: Clear decision tree in `specs/003-split-nuget-packages/quickstart.md` (80% of users need no code changes)
 
-### Implementation Notes
+### Ongoing Maintenance Notes
 
-When working on v2.0.0 package split implementation:
-1. Preserve decorator chain order (Base → Cache → Polly → Telemetry) - constitutional requirement
-2. All base package tests must pass without modification (zero breaking changes)
-3. Crawler .csproj must specify exact base version: `<PackageReference Include="WebSpark.HttpClientUtility" Version="[2.0.0]" />`
-4. Update GitHub Actions workflow to build/test/publish both packages atomically
-5. CHANGELOG.md must differentiate between "no changes needed" (core users) and "migration required" (crawler users)
+When working in the split architecture:
+1. Preserve decorator chain order (Base → Cache → Polly → Telemetry) - constitutional requirement.
+2. Maintain lockstep versioning across base and crawler packages.
+3. Keep exact-version dependency from crawler package to base package.
+4. Keep CI/CD workflow atomic for build, test, pack, and publish of both packages.
+5. Ensure changelog messaging distinguishes between core-only consumers and crawler consumers when changes differ.
 
 **Reference Documents**:
 - Specification: `specs/003-split-nuget-packages/spec.md`
