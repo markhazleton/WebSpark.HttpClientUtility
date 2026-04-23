@@ -6,6 +6,13 @@ This is a production-ready **NuGet library** that provides a comprehensive HttpC
 
 **Core Purpose**: Eliminate boilerplate HTTP code while providing enterprise-grade features through simple, fluent dependency injection.
 
+## Constitution Authority
+
+The project constitution at `.documentation/memory/constitution.md` is the authoritative governance source for this repository.
+
+- If any guidance in this file conflicts with the constitution, follow the constitution.
+- Treat all architecture, process, and quality constraints as constitution-first.
+
 ## Architecture Pattern: Decorator Chain
 
 The library uses a **decorator pattern** for composing features. Understanding this is critical:
@@ -210,9 +217,9 @@ Uses `Microsoft.Extensions.Caching.Memory.IMemoryCache`. Cache keys are request 
 
 ## AI Agent Output Organization
 
-**CRITICAL**: All AI-generated markdown files (`.md`) must be saved in `/copilot/session-{YYYY-MM-DD}/` folders.
+**CRITICAL**: All AI-generated markdown files (`.md`) must be saved in `/.documentation/copilot/session-{YYYY-MM-DD}/` folders.
 
-- Use the current date for the session folder (e.g., `/copilot/session-2025-11-02/`)
+- Use the current date for the session folder (e.g., `/.documentation/copilot/session-2025-11-02/`)
 - Never create `.md` files in the root directory or other locations
 - This keeps AI-generated documentation organized and separate from official project documentation
 - Exception: Only update existing `.md` files in root (like `README.md`, `CHANGELOG.md`) when explicitly requested

@@ -445,3 +445,11 @@ src/.eleventy-cache/
 
 # Note: docs/ folder is intentionally NOT ignored
 # It contains GitHub Pages output and should be committed
+
+# DevSpark - personal overrides (never commit)
+.documentation/*/commands/
+
+
+# DevSpark - personal overrides (never commit)
+.documentation/*/commands/
+

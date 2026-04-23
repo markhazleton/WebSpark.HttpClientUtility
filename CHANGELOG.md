@@ -35,6 +35,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `004-batch-execution-orchestration` (batch orchestration capability delivered and validated)
 - Updated maintainer guidance to reflect current architecture state and remove outdated package-split planning status.
 
+## [2026-04-22] Archive run
+
+### Archived
+- .documentation/specs/pr-review/pr-12.md - archived as stale/completed artifact
+- .documentation/specs/pr-review/pr-13.md - archived as stale/completed artifact
+- .documentation/specs/pr-review/pr-14.md - archived as stale/completed artifact
+- .documentation/specs/pr-review/pr-15.md - archived as stale/completed artifact
+- docs/.nojekyll - archived as stale/completed artifact
+- docs/about/index.html - archived as stale/completed artifact
+- docs/api-reference/index.html - archived as stale/completed artifact
+- docs/assets/css/main.css - archived as stale/completed artifact
+- docs/assets/css/prism-tomorrow.css - archived as stale/completed artifact
+- docs/assets/images/favicon.ico - archived as stale/completed artifact
+- docs/assets/js/prism.min.js - archived as stale/completed artifact
+- docs/examples/crawler-harvested-scenarios/index.html - archived as stale/completed artifact
+- docs/examples/httpclient-decorator-pattern-scenarios/index.html - archived as stale/completed artifact
+- docs/examples/index.html - archived as stale/completed artifact
+- docs/favicon.ico - archived as stale/completed artifact
+- docs/features/index.html - archived as stale/completed artifact
+- docs/getting-started/index.html - archived as stale/completed artifact
+- docs/index.html - archived as stale/completed artifact
+- docs/robots.txt - archived as stale/completed artifact
+
+### Key decisions preserved
+- No additional durable decisions extracted from archived files
+
 ## [2.5.0] - 2026-03-17
 
 ### Added
@@ -635,3 +661,4 @@ That's it! All crawler functionality (ISiteCrawler, SiteCrawler, SimpleSiteCrawl
 - Simple telemetry
 - Concurrent request processing
 - Web crawling capabilities
+
