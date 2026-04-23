@@ -67,10 +67,7 @@ function Get-DocTaxon {
     $normalizedPath = $RelativePath -replace '\\', '/'
     $deprecatedPattern = 'pydantic_agent|AGENT_REGISTRY|REPO_MODE_AGENTS|data_field|function_name|display_card_id'
 
-    if (
-        $normalizedPath -match '^docs/' -or
-        ($normalizedPath -match '^\.documentation/' -and $Content -match $deprecatedPattern)
-    ) {
+    if ($normalizedPath -match '^\.documentation/' -and $Content -match $deprecatedPattern) {
         return 'STALE_REFERENCE'
     }
 
@@ -402,15 +399,16 @@ if ($Scope -in @('full', 'docs', 'scan', 'changelog')) {
 
     $docRoots = @()
     $canonicalDocDir = Join-Path $repoRoot '.documentation'
-    $legacyDocsDir = Join-Path $repoRoot 'docs'
+    $publicSiteDir = Join-Path $repoRoot 'docs'
 
     if (Test-Path $canonicalDocDir) {
         $docRoots += @{ path = $canonicalDocDir; mode = 'canonical' }
     }
 
-    if (Test-Path $legacyDocsDir) {
-        $docRoots += @{ path = $legacyDocsDir; mode = 'legacy' }
-        $result.path_roots.legacy_roots += 'docs/'
+    if (Test-Path $publicSiteDir) {
+        if (-not $Json) {
+            Write-Host "  Skipping docs/: public static site content/source (constitution guardrail)" -ForegroundColor Gray
+        }
     }
 
     foreach ($docRoot in $docRoots) {
@@ -420,6 +418,9 @@ if ($Scope -in @('full', 'docs', 'scan', 'changelog')) {
             ForEach-Object {
             $file         = $_
             $relativePath = $file.FullName.Substring($repoRoot.Length + 1).Replace('\', '/')
+            if ($relativePath -match '^docs/') {
+                return
+            }
             $category     = 'living_reference'
             $content = if ($file.Extension -in @('.md', '.txt', '.json', '.yml', '.yaml', '.toml', '.ps1', '.sh')) {
                 Get-Content $file.FullName -Raw -ErrorAction SilentlyContinue

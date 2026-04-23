@@ -1,7 +1,7 @@
 <!--
 Sync Impact Report:
-Version: 1.0.0 → 1.0.1
-Modified Principles: AI Agent Output Organization scope guard for public /docs
+Version: 1.0.1 → 1.0.2
+Modified Principles: AI Agent Output Organization paths and explicit /docs static-site governance
 Added Sections: All sections (initial creation)
 Removed Sections: None
 Templates Status:
@@ -186,11 +186,12 @@ Version bumps follow this workflow:
 ### AI Agent Output Organization
 
 AI-generated documentation MUST follow these rules:
-- **Session Folders**: Save all AI-generated `.md` files to `/copilot/session-{YYYY-MM-DD}/`
+- **Session Folders**: Save all AI-generated `.md` files to `/.documentation/copilot/session-{YYYY-MM-DD}/`
 - **No Root Clutter**: Never create `.md` files in repository root (except updating existing files)
-- **Date Format**: Use ISO format `YYYY-MM-DD` for session folders (e.g., `/copilot/session-2025-11-02/`)
+- **Date Format**: Use ISO format `YYYY-MM-DD` for session folders (e.g., `/.documentation/copilot/session-2025-11-02/`)
 - **Exceptions**: Only update existing root-level docs (`README.md`, `CHANGELOG.md`) when explicitly requested
-- **Public Pages Boundary**: `/docs` is the GitHub Pages publishing folder and public-facing source. Do not include `/docs` content in site-documentation harvesting, archival, or memory-harvest workflows unless explicitly requested for a direct docs-site change.
+- **Public Static Site Boundary (MANDATORY)**: `/docs` is the published static website and is treated as website content/source, not archival documentation. `/docs` MUST NOT be targeted by harvest/archive/memory cleanup workflows.
+- **Archive Exclusion Rule (MANDATORY)**: Any automation that archives documentation MUST explicitly exclude `/docs/**` unless a direct docs-site archival/migration is explicitly requested by a human.
 
 **Rationale**: Keeps AI-generated documentation organized and separate from official project documentation. Prevents repository clutter.
 
@@ -237,4 +238,4 @@ For detailed development guidance during implementation, refer to `.github/copil
 - Testing patterns and standards
 - Questions to ask before implementing
 
-**Version**: 1.0.1 | **Ratified**: 2025-11-02 | **Last Amended**: 2026-03-31
+**Version**: 1.0.2 | **Ratified**: 2025-11-02 | **Last Amended**: 2026-04-23
