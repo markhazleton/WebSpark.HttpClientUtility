@@ -1,4 +1,4 @@
----
+﻿---
 description: Check the installed DevSpark version, identify stale framework files, and guide a safe upgrade to the latest release
 ---
 

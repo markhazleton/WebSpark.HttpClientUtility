@@ -1,4 +1,4 @@
----
+﻿---
 description: Create a personalized copy of any DevSpark command prompt for the current git user.
 scripts:
   sh: .devspark/scripts/bash/check-prerequisites.sh --json

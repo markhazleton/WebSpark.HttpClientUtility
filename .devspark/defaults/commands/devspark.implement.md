@@ -1,4 +1,4 @@
----
+﻿---
 description: Execute the implementation plan by processing and executing all tasks defined in tasks.md
 handoffs:
   - label: Create Pull Request
@@ -148,6 +148,11 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Provide clear error messages with context for debugging
    - Suggest next steps if implementation cannot proceed
    - **IMPORTANT** For completed tasks, make sure to mark the task off as [X] in the tasks file.
+
+   Additional governance expectations for create-pr/pr-review transitions:
+
+   - Delivery status must be met (`create_pr_ready=true` in latest harness result)
+   - Branch sync must pass (`HEAD` not behind `origin/main`)
 
 10. Completion validation:
     - Verify all required tasks are completed

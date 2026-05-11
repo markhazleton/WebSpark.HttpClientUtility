@@ -1,4 +1,4 @@
----
+﻿---
 description: Analyze PR review findings and codebase patterns to propose constitution amendments with change tracking
 handoffs:
   - label: Apply Amendment

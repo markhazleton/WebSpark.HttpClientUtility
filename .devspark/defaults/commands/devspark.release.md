@@ -1,4 +1,4 @@
----
+﻿---
 description: Archive development artifacts at release, distill key decisions into permanent documentation, and prepare for next development cycle
 handoffs:
   - label: View Release History

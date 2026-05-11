@@ -1,4 +1,4 @@
-#!/usr/bin/env pwsh
+﻿#!/usr/bin/env pwsh
 <#
 .SYNOPSIS
     Pre-scan repository for harvest targets: completed specs, stale docs, spec-linked code comments.
@@ -34,7 +34,8 @@ param(
     [ValidateSet('full', 'specs', 'docs', 'comments', 'changelog', 'scan')]
     [string]$Scope = 'full',
     [switch]$Json,
-    [int]$SampleLimit = 100
+    [int]$SampleLimit = 100,
+    [string]$OutFile = ''
 )
 
 # Import common functions
@@ -72,7 +73,10 @@ function Get-DocTaxon {
     $normalizedPath = $RelativePath -replace '\\', '/'
     $deprecatedPattern = 'pydantic_agent|AGENT_REGISTRY|REPO_MODE_AGENTS|data_field|function_name|display_card_id'
 
-    if ($normalizedPath -match '^\.documentation/' -and $Content -match $deprecatedPattern) {
+    if (
+        $normalizedPath -match '^docs/' -or
+        ($normalizedPath -match '^\.documentation/' -and $Content -match $deprecatedPattern)
+    ) {
         return 'STALE_REFERENCE'
     }
 
@@ -404,16 +408,15 @@ if ($Scope -in @('full', 'docs', 'scan', 'changelog')) {
 
     $docRoots = @()
     $canonicalDocDir = Join-Path $repoRoot '.documentation'
-    $publicSiteDir = Join-Path $repoRoot 'docs'
+    $legacyDocsDir = Join-Path $repoRoot 'docs'
 
     if (Test-Path $canonicalDocDir) {
         $docRoots += @{ path = $canonicalDocDir; mode = 'canonical' }
     }
 
-    if (Test-Path $publicSiteDir) {
-        if (-not $Json) {
-            Write-Host "  Skipping docs/: public static site content/source (constitution guardrail)" -ForegroundColor Gray
-        }
+    if (Test-Path $legacyDocsDir) {
+        $docRoots += @{ path = $legacyDocsDir; mode = 'legacy' }
+        $result.path_roots.legacy_roots += 'docs/'
     }
 
     foreach ($docRoot in $docRoots) {
@@ -423,9 +426,6 @@ if ($Scope -in @('full', 'docs', 'scan', 'changelog')) {
             ForEach-Object {
             $file         = $_
             $relativePath = $file.FullName.Substring($repoRoot.Length + 1).Replace('\', '/')
-            if ($relativePath -match '^docs/') {
-                return
-            }
             $category     = 'living_reference'
             $content = if ($file.Extension -in @('.md', '.txt', '.json', '.yml', '.yaml', '.toml', '.ps1', '.sh')) {
                 Get-Content $file.FullName -Raw -ErrorAction SilentlyContinue
@@ -612,4 +612,26 @@ if (-not $Json) {
     Write-Host "═══════════════════════════════════════════════════════" -ForegroundColor Cyan
 }
 
-$result | ConvertTo-Json -Depth 10
+$jsonOutput = $result | ConvertTo-Json -Depth 10
+
+if ($OutFile) {
+    $outPath = if ([IO.Path]::IsPathRooted($OutFile)) {
+        $OutFile
+    } else {
+        Join-Path $repoRoot $OutFile
+    }
+
+    $outDir = Split-Path -Parent $outPath
+    if ($outDir -and -not (Test-Path $outDir)) {
+        New-Item -ItemType Directory -Path $outDir -Force | Out-Null
+    }
+
+    # Persist a copy for resilient tooling when stdout capture is truncated.
+    Set-Content -Path $outPath -Value $jsonOutput -Encoding UTF8
+
+    if (-not $Json) {
+        Write-Host "[OUTPUT] Harvest context saved to $($outPath.Substring($repoRoot.Length + 1).Replace('\\', '/'))" -ForegroundColor Gray
+    }
+}
+
+$jsonOutput

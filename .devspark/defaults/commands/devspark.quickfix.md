@@ -1,4 +1,4 @@
----
+﻿---
 description: Rapid lightweight fix workflow that bypasses full spec creation while maintaining constitution compliance validation
 handoffs:
   - label: View Quickfix History
