@@ -10,6 +10,19 @@
 [![.NET 8-10 LTS](https://img.shields.io/badge/.NET-8--10%20LTS-512BD4.svg)](https://dotnet.microsoft.com/download/dotnet)
 [![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://markhazleton.github.io/WebSpark.HttpClientUtility/)
 
+**Live Site**: [HttpClientUtility.makeboldspark.com](https://HttpClientUtility.makeboldspark.com)
+
+---
+
+## About
+
+HttpClientUtilitySpark demonstrates enterprise-grade HTTP client patterns for .NET — resilience with Polly, intelligent response caching, structured logging with correlation IDs, and OpenTelemetry tracing, all configured in a single `AddHttpClientUtility()` call.
+
+**Live demo**: [HttpClientUtility.makeboldspark.com](https://HttpClientUtility.makeboldspark.com)
+
+> Built by [Mark Hazleton](https://markhazleton.com) — Technical Solutions Architect
+> Part of the [MakeBoldSpark](https://makeboldspark.com) portfolio of technical demonstrations.
+
 ---
 
 Stop writing 50+ lines of HttpClient setup. Get enterprise-grade resilience (retries, circuit breakers), intelligent caching, structured logging with correlation IDs, and OpenTelemetry tracing in a single `AddHttpClientUtility()` call. Perfect for microservices, background workers, and web scrapers.
