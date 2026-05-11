@@ -31,7 +31,7 @@ public sealed class DemoStartRunRequest
         {
             Environments =
             [
-                new BatchEnvironment { Name = "SampleSparkUI Production", BaseUrl = "https://samplecrud.markhazleton.com" }
+                new BatchEnvironment { Name = "UISampleSpark Production", BaseUrl = "https://ui.makeboldspark.com" }
             ],
             Users =
             [
