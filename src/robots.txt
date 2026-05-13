@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://markhazleton.github.io/WebSpark.HttpClientUtility/sitemap.xml
+Sitemap: https://httpclientutility.makeboldspark.com/sitemap.xml

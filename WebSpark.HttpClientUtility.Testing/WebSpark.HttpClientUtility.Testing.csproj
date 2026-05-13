@@ -24,7 +24,7 @@
 			2.1.0 - Initial release of Testing package. Includes FakeHttpResponseHandler, FakeMemoryCache, fluent builders, and xUnit fixtures. Supports .NET 8, 9, and 10. Requires base package [2.1.0].
 		</PackageReleaseNotes>
 		<PackageReadmeFile>README-Testing.md</PackageReadmeFile>
-		<PackageProjectUrl>https://markhazleton.github.io/WebSpark.HttpClientUtility/testing/</PackageProjectUrl>
+		<PackageProjectUrl>https://httpclientutility.makeboldspark.com/</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/MarkHazleton/HttpClientUtility</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>

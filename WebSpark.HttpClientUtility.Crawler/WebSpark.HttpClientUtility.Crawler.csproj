@@ -66,7 +66,7 @@
 		<!-- Repository Information -->
 		<RepositoryUrl>https://github.com/MarkHazleton/HttpClientUtility</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageProjectUrl>https://markhazleton.github.io/WebSpark.HttpClientUtility/</PackageProjectUrl>
+		<PackageProjectUrl>https://httpclientutility.makeboldspark.com/</PackageProjectUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Copyright>Copyright © 2025 Mark Hazleton</Copyright>
 		<NeutralLanguage>en-US</NeutralLanguage>

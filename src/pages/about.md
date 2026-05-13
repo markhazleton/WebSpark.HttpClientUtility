@@ -175,7 +175,7 @@ Thank you to all contributors and users who have helped make this library better
 
 - 📦 [NuGet Package](https://www.nuget.org/packages/WebSpark.HttpClientUtility)
 - 💻 [GitHub Repository](https://github.com/markhazleton/WebSpark.HttpClientUtility)
-- 📖 [Documentation](https://markhazleton.github.io/WebSpark.HttpClientUtility/)
+- 📖 [Documentation](https://httpclientutility.makeboldspark.com/)
 - 🐛 [Issue Tracker](https://github.com/markhazleton/WebSpark.HttpClientUtility/issues)
 - 💬 [Discussions](https://github.com/markhazleton/WebSpark.HttpClientUtility/discussions)
 

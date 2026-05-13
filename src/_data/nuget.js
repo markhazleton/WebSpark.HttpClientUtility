@@ -10,6 +10,7 @@ const CACHE_FILE = path.join(__dirname, 'nuget-cache.json');
 const API_URL = 'https://azuresearch-usnc.nuget.org/query?q=packageid:WebSpark.HttpClientUtility';
 const VERSION_FILE = path.join(__dirname, '..', '..', 'Directory.Build.props');
 const DESCRIPTION_FILE = path.join(__dirname, '..', '..', 'WebSpark.HttpClientUtility', 'WebSpark.HttpClientUtility.csproj');
+const SITE_FILE = path.join(__dirname, 'site.json');
 
 function formatNumber(value) {
   if (!value) return "0";
@@ -56,9 +57,20 @@ function readLocalDescription() {
   }
 }
 
+function readSiteUrl() {
+  try {
+    const file = fs.readFileSync(SITE_FILE, 'utf8');
+    const data = JSON.parse(file);
+    return typeof data.url === 'string' ? data.url.trim() : null;
+  } catch {
+    return null;
+  }
+}
+
 export default async function() {
   const localVersion = readLocalVersion();
   const localDescription = readLocalDescription();
+  const siteUrl = readSiteUrl();
   const cachedFileData = fs.existsSync(CACHE_FILE)
     ? JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8'))
     : null;
@@ -81,6 +93,7 @@ export default async function() {
         ...packageData,
         version: effectiveVersion,
         description: effectiveDescription,
+        projectUrl: siteUrl || packageData.projectUrl,
         cachedAt: new Date().toISOString()
       };
       fs.writeFileSync(CACHE_FILE, JSON.stringify(cacheData, null, 2));
@@ -91,7 +104,7 @@ export default async function() {
         downloads: packageData.totalDownloads,
         displayDownloads: formatNumber(packageData.totalDownloads),
         description: effectiveDescription,
-        projectUrl: packageData.projectUrl,
+        projectUrl: siteUrl || packageData.projectUrl,
         lastUpdate: new Date().toISOString(),
         cached: false
       };
@@ -106,7 +119,7 @@ export default async function() {
         downloads: cached.totalDownloads,
         displayDownloads: formatNumber(cached.totalDownloads),
         description: cached.description,
-        projectUrl: cached.projectUrl,
+        projectUrl: siteUrl || cached.projectUrl,
         lastUpdate: cached.cachedAt || 'Unknown',
         cached: true,
         cacheTimestamp: new Date(cached.cachedAt).toLocaleDateString("en-US", { 

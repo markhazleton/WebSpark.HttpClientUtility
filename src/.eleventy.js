@@ -12,6 +12,7 @@ export default function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "assets/images/favicon.ico": "favicon.ico" });
   eleventyConfig.addPassthroughCopy({ ".nojekyll": ".nojekyll" });
   eleventyConfig.addPassthroughCopy({ "robots.txt": "robots.txt" });
+  eleventyConfig.addPassthroughCopy({ "CNAME": "CNAME" });
   
   // Add relativePath filter for environment-independent asset paths
   eleventyConfig.addFilter("relativePath", function(path) {

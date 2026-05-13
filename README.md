@@ -8,20 +8,20 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://github.com/MarkHazleton/HttpClientUtility/actions/workflows/publish-nuget.yml/badge.svg)](https://github.com/MarkHazleton/HttpClientUtility/actions/workflows/publish-nuget.yml)
 [![.NET 8-10 LTS](https://img.shields.io/badge/.NET-8--10%20LTS-512BD4.svg)](https://dotnet.microsoft.com/download/dotnet)
-[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://markhazleton.github.io/WebSpark.HttpClientUtility/)
+[![Documentation](https://img.shields.io/badge/docs-Live%20Site-blue)](https://httpclientutility.makeboldspark.com/)
 
-**Live Site**: [HttpClientUtility.makeboldspark.com](https://HttpClientUtility.makeboldspark.com)
+**Live Site**: [https://httpclientutility.makeboldspark.com/](https://httpclientutility.makeboldspark.com/)
 
 ---
 
 ## About
 
-HttpClientUtilitySpark demonstrates enterprise-grade HTTP client patterns for .NET — resilience with Polly, intelligent response caching, structured logging with correlation IDs, and OpenTelemetry tracing, all configured in a single `AddHttpClientUtility()` call.
+WebSpark.HttpClientUtility demonstrates enterprise-grade HTTP client patterns for .NET — resilience with Polly, intelligent response caching, structured logging with correlation IDs, and OpenTelemetry tracing, all configured in a single `AddHttpClientUtility()` call.
 
-**Live demo**: [HttpClientUtility.makeboldspark.com](https://HttpClientUtility.makeboldspark.com)
+**Live Site**: [https://httpclientutility.makeboldspark.com/](https://httpclientutility.makeboldspark.com/)
 
-> Built by [Mark Hazleton](https://markhazleton.com) — Technical Solutions Architect
-> Part of the [MakeBoldSpark](https://makeboldspark.com) portfolio of technical demonstrations.
+> Built by [Mark Hazleton](https://markhazleton.com) — Mark Hazleton, Solutions Architect
+> WebSpark.HttpClientUtility is part of the [Make Bold Spark](https://makeboldspark.com) portfolio of technical demonstrations.
 
 ---
 
@@ -79,7 +79,7 @@ Stop writing 50+ lines of HttpClient setup. Get enterprise-grade resilience (ret
 - 🔄 **Active development** - regular updates and improvements
 - 📅 **Long-term support** - each major version supported for 18+ months
 - 💬 **Community support** - GitHub Discussions for questions and best practices
-- 📖 **Comprehensive documentation** - [Full docs site](https://markhazleton.github.io/WebSpark.HttpClientUtility/)
+- 📖 **Comprehensive documentation** - [Full docs site](https://httpclientutility.makeboldspark.com/)
 
 **Breaking Change Commitment**
 
@@ -104,7 +104,7 @@ The library is delivered as two focused packages:
 
 ## 📚 Documentation
 
-**[View Full Documentation →](https://markhazleton.github.io/WebSpark.HttpClientUtility/)**
+**[View Full Documentation →](https://httpclientutility.makeboldspark.com/)**
 
 The complete documentation site includes:
 - Getting started guide
@@ -454,7 +454,7 @@ services.AddHttpClientCrawler();  // Add this line
 
 That's it! Your crawler code (ISiteCrawler, SiteCrawler, SimpleSiteCrawler, etc.) works identically after these changes.
 
-**Need Help?** See the [detailed migration guide](https://markhazleton.github.io/WebSpark.HttpClientUtility/getting-started/migration-v2/) or [open an issue](https://github.com/MarkHazleton/HttpClientUtility/issues).
+**Need Help?** See the [detailed migration guide](https://httpclientutility.makeboldspark.com/getting-started/migration-v2/) or [open an issue](https://github.com/MarkHazleton/HttpClientUtility/issues).
 
 ## 📖 Documentation
 
@@ -512,7 +512,7 @@ Contributions are welcome! See our [Contributing Guide](documentation/CONTRIBUTI
 dotnet add package WebSpark.HttpClientUtility.Testing
 ```
 
-See the [Testing documentation](https://markhazleton.github.io/WebSpark.HttpClientUtility/testing/) for examples.
+See the [Testing documentation](https://httpclientutility.makeboldspark.com/testing/) for examples.
 
 ## 📄 License
 

@@ -21,7 +21,7 @@
     <Copyright>Copyright © MarkHazleton 2025</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/MarkHazleton/WebSpark.HttpClientUtility</PackageProjectUrl>
+    <PackageProjectUrl>https://httpclientutility.makeboldspark.com/</PackageProjectUrl>
 
     <!-- Repository information -->
     <RepositoryUrl>https://github.com/MarkHazleton/HttpClientUtility</RepositoryUrl>

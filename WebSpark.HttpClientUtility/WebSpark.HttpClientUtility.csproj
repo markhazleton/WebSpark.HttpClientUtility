@@ -65,7 +65,7 @@
 			httpclient;polly;resilience;retry;circuit-breaker;caching;opentelemetry;observability;correlation-id;distributed-tracing;structured-logging;httpclientfactory;web-scraping;microservices;api-client;rest-api;bearer-token;authentication;api-key;batch-execution;orchestration;progress-reporting;load-testing;production-ready;dotnet;aspnetcore;net8;net9;net10</PackageTags>
 		<RepositoryUrl>https://github.com/MarkHazleton/HttpClientUtility</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageProjectUrl>https://markhazleton.github.io/WebSpark.HttpClientUtility/</PackageProjectUrl>
+		<PackageProjectUrl>https://httpclientutility.makeboldspark.com/</PackageProjectUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageIcon>icon.png</PackageIcon>
