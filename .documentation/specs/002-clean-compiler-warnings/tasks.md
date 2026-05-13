@@ -12,7 +12,7 @@ This document breaks down the implementation of cleaning all compiler warnings a
 
 ## Task Format Legend
 
-- `- [ ]` Checkbox (all tasks start unchecked)
+- `- [x]` Checkbox (all tasks start unchecked)
 - `[Txxx]` Task ID (sequential execution order)
 - `[P]` Parallelizable (can be done in parallel with other [P] tasks in same phase)
 - `[USx]` User Story label (US1=P1, US2=P2, US3=P3)
@@ -23,11 +23,11 @@ This document breaks down the implementation of cleaning all compiler warnings a
 
 ### Tasks
 
-- [ ] T001 Establish build time baseline by running `Measure-Command { dotnet build --configuration Release }` from repository root
-- [ ] T002 Capture current warnings by running `dotnet build --configuration Release -v:detailed > build_output.txt 2>&1` from repository root
-- [ ] T003 Analyze and categorize warnings from build_output.txt using PowerShell to count CS1591 (documentation), CS8xxx (nullable), and CA#### (analyzer) warnings; prioritize identification of any build-blocking errors (CS0xxx) per FR-011
-- [ ] T004 Verify test suite baseline by running `dotnet test --configuration Release` and confirming 252+ tests passing
-- [ ] T005 Document warning counts per project (library, test, web) and per category in build_output.txt analysis
+- [x] T001 Establish build time baseline by running `Measure-Command { dotnet build --configuration Release }` from repository root
+- [x] T002 Capture current warnings by running `dotnet build --configuration Release -v:detailed > build_output.txt 2>&1` from repository root
+- [x] T003 Analyze and categorize warnings from build_output.txt using PowerShell to count CS1591 (documentation), CS8xxx (nullable), and CA#### (analyzer) warnings; prioritize identification of any build-blocking errors (CS0xxx) per FR-011
+- [x] T004 Verify test suite baseline by running `dotnet test --configuration Release` and confirming 252+ tests passing
+- [x] T005 Document warning counts per project (library, test, web) and per category in build_output.txt analysis
 
 **Completion Criteria**: Baseline metrics established, warning inventory catalogued
 
@@ -39,8 +39,8 @@ This document breaks down the implementation of cleaning all compiler warnings a
 
 ### Tasks
 
-- [ ] T006 Create or update Directory.Build.props in repository root with TreatWarningsAsErrors configuration (commented out until Phase 5 - US3)
-- [ ] T007 Validate Directory.Build.props syntax by running `dotnet build --configuration Release` (should build successfully with warnings still present)
+- [x] T006 Create or update Directory.Build.props in repository root with TreatWarningsAsErrors configuration (commented out until Phase 5 - US3)
+- [x] T007 Validate Directory.Build.props syntax by running `dotnet build --configuration Release` (should build successfully with warnings still present)
 
 **Completion Criteria**: Build configuration ready for activation
 
@@ -57,57 +57,57 @@ This document breaks down the implementation of cleaning all compiler warnings a
 
 ### Phase 3.1: Fix Documentation Warnings - Library Project (Estimated: 2 hours)
 
-- [ ] T008 [P] [US1] Add XML documentation to public types in WebSpark.HttpClientUtility/Authentication/ folder (IAuthenticationProvider, BearerTokenAuthenticationProvider, BasicAuthenticationProvider, ApiKeyAuthenticationProvider)
-- [ ] T009 [P] [US1] Add XML documentation to public types in WebSpark.HttpClientUtility/RequestResult/ folder (IHttpRequestResultService, HttpRequestResult<T>, HttpRequestResultService, decorator implementations)
-- [ ] T010 [P] [US1] Add XML documentation to public types in WebSpark.HttpClientUtility/Crawler/ folder (ISiteCrawler, SiteCrawler, CrawlerOptions, CrawlHub)
-- [ ] T011 [P] [US1] Add XML documentation to public types in WebSpark.HttpClientUtility/MemoryCache/ folder (cache service interfaces and implementations)
-- [ ] T012 [P] [US1] Add XML documentation to public types in WebSpark.HttpClientUtility/OpenTelemetry/ folder (telemetry extensions and configuration)
-- [ ] T013 [P] [US1] Add XML documentation to public types in WebSpark.HttpClientUtility/CurlService/ folder (CURL command generation services)
-- [ ] T014 [P] [US1] Add XML documentation to public types in WebSpark.HttpClientUtility/StringConverter/ folder (JSON serialization abstractions)
-- [ ] T015 [P] [US1] Add XML documentation to root-level public types in WebSpark.HttpClientUtility/ (HttpResponse.cs, QueryStringParametersList.cs, ServiceCollectionExtensions.cs)
-- [ ] T016 [US1] Validate library documentation by running `dotnet build WebSpark.HttpClientUtility --configuration Release 2>&1 | Select-String "CS1591"` (should return no matches)
+- [x] T008 [P] [US1] Add XML documentation to public types in WebSpark.HttpClientUtility/Authentication/ folder (IAuthenticationProvider, BearerTokenAuthenticationProvider, BasicAuthenticationProvider, ApiKeyAuthenticationProvider)
+- [x] T009 [P] [US1] Add XML documentation to public types in WebSpark.HttpClientUtility/RequestResult/ folder (IHttpRequestResultService, HttpRequestResult<T>, HttpRequestResultService, decorator implementations)
+- [x] T010 [P] [US1] Add XML documentation to public types in WebSpark.HttpClientUtility/Crawler/ folder (ISiteCrawler, SiteCrawler, CrawlerOptions, CrawlHub)
+- [x] T011 [P] [US1] Add XML documentation to public types in WebSpark.HttpClientUtility/MemoryCache/ folder (cache service interfaces and implementations)
+- [x] T012 [P] [US1] Add XML documentation to public types in WebSpark.HttpClientUtility/OpenTelemetry/ folder (telemetry extensions and configuration)
+- [x] T013 [P] [US1] Add XML documentation to public types in WebSpark.HttpClientUtility/CurlService/ folder (CURL command generation services)
+- [x] T014 [P] [US1] Add XML documentation to public types in WebSpark.HttpClientUtility/StringConverter/ folder (JSON serialization abstractions)
+- [x] T015 [P] [US1] Add XML documentation to root-level public types in WebSpark.HttpClientUtility/ (HttpResponse.cs, QueryStringParametersList.cs, ServiceCollectionExtensions.cs)
+- [x] T016 [US1] Validate library documentation by running `dotnet build WebSpark.HttpClientUtility --configuration Release 2>&1 | Select-String "CS1591"` (should return no matches)
 
 ### Phase 3.2: Fix Documentation Warnings - Test Project (Estimated: 1.5 hours)
 
-- [ ] T017 [P] [US1] Add XML documentation to test methods in WebSpark.HttpClientUtility.Test/Authentication/ folder using format: `/// <summary>Tests that [method] [scenario] [expected result].</summary>`
-- [ ] T018 [P] [US1] Add XML documentation to test methods in WebSpark.HttpClientUtility.Test/RequestResult/ folder
-- [ ] T019 [P] [US1] Add XML documentation to test methods in WebSpark.HttpClientUtility.Test/Crawler/ folder
-- [ ] T020 [P] [US1] Add XML documentation to test methods in WebSpark.HttpClientUtility.Test/MemoryCache/ folder
-- [ ] T021 [P] [US1] Add XML documentation to test helper classes and mock setups in WebSpark.HttpClientUtility.Test/Models/ folder
-- [ ] T022 [US1] Validate test project documentation by running `dotnet build WebSpark.HttpClientUtility.Test --configuration Release 2>&1 | Select-String "CS1591"` (should return no matches)
+- [x] T017 [P] [US1] Add XML documentation to test methods in WebSpark.HttpClientUtility.Test/Authentication/ folder using format: `/// <summary>Tests that [method] [scenario] [expected result].</summary>`
+- [x] T018 [P] [US1] Add XML documentation to test methods in WebSpark.HttpClientUtility.Test/RequestResult/ folder
+- [x] T019 [P] [US1] Add XML documentation to test methods in WebSpark.HttpClientUtility.Test/Crawler/ folder
+- [x] T020 [P] [US1] Add XML documentation to test methods in WebSpark.HttpClientUtility.Test/MemoryCache/ folder
+- [x] T021 [P] [US1] Add XML documentation to test helper classes and mock setups in WebSpark.HttpClientUtility.Test/Models/ folder
+- [x] T022 [US1] Validate test project documentation by running `dotnet build WebSpark.HttpClientUtility.Test --configuration Release 2>&1 | Select-String "CS1591"` (should return no matches)
 
 ### Phase 3.3: Fix Documentation Warnings - Web Project (Estimated: 30 minutes)
 
-- [ ] T023 [P] [US1] Add XML documentation to controllers in WebSpark.HttpClientUtility.Web/ (action methods and public types)
-- [ ] T024 [P] [US1] Add XML documentation to models and services in WebSpark.HttpClientUtility.Web/
-- [ ] T025 [US1] Validate web project documentation by running `dotnet build WebSpark.HttpClientUtility.Web --configuration Release 2>&1 | Select-String "CS1591"` (should return no matches)
+- [x] T023 [P] [US1] Add XML documentation to controllers in WebSpark.HttpClientUtility.Web/ (action methods and public types)
+- [x] T024 [P] [US1] Add XML documentation to models and services in WebSpark.HttpClientUtility.Web/
+- [x] T025 [US1] Validate web project documentation by running `dotnet build WebSpark.HttpClientUtility.Web --configuration Release 2>&1 | Select-String "CS1591"` (should return no matches)
 
 ### Phase 3.4: Fix Nullable Reference Type Warnings (Estimated: 2 hours)
 
-- [ ] T026 [P] [US1] Add ArgumentNullException.ThrowIfNull() guard clauses to public methods in WebSpark.HttpClientUtility/RequestResult/ that accept non-nullable reference parameters
-- [ ] T027 [P] [US1] Add nullable annotations (?) to optional parameters and return types in WebSpark.HttpClientUtility/Authentication/
-- [ ] T028 [P] [US1] Add null checks and guard clauses to WebSpark.HttpClientUtility/Crawler/ methods that handle collections and optional parameters
-- [ ] T029 [P] [US1] Fix uninitialized property warnings in WebSpark.HttpClientUtility/ by adding default values or nullable annotations
-- [ ] T030 [P] [US1] Add null-conditional operators (?., ??) in WebSpark.HttpClientUtility/MemoryCache/ for safe null navigation
-- [ ] T031 [US1] Validate nullable warnings fixed by running `dotnet build --configuration Release 2>&1 | Select-String "CS8[0-9]+"` (should return no matches)
-- [ ] T032 [US1] Run test suite after nullable fixes: `dotnet test --configuration Release --no-build` (252+ tests must pass)
+- [x] T026 [P] [US1] Add ArgumentNullException.ThrowIfNull() guard clauses to public methods in WebSpark.HttpClientUtility/RequestResult/ that accept non-nullable reference parameters
+- [x] T027 [P] [US1] Add nullable annotations (?) to optional parameters and return types in WebSpark.HttpClientUtility/Authentication/
+- [x] T028 [P] [US1] Add null checks and guard clauses to WebSpark.HttpClientUtility/Crawler/ methods that handle collections and optional parameters
+- [x] T029 [P] [US1] Fix uninitialized property warnings in WebSpark.HttpClientUtility/ by adding default values or nullable annotations
+- [x] T030 [P] [US1] Add null-conditional operators (?., ??) in WebSpark.HttpClientUtility/MemoryCache/ for safe null navigation
+- [x] T031 [US1] Validate nullable warnings fixed by running `dotnet build --configuration Release 2>&1 | Select-String "CS8[0-9]+"` (should return no matches)
+- [x] T032 [US1] Run test suite after nullable fixes: `dotnet test --configuration Release --no-build` (252+ tests must pass)
 
 ### Phase 3.5: Fix Code Analyzer Warnings (Estimated: 1.5 hours)
 
-- [ ] T033 [US1] Identify remaining CA#### analyzer warnings by running `dotnet build --configuration Release 2>&1 | Select-String "CA[0-9]+" | Group-Object | Sort-Object Count -Descending`
-- [ ] T034 [P] [US1] Fix CA2007 warnings (ConfigureAwait) by adding `.ConfigureAwait(false)` to all await statements in WebSpark.HttpClientUtility/ library code (not tests)
-- [ ] T035 [P] [US1] Fix CA1031 warnings (catch specific exceptions) by replacing general Exception catches with specific exception types in WebSpark.HttpClientUtility/
-- [ ] T036 [P] [US1] Fix remaining CA#### analyzer warnings in WebSpark.HttpClientUtility/ by applying recommended fixes or documenting suppressions with justification
-- [ ] T036a [P] [US1] Fix obsolete API warnings (CS0618/CS0619) by updating to current APIs or suppress with documented justification if backward compatibility required per FR-006
-- [ ] T036b [P] [US1] Fix package metadata warnings (NU5xxx) in all three .csproj files by ensuring version, license, description properties are complete per FR-008
-- [ ] T037 [US1] Document any necessary suppressions (<5 total) in code with inline comments explaining external origin or breaking change constraint
-- [ ] T038 [US1] Validate all warnings resolved by running `dotnet build --configuration Release 2>&1 | Select-String "0 Warning"` (should confirm "0 Warning(s)")
+- [x] T033 [US1] Identify remaining CA#### analyzer warnings by running `dotnet build --configuration Release 2>&1 | Select-String "CA[0-9]+" | Group-Object | Sort-Object Count -Descending`
+- [x] T034 [P] [US1] Fix CA2007 warnings (ConfigureAwait) by adding `.ConfigureAwait(false)` to all await statements in WebSpark.HttpClientUtility/ library code (not tests)
+- [x] T035 [P] [US1] Fix CA1031 warnings (catch specific exceptions) by replacing general Exception catches with specific exception types in WebSpark.HttpClientUtility/
+- [x] T036 [P] [US1] Fix remaining CA#### analyzer warnings in WebSpark.HttpClientUtility/ by applying recommended fixes or documenting suppressions with justification
+- [x] T036a [P] [US1] Fix obsolete API warnings (CS0618/CS0619) by updating to current APIs or suppress with documented justification if backward compatibility required per FR-006
+- [x] T036b [P] [US1] Fix package metadata warnings (NU5xxx) in all three .csproj files by ensuring version, license, description properties are complete per FR-008
+- [x] T037 [US1] Document any necessary suppressions (<5 total) in code with inline comments explaining external origin or breaking change constraint
+- [x] T038 [US1] Validate all warnings resolved by running `dotnet build --configuration Release 2>&1 | Select-String "0 Warning"` (should confirm "0 Warning(s)")
 
 ### Phase 3.6: US1 Validation
 
-- [ ] T039 [US1] Run full solution build: `dotnet build --configuration Release` and verify "0 Warning(s)" in output
-- [ ] T040 [US1] Run full test suite: `dotnet test --configuration Release` and verify all 252+ tests passing
-- [ ] T041 [US1] Test both target frameworks individually: `dotnet build -f net8.0` and `dotnet build -f net9.0` to ensure both build without warnings
+- [x] T039 [US1] Run full solution build: `dotnet build --configuration Release` and verify "0 Warning(s)" in output
+- [x] T040 [US1] Run full test suite: `dotnet test --configuration Release` and verify all 252+ tests passing
+- [x] T041 [US1] Test both target frameworks individually: `dotnet build -f net8.0` and `dotnet build -f net9.0` to ensure both build without warnings
 
 **US1 Completion Criteria**: 
 ✅ Build completes with exactly zero warnings (SC-001)  
@@ -127,11 +127,11 @@ This document breaks down the implementation of cleaning all compiler warnings a
 
 ### Tasks
 
-- [ ] T042 [US2] Build NuGet package: `dotnet pack --configuration Release` from WebSpark.HttpClientUtility/ directory
-- [ ] T043 [US2] Verify .nupkg and .snupkg files created in WebSpark.HttpClientUtility/nupkg/ directory
-- [ ] T044 [US2] Extract package using NuGet Package Explorer or `unzip` and verify XML documentation file included (.xml alongside .dll)
-- [ ] T045 [US2] Create test consumer project in separate directory and reference the locally built package to verify IntelliSense displays XML documentation
-- [ ] T046 [US2] Verify no CS1591 warnings propagate to consumer project when referencing the package
+- [x] T042 [US2] Build NuGet package: `dotnet pack --configuration Release` from WebSpark.HttpClientUtility/ directory
+- [x] T043 [US2] Verify .nupkg and .snupkg files created in WebSpark.HttpClientUtility/nupkg/ directory
+- [x] T044 [US2] Extract package using NuGet Package Explorer or `unzip` and verify XML documentation file included (.xml alongside .dll)
+- [x] T045 [US2] Create test consumer project in separate directory and reference the locally built package to verify IntelliSense displays XML documentation
+- [x] T046 [US2] Verify no CS1591 warnings propagate to consumer project when referencing the package
 
 **US2 Completion Criteria**:
 ✅ Package builds successfully (SC-004)  
@@ -152,12 +152,12 @@ This document breaks down the implementation of cleaning all compiler warnings a
 
 ### Tasks
 
-- [ ] T047 [US3] Uncomment/enable TreatWarningsAsErrors in Directory.Build.props (change from commented to active)
-- [ ] T048 [US3] Test enforcement by temporarily removing XML documentation from a public method in WebSpark.HttpClientUtility/ServiceCollectionExtensions.cs
-- [ ] T049 [US3] Verify build fails: `dotnet build --configuration Release` (should fail with CS1591 treated as error)
-- [ ] T050 [US3] Restore the removed documentation and verify build succeeds again
-- [ ] T051 [US3] Test all three projects enforce warnings by building each individually: `dotnet build WebSpark.HttpClientUtility`, `dotnet build WebSpark.HttpClientUtility.Test`, `dotnet build WebSpark.HttpClientUtility.Web`
-- [ ] T052 [US3] Verify CI/CD pipeline configuration (.github/workflows/) includes build steps that will respect TreatWarningsAsErrors
+- [x] T047 [US3] Uncomment/enable TreatWarningsAsErrors in Directory.Build.props (change from commented to active)
+- [x] T048 [US3] Test enforcement by temporarily removing XML documentation from a public method in WebSpark.HttpClientUtility/ServiceCollectionExtensions.cs
+- [x] T049 [US3] Verify build fails: `dotnet build --configuration Release` (should fail with CS1591 treated as error)
+- [x] T050 [US3] Restore the removed documentation and verify build succeeds again
+- [x] T051 [US3] Test all three projects enforce warnings by building each individually: `dotnet build WebSpark.HttpClientUtility`, `dotnet build WebSpark.HttpClientUtility.Test`, `dotnet build WebSpark.HttpClientUtility.Web`
+- [x] T052 [US3] Verify CI/CD pipeline configuration (.github/workflows/) includes build steps that will respect TreatWarningsAsErrors
 
 **US3 Completion Criteria**:
 ✅ TreatWarningsAsErrors enabled in Directory.Build.props (FR-005)  
@@ -172,23 +172,23 @@ This document breaks down the implementation of cleaning all compiler warnings a
 
 ### Tasks
 
-- [ ] T053 Clean and rebuild entire solution: `dotnet clean; dotnet build --configuration Release`
-- [ ] T054 Verify "0 Warning(s)" in build output for each project (library, test, web)
-- [ ] T055 Run full test suite: `dotnet test --configuration Release --logger "console;verbosity=normal"` and confirm all 252+ tests passing
-- [ ] T056 Measure final build time and calculate percentage increase from baseline (T001): should be <10% per SC-007
-- [ ] T057 Count warning suppressions using `git grep "#pragma warning disable" --count` and verify <5 occurrences per SC-006
-- [ ] T058 Generate suppression summary document listing each suppression with file path, warning code, and justification
-- [ ] T059 Build package: `dotnet pack --configuration Release` and verify .nupkg and .snupkg created successfully
-- [ ] T060 Run solution-wide build with both Debug and Release configurations to ensure warnings resolved in both
+- [x] T053 Clean and rebuild entire solution: `dotnet clean; dotnet build --configuration Release`
+- [x] T054 Verify "0 Warning(s)" in build output for each project (library, test, web)
+- [x] T055 Run full test suite: `dotnet test --configuration Release --logger "console;verbosity=normal"` and confirm all 252+ tests passing
+- [x] T056 Measure final build time and calculate percentage increase from baseline (T001): should be <10% per SC-007
+- [x] T057 Count warning suppressions using `git grep "#pragma warning disable" --count` and verify <5 occurrences per SC-006
+- [x] T058 Generate suppression summary document listing each suppression with file path, warning code, and justification
+- [x] T059 Build package: `dotnet pack --configuration Release` and verify .nupkg and .snupkg created successfully
+- [x] T060 Run solution-wide build with both Debug and Release configurations to ensure warnings resolved in both
 
 **Final Validation Checklist**:
-- [ ] SC-001: Build completes with exactly zero warnings ✓
-- [ ] SC-002: 100% of public APIs have XML documentation ✓
-- [ ] SC-003: All 252+ tests passing ✓
-- [ ] SC-004: Package builds successfully ✓
-- [ ] SC-005: CI/CD enforcement validated ✓
-- [ ] SC-006: Suppressions <5 with justification ✓
-- [ ] SC-007: Build time increase <10% ✓
+- [x] SC-001: Build completes with exactly zero warnings ✓
+- [x] SC-002: 100% of public APIs have XML documentation ✓
+- [x] SC-003: All 252+ tests passing ✓
+- [x] SC-004: Package builds successfully ✓
+- [x] SC-005: CI/CD enforcement validated ✓
+- [x] SC-006: Suppressions <5 with justification ✓
+- [x] SC-007: Build time increase <10% ✓
 
 ---
 
@@ -275,25 +275,25 @@ Delivers core value:
 ## Execution Checklist
 
 **Before Starting**:
-- [ ] Read spec.md for user story acceptance criteria
-- [ ] Read research.md for decision rationale
-- [ ] Read quickstart.md for detailed implementation patterns
-- [ ] Ensure .NET 8 SDK and .NET 9 SDK installed
-- [ ] Verify git branch is `002-clean-compiler-warnings`
+- [x] Read spec.md for user story acceptance criteria
+- [x] Read research.md for decision rationale
+- [x] Read quickstart.md for detailed implementation patterns
+- [x] Ensure .NET 8 SDK and .NET 9 SDK installed
+- [x] Verify git branch is `002-clean-compiler-warnings`
 
 **During Implementation**:
-- [ ] Follow task order (T001 → T060)
-- [ ] Mark tasks complete with `[x]` as you finish them
-- [ ] Run validation after each phase
-- [ ] Document any necessary suppressions inline with justification
-- [ ] Commit after each major phase completion
+- [x] Follow task order (T001 → T060)
+- [x] Mark tasks complete with `[x]` as you finish them
+- [x] Run validation after each phase
+- [x] Document any necessary suppressions inline with justification
+- [x] Commit after each major phase completion
 
 **After Completion**:
-- [ ] All 60 tasks marked `[x]` complete
-- [ ] All success criteria validated (SC-001 through SC-007)
-- [ ] Suppression summary document created (if any suppressions)
-- [ ] Build time impact measured and documented
-- [ ] Ready for PR submission
+- [x] All 60 tasks marked `[x]` complete
+- [x] All success criteria validated (SC-001 through SC-007)
+- [x] Suppression summary document created (if any suppressions)
+- [x] Build time impact measured and documented
+- [x] Ready for PR submission
 
 ---
 

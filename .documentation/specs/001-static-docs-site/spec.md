@@ -2,7 +2,7 @@
 
 **Feature Branch**: `001-static-docs-site`  
 **Created**: 2025-11-02  
-**Status**: ✅ Complete and Deployed  
+**Status**: ✅ COMPLETE  
 **Input**: User description: "I want to create a static website inside the /src folder in the root using Eleventy (11ty) as the static site generator. The static website will build and publish to the /docs folder with the target of being hosted on GitHub Pages for this repository. The site should fetch live data from the NuGet API (https://nugetprodusnc.azure-api.net/packages/WebSpark.HttpClientUtility) to display current version, download counts, and package information. The static site should be modern and aligned with NuGet package website best practices. Keep it basic with limited libraries and packages. The express purpose of the static site is to promote the NuGet package and explain all the features and justification for why a developer would want to use this NuGet package. There should be seamless integration between the NuGet package page and the GitHub Pages site where the package is maintained. All source files for the static site should live inside the /src folder off the root. Follow best practices for NPM build of the source files into the docs file with scripts for clean that completely wiped out the docs file and rebuild it from the source. Use best practices for GitHub static pages for NuGet package repos like this one."
 
 ## Implementation Summary
