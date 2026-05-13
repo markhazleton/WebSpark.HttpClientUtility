@@ -43,13 +43,13 @@
   </ItemGroup>
 
   <!-- NPM Install - Runs on every build to ensure packages are up to date -->
-  <Target Name="NpmInstall" BeforeTargets="Build" Condition="'$(SkipNpmBuild)' == 'false' AND Exists('package.json')">
-    <Message Importance="high" Text="Running npm install..." />
-    <Exec Command="$(NpmCommand) install" WorkingDirectory="$(ProjectDir)" />
+  <Target Name="NpmInstall" BeforeTargets="Build" Condition="'$(SkipNpmBuild)' == 'false' AND '$(TargetFramework)' == 'net8.0' AND Exists('package.json')">
+    <Message Importance="high" Text="Running npm ci..." />
+    <Exec Command="$(NpmCommand) ci" WorkingDirectory="$(ProjectDir)" />
   </Target>
 
   <!-- NPM Build - Runs on every build to ensure fresh Vite output -->
-  <Target Name="NpmBuild" BeforeTargets="Build" DependsOnTargets="NpmInstall" Condition="'$(SkipNpmBuild)' == 'false' AND Exists('package.json')">
+  <Target Name="NpmBuild" BeforeTargets="Build" DependsOnTargets="NpmInstall" Condition="'$(SkipNpmBuild)' == 'false' AND '$(TargetFramework)' == 'net8.0' AND Exists('package.json')">
     <Message Importance="high" Text="Running Vite build ($(NodeEnv))..." />
     <Exec Command="$(NpmCommand) run build" WorkingDirectory="$(ProjectDir)" EnvironmentVariables="NODE_ENV=$(NodeEnv)" />
   </Target>
