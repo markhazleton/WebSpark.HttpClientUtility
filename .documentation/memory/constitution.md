@@ -1,13 +1,18 @@
 <!--
 Sync Impact Report:
-Version: 1.0.1 → 1.0.2
-Modified Principles: AI Agent Output Organization paths and explicit /docs static-site governance
-Added Sections: All sections (initial creation)
+Version: 1.0.2 → 1.1.0
+Modified Principles:
+  - Principle III: Added .NET 10 LTS target; added demo-app single-TFM rule
+  - Compliance Checklist: Updated to require .NET 8, .NET 9, AND .NET 10
+Added Sections:
+  - Repository Outputs (three primary deliverables)
+  - Technical Standards: Frontend Build Tooling (Vite manifest hidden-dir rule)
+  - Development Workflow: Test Project Dependency Conditioning
 Removed Sections: None
 Templates Status:
-  ✅ plan-template.md - Aligned with constitution principles
-  ✅ spec-template.md - Aligned with constitution principles
-  ✅ tasks-template.md - Aligned with constitution principles
+  ✅ plan-template.md - No TFM-specific references; aligned
+  ✅ spec-template.md - No TFM-specific references; aligned
+  ✅ tasks-template.md - No TFM-specific references; aligned
 Follow-up TODOs: None
 -->
 
@@ -40,12 +45,14 @@ Testing is mandatory before any code ships:
 ### III. Multi-Targeting and Compatibility
 
 Code MUST compile and run on ALL target frameworks:
-- **Current Targets**: .NET 8 (LTS) and .NET 9
+- **Library Targets**: .NET 8 (LTS, until Nov 2026), .NET 9, and .NET 10 (LTS, until May 2028)
+- **Demo App Targeting**: `WebSpark.HttpClientUtility.Web` MUST target only the **latest stable .NET version** (currently `net10.0`). It is a demo app, not a NuGet package, and MUST NOT multi-target. Clear `<TargetFrameworks>` from `Directory.Build.props` by setting `<TargetFrameworks></TargetFrameworks>` alongside the explicit `<TargetFramework>net10.0</TargetFramework>`.
+- **Test Project Conditioning**: When a test project references a web/demo project that doesn't multi-target, the `<ProjectReference>` and web-dependent test files MUST be conditioned with `Condition="'$(TargetFramework)' == 'net10.0'"` to avoid `NU1201` errors on older TFMs.
 - **Breaking Changes**: Follow semantic versioning strictly (MAJOR.MINOR.PATCH)
 - **Nullable Reference Types**: Enabled globally (`<Nullable>enable</Nullable>`)
 - **API Stability**: Backward compatibility is critical; breaking changes require MAJOR version bump
 
-**Rationale**: .NET 8 is LTS (Long Term Support) for enterprise users; .NET 9 provides latest features. Multi-targeting ensures broad adoption while nullable reference types prevent null reference exceptions.
+**Rationale**: .NET 8 and .NET 10 are LTS releases serving enterprise users; .NET 9 bridges the gap. Multi-targeting the library ensures broad adoption. The demo app pins to latest to showcase current capabilities without the overhead of maintaining older TFMs for a non-packaged project.
 
 ### IV. One-Line Developer Experience
 
@@ -106,6 +113,14 @@ All code MUST meet high-quality standards:
 - **Test Exception**: CA2007 (ConfigureAwait) suppressed in test projects only
 
 **Process**: After writing new code, run `dotnet build` and address all warnings. Warnings indicate real issues or non-idiomatic patterns.
+
+### Frontend Build Tooling
+
+The demo web app uses Vite for front-end asset compilation. The following rules apply:
+- **Manifest Path**: The Vite manifest MUST NOT be written to a hidden directory (any directory starting with `.`). Use `manifest: 'vite-manifest.json'` in `vite.config.js` to output to `wwwroot/dist/vite-manifest.json`.
+- **Reason**: ASP.NET Core's static web assets pipeline excludes directories starting with `.` from publish output. Using `manifest: true` (default) outputs to `.vite/manifest.json` which is silently excluded, causing runtime failures.
+- **Publish Targets**: The `NpmBuild` MSBuild target MUST declare `BeforeTargets="Build;BeforePublish"` so that Vite assets are compiled in both standard build and `--no-build` publish scenarios.
+- **ViteAssetTagHelper**: Must read from `Path.Combine(env.WebRootPath, "dist", "vite-manifest.json")`.
 
 ### XML Documentation
 
@@ -195,6 +210,47 @@ AI-generated documentation MUST follow these rules:
 
 **Rationale**: Keeps AI-generated documentation organized and separate from official project documentation. Prevents repository clutter.
 
+## Repository Outputs
+
+This repository produces three primary, independently maintained deliverables. Each has distinct audiences, hosting, and update cadence.
+
+### Output 1 — NuGet Packages (Library)
+
+| Package | NuGet URL |
+|---------|-----------|
+| `WebSpark.HttpClientUtility` | https://www.nuget.org/packages/WebSpark.HttpClientUtility |
+| `WebSpark.HttpClientUtility.Crawler` | https://www.nuget.org/packages/WebSpark.HttpClientUtility.Crawler |
+| `WebSpark.HttpClientUtility.Testing` | https://www.nuget.org/packages/WebSpark.HttpClientUtility.Testing |
+
+- Published via GitHub Actions CI/CD on `v*.*.*` tag push. Manual publishing is **strictly prohibited**.
+- Multi-targets: `net8.0;net9.0;net10.0` (library and crawler packages). Lockstep versioning across all packages.
+- Source: `WebSpark.HttpClientUtility/`, `WebSpark.HttpClientUtility.Crawler/`, `WebSpark.HttpClientUtility.Testing/`
+
+### Output 2 — Static GitHub Pages Info Site
+
+- **URL**: https://httpclientutility.makeboldspark.com/
+- **Source**: `/docs/` directory (served by GitHub Pages from `main` branch)
+- **Purpose**: NuGet package documentation — getting started, API reference, features, examples
+- **Technology**: Static HTML/CSS (no build step; files are deployed as-is)
+- **Governance**: `/docs/**` MUST NOT be targeted by any archive/harvest/cleanup automation
+- **Cross-link**: MUST include a visible link to the HttpClientDecorator demo site
+
+### Output 3 — HttpClientDecorator Demo Site
+
+- **URL**: https://httpclientdecorator.makeboldspark.com/
+- **Source**: `WebSpark.HttpClientUtility.Web/` (ASP.NET Core MVC)
+- **Purpose**: Live interactive demonstration of the decorator pattern, caching, resilience, crawling, batch execution
+- **Technology**: ASP.NET Core MVC + Vite (front-end assets)
+- **Target Framework**: `net10.0` only (single TFM — not multi-targeted; always the latest stable .NET)
+- **Cross-link**: MUST include a visible link to the GitHub Pages info site
+- **Publish**: Folder publish to hosting provider. Run `dotnet publish` (without `--no-build` to ensure Vite runs)
+
+### Cross-Site Linking Rule
+
+Both sites MUST maintain mutual navigation links so users can easily move between:
+- Package documentation ↔ Live demo
+- Both sites ↔ GitHub repository and NuGet package page
+
 ## Governance
 
 ### Constitution Authority
@@ -220,13 +276,15 @@ Any violation of constitutional principles (e.g., breaking decorator pattern, ad
 ### Compliance Review
 
 All implementations MUST verify:
-- [ ] Multi-targeting: Compiles on .NET 8 AND .NET 9
-- [ ] Testing: MSTest tests included and passing (252+ tests maintained)
+- [ ] Multi-targeting: Library compiles on .NET 8, .NET 9, AND .NET 10
+- [ ] Demo app: Targets only `net10.0` (single TFM, not multi-targeted)
+- [ ] Testing: MSTest tests included and passing; new features require corresponding test coverage
 - [ ] Decorator Pattern: New features integrate via decorators, not breaking existing chain
 - [ ] One-Line DI: Registration remains simple for consumers
 - [ ] Documentation: XML docs on public APIs, README updated if user-facing
 - [ ] Versioning: Breaking changes trigger MAJOR version, features trigger MINOR
 - [ ] Warnings: All warnings addressed before commit
+- [ ] Frontend: Vite manifest at `wwwroot/dist/vite-manifest.json` (not hidden directory)
 
 ### Runtime Development Guidance
 
@@ -238,4 +296,4 @@ For detailed development guidance during implementation, refer to `.github/copil
 - Testing patterns and standards
 - Questions to ask before implementing
 
-**Version**: 1.0.2 | **Ratified**: 2025-11-02 | **Last Amended**: 2026-04-23
+**Version**: 1.1.0 | **Ratified**: 2025-11-02 | **Last Amended**: 2026-05-16

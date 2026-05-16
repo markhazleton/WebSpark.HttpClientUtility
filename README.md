@@ -6,11 +6,12 @@
 [![NuGet Downloads](https://img.shields.io/nuget/dt/WebSpark.HttpClientUtility.svg)](https://www.nuget.org/packages/WebSpark.HttpClientUtility/)
 [![Crawler Package](https://img.shields.io/nuget/v/WebSpark.HttpClientUtility.Crawler.svg?label=Crawler)](https://www.nuget.org/packages/WebSpark.HttpClientUtility.Crawler/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://github.com/MarkHazleton/HttpClientUtility/actions/workflows/publish-nuget.yml/badge.svg)](https://github.com/MarkHazleton/HttpClientUtility/actions/workflows/publish-nuget.yml)
+[![Build Status](https://github.com/markhazleton/WebSpark.HttpClientUtility/actions/workflows/publish-nuget.yml/badge.svg)](https://github.com/markhazleton/WebSpark.HttpClientUtility/actions/workflows/publish-nuget.yml)
 [![.NET 8-10 LTS](https://img.shields.io/badge/.NET-8--10%20LTS-512BD4.svg)](https://dotnet.microsoft.com/download/dotnet)
 [![Documentation](https://img.shields.io/badge/docs-Live%20Site-blue)](https://httpclientutility.makeboldspark.com/)
 
-**Live Site**: [https://httpclientutility.makeboldspark.com/](https://httpclientutility.makeboldspark.com/)
+**Docs Site**: [https://httpclientutility.makeboldspark.com/](https://httpclientutility.makeboldspark.com/)
+**Live Demo**: [https://httpclientdecorator.makeboldspark.com/](https://httpclientdecorator.makeboldspark.com/)
 
 ---
 
@@ -18,7 +19,13 @@
 
 WebSpark.HttpClientUtility demonstrates enterprise-grade HTTP client patterns for .NET — resilience with Polly, intelligent response caching, structured logging with correlation IDs, and OpenTelemetry tracing, all configured in a single `AddHttpClientUtility()` call.
 
-**Live Site**: [https://httpclientutility.makeboldspark.com/](https://httpclientutility.makeboldspark.com/)
+**This repository produces three primary deliverables:**
+
+| Deliverable | URL |
+|---|---|
+| 📦 NuGet packages (`WebSpark.HttpClientUtility` + Crawler + Testing) | [nuget.org/packages/WebSpark.HttpClientUtility](https://www.nuget.org/packages/WebSpark.HttpClientUtility/) |
+| 📖 Static docs site (GitHub Pages) | [httpclientutility.makeboldspark.com](https://httpclientutility.makeboldspark.com/) |
+| 🚀 Live demo (ASP.NET Core MVC, .NET 10) | [httpclientdecorator.makeboldspark.com](https://httpclientdecorator.makeboldspark.com/) |
 
 > Built by [Mark Hazleton](https://markhazleton.com) — Mark Hazleton, Solutions Architect
 > WebSpark.HttpClientUtility is part of the [Make Bold Spark](https://makeboldspark.com) portfolio of technical demonstrations.
@@ -67,11 +74,11 @@ Stop writing 50+ lines of HttpClient setup. Get enterprise-grade resilience (ret
 - ✅ **Source Link enabled** - step-through debugging with symbol packages (.snupkg)
 - ✅ **Trimming & AOT ready** - annotated for Native AOT and IL trimming compatibility
 - ✅ **Package validation** - baseline validation ensures no breaking changes
-- ✅ **Zero-warning builds** - strict code quality with `TreatWarningsAsErrors=true`
+- ✅ **Zero-warning builds** - strict code quality (`TreatWarningsAsErrors=false`; warnings must be fixed before commit)
 - ✅ **Continuous Integration** via GitHub Actions - every commit tested
 - ✅ **Semantic Versioning** - predictable, safe upgrades
 - ✅ **Zero breaking changes** within major versions - backward compatibility guaranteed
-- ✅ **Framework Support:** .NET 8 LTS (until Nov 2026), .NET 9, .NET 10
+- ✅ **Framework Support:** .NET 8 LTS (until Nov 2026), .NET 9, .NET 10 LTS (until May 2028) — library packages multi-target all three; demo app targets .NET 10 only
 - ✅ **MIT Licensed** - free for commercial use
 
 **Support & Maintenance**
@@ -107,11 +114,15 @@ The library is delivered as two focused packages:
 **[View Full Documentation →](https://httpclientutility.makeboldspark.com/)**
 
 The complete documentation site includes:
-- Getting started guide
-- Feature documentation
-- API reference
-- Code examples
-- Best practices
+- [Getting Started](https://httpclientutility.makeboldspark.com/getting-started/)
+- [Features](https://httpclientutility.makeboldspark.com/features/)
+- [API Reference](https://httpclientutility.makeboldspark.com/api-reference/)
+- [Code Examples](https://httpclientutility.makeboldspark.com/examples/)
+- [About](https://httpclientutility.makeboldspark.com/about/)
+
+**[Try the Live Demo →](https://httpclientdecorator.makeboldspark.com/)**
+
+The demo site lets you interactively explore caching, resilience, crawling, batch execution, and streaming features running on .NET 10.
 
 ## ⚡ 30-Second Quick Start
 
@@ -454,32 +465,31 @@ services.AddHttpClientCrawler();  // Add this line
 
 That's it! Your crawler code (ISiteCrawler, SiteCrawler, SimpleSiteCrawler, etc.) works identically after these changes.
 
-**Need Help?** See the [detailed migration guide](https://httpclientutility.makeboldspark.com/getting-started/migration-v2/) or [open an issue](https://github.com/MarkHazleton/HttpClientUtility/issues).
+**Need Help?** See the [detailed migration guide](https://httpclientutility.makeboldspark.com/getting-started/) or [open an issue](https://github.com/markhazleton/WebSpark.HttpClientUtility/issues).
 
 ## 📖 Documentation
 
-- **[Getting Started Guide](documentation/GettingStarted.md)** - Complete walkthrough
-- **[Configuration Options](documentation/Configuration.md)** - All settings explained
-- **[Caching Guide](documentation/Caching.md)** - Response caching strategies
-- **[Resilience Guide](documentation/Resilience.md)** - Retry and circuit breaker patterns
-- **[Web Crawling](documentation/WebCrawling.md)** - Site crawler features
-- **[Migration Guide](documentation/Migration.md)** - From raw HttpClient
-- **[API Reference](documentation/ApiReference.md)** - Complete API documentation
-- **[Harvested Decorator Scenarios](src/pages/examples/httpclient-decorator-pattern-scenarios.md)** - Resilience and concurrent-calls scenarios
-- **[Harvested Crawler Scenarios](src/pages/examples/crawler-harvested-scenarios.md)** - Crawler progress and site-analysis scenarios
+- **[Getting Started](https://httpclientutility.makeboldspark.com/getting-started/)** - Complete walkthrough
+- **[Features](https://httpclientutility.makeboldspark.com/features/)** - All feature documentation
+- **[API Reference](https://httpclientutility.makeboldspark.com/api-reference/)** - Complete API documentation
+- **[Examples](https://httpclientutility.makeboldspark.com/examples/)** - Code scenarios and patterns
+- **[About](https://httpclientutility.makeboldspark.com/about/)** - Project background and contributing
 
 ## 🎓 Sample Projects
 
-Explore working examples in the [samples directory](samples/):
-- **BasicUsage** - Simple GET/POST requests
-- **WithCaching** - Response caching implementation
-- **WithResilience** - Retry and circuit breaker patterns
-- **ConcurrentRequests** - Parallel request processing
-- **WebCrawler** - Site crawling example
+Explore the live demo at [httpclientdecorator.makeboldspark.com](https://httpclientdecorator.makeboldspark.com/) — it demonstrates all major features interactively:
+- Simple GET/POST requests with correlation ID tracking
+- Response caching with configurable duration
+- Retry and circuit breaker patterns with Polly
+- Concurrent parallel request processing
+- Web crawler with robots.txt compliance
+- Batch execution with environment/user orchestration
+- Real-time SignalR progress updates
+- Streaming large responses
 
 ## 🤝 Contributing
 
-Contributions are welcome! See our [Contributing Guide](documentation/CONTRIBUTING.md) for details.
+Contributions are welcome! See our [Contributing Guide](https://httpclientutility.makeboldspark.com/about/) for details.
 
 1. Fork the repository
 2. Create a feature branch
@@ -520,12 +530,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔗 Links
 
-- [GitHub Repository](https://github.com/markhazleton/httpclientutility)
+- [GitHub Repository](https://github.com/markhazleton/WebSpark.HttpClientUtility)
 - [NuGet Package](https://www.nuget.org/packages/WebSpark.HttpClientUtility)
+- [Docs Site](https://httpclientutility.makeboldspark.com/)
+- [Live Demo](https://httpclientdecorator.makeboldspark.com/)
 - [Changelog](CHANGELOG.md)
-- [Issue Tracker](https://github.com/markhazleton/httpclientutility/issues)
-- [Discussions](https://github.com/markhazleton/httpclientutility/discussions)
+- [Issue Tracker](https://github.com/markhazleton/WebSpark.HttpClientUtility/issues)
+- [Discussions](https://github.com/markhazleton/WebSpark.HttpClientUtility/discussions)
 
 ---
 
-**Questions or Issues?** [Open an issue](https://github.com/markhazleton/httpclientutility/issues) or [start a discussion](https://github.com/markhazleton/httpclientutility/discussions)!
+**Questions or Issues?** [Open an issue](https://github.com/markhazleton/WebSpark.HttpClientUtility/issues) or [start a discussion](https://github.com/markhazleton/WebSpark.HttpClientUtility/discussions)!

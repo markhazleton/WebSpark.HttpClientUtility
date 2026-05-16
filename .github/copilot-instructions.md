@@ -211,7 +211,7 @@ Uses `Microsoft.Extensions.Caching.Memory.IMemoryCache`. Cache keys are request 
 
 1. **Breaking decorator order**: Don't reorder decorators in `ServiceCollectionExtensions` - telemetry must be outermost.
 2. **Forgetting tests**: Every new feature needs test coverage. Run `dotnet test` before committing.
-3. **Not multi-targeting**: Code must compile for both net8.0 and net9.0.
+3. **Not multi-targeting**: Library code must compile for net8.0, net9.0, AND net10.0. Demo app (`WebSpark.HttpClientUtility.Web`) is net10.0 only — do not add multi-targeting to it.
 4. **Blocking async**: Never use `.Result` or `.Wait()`. Library code = async all the way.
 5. **Strong naming**: Assembly is signed with `HttpClientUtility.snk`. Don't change signing configuration.
 
@@ -235,7 +235,9 @@ Uses `Microsoft.Extensions.Caching.Memory.IMemoryCache`. Cache keys are request 
 
 ## Version History Context
 
-- **v1.4.0** (current): Added .NET 8 LTS support, simplified DI registration
+- **v2.5.0** (current): Lockstep version bump; demo app pinned to net10.0 only; Vite manifest moved out of hidden dir
+- **v2.0.0**: Package split — base package + Crawler extension package; atomic CI/CD publishing
+- **v1.4.0**: Added .NET 8 LTS support, simplified DI registration
 - **v1.3.2**: Fixed test reliability, improved mock patterns
 - **v1.3.1**: Enhanced CurlCommandSaver with batch processing, file rotation
 - **v1.3.0**: Removed deprecated Jaeger exporter, modernized OpenTelemetry to OTLP
