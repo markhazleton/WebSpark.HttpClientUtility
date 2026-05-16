@@ -5,41 +5,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% if title %}{{ title }} | {% endif %}{{ site.name }}</title>
   <meta name="description" content="{{ description or site.description }}">
-  
+
   <!-- Open Graph -->
   <meta property="og:title" content="{{ title or site.title }}">
   <meta property="og:description" content="{{ description or site.description }}">
   <meta property="og:url" content="{{ site.url }}{{ page.url }}">
   <meta property="og:type" content="website">
-  
+
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="{{ title or site.title }}">
   <meta name="twitter:description" content="{{ description or site.description }}">
-  
+
   <!-- Canonical -->
   <link rel="canonical" href="{{ site.url }}{{ page.url }}">
-  
+
   <!-- Stylesheets -->
   <link rel="stylesheet" href="{{ '/assets/css/main.css' | relativePath }}">
   <link rel="stylesheet" href="{{ '/assets/css/prism-tomorrow.css' | relativePath }}">
-  
+
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="{{ '/favicon.ico' | relativePath }}">
   <link rel="icon" type="image/png" sizes="32x32" href="{{ '/icon.png' | relativePath }}">
   <link rel="apple-touch-icon" sizes="180x180" href="{{ '/icon.png' | relativePath }}">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RY77Z11S9E"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-RY77Z11S9E');
+  </script>
 </head>
 <body>
   {% include "components/header.njk" %}
-  
+
   <main class="main-content">
     <div class="container">
       {{ content | safe }}
     </div>
   </main>
-  
+
   {% include "components/footer.njk" %}
-  
+
   <!-- Scripts -->
   <script src="{{ '/assets/js/prism.min.js' | relativePath }}" defer></script>
 </body>

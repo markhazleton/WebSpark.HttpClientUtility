@@ -10,7 +10,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - WebSpark.HttpClientUtility</title>
-    
+
     @* All styles from Vite build (site.css includes Bootstrap + Bootstrap Icons) *@
     @if (useVite)
     {
@@ -20,39 +20,49 @@
     {
         @* Warning: Vite assets not built. Run 'npm run build' in WebSpark.HttpClientUtility.Web *@
         <style>
-            body { 
-                background: #fff3cd; 
-                padding: 20px; 
-                font-family: system-ui, -apple-system, sans-serif; 
+            body {
+                background: #fff3cd;
+                padding: 20px;
+                font-family: system-ui, -apple-system, sans-serif;
             }
-            .warning-banner { 
-                background: #dc3545; 
-                color: white; 
-                padding: 15px; 
-                border-radius: 5px; 
-                margin: 20px auto; 
+            .warning-banner {
+                background: #dc3545;
+                color: white;
+                padding: 15px;
+                border-radius: 5px;
+                margin: 20px auto;
                 max-width: 800px;
                 text-align: center;
             }
         </style>
     }
-    
+
     <link rel="stylesheet" href="~/WebSpark.HttpClientUtility.Web.styles.css" asp-append-version="true" />
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="~/favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="~/icon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="~/icon.png">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RY77Z11S9E"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-RY77Z11S9E');
+    </script>
 </head>
 <body>
     @if (!useVite)
     {
         <div class="warning-banner">
-            <strong>⚠️ Build Warning:</strong> Vite assets not found. 
+            <strong>⚠️ Build Warning:</strong> Vite assets not found.
             Run <code>npm install && npm run build</code> in the WebSpark.HttpClientUtility.Web directory.
         </div>
     }
-    
+
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
       <div class="container-fluid">
@@ -141,13 +151,13 @@
             </p>
         </div>
     </footer>
-    
+
     @* All JavaScript from Vite build (main.js includes Bootstrap + site logic) *@
     @if (useVite)
     {
         <vite-script entry="main.js" />
     }
-    
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
