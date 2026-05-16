@@ -23,6 +23,7 @@ Follow-up TODOs: None
 ### I. Library-First Design
 
 WebSpark.HttpClientUtility is a production-ready NuGet library. Every feature MUST be:
+
 - **Self-contained**: Independently testable and deployable
 - **Interface-based**: All services implement interfaces for testability and extensibility
 - **Decorator-composable**: Features layer through the decorator pattern (base → cache → resilience → telemetry)
@@ -33,6 +34,7 @@ WebSpark.HttpClientUtility is a production-ready NuGet library. Every feature MU
 ### II. Test Coverage and Quality (NON-NEGOTIABLE)
 
 Testing is mandatory before any code ships:
+
 - **Framework**: MSTest (`[TestClass]`, `[TestMethod]`, `[TestInitialize]`)
 - **Mocking**: Moq library with `MockBehavior.Loose` preferred for maintainability
 - **Pattern**: Arrange-Act-Assert with clear sections
@@ -45,6 +47,7 @@ Testing is mandatory before any code ships:
 ### III. Multi-Targeting and Compatibility
 
 Code MUST compile and run on ALL target frameworks:
+
 - **Library Targets**: .NET 8 (LTS, until Nov 2026), .NET 9, and .NET 10 (LTS, until May 2028)
 - **Demo App Targeting**: `WebSpark.HttpClientUtility.Web` MUST target only the **latest stable .NET version** (currently `net10.0`). It is a demo app, not a NuGet package, and MUST NOT multi-target. Clear `<TargetFrameworks>` from `Directory.Build.props` by setting `<TargetFrameworks></TargetFrameworks>` alongside the explicit `<TargetFramework>net10.0</TargetFramework>`.
 - **Test Project Conditioning**: When a test project references a web/demo project that doesn't multi-target, the `<ProjectReference>` and web-dependent test files MUST be conditioned with `Condition="'$(TargetFramework)' == 'net10.0'"` to avoid `NU1201` errors on older TFMs.
@@ -57,6 +60,7 @@ Code MUST compile and run on ALL target frameworks:
 ### IV. One-Line Developer Experience
 
 Service registration MUST be achievable in a single, intuitive line:
+
 - **Primary API**: `services.AddHttpClientUtility(options => {...})`
 - **Quick Presets**: `AddHttpClientUtilityWithCaching()`, `AddHttpClientUtilityWithAllFeatures()`
 - **Configuration Model**: Fluent options pattern with sensible defaults
@@ -67,6 +71,7 @@ Service registration MUST be achievable in a single, intuitive line:
 ### V. Observability and Diagnostics
 
 Every HTTP operation MUST be observable and traceable:
+
 - **Correlation IDs**: Auto-generated for all requests, propagated through distributed calls
 - **Structured Logging**: Rich context in all log messages (request/response details, timing, errors)
 - **Telemetry**: Request duration tracking with OpenTelemetry integration support
@@ -77,6 +82,7 @@ Every HTTP operation MUST be observable and traceable:
 ### VI. Versioning and Release Discipline
 
 Version management follows strict processes:
+
 - **Semantic Versioning**: MAJOR.MINOR.PATCH with clear breaking change communication
 - **Version Bump Separation**: Version increments are separate commits from feature work
 - **Changelog Discipline**: Every release documented in `CHANGELOG.md` following Keep a Changelog format
@@ -89,12 +95,14 @@ Version management follows strict processes:
 ### VII. Decorator Pattern Architecture
 
 Feature composition MUST follow the decorator chain:
+
 1. **Base**: `HttpRequestResultService` (core HTTP functionality)
 2. **Cache**: `HttpRequestResultServiceCache` (optional caching layer)
 3. **Resilience**: `HttpRequestResultServicePolly` (optional retry/circuit breaker)
 4. **Telemetry**: `HttpRequestResultServiceTelemetry` (outermost - tracks total duration)
 
 **Order is critical**:
+
 - Telemetry wraps everything to capture total request time
 - Cache happens before resilience to avoid caching failed retries
 - Each decorator independently testable
@@ -106,6 +114,7 @@ Feature composition MUST follow the decorator chain:
 ### Code Analysis and Warnings
 
 All code MUST meet high-quality standards:
+
 - **Warning Level**: 5 (highest sensitivity)
 - **Analyzers**: `EnableNETAnalyzers=true`, `AnalysisLevel=latest`
 - **Warning Policy**: `TreatWarningsAsErrors=false` BUT warnings MUST be addressed before commit
@@ -117,6 +126,7 @@ All code MUST meet high-quality standards:
 ### Frontend Build Tooling
 
 The demo web app uses Vite for front-end asset compilation. The following rules apply:
+
 - **Manifest Path**: The Vite manifest MUST NOT be written to a hidden directory (any directory starting with `.`). Use `manifest: 'vite-manifest.json'` in `vite.config.js` to output to `wwwroot/dist/vite-manifest.json`.
 - **Reason**: ASP.NET Core's static web assets pipeline excludes directories starting with `.` from publish output. Using `manifest: true` (default) outputs to `.vite/manifest.json` which is silently excluded, causing runtime failures.
 - **Publish Targets**: The `NpmBuild` MSBuild target MUST declare `BeforeTargets="Build;BeforePublish"` so that Vite assets are compiled in both standard build and `--no-build` publish scenarios.
@@ -125,6 +135,7 @@ The demo web app uses Vite for front-end asset compilation. The following rules 
 ### XML Documentation
 
 All public APIs MUST have XML documentation:
+
 ```csharp
 /// <summary>
 /// Brief description of what the method does.
@@ -140,6 +151,7 @@ All public APIs MUST have XML documentation:
 ### Async/Await Discipline
 
 Asynchronous code MUST follow best practices:
+
 - **Never block**: No `.Result`, `.Wait()`, or `Task.Run()` to wrap sync code
 - **ConfigureAwait(false)**: Use in library code (not required in tests)
 - **CancellationToken**: Accept `CancellationToken ct = default` on all async methods
@@ -150,6 +162,7 @@ Asynchronous code MUST follow best practices:
 ### Dependency Management
 
 Dependencies MUST be carefully managed:
+
 - **Minimize Dependencies**: Evaluate necessity before adding new packages
 - **Version Pinning**: Use specific versions, not ranges (avoid unexpected breaks)
 - **Strong Naming**: Assembly signed with `HttpClientUtility.snk` for GAC compatibility
@@ -173,6 +186,7 @@ Dependencies MUST be carefully managed:
 ### Pull Request Requirements
 
 Every PR MUST include:
+
 - **Tests**: Corresponding test coverage for new functionality
 - **Documentation**: XML docs for public APIs, README updates if user-facing
 - **Changelog**: Entry in CHANGELOG.md if releasing
@@ -183,6 +197,7 @@ Every PR MUST include:
 ### Release Process
 
 Version bumps follow this workflow:
+
 1. **Decide Version**: MAJOR (breaking), MINOR (feature), or PATCH (bugfix)
 2. **Update .csproj**: Modify `<Version>1.X.Y</Version>` in `WebSpark.HttpClientUtility.csproj`
 3. **Update Changelog**: Add release section to `CHANGELOG.md` with date and changes
@@ -191,6 +206,7 @@ Version bumps follow this workflow:
 6. **Automation**: GitHub Actions builds, tests, packs, publishes to NuGet.org
 
 **NEVER**:
+
 - ❌ Manually upload packages to NuGet.org
 - ❌ Use `dotnet nuget push` locally
 - ❌ Bypass the CI/CD pipeline
@@ -201,6 +217,7 @@ Version bumps follow this workflow:
 ### AI Agent Output Organization
 
 AI-generated documentation MUST follow these rules:
+
 - **Session Folders**: Save all AI-generated `.md` files to `/.documentation/copilot/session-{YYYY-MM-DD}/`
 - **No Root Clutter**: Never create `.md` files in repository root (except updating existing files)
 - **Date Format**: Use ISO format `YYYY-MM-DD` for session folders (e.g., `/.documentation/copilot/session-2025-11-02/`)
@@ -218,9 +235,9 @@ This repository produces three primary, independently maintained deliverables. E
 
 | Package | NuGet URL |
 |---------|-----------|
-| `WebSpark.HttpClientUtility` | https://www.nuget.org/packages/WebSpark.HttpClientUtility |
-| `WebSpark.HttpClientUtility.Crawler` | https://www.nuget.org/packages/WebSpark.HttpClientUtility.Crawler |
-| `WebSpark.HttpClientUtility.Testing` | https://www.nuget.org/packages/WebSpark.HttpClientUtility.Testing |
+| `WebSpark.HttpClientUtility` | <https://www.nuget.org/packages/WebSpark.HttpClientUtility> |
+| `WebSpark.HttpClientUtility.Crawler` | <https://www.nuget.org/packages/WebSpark.HttpClientUtility.Crawler> |
+| `WebSpark.HttpClientUtility.Testing` | <https://www.nuget.org/packages/WebSpark.HttpClientUtility.Testing> |
 
 - Published via GitHub Actions CI/CD on `v*.*.*` tag push. Manual publishing is **strictly prohibited**.
 - Multi-targets: `net8.0;net9.0;net10.0` (library and crawler packages). Lockstep versioning across all packages.
@@ -228,7 +245,7 @@ This repository produces three primary, independently maintained deliverables. E
 
 ### Output 2 — Static GitHub Pages Info Site
 
-- **URL**: https://httpclientutility.makeboldspark.com/
+- **URL**: <https://httpclientutility.makeboldspark.com/>
 - **Source**: `/docs/` directory (served by GitHub Pages from `main` branch)
 - **Purpose**: NuGet package documentation — getting started, API reference, features, examples
 - **Technology**: Static HTML/CSS (no build step; files are deployed as-is)
@@ -237,7 +254,7 @@ This repository produces three primary, independently maintained deliverables. E
 
 ### Output 3 — HttpClientDecorator Demo Site
 
-- **URL**: https://httpclientdecorator.makeboldspark.com/
+- **URL**: <https://httpclientdecorator.makeboldspark.com/>
 - **Source**: `WebSpark.HttpClientUtility.Web/` (ASP.NET Core MVC)
 - **Purpose**: Live interactive demonstration of the decorator pattern, caching, resilience, crawling, batch execution
 - **Technology**: ASP.NET Core MVC + Vite (front-end assets)
@@ -248,6 +265,7 @@ This repository produces three primary, independently maintained deliverables. E
 ### Cross-Site Linking Rule
 
 Both sites MUST maintain mutual navigation links so users can easily move between:
+
 - Package documentation ↔ Live demo
 - Both sites ↔ GitHub repository and NuGet package page
 
@@ -260,6 +278,7 @@ This constitution supersedes all other development practices and guidelines. Whe
 ### Amendment Process
 
 Constitution amendments require:
+
 1. **Proposal**: Document proposed changes with rationale
 2. **Impact Analysis**: Identify affected templates, code patterns, and workflows
 3. **Version Bump**: Increment constitution version per semantic versioning
@@ -269,6 +288,7 @@ Constitution amendments require:
 ### Complexity Justification
 
 Any violation of constitutional principles (e.g., breaking decorator pattern, adding unjustified dependencies) MUST be explicitly justified in the implementation plan with:
+
 - **Why Needed**: Specific technical requirement
 - **Alternatives Rejected**: Simpler options considered and why they're insufficient
 - **Mitigation**: How to minimize impact and maintain architectural integrity
@@ -276,6 +296,7 @@ Any violation of constitutional principles (e.g., breaking decorator pattern, ad
 ### Compliance Review
 
 All implementations MUST verify:
+
 - [ ] Multi-targeting: Library compiles on .NET 8, .NET 9, AND .NET 10
 - [ ] Demo app: Targets only `net10.0` (single TFM, not multi-targeted)
 - [ ] Testing: MSTest tests included and passing; new features require corresponding test coverage
@@ -289,6 +310,7 @@ All implementations MUST verify:
 ### Runtime Development Guidance
 
 For detailed development guidance during implementation, refer to `.github/copilot-instructions.md`, which provides:
+
 - Architecture patterns (decorator chain specifics)
 - Common pitfalls to avoid
 - Integration point details (Polly, SignalR, OpenTelemetry, Memory Cache)

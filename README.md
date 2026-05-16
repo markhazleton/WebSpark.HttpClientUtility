@@ -114,6 +114,7 @@ The library is delivered as two focused packages:
 **[View Full Documentation →](https://httpclientutility.makeboldspark.com/)**
 
 The complete documentation site includes:
+
 - [Getting Started](https://httpclientutility.makeboldspark.com/getting-started/)
 - [Features](https://httpclientutility.makeboldspark.com/features/)
 - [API Reference](https://httpclientutility.makeboldspark.com/api-reference/)
@@ -264,12 +265,14 @@ public async Task<WeatherData?> GetWeatherWithAuthAsync(string city, string apiK
 ### Web Crawling Features (Crawler Package)
 
 **Install Both Packages**
+
 ```bash
 dotnet add package WebSpark.HttpClientUtility
 dotnet add package WebSpark.HttpClientUtility.Crawler
 ```
 
 **Register Services**
+
 ```csharp
 // Program.cs
 builder.Services.AddHttpClientUtility();
@@ -277,6 +280,7 @@ builder.Services.AddHttpClientCrawler();  // Adds crawler features
 ```
 
 **Use Crawler**
+
 ```csharp
 public class SiteAnalyzer
 {
@@ -301,6 +305,7 @@ public class SiteAnalyzer
 ## 🚀 Features
 
 ### Base Package Features
+
 - **Simple API** - Intuitive request/response model
 - **Authentication** - Bearer token, Basic auth, API key providers
 - **Correlation IDs** - Automatic tracking across distributed systems
@@ -321,6 +326,7 @@ public class SiteAnalyzer
 - **Package Validation** - Baseline validation ensures stability
 
 ### Crawler Package Features
+
 - **Site Crawling** - Full website crawling with depth control
 - **Robots.txt** - Automatic compliance with robots.txt rules
 - **Sitemap Generation** - Create XML sitemaps from crawl results
@@ -332,6 +338,7 @@ public class SiteAnalyzer
 ## 📚 Common Scenarios
 
 ### Enable Caching
+
 ```csharp
 builder.Services.AddHttpClientUtility(options =>
 {
@@ -348,6 +355,7 @@ var request = new HttpRequestResult<Product>
 ```
 
 ### Add Resilience (Retry + Circuit Breaker)
+
 ```csharp
 builder.Services.AddHttpClientUtility(options =>
 {
@@ -384,6 +392,7 @@ Both configuration styles are supported under `HttpRequestResultPollyOptions`:
 ```
 
 ### Enable Batch Execution Orchestration
+
 ```csharp
 builder.Services.AddHttpClientUtility(options =>
 {
@@ -423,6 +432,7 @@ var result = await batchService.ExecuteAsync(configuration);
 ```
 
 ### All Features Enabled
+
 ```csharp
 builder.Services.AddHttpClientUtilityWithAllFeatures();
 ```
@@ -444,16 +454,19 @@ Your existing code continues to work exactly as before. All core HTTP features (
 Three simple steps to migrate:
 
 **Step 1**: Install the crawler package
+
 ```bash
 dotnet add package WebSpark.HttpClientUtility.Crawler
 ```
 
 **Step 2**: Add using directive
+
 ```csharp
 using WebSpark.HttpClientUtility.Crawler;
 ```
 
 **Step 3**: Update service registration
+
 ```csharp
 // v1.x (old)
 services.AddHttpClientUtility();
@@ -478,6 +491,7 @@ That's it! Your crawler code (ISiteCrawler, SiteCrawler, SimpleSiteCrawler, etc.
 ## 🎓 Sample Projects
 
 Explore the live demo at [httpclientdecorator.makeboldspark.com](https://httpclientdecorator.makeboldspark.com/) — it demonstrates all major features interactively:
+
 - Simple GET/POST requests with correlation ID tracking
 - Response caching with configurable duration
 - Retry and circuit breaker patterns with Polly

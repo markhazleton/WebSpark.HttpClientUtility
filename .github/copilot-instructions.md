@@ -30,13 +30,13 @@ IHttpRequestResultService service = HttpRequestResultService; // Base
 ## Project Structure
 
 - `WebSpark.HttpClientUtility/` - Main library (publishable NuGet package)
-  - `ServiceCollectionExtensions.cs` - **Entry point**: All DI registration happens here
-  - `RequestResult/` - Core HTTP request/response models and decorator implementations
-  - `Authentication/` - Built-in auth providers (Bearer, Basic, ApiKey)
-  - `Crawler/` - Web crawling with robots.txt support, SignalR progress updates
-  - `MemoryCache/` - Response caching infrastructure
-  - `OpenTelemetry/` - Optional OTLP integration
-  - `StringConverter/` - JSON serialization abstraction (System.Text.Json default, Newtonsoft opt-in)
+    - `ServiceCollectionExtensions.cs` - **Entry point**: All DI registration happens here
+    - `RequestResult/` - Core HTTP request/response models and decorator implementations
+    - `Authentication/` - Built-in auth providers (Bearer, Basic, ApiKey)
+    - `Crawler/` - Web crawling with robots.txt support, SignalR progress updates
+    - `MemoryCache/` - Response caching infrastructure
+    - `OpenTelemetry/` - Optional OTLP integration
+    - `StringConverter/` - JSON serialization abstraction (System.Text.Json default, Newtonsoft opt-in)
 - `WebSpark.HttpClientUtility.Test/` - MSTest-based tests (252+ passing)
 - `WebSpark.HttpClientUtility.Web/` - Demo ASP.NET Core app
 
@@ -66,12 +66,13 @@ dotnet test --configuration Release --logger "trx" --collect:"XPlat Code Coverag
 3. Commit changes: `git commit -m "chore: bump version to X.Y.Z"`
 4. Tag release: `git tag vX.Y.Z && git push origin vX.Y.Z`
 5. GitHub Actions (`.github/workflows/publish-nuget.yml`) **automatically and exclusively**:
-   - Builds and tests
-   - Packs `.nupkg` and `.snupkg` (symbol package)
-   - Publishes to NuGet.org if tag starts with `v*.*.*`
-   - Creates GitHub release with CHANGELOG
+    - Builds and tests
+    - Packs `.nupkg` and `.snupkg` (symbol package)
+    - Publishes to NuGet.org if tag starts with `v*.*.*`
+    - Creates GitHub release with CHANGELOG
 
 **NEVER**:
+
 - ❌ Manually upload packages to NuGet.org
 - ❌ Use `dotnet nuget push` locally
 - ❌ Bypass the CI/CD pipeline
@@ -134,10 +135,10 @@ public async Task HttpSendRequestResultAsync_WithCaching_ReturnsCachedResult()
     var mockService = new Mock<IHttpRequestResultService>();
     var cache = new MemoryCache(new MemoryCacheOptions());
     var service = new HttpRequestResultServiceCache(mockService.Object, logger, cache);
-    
+
     // Act
     var result = await service.HttpSendRequestResultAsync(request);
-    
+
     // Assert
     Assert.IsTrue(result.IsSuccessStatusCode);
     mockService.Verify(x => x.HttpSendRequestResultAsync(...), Times.Once);
@@ -184,6 +185,7 @@ public async Task<HttpRequestResult<T>> SendAsync<T>(HttpRequestResult<T> reques
 ### Polly Resilience
 
 Used in `HttpRequestResultServicePolly`. Configuration via `HttpRequestResultPollyOptions`:
+
 - `MaxRetryAttempts` (default: 3)
 - `RetryDelay` (default: 1 second)
 - `CircuitBreakerThreshold` (default: 5 failures)
@@ -261,14 +263,14 @@ See `CHANGELOG.md` for full history.
 ### Target Architecture
 
 - **WebSpark.HttpClientUtility** (Base package):
-  - Core HTTP utilities: authentication, caching, resilience, telemetry, concurrent requests, streaming, CURL, mock services
-  - Reduced dependency footprint versus legacy monolithic packaging
-  - **100% backward compatible** for non-crawler users (zero breaking changes)
+    - Core HTTP utilities: authentication, caching, resilience, telemetry, concurrent requests, streaming, CURL, mock services
+    - Reduced dependency footprint versus legacy monolithic packaging
+    - **100% backward compatible** for non-crawler users (zero breaking changes)
 
 - **WebSpark.HttpClientUtility.Crawler** (Crawler extension):
-  - All web crawling functionality: SiteCrawler, SimpleSiteCrawler, robots.txt, SignalR progress, CSV export
-  - Depends on `WebSpark.HttpClientUtility` with exact version match for lockstep releases
-  - **Breaking change** for crawler users: must install crawler package and add `services.AddHttpClientCrawler()` call
+    - All web crawling functionality: SiteCrawler, SimpleSiteCrawler, robots.txt, SignalR progress, CSV export
+    - Depends on `WebSpark.HttpClientUtility` with exact version match for lockstep releases
+    - **Breaking change** for crawler users: must install crawler package and add `services.AddHttpClientCrawler()` call
 
 ### Key Decisions
 
@@ -281,6 +283,7 @@ See `CHANGELOG.md` for full history.
 ### Ongoing Maintenance Notes
 
 When working in the split architecture:
+
 1. Preserve decorator chain order (Base → Cache → Polly → Telemetry) - constitutional requirement.
 2. Maintain lockstep versioning across base and crawler packages.
 3. Keep exact-version dependency from crawler package to base package.
@@ -288,10 +291,10 @@ When working in the split architecture:
 5. Ensure changelog messaging distinguishes between core-only consumers and crawler consumers when changes differ.
 
 **Reference Documents**:
+
 - Specification: `specs/003-split-nuget-packages/spec.md`
 - Implementation Plan: `specs/003-split-nuget-packages/plan.md`
 - Research: `specs/003-split-nuget-packages/research.md`
 - Data Model: `specs/003-split-nuget-packages/data-model.md`
 - API Contracts: `specs/003-split-nuget-packages/contracts/`
 - Migration Guide: `specs/003-split-nuget-packages/quickstart.md`
-
