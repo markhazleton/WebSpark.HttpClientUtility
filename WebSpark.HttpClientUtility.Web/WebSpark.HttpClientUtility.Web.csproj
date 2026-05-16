@@ -42,14 +42,21 @@
     <None Include="ClientApp\**" Exclude="ClientApp\node_modules\**" />
   </ItemGroup>
 
-  <!-- NPM Install - Runs on every build to ensure packages are up to date -->
-  <Target Name="NpmInstall" BeforeTargets="Build" Condition="'$(SkipNpmBuild)' == 'false' AND '$(TargetFramework)' == 'net8.0' AND Exists('package.json')">
-    <Message Importance="high" Text="Running npm ci..." />
-    <Exec Command="$(NpmCommand) ci" WorkingDirectory="$(ProjectDir)" />
+  <!-- NPM Install - Runs only when node_modules is missing to avoid file-lock issues on Windows -->
+  <Target Name="NpmInstall" BeforeTargets="Build" Condition="'$(SkipNpmBuild)' == 'false' AND ('$(TargetFramework)' == 'net8.0' OR '$(TargetFramework)' == 'net9.0' OR '$(TargetFramework)' == 'net10.0') AND Exists('package.json') AND !Exists('node_modules')">
+    <Message Importance="high" Text="node_modules not found. Running npm ci..." />
+    <Exec Command="$(NpmCommand) ci" WorkingDirectory="$(ProjectDir)" IgnoreExitCode="true">
+      <Output TaskParameter="ExitCode" PropertyName="NpmCiExitCode" />
+    </Exec>
+    <Message Importance="high" Text="npm ci failed with exit code $(NpmCiExitCode). Falling back to npm install on Windows..." Condition="'$(NpmCiExitCode)' != '0' AND '$(OS)' == 'Windows_NT'" />
+    <Exec Command="$(NpmCommand) install" WorkingDirectory="$(ProjectDir)" IgnoreExitCode="true" Condition="'$(NpmCiExitCode)' != '0' AND '$(OS)' == 'Windows_NT'">
+      <Output TaskParameter="ExitCode" PropertyName="NpmInstallExitCode" />
+    </Exec>
+    <Error Text="npm dependency restore failed (npm ci exit code $(NpmCiExitCode), npm install exit code $(NpmInstallExitCode))." Condition="'$(NpmCiExitCode)' != '0' AND ('$(OS)' != 'Windows_NT' OR '$(NpmInstallExitCode)' != '0')" />
   </Target>
 
   <!-- NPM Build - Runs on every build to ensure fresh Vite output -->
-  <Target Name="NpmBuild" BeforeTargets="Build" DependsOnTargets="NpmInstall" Condition="'$(SkipNpmBuild)' == 'false' AND '$(TargetFramework)' == 'net8.0' AND Exists('package.json')">
+  <Target Name="NpmBuild" BeforeTargets="Build" DependsOnTargets="NpmInstall" Condition="'$(SkipNpmBuild)' == 'false' AND ('$(TargetFramework)' == 'net8.0' OR '$(TargetFramework)' == 'net9.0' OR '$(TargetFramework)' == 'net10.0') AND Exists('package.json')">
     <Message Importance="high" Text="Running Vite build ($(NodeEnv))..." />
     <Exec Command="$(NpmCommand) run build" WorkingDirectory="$(ProjectDir)" EnvironmentVariables="NODE_ENV=$(NodeEnv)" />
   </Target>

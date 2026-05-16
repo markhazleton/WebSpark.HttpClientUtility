@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env pwsh
+#!/usr/bin/env pwsh
 # Release context gathering script
 # Supports archiving development artifacts and generating release documentation
 

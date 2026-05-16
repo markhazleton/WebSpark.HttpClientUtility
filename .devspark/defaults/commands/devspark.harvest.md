@@ -1,4 +1,4 @@
-﻿---
+---
 description: Canonical knowledge-preserving cleanup workflow for completed specs, stale docs, comment cleanup, and archival
 handoffs:
   - label: Review Release Artifacts
@@ -7,9 +7,6 @@ handoffs:
   - label: Run Documentation Audit
     agent: devspark.site-audit
     prompt: Audit documentation quality and stale references before harvest
-scripts:
-  sh: .devspark/scripts/bash/harvest.sh $ARGUMENTS --json
-  ps: .devspark/scripts/powershell/harvest.ps1 $ARGUMENTS -Json
 ---
 
 ## User Input
@@ -63,22 +60,9 @@ Multiple scopes may be combined: `--scope=specs,comments`
 
 ### 1. Initialize Harvest Context
 
-> **Script Resolution**: Before running `{SCRIPT}`, apply this ordered resolution chain and preserve all arguments:
->
-> 1. Team override: `.documentation/scripts/powershell/<filename>` or `.documentation/scripts/bash/<filename>`
-> 2. Consumer default: `.devspark/scripts/powershell/<filename>` or `.devspark/scripts/bash/<filename>`
-> 3. Source-repo dogfood fallback: `scripts/powershell/<filename>` or `scripts/bash/<filename>` when `.devspark/scripts/` is absent and `templates/commands/` exists
->
-> Team overrides in `.documentation/scripts/` always take priority.
+> **Script Resolution**: Before running `.devspark/scripts/powershell/harvest.ps1 $ARGUMENTS -Json`, apply the 2-tier override check — if `.documentation/scripts/powershell/<filename>` (PowerShell) or `.documentation/scripts/bash/<filename>` (Bash) exists on disk, run that file instead, preserving all arguments. Team overrides in `.documentation/scripts/` always take priority over `.devspark/scripts/`.
 
-Run `{SCRIPT}` and parse its JSON output.
-
-If the tool/output channel truncates or fails to persist JSON, rerun the same script with an explicit context file output:
-
-- PowerShell: `-OutFile .documentation/devspark/harvest-context.json`
-- Bash: `--out-file=.documentation/devspark/harvest-context.json`
-
-Then parse the saved JSON file instead of relying on stdout capture.
+Run `.devspark/scripts/powershell/harvest.ps1 $ARGUMENTS -Json` and parse its JSON output.
 
 Expected fields include:
 

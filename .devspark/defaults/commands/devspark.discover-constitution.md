@@ -1,4 +1,4 @@
-﻿---
+---
 description: Analyze existing codebase to discover implicit patterns and conventions, then guide user through crafting a constitution via interactive questioning.
 handoffs: 
   - label: Create Constitution
@@ -379,4 +379,4 @@ If user says "done" before any questions:
 
 ## Context
 
-{ARGS}
+$ARGUMENTS
