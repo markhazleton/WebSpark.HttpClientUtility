@@ -1,108 +1,146 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Getting Started | WebSpark.HttpClientUtility</title>
-  <meta name="description" content="Quick start guide for WebSpark.HttpClientUtility - from installation to your first request.">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Getting Started | WebSpark.HttpClientUtility</title>
+        <meta
+            name="description"
+            content="Quick start guide for WebSpark.HttpClientUtility - from installation to your first request."
+        />
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="Getting Started">
-  <meta property="og:description" content="Quick start guide for WebSpark.HttpClientUtility - from installation to your first request.">
-  <meta property="og:url" content="https://httpclientutility.makeboldspark.com/getting-started/">
-  <meta property="og:type" content="website">
+        <!-- Open Graph -->
+        <meta property="og:title" content="Getting Started" />
+        <meta
+            property="og:description"
+            content="Quick start guide for WebSpark.HttpClientUtility - from installation to your first request."
+        />
+        <meta
+            property="og:url"
+            content="https://httpclientutility.makeboldspark.com/getting-started/"
+        />
+        <meta property="og:type" content="website" />
 
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Getting Started">
-  <meta name="twitter:description" content="Quick start guide for WebSpark.HttpClientUtility - from installation to your first request.">
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Getting Started" />
+        <meta
+            name="twitter:description"
+            content="Quick start guide for WebSpark.HttpClientUtility - from installation to your first request."
+        />
 
-  <!-- Canonical -->
-  <link rel="canonical" href="https://httpclientutility.makeboldspark.com/getting-started/">
+        <!-- Canonical -->
+        <link
+            rel="canonical"
+            href="https://httpclientutility.makeboldspark.com/getting-started/"
+        />
 
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="../assets/css/main.css">
-  <link rel="stylesheet" href="../assets/css/prism-tomorrow.css">
+        <!-- Stylesheets -->
+        <link rel="stylesheet" href="../assets/css/main.css" />
+        <link rel="stylesheet" href="../assets/css/prism-tomorrow.css" />
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="../favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="../icon.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="../icon.png">
+        <!-- Favicon -->
+        <link rel="icon" type="image/x-icon" href="../favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="../icon.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="../icon.png" />
 
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RY77Z11S9E"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+        <!-- Google tag (gtag.js) -->
+        <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-RY77Z11S9E"
+        ></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag("js", new Date());
 
-    gtag('config', 'G-RY77Z11S9E');
-  </script>
-</head>
-<body>
-  <header class="site-header">
-  <div class="container">
-    <div class="header-content">
-      <div class="site-logo">
-        <a href="../">WebSpark.HttpClientUtility</a>
-      </div>
-      
-      <nav class="main-nav">
-        <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
-        <label for="nav-toggle" class="nav-toggle-label">
-          <span></span>
-          <span></span>
-          <span></span>
-        </label>
-        
-        <ul class="nav-menu">
-          
-          <li class="nav-item">
-            <a href="../">Home</a>
-          </li>
-          
-          <li class="nav-item">
-            <a href="../features/">Features</a>
-          </li>
-          
-          <li class="nav-item active">
-            <a href="../getting-started/">Getting Started</a>
-          </li>
-          
-          <li class="nav-item">
-            <a href="../api-reference/">API Reference</a>
-          </li>
-          
-          <li class="nav-item">
-            <a href="../examples/">Examples</a>
-          </li>
-          
-          <li class="nav-item">
-            <a href="../about/">About</a>
-          </li>
-          
-        </ul>
-      </nav>
-    </div>
-  </div>
-</header>
+            gtag("config", "G-RY77Z11S9E");
+        </script>
+    </head>
+    <body>
+        <header class="site-header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="site-logo">
+                        <a href="../">WebSpark.HttpClientUtility</a>
+                    </div>
 
+                    <nav class="main-nav">
+                        <input
+                            type="checkbox"
+                            id="nav-toggle"
+                            class="nav-toggle"
+                            aria-label="Toggle navigation"
+                        />
+                        <label for="nav-toggle" class="nav-toggle-label">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </label>
 
-  <main class="main-content">
-    <div class="container">
-      <h1>Getting Started</h1>
-<p>Get up and running with WebSpark.HttpClientUtility in minutes.</p>
-<h2>Installation</h2>
-<p>Install via NuGet Package Manager:</p>
-<pre><code class="language-powershell">dotnet add package WebSpark.HttpClientUtility
+                        <ul class="nav-menu">
+                            <li class="nav-item">
+                                <a href="../">Home</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="../features/">Features</a>
+                            </li>
+
+                            <li class="nav-item active">
+                                <a href="../getting-started/"
+                                    >Getting Started</a
+                                >
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="../api-reference/">API Reference</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="../examples/">Examples</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="../about/">About</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a
+                                    href="https://httpclientdecorator.makeboldspark.com/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    >&#x1F680; Live Demo</a
+                                >
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <h1>Getting Started</h1>
+                <p>
+                    Get up and running with WebSpark.HttpClientUtility in
+                    minutes.
+                </p>
+                <h2>Installation</h2>
+                <p>Install via NuGet Package Manager:</p>
+                <pre><code class="language-powershell">dotnet add package WebSpark.HttpClientUtility
 </code></pre>
-<p>Or via Package Manager Console:</p>
-<pre><code class="language-powershell">Install-Package WebSpark.HttpClientUtility
+                <p>Or via Package Manager Console:</p>
+                <pre><code class="language-powershell">Install-Package WebSpark.HttpClientUtility
 </code></pre>
-<h2>Basic Setup</h2>
-<h3>Step 1: Register Services</h3>
-<p>In your <code>Program.cs</code> or <code>Startup.cs</code>:</p>
-<pre><code class="language-csharp">using WebSpark.HttpClientUtility;
+                <h2>Basic Setup</h2>
+                <h3>Step 1: Register Services</h3>
+                <p>
+                    In your <code>Program.cs</code> or <code>Startup.cs</code>:
+                </p>
+                <pre><code class="language-csharp">using WebSpark.HttpClientUtility;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -111,8 +149,8 @@ builder.Services.AddHttpClientUtility();
 
 var app = builder.Build();
 </code></pre>
-<h3>Step 2: Inject and Use</h3>
-<pre><code class="language-csharp">using WebSpark.HttpClientUtility.RequestResult;
+                <h3>Step 2: Inject and Use</h3>
+                <pre><code class="language-csharp">using WebSpark.HttpClientUtility.RequestResult;
 
 public class WeatherService
 {
@@ -142,29 +180,29 @@ public class WeatherService
     }
 }
 </code></pre>
-<h2>Enable Optional Features</h2>
-<h3>Caching</h3>
-<pre><code class="language-csharp">builder.Services.AddHttpClientUtility(options =&gt; {
+                <h2>Enable Optional Features</h2>
+                <h3>Caching</h3>
+                <pre><code class="language-csharp">builder.Services.AddHttpClientUtility(options =&gt; {
     options.EnableCaching = true;
 });
 </code></pre>
-<p>Use caching in requests:</p>
-<pre><code class="language-csharp">var request = new HttpRequestResult&lt;WeatherData&gt;
+                <p>Use caching in requests:</p>
+                <pre><code class="language-csharp">var request = new HttpRequestResult&lt;WeatherData&gt;
 {
     RequestPath = &quot;https://api.weather.com/v1/current/seattle&quot;,
     RequestMethod = HttpMethod.Get,
     CacheDurationMinutes = 15 // Cache for 15 minutes
 };
 </code></pre>
-<h3>Resilience (Retry &amp; Circuit Breaker)</h3>
-<pre><code class="language-csharp">builder.Services.AddHttpClientUtility(options =&gt; {
+                <h3>Resilience (Retry &amp; Circuit Breaker)</h3>
+                <pre><code class="language-csharp">builder.Services.AddHttpClientUtility(options =&gt; {
     options.EnableResilience = true;
     options.ResilienceOptions.MaxRetryAttempts = 3;
     options.ResilienceOptions.RetryDelay = TimeSpan.FromSeconds(1);
 });
 </code></pre>
-<h3>Telemetry</h3>
-<pre><code class="language-csharp">using WebSpark.HttpClientUtility.OpenTelemetry;
+                <h3>Telemetry</h3>
+                <pre><code class="language-csharp">using WebSpark.HttpClientUtility.OpenTelemetry;
 
 builder.Services.AddHttpClientUtility(options =&gt; {
     options.EnableTelemetry = true;
@@ -174,8 +212,8 @@ builder.Services.AddWebSparkOpenTelemetry(tracerBuilder =&gt; {
     tracerBuilder.AddOtlpExporter();
 });
 </code></pre>
-<h3>Batch Execution Orchestration</h3>
-<pre><code class="language-csharp">using WebSpark.HttpClientUtility.BatchExecution;
+                <h3>Batch Execution Orchestration</h3>
+                <pre><code class="language-csharp">using WebSpark.HttpClientUtility.BatchExecution;
 
 builder.Services.AddHttpClientUtility(options =&gt; {
     options.EnableBatchExecution = true;
@@ -214,13 +252,13 @@ var config = new BatchExecutionConfiguration
 var result = await batchService.ExecuteAsync(config);
 Console.WriteLine($&quot;Completed: {result.CompletedCount}/{result.TotalPlannedCount}&quot;);
 </code></pre>
-<h3>All Features Enabled</h3>
-<p>Quick setup with everything enabled:</p>
-<pre><code class="language-csharp">builder.Services.AddHttpClientUtilityWithAllFeatures();
+                <h3>All Features Enabled</h3>
+                <p>Quick setup with everything enabled:</p>
+                <pre><code class="language-csharp">builder.Services.AddHttpClientUtilityWithAllFeatures();
 </code></pre>
-<h2>Working with Requests</h2>
-<h3>POST Request with JSON</h3>
-<pre><code class="language-csharp">var request = new HttpRequestResult&lt;UserResponse&gt;
+                <h2>Working with Requests</h2>
+                <h3>POST Request with JSON</h3>
+                <pre><code class="language-csharp">var request = new HttpRequestResult&lt;UserResponse&gt;
 {
     RequestPath = &quot;https://api.example.com/users&quot;,
     RequestMethod = HttpMethod.Post,
@@ -229,8 +267,8 @@ Console.WriteLine($&quot;Completed: {result.CompletedCount}/{result.TotalPlanned
 
 var result = await _httpService.HttpSendRequestResultAsync(request);
 </code></pre>
-<h3>Adding Headers</h3>
-<pre><code class="language-csharp">var request = new HttpRequestResult&lt;Data&gt;
+                <h3>Adding Headers</h3>
+                <pre><code class="language-csharp">var request = new HttpRequestResult&lt;Data&gt;
 {
     RequestPath = &quot;https://api.example.com/data&quot;,
     RequestMethod = HttpMethod.Get,
@@ -241,8 +279,8 @@ var result = await _httpService.HttpSendRequestResultAsync(request);
     }
 };
 </code></pre>
-<h3>Authentication</h3>
-<pre><code class="language-csharp">using WebSpark.HttpClientUtility.Authentication;
+                <h3>Authentication</h3>
+                <pre><code class="language-csharp">using WebSpark.HttpClientUtility.Authentication;
 
 var request = new HttpRequestResult&lt;Data&gt;
 {
@@ -251,9 +289,9 @@ var request = new HttpRequestResult&lt;Data&gt;
     AuthenticationProvider = new BearerTokenAuthenticationProvider(&quot;your-token&quot;)
 };
 </code></pre>
-<h2>Handling Responses</h2>
-<h3>Check Status</h3>
-<pre><code class="language-csharp">var result = await _httpService.HttpSendRequestResultAsync(request);
+                <h2>Handling Responses</h2>
+                <h3>Check Status</h3>
+                <pre><code class="language-csharp">var result = await _httpService.HttpSendRequestResultAsync(request);
 
 if (result.IsSuccessStatusCode)
 {
@@ -265,17 +303,17 @@ else
     Console.WriteLine($&quot;Error {result.StatusCode}: {result.ResponseContent}&quot;);
 }
 </code></pre>
-<h3>Access Response Details</h3>
-<pre><code class="language-csharp">var result = await _httpService.HttpSendRequestResultAsync(request);
+                <h3>Access Response Details</h3>
+                <pre><code class="language-csharp">var result = await _httpService.HttpSendRequestResultAsync(request);
 
 Console.WriteLine($&quot;Status Code: {result.StatusCode}&quot;);
 Console.WriteLine($&quot;Duration: {result.RequestDuration}ms&quot;);
 Console.WriteLine($&quot;Correlation ID: {result.CorrelationId}&quot;);
 Console.WriteLine($&quot;Response Headers: {result.ResponseHeaders}&quot;);
 </code></pre>
-<h2>Configuration Options</h2>
-<h3>Complete Configuration Example</h3>
-<pre><code class="language-csharp">builder.Services.AddHttpClientUtility(options =&gt;
+                <h2>Configuration Options</h2>
+                <h3>Complete Configuration Example</h3>
+                <pre><code class="language-csharp">builder.Services.AddHttpClientUtility(options =&gt;
 {
     // Enable features
     options.EnableCaching = true;
@@ -291,9 +329,9 @@ Console.WriteLine($&quot;Response Headers: {result.ResponseHeaders}&quot;);
     // Cache settings are per-request via CacheDurationMinutes
 });
 </code></pre>
-<h2>Testing Your Code</h2>
-<p>Use the mock service for unit tests:</p>
-<pre><code class="language-csharp">using WebSpark.HttpClientUtility.MockService;
+                <h2>Testing Your Code</h2>
+                <p>Use the mock service for unit tests:</p>
+                <pre><code class="language-csharp">using WebSpark.HttpClientUtility.MockService;
 
 [TestMethod]
 public async Task TestWeatherService()
@@ -319,25 +357,25 @@ public async Task TestWeatherService()
     Assert.AreEqual(72, weather.Temperature);
 }
 </code></pre>
-<h2>Common Patterns</h2>
-<h3>Retry Failed Requests Automatically</h3>
-<p>Resilience is enabled - just make the request:</p>
-<pre><code class="language-csharp">// Will automatically retry on transient failures
+                <h2>Common Patterns</h2>
+                <h3>Retry Failed Requests Automatically</h3>
+                <p>Resilience is enabled - just make the request:</p>
+                <pre><code class="language-csharp">// Will automatically retry on transient failures
 var result = await _httpService.HttpSendRequestResultAsync(request);
 </code></pre>
-<h3>Cache API Responses</h3>
-<pre><code class="language-csharp">// First call hits the API
+                <h3>Cache API Responses</h3>
+                <pre><code class="language-csharp">// First call hits the API
 var result1 = await _httpService.HttpSendRequestResultAsync(request);
 
 // Second call within cache duration returns cached data
 var result2 = await _httpService.HttpSendRequestResultAsync(request);
 </code></pre>
-<h3>Track Request Performance</h3>
-<pre><code class="language-csharp">var result = await _httpService.HttpSendRequestResultAsync(request);
+                <h3>Track Request Performance</h3>
+                <pre><code class="language-csharp">var result = await _httpService.HttpSendRequestResultAsync(request);
 Console.WriteLine($&quot;Request took {result.RequestDuration}ms&quot;);
 </code></pre>
-<h3>Track Batch Progress</h3>
-<pre><code class="language-csharp">var progress = new Progress&lt;BatchProgress&gt;(update =&gt;
+                <h3>Track Batch Progress</h3>
+                <pre><code class="language-csharp">var progress = new Progress&lt;BatchProgress&gt;(update =&gt;
 {
     Console.WriteLine($&quot;{update.CompletedCount}/{update.TotalPlannedCount}&quot;);
 });
@@ -345,71 +383,127 @@ Console.WriteLine($&quot;Request took {result.RequestDuration}ms&quot;);
 var result = await batchService.ExecuteAsync(config, resultSink: null, progress: progress);
 Console.WriteLine($&quot;P95: {result.Statistics.P95Milliseconds}ms&quot;);
 </code></pre>
-<h2>Next Steps</h2>
-<div class="cta-buttons">
-  <a href="/features/" class="button primary">View All Features</a>
-  <a href="/examples/" class="button secondary">See More Examples</a>
-  <a href="/api-reference/" class="button secondary">API Reference</a>
-</div>
-<h2>Need Help?</h2>
-<ul>
-<li>📖 <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility">View the README</a></li>
-<li>🐛 <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility/issues">Report Issues</a></li>
-<li>💬 <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility/discussions">Ask Questions</a></li>
-</ul>
+                <h2>Next Steps</h2>
+                <div class="cta-buttons">
+                    <a href="/features/" class="button primary"
+                        >View All Features</a
+                    >
+                    <a href="/examples/" class="button secondary"
+                        >See More Examples</a
+                    >
+                    <a href="/api-reference/" class="button secondary"
+                        >API Reference</a
+                    >
+                </div>
+                <h2>Need Help?</h2>
+                <ul>
+                    <li>
+                        📖
+                        <a
+                            href="https://github.com/markhazleton/WebSpark.HttpClientUtility"
+                            >View the README</a
+                        >
+                    </li>
+                    <li>
+                        🐛
+                        <a
+                            href="https://github.com/markhazleton/WebSpark.HttpClientUtility/issues"
+                            >Report Issues</a
+                        >
+                    </li>
+                    <li>
+                        💬
+                        <a
+                            href="https://github.com/markhazleton/WebSpark.HttpClientUtility/discussions"
+                            >Ask Questions</a
+                        >
+                    </li>
+                </ul>
+            </div>
+        </main>
 
-    </div>
-  </main>
+        <footer class="site-footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h3>WebSpark.HttpClientUtility</h3>
+                        <p>Version 2.5.0</p>
+                    </div>
 
-  <footer class="site-footer">
-  <div class="container">
-    <div class="footer-content">
-      <div class="footer-section">
-        <h3>WebSpark.HttpClientUtility</h3>
-        <p>Version 2.5.0</p>
-        
-      </div>
-      
-      <div class="footer-section">
-        <h3>Links</h3>
-        <ul class="footer-links">
-          
-          <li>
-            <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
-              GitHub
-            </a>
-          </li>
-          
-          <li>
-            <a href="https://www.nuget.org/packages/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
-              NuGet
-            </a>
-          </li>
-          
-          <li>
-            <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility/issues" target="_blank" rel="noopener noreferrer">
-              Issues
-            </a>
-          </li>
-          
-        </ul>
-      </div>
-      
-      <div class="footer-section">
-        <p>&copy; 2025 <a href="https://markhazleton.com" target="_blank" rel="noopener noreferrer">Mark Hazleton</a></p>
-        <p>
-          <a href="https://httpclientutility.makeboldspark.com/">WebSpark.HttpClientUtility</a> —
-          built by <a href="https://markhazleton.com">Mark Hazleton</a> ·
-          <a href="https://makeboldsolutions.com">Make Bold Solutions</a>
-        </p>
-        <p>Licensed under MIT</p>
-      </div>
-    </div>
-  </div>
-</footer>
+                    <div class="footer-section">
+                        <h3>Links</h3>
+                        <ul class="footer-links">
+                            <li>
+                                <a
+                                    href="https://httpclientdecorator.makeboldspark.com/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    &#x1F680; Live Demo
+                                </a>
+                            </li>
 
+                            <li>
+                                <a
+                                    href="https://github.com/markhazleton/WebSpark.HttpClientUtility"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    GitHub
+                                </a>
+                            </li>
 
-  <!-- Scripts -->
-  <script src="../assets/js/prism.min.js" defer></script>
-</body>
+                            <li>
+                                <a
+                                    href="https://www.nuget.org/packages/WebSpark.HttpClientUtility"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    NuGet
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    href="https://github.com/markhazleton/WebSpark.HttpClientUtility/issues"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    Issues
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-section">
+                        <p>
+                            &copy; 2025
+                            <a
+                                href="https://markhazleton.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                >Mark Hazleton</a
+                            >
+                        </p>
+                        <p>
+                            <a
+                                href="https://httpclientutility.makeboldspark.com/"
+                                >WebSpark.HttpClientUtility</a
+                            >
+                            — built by
+                            <a href="https://markhazleton.com">Mark Hazleton</a>
+                            ·
+                            <a href="https://makeboldsolutions.com"
+                                >Make Bold Solutions</a
+                            >
+                        </p>
+                        <p>Licensed under MIT</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Scripts -->
+        <script src="../assets/js/prism.min.js" defer></script>
+    </body>
 </html>
