@@ -10,7 +10,7 @@ export default defineConfig({
   build: {
     outDir: path.resolve(__dirname, 'wwwroot/dist'),
     emptyOutDir: true,
-    manifest: true,
+    manifest: 'vite-manifest.json',
     sourcemap: true,
     
     rollupOptions: {

@@ -64,7 +64,7 @@ public class ViteAssetTagHelper : TagHelper
 
     private Dictionary<string, ViteManifestEntry>? GetManifest()
     {
-        var manifestPath = Path.Combine(_env.WebRootPath, "dist", ".vite", "manifest.json");
+        var manifestPath = Path.Combine(_env.WebRootPath, "dist", "vite-manifest.json");
         
         if (!File.Exists(manifestPath))
         {
