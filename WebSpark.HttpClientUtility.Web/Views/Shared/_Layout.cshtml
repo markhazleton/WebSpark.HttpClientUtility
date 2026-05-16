@@ -1,11 +1,12 @@
 @using System.IO
 @inject IWebHostEnvironment HostEnvironment
 @{
-    var manifestPath = System.IO.Path.Combine(HostEnvironment.WebRootPath, "dist", ".vite", "manifest.json");
+    var manifestPath = System.IO.Path.Combine(HostEnvironment.WebRootPath, "dist", "vite-manifest.json");
     var useVite = System.IO.File.Exists(manifestPath);
 }
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,20 +21,21 @@
     {
         @* Warning: Vite assets not built. Run 'npm run build' in WebSpark.HttpClientUtility.Web *@
         <style>
-            body {
-                background: #fff3cd;
-                padding: 20px;
-                font-family: system-ui, -apple-system, sans-serif;
-            }
-            .warning-banner {
-                background: #dc3545;
-                color: white;
-                padding: 15px;
-                border-radius: 5px;
-                margin: 20px auto;
-                max-width: 800px;
-                text-align: center;
-            }
+                body {
+                    background: #fff3cd;
+                    padding: 20px;
+                    font-family: system-ui, -apple-system, sans-serif;
+                }
+
+                .warning-banner {
+                    background: #dc3545;
+                    color: white;
+                    padding: 15px;
+                    border-radius: 5px;
+                    margin: 20px auto;
+                    max-width: 800px;
+                    text-align: center;
+                }
         </style>
     }
 
@@ -54,6 +56,7 @@
         gtag('config', 'G-RY77Z11S9E');
     </script>
 </head>
+
 <body>
     @if (!useVite)
     {
@@ -65,99 +68,126 @@
 
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-      <div class="container-fluid">
-      <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-              <i class="bi bi-box-seam"></i> WebSpark.HttpClientUtility
-   </a>
-       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-            aria-expanded="false" aria-label="Toggle navigation">
- <span class="navbar-toggler-icon"></span>
-  </button>
-        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-          <ul class="navbar-nav flex-grow-1">
-          <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
-    <i class="bi bi-house-door"></i> Home
-          </a>
- </li>
-        <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    <i class="bi bi-folder"></i> Features
-   </a>
- <ul class="dropdown-menu">
-            <li><a class="dropdown-item" asp-controller="BasicHttp" asp-action="Index">🌐 Basic HTTP</a></li>
-         <li><a class="dropdown-item" asp-controller="RequestResult" asp-action="Index">📊 Request Result</a></li>
-     <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item" asp-controller="Resilience" asp-action="Index">🛡️ Resilience</a></li>
-                     <li><a class="dropdown-item" asp-controller="Caching" asp-action="Index">⚡ Caching</a></li>
-  <li><a class="dropdown-item" asp-controller="Concurrent" asp-action="Index">🚀 Concurrent</a></li>
-           <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" asp-controller="Authentication" asp-action="Index">🔐 Authentication</a></li>
-   <li><a class="dropdown-item" asp-controller="Telemetry" asp-action="Index">📈 Telemetry</a></li>
-          <li><a class="dropdown-item" asp-controller="Utilities" asp-action="Index">🔧 Utilities</a></li>
-          <li><a class="dropdown-item" asp-controller="BatchExecution" asp-action="Index">🧪 Batch Execution</a></li>
-           <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" asp-controller="Crawler" asp-action="Index">🕷️ Web Crawler</a></li>
-      </ul>
-          </li>
-       <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Configuration" asp-action="Index">
-    <i class="bi bi-gear"></i> Configuration
-     </a>
-       </li>
-             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="BatchExecution" asp-action="Index">
-        <i class="bi bi-grid-3x3-gap"></i> Batch Execution
-         </a>
-             </li>
-        <li class="nav-item">
-         <a class="nav-link text-dark" href="https://github.com/markhazleton/WebSpark.HttpClientUtility" target="_blank">
-      <i class="bi bi-github"></i> GitHub
-        </a>
-       </li>
-     <li class="nav-item">
-             <a class="nav-link text-dark" href="https://www.nuget.org/packages/WebSpark.HttpClientUtility" target="_blank">
-          <i class="bi bi-box"></i> NuGet
-     </a>
-       </li>
-        </ul>
-      </div>
-         </div>
-    </nav>
- </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-    @RenderBody()
-        </main>
-    </div>
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-box-seam"></i> WebSpark.HttpClientUtility
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-house-door"></i> Home
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-folder"></i> Features
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="BasicHttp" asp-action="Index">🌐 Basic
+                                    HTTP</a></li>
+                                    <li><a class="dropdown-item" asp-controller="RequestResult" asp-action="Index">📊
+                                        Request Result</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item" asp-controller="Resilience" asp-action="Index">🛡️
+                                            Resilience</a></li>
+                                            <li><a class="dropdown-item" asp-controller="Caching" asp-action="Index">⚡ Caching</a>
+                                            </li>
+                                            <li><a class="dropdown-item" asp-controller="Concurrent" asp-action="Index">🚀
+                                                Concurrent</a></li>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+                                                <li><a class="dropdown-item" asp-controller="Authentication" asp-action="Index">🔐
+                                                    Authentication</a></li>
+                                                    <li><a class="dropdown-item" asp-controller="Telemetry" asp-action="Index">📈
+                                                        Telemetry</a></li>
+                                                        <li><a class="dropdown-item" asp-controller="Utilities" asp-action="Index">🔧
+                                                            Utilities</a></li>
+                                                            <li><a class="dropdown-item" asp-controller="BatchExecution" asp-action="Index">🧪 Batch
+                                                                Execution</a></li>
+                                                                <li>
+                                                                    <hr class="dropdown-divider">
+                                                                </li>
+                                                                <li><a class="dropdown-item" asp-controller="Crawler" asp-action="Index">🕷️ Web
+                                                                    Crawler</a></li>
+                                                                </ul>
+                                                            </li>
+                                                            <li class="nav-item">
+                                                                <a class="nav-link text-dark" asp-area="" asp-controller="Configuration" asp-action="Index">
+                                                                    <i class="bi bi-gear"></i> Configuration
+                                                                </a>
+                                                            </li>
+                                                            <li class="nav-item">
+                                                                <a class="nav-link text-dark" asp-area="" asp-controller="BatchExecution"
+                                                                   asp-action="Index">
+                                                                    <i class="bi bi-grid-3x3-gap"></i> Batch Execution
+                                                                </a>
+                                                            </li>
+                                                            <li class="nav-item">
+                                                                <a class="nav-link text-dark"
+                                                                   href="https://github.com/markhazleton/WebSpark.HttpClientUtility" target="_blank">
+                                                                    <i class="bi bi-github"></i> GitHub
+                                                                </a>
+                                                            </li>
+                                                            <li class="nav-item">
+                                                                <a class="nav-link text-dark"
+                                                                   href="https://www.nuget.org/packages/WebSpark.HttpClientUtility" target="_blank">
+                                                                    <i class="bi bi-box"></i> NuGet
+                                                                </a>
+                                                            </li>
+                                                            <li class="nav-item">
+                                                                <a class="nav-link text-dark" href="https://httpclientutility.makeboldspark.com"
+                                                                   target="_blank">
+                                                                    <i class="bi bi-info-circle"></i> Package Info
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </nav>
+                                        </header>
+                                        <div class="container">
+                                            <main role="main" class="pb-3">
+                                                @RenderBody()
+                                            </main>
+                                        </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container text-center py-3">
-            <p class="mb-2">
-                &copy; 2025 WebSpark.HttpClientUtility -
-                <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> -
-                <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility" target="_blank">GitHub</a> -
-                <a href="https://www.nuget.org/packages/WebSpark.HttpClientUtility" target="_blank">NuGet</a>
-            </p>
-            <p class="mb-2">
-                <a href="https://HttpClientUtility.makeboldspark.com">HttpClientUtilitySpark</a> —
-                built by <a href="https://markhazleton.com">Mark Hazleton</a> ·
-                <a href="https://makeboldspark.com">MakeBoldSpark</a>
-            </p>
-            <p class="small text-muted mb-0">
-                <span class="badge bg-primary">v2.2.1</span>
-                <span class="badge bg-secondary">.NET 8, 9 &amp; 10</span>
-                <span class="badge bg-success">MIT License</span>
-            </p>
-        </div>
-    </footer>
+                                        <footer class="border-top footer text-muted">
+                                            <div class="container text-center py-3">
+                                                <p class="mb-2">
+                                                    &copy; 2025 WebSpark.HttpClientUtility -
+                                                    <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> -
+                                                    <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility" target="_blank">GitHub</a> -
+                                                    <a href="https://www.nuget.org/packages/WebSpark.HttpClientUtility" target="_blank">NuGet</a>
+                                                </p>
+                                                <p class="mb-2">
+                                                    <a href="https://httpclientutility.makeboldspark.com">Package Info Site</a> —
+                                                    built by <a href="https://markhazleton.com">Mark Hazleton</a> ·
+                                                    <a href="https://makeboldspark.com">MakeBoldSpark</a>
+                                                </p>
+                                                <p class="small text-muted mb-0">
+                                                    <span class="badge bg-primary">v2.5.0</span>
+                                                    <span class="badge bg-secondary">.NET 10</span>
+                                                    <span class="badge bg-success">MIT License</span>
+                                                </p>
+                                            </div>
+                                        </footer>
 
-    @* All JavaScript from Vite build (main.js includes Bootstrap + site logic) *@
-    @if (useVite)
-    {
-        <vite-script entry="main.js" />
-    }
+                                        @* All JavaScript from Vite build (main.js includes Bootstrap + site logic) *@
+                                        @if (useVite)
+                                        {
+                                            <vite-script entry="main.js" />
+                                        }
 
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
-</html>
+                                        @await RenderSectionAsync("Scripts", required: false)
+                                    </body>
+
+                                </html>
