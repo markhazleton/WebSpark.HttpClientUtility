@@ -99,13 +99,13 @@
 
 	<ItemGroup>
 		<!-- Core dependencies -->
-		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.7" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.7" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.7" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.8" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.8" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.8" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 
 		<!-- SDK-provided package override -->
-		<PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="10.0.7" />
+		<PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="10.0.8" />
 
 		<!-- OpenTelemetry -->
 		<PackageReference Include="OpenTelemetry" Version="1.15.3" />
@@ -119,7 +119,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Update="Microsoft.SourceLink.GitHub" Version="10.0.203" />
+	  <PackageReference Update="Microsoft.SourceLink.GitHub" Version="10.0.300" />
 	</ItemGroup>
 
 

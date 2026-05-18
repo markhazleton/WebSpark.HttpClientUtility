@@ -10,7 +10,7 @@
 [![.NET 8-10 LTS](https://img.shields.io/badge/.NET-8--10%20LTS-512BD4.svg)](https://dotnet.microsoft.com/download/dotnet)
 [![Documentation](https://img.shields.io/badge/docs-Live%20Site-blue)](https://httpclientutility.makeboldspark.com/)
 
-**Docs Site**: [https://httpclientutility.makeboldspark.com/](https://httpclientutility.makeboldspark.com/)
+**Live Site**: [https://httpclientutility.makeboldspark.com](https://httpclientutility.makeboldspark.com)
 **Live Demo**: [https://httpclientdecorator.makeboldspark.com/](https://httpclientdecorator.makeboldspark.com/)
 
 ---
