@@ -1,149 +1,100 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>
-            HttpClient Decorator Pattern Scenarios | WebSpark.HttpClientUtility
-        </title>
-        <meta
-            name="description"
-            content="Harvested resilience and concurrency examples from the legacy HttpClientDecoratorPattern repository."
-        />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HttpClient Decorator Pattern Scenarios | WebSpark.HttpClientUtility</title>
+  <meta name="description" content="Harvested resilience and concurrency examples from the legacy HttpClientDecoratorPattern repository.">
 
-        <!-- Open Graph -->
-        <meta
-            property="og:title"
-            content="HttpClient Decorator Pattern Scenarios"
-        />
-        <meta
-            property="og:description"
-            content="Harvested resilience and concurrency examples from the legacy HttpClientDecoratorPattern repository."
-        />
-        <meta
-            property="og:url"
-            content="https://httpclientutility.makeboldspark.com/examples/httpclient-decorator-pattern-scenarios/"
-        />
-        <meta property="og:type" content="website" />
+  <!-- Open Graph -->
+  <meta property="og:title" content="HttpClient Decorator Pattern Scenarios">
+  <meta property="og:description" content="Harvested resilience and concurrency examples from the legacy HttpClientDecoratorPattern repository.">
+  <meta property="og:url" content="https://httpclientutility.makeboldspark.com/examples/httpclient-decorator-pattern-scenarios/">
+  <meta property="og:type" content="website">
 
-        <!-- Twitter Card -->
-        <meta name="twitter:card" content="summary" />
-        <meta
-            name="twitter:title"
-            content="HttpClient Decorator Pattern Scenarios"
-        />
-        <meta
-            name="twitter:description"
-            content="Harvested resilience and concurrency examples from the legacy HttpClientDecoratorPattern repository."
-        />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="HttpClient Decorator Pattern Scenarios">
+  <meta name="twitter:description" content="Harvested resilience and concurrency examples from the legacy HttpClientDecoratorPattern repository.">
 
-        <!-- Canonical -->
-        <link
-            rel="canonical"
-            href="https://httpclientutility.makeboldspark.com/examples/httpclient-decorator-pattern-scenarios/"
-        />
+  <!-- Canonical -->
+  <link rel="canonical" href="https://httpclientutility.makeboldspark.com/examples/httpclient-decorator-pattern-scenarios/">
 
-        <!-- Stylesheets -->
-        <link rel="stylesheet" href="../assets/css/main.css" />
-        <link rel="stylesheet" href="../assets/css/prism-tomorrow.css" />
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/prism-tomorrow.css">
 
-        <!-- Favicon -->
-        <link rel="icon" type="image/x-icon" href="../favicon.ico" />
-        <link rel="icon" type="image/png" sizes="32x32" href="../icon.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="../icon.png" />
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="../icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../icon.png">
 
-        <!-- Google tag (gtag.js) -->
-        <script
-            async
-            src="https://www.googletagmanager.com/gtag/js?id=G-RY77Z11S9E"
-        ></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag() {
-                dataLayer.push(arguments);
-            }
-            gtag("js", new Date());
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RY77Z11S9E"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
-            gtag("config", "G-RY77Z11S9E");
-        </script>
-    </head>
-    <body>
-        <header class="site-header">
-            <div class="container">
-                <div class="header-content">
-                    <div class="site-logo">
-                        <a href="../">WebSpark.HttpClientUtility</a>
-                    </div>
+    gtag('config', 'G-RY77Z11S9E');
+  </script>
+</head>
+<body>
+  <header class="site-header">
+  <div class="container">
+    <div class="header-content">
+      <div class="site-logo">
+        <a href="../">WebSpark.HttpClientUtility</a>
+      </div>
+      
+      <nav class="main-nav">
+        <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+        <label for="nav-toggle" class="nav-toggle-label">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+        
+        <ul class="nav-menu">
+          
+          <li class="nav-item">
+            <a href="../">Home</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../features/">Features</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../getting-started/">Getting Started</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../api-reference/">API Reference</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../examples/">Examples</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../about/">About</a>
+          </li>
+          
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
 
-                    <nav class="main-nav">
-                        <input
-                            type="checkbox"
-                            id="nav-toggle"
-                            class="nav-toggle"
-                            aria-label="Toggle navigation"
-                        />
-                        <label for="nav-toggle" class="nav-toggle-label">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </label>
 
-                        <ul class="nav-menu">
-                            <li class="nav-item">
-                                <a href="../">Home</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="../features/">Features</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="../getting-started/"
-                                    >Getting Started</a
-                                >
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="../api-reference/">API Reference</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="../examples/">Examples</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="../about/">About</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a
-                                    href="https://httpclientdecorator.makeboldspark.com/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    >&#x1F680; Live Demo</a
-                                >
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-        </header>
-
-        <main class="main-content">
-            <div class="container">
-                <h1>HttpClient Decorator Pattern Scenarios</h1>
-                <p>
-                    This page captures practical runtime scenarios harvested
-                    from the legacy demo and mapped to the current package-first
-                    API surface.
-                </p>
-                <h2>Resilience Configuration with Seconds-Based Aliases</h2>
-                <p>
-                    The current package supports both TimeSpan-style settings
-                    and legacy seconds-based aliases under
-                    <code>HttpRequestResultPollyOptions</code>.
-                </p>
-                <pre><code class="language-json">{
+  <main class="main-content">
+    <div class="container">
+      <h1>HttpClient Decorator Pattern Scenarios</h1>
+<p>This page captures practical runtime scenarios harvested from the legacy demo and mapped to the current package-first API surface.</p>
+<h2>Resilience Configuration with Seconds-Based Aliases</h2>
+<p>The current package supports both TimeSpan-style settings and legacy seconds-based aliases under <code>HttpRequestResultPollyOptions</code>.</p>
+<pre><code class="language-json">{
   &quot;HttpRequestResultPollyOptions&quot;: {
     &quot;MaxRetryAttempts&quot;: 3,
     &quot;RetryDelaySeconds&quot;: 1,
@@ -152,8 +103,8 @@
   }
 }
 </code></pre>
-                <p>Equivalent TimeSpan form:</p>
-                <pre><code class="language-json">{
+<p>Equivalent TimeSpan form:</p>
+<pre><code class="language-json">{
   &quot;HttpRequestResultPollyOptions&quot;: {
     &quot;MaxRetryAttempts&quot;: 3,
     &quot;RetryDelay&quot;: &quot;00:00:01&quot;,
@@ -162,8 +113,8 @@
   }
 }
 </code></pre>
-                <h2>Circuit Breaker Scenario</h2>
-                <pre><code class="language-csharp">builder.Services.AddHttpClientUtility(options =&gt;
+<h2>Circuit Breaker Scenario</h2>
+<pre><code class="language-csharp">builder.Services.AddHttpClientUtility(options =&gt;
 {
     options.EnableResilience = true;
     options.ResilienceOptions.MaxRetryAttempts = 3;
@@ -182,8 +133,8 @@ if (!result.IsSuccessStatusCode)
     logger.LogWarning(&quot;Request failed with {StatusCode}; retries applied by Polly&quot;, result.StatusCode);
 }
 </code></pre>
-                <h2>Concurrent Calls Scenario</h2>
-                <pre><code class="language-csharp">using WebSpark.HttpClientUtility.Concurrent;
+<h2>Concurrent Calls Scenario</h2>
+<pre><code class="language-csharp">using WebSpark.HttpClientUtility.Concurrent;
 
 var requests = new List&lt;HttpRequestResult&lt;ApiResult&gt;&gt;
 {
@@ -195,107 +146,65 @@ var requests = new List&lt;HttpRequestResult&lt;ApiResult&gt;&gt;
 var concurrent = serviceProvider.GetRequiredService&lt;IConcurrentHttpRequestResultService&gt;();
 var responses = await concurrent.ProcessRequestListAsync(requests, maxConcurrentRequests: 3);
 </code></pre>
-                <h2>Notes</h2>
-                <ul>
-                    <li>
-                        Keep decorator order unchanged: base -&gt; cache -&gt;
-                        polly -&gt; telemetry.
-                    </li>
-                    <li>
-                        Prefer one-line DI registration
-                        (<code>AddHttpClientUtility</code>) and opt in to
-                        features through options.
-                    </li>
-                    <li>
-                        Use automated tests when changing resilience settings to
-                        preserve compatibility.
-                    </li>
-                </ul>
-            </div>
-        </main>
+<h2>Notes</h2>
+<ul>
+<li>Keep decorator order unchanged: base -&gt; cache -&gt; polly -&gt; telemetry.</li>
+<li>Prefer one-line DI registration (<code>AddHttpClientUtility</code>) and opt in to features through options.</li>
+<li>Use automated tests when changing resilience settings to preserve compatibility.</li>
+</ul>
 
-        <footer class="site-footer">
-            <div class="container">
-                <div class="footer-content">
-                    <div class="footer-section">
-                        <h3>WebSpark.HttpClientUtility</h3>
-                        <p>Version 2.5.0</p>
-                    </div>
+    </div>
+  </main>
 
-                    <div class="footer-section">
-                        <h3>Links</h3>
-                        <ul class="footer-links">
-                            <li>
-                                <a
-                                    href="https://httpclientdecorator.makeboldspark.com/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    &#x1F680; Live Demo
-                                </a>
-                            </li>
+  <footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>WebSpark.HttpClientUtility</h3>
+        <p>Version 2.5.1</p>
+        
+      </div>
+      
+      <div class="footer-section">
+        <h3>Links</h3>
+        <ul class="footer-links">
+          
+          <li>
+            <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
+              GitHub
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.nuget.org/packages/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
+              NuGet
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility/issues" target="_blank" rel="noopener noreferrer">
+              Issues
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <p>&copy; 2025 <a href="https://markhazleton.com" target="_blank" rel="noopener noreferrer">Mark Hazleton</a></p>
+        <p>
+          <a href="https://httpclientutility.makeboldspark.com/">WebSpark.HttpClientUtility</a> —
+          built by <a href="https://markhazleton.com">Mark Hazleton</a> ·
+          <a href="https://makeboldsolutions.com">Make Bold Solutions</a>
+        </p>
+        <p>Licensed under MIT</p>
+      </div>
+    </div>
+  </div>
+</footer>
 
-                            <li>
-                                <a
-                                    href="https://github.com/markhazleton/WebSpark.HttpClientUtility"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    GitHub
-                                </a>
-                            </li>
 
-                            <li>
-                                <a
-                                    href="https://www.nuget.org/packages/WebSpark.HttpClientUtility"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    NuGet
-                                </a>
-                            </li>
-
-                            <li>
-                                <a
-                                    href="https://github.com/markhazleton/WebSpark.HttpClientUtility/issues"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    Issues
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="footer-section">
-                        <p>
-                            &copy; 2025
-                            <a
-                                href="https://markhazleton.com"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                >Mark Hazleton</a
-                            >
-                        </p>
-                        <p>
-                            <a
-                                href="https://httpclientutility.makeboldspark.com/"
-                                >WebSpark.HttpClientUtility</a
-                            >
-                            — built by
-                            <a href="https://markhazleton.com">Mark Hazleton</a>
-                            ·
-                            <a href="https://makeboldsolutions.com"
-                                >Make Bold Solutions</a
-                            >
-                        </p>
-                        <p>Licensed under MIT</p>
-                    </div>
-                </div>
-            </div>
-        </footer>
-
-        <!-- Scripts -->
-        <script src="../assets/js/prism.min.js" defer></script>
-    </body>
+  <!-- Scripts -->
+  <script src="../assets/js/prism.min.js" defer></script>
+</body>
 </html>

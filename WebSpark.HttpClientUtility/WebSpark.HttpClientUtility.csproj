@@ -28,6 +28,9 @@
 			Supports .NET 8 LTS (until Nov 2026), .NET 9, and .NET 10. For web crawling features,
 			see WebSpark.HttpClientUtility.Crawler package.</Description>
 		<PackageReleaseNotes>
+			2.5.1 - Dependency maintenance: bumped Microsoft.Extensions.* and ILLink.Tasks to 10.0.8,
+			Microsoft.SourceLink.GitHub to 10.0.300. Removed unused CsvHelper and Markdig packages from
+			Crawler project. Removed unused xunit.abstractions from Testing project. No API changes.
 			2.5.0 - Stability and maintenance release with batch execution orchestration hardening,
 			improved test resilience for edge-case environments, and dependency/security patch rollups
 			from recent update cycles. Non-breaking changes.
@@ -75,7 +78,7 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<!-- Package Validation (Re-enabled for v2.2+ after intentional v2.0.0 breaking changes) -->
 		<EnablePackageValidation>true</EnablePackageValidation>
-		<PackageValidationBaselineVersion>2.2.1</PackageValidationBaselineVersion>
+		<PackageValidationBaselineVersion>2.5.0</PackageValidationBaselineVersion>
 		<!-- Source Link: Enables debugging the source through the NuGet Package -->
 		<ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
 		<SignAssembly>true</SignAssembly>

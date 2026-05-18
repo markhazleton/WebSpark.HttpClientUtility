@@ -56,7 +56,13 @@ Each decorator wraps the layer below it, adding functionality while maintaining 
 
 ## Version History
 
-### v2.5.0 (Current)
+### v2.5.1 (Current)
+
+- Dependency maintenance: bumped Microsoft.Extensions.* and ILLink.Tasks to 10.0.8, SourceLink to 10.0.300
+- Removed unused CsvHelper and Markdig from Crawler package; removed unused xunit.abstractions from Testing package
+- No API breaking changes
+
+### v2.5.0
 - Lockstep release metadata update across base, crawler, and testing packages
 - Documentation and demo site refreshed to current feature set and versioning
 - Stability and maintenance updates with no API breaking changes

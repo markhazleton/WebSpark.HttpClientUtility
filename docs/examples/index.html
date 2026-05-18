@@ -1,147 +1,105 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Examples | WebSpark.HttpClientUtility</title>
-        <meta
-            name="description"
-            content="Real-world examples of using WebSpark.HttpClientUtility in various scenarios."
-        />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Examples | WebSpark.HttpClientUtility</title>
+  <meta name="description" content="Real-world examples of using WebSpark.HttpClientUtility in various scenarios.">
 
-        <!-- Open Graph -->
-        <meta property="og:title" content="Examples" />
-        <meta
-            property="og:description"
-            content="Real-world examples of using WebSpark.HttpClientUtility in various scenarios."
-        />
-        <meta
-            property="og:url"
-            content="https://httpclientutility.makeboldspark.com/examples/"
-        />
-        <meta property="og:type" content="website" />
+  <!-- Open Graph -->
+  <meta property="og:title" content="Examples">
+  <meta property="og:description" content="Real-world examples of using WebSpark.HttpClientUtility in various scenarios.">
+  <meta property="og:url" content="https://httpclientutility.makeboldspark.com/examples/">
+  <meta property="og:type" content="website">
 
-        <!-- Twitter Card -->
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content="Examples" />
-        <meta
-            name="twitter:description"
-            content="Real-world examples of using WebSpark.HttpClientUtility in various scenarios."
-        />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Examples">
+  <meta name="twitter:description" content="Real-world examples of using WebSpark.HttpClientUtility in various scenarios.">
 
-        <!-- Canonical -->
-        <link
-            rel="canonical"
-            href="https://httpclientutility.makeboldspark.com/examples/"
-        />
+  <!-- Canonical -->
+  <link rel="canonical" href="https://httpclientutility.makeboldspark.com/examples/">
 
-        <!-- Stylesheets -->
-        <link rel="stylesheet" href="../assets/css/main.css" />
-        <link rel="stylesheet" href="../assets/css/prism-tomorrow.css" />
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/prism-tomorrow.css">
 
-        <!-- Favicon -->
-        <link rel="icon" type="image/x-icon" href="../favicon.ico" />
-        <link rel="icon" type="image/png" sizes="32x32" href="../icon.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="../icon.png" />
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="../icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../icon.png">
 
-        <!-- Google tag (gtag.js) -->
-        <script
-            async
-            src="https://www.googletagmanager.com/gtag/js?id=G-RY77Z11S9E"
-        ></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag() {
-                dataLayer.push(arguments);
-            }
-            gtag("js", new Date());
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RY77Z11S9E"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
-            gtag("config", "G-RY77Z11S9E");
-        </script>
-    </head>
-    <body>
-        <header class="site-header">
-            <div class="container">
-                <div class="header-content">
-                    <div class="site-logo">
-                        <a href="../">WebSpark.HttpClientUtility</a>
-                    </div>
+    gtag('config', 'G-RY77Z11S9E');
+  </script>
+</head>
+<body>
+  <header class="site-header">
+  <div class="container">
+    <div class="header-content">
+      <div class="site-logo">
+        <a href="../">WebSpark.HttpClientUtility</a>
+      </div>
+      
+      <nav class="main-nav">
+        <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+        <label for="nav-toggle" class="nav-toggle-label">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+        
+        <ul class="nav-menu">
+          
+          <li class="nav-item">
+            <a href="../">Home</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../features/">Features</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../getting-started/">Getting Started</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../api-reference/">API Reference</a>
+          </li>
+          
+          <li class="nav-item active">
+            <a href="../examples/">Examples</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../about/">About</a>
+          </li>
+          
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
 
-                    <nav class="main-nav">
-                        <input
-                            type="checkbox"
-                            id="nav-toggle"
-                            class="nav-toggle"
-                            aria-label="Toggle navigation"
-                        />
-                        <label for="nav-toggle" class="nav-toggle-label">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </label>
 
-                        <ul class="nav-menu">
-                            <li class="nav-item">
-                                <a href="../">Home</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="../features/">Features</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="../getting-started/"
-                                    >Getting Started</a
-                                >
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="../api-reference/">API Reference</a>
-                            </li>
-
-                            <li class="nav-item active">
-                                <a href="../examples/">Examples</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="../about/">About</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a
-                                    href="https://httpclientdecorator.makeboldspark.com/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    >&#x1F680; Live Demo</a
-                                >
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-        </header>
-
-        <main class="main-content">
-            <div class="container">
-                <h1>Examples</h1>
-                <p>Practical examples for common scenarios.</p>
-                <h2>Harvested Scenarios</h2>
-                <ul>
-                    <li>
-                        <a
-                            href="/examples/httpclient-decorator-pattern-scenarios/"
-                            >HttpClient Decorator Pattern Scenarios</a
-                        >
-                    </li>
-                    <li>
-                        <a href="/examples/crawler-harvested-scenarios/"
-                            >Crawler Harvested Scenarios</a
-                        >
-                    </li>
-                </ul>
-                <h2>Basic HTTP Requests</h2>
-                <h3>Simple GET Request</h3>
-                <pre><code class="language-csharp">var request = new HttpRequestResult&lt;UserProfile&gt;
+  <main class="main-content">
+    <div class="container">
+      <h1>Examples</h1>
+<p>Practical examples for common scenarios.</p>
+<h2>Harvested Scenarios</h2>
+<ul>
+<li><a href="/examples/httpclient-decorator-pattern-scenarios/">HttpClient Decorator Pattern Scenarios</a></li>
+<li><a href="/examples/crawler-harvested-scenarios/">Crawler Harvested Scenarios</a></li>
+</ul>
+<h2>Basic HTTP Requests</h2>
+<h3>Simple GET Request</h3>
+<pre><code class="language-csharp">var request = new HttpRequestResult&lt;UserProfile&gt;
 {
     RequestPath = &quot;https://api.example.com/users/123&quot;,
     RequestMethod = HttpMethod.Get
@@ -155,8 +113,8 @@ if (result.IsSuccessStatusCode)
     Console.WriteLine($&quot;User: {user.Name}, Email: {user.Email}&quot;);
 }
 </code></pre>
-                <h3>POST Request with JSON Body</h3>
-                <pre><code class="language-csharp">var newUser = new CreateUserRequest
+<h3>POST Request with JSON Body</h3>
+<pre><code class="language-csharp">var newUser = new CreateUserRequest
 {
     Name = &quot;Jane Doe&quot;,
     Email = &quot;jane@example.com&quot;,
@@ -173,8 +131,8 @@ var request = new HttpRequestResult&lt;UserResponse&gt;
 var result = await _httpService.HttpSendRequestResultAsync(request);
 Console.WriteLine($&quot;Created user with ID: {result.ResponseResults.Id}&quot;);
 </code></pre>
-                <h3>PUT Request (Update)</h3>
-                <pre><code class="language-csharp">var updateData = new UpdateUserRequest
+<h3>PUT Request (Update)</h3>
+<pre><code class="language-csharp">var updateData = new UpdateUserRequest
 {
     Name = &quot;Jane Smith&quot;,
     Email = &quot;jane.smith@example.com&quot;
@@ -189,8 +147,8 @@ var request = new HttpRequestResult&lt;UserResponse&gt;
 
 var result = await _httpService.HttpSendRequestResultAsync(request);
 </code></pre>
-                <h3>DELETE Request</h3>
-                <pre><code class="language-csharp">var request = new HttpRequestResult&lt;object&gt;
+<h3>DELETE Request</h3>
+<pre><code class="language-csharp">var request = new HttpRequestResult&lt;object&gt;
 {
     RequestPath = &quot;https://api.example.com/users/123&quot;,
     RequestMethod = HttpMethod.Delete
@@ -203,9 +161,9 @@ if (result.IsSuccessStatusCode)
     Console.WriteLine(&quot;User deleted successfully&quot;);
 }
 </code></pre>
-                <h2>Authentication Examples</h2>
-                <h3>Bearer Token Authentication</h3>
-                <pre><code class="language-csharp">var request = new HttpRequestResult&lt;SecureData&gt;
+<h2>Authentication Examples</h2>
+<h3>Bearer Token Authentication</h3>
+<pre><code class="language-csharp">var request = new HttpRequestResult&lt;SecureData&gt;
 {
     RequestPath = &quot;https://api.example.com/secure/data&quot;,
     RequestMethod = HttpMethod.Get,
@@ -214,25 +172,25 @@ if (result.IsSuccessStatusCode)
 
 var result = await _httpService.HttpSendRequestResultAsync(request);
 </code></pre>
-                <h3>Basic Authentication</h3>
-                <pre><code class="language-csharp">var request = new HttpRequestResult&lt;Data&gt;
+<h3>Basic Authentication</h3>
+<pre><code class="language-csharp">var request = new HttpRequestResult&lt;Data&gt;
 {
     RequestPath = &quot;https://api.example.com/data&quot;,
     RequestMethod = HttpMethod.Get,
     AuthenticationProvider = new BasicAuthenticationProvider(&quot;username&quot;, &quot;password&quot;)
 };
 </code></pre>
-                <h3>API Key Authentication</h3>
-                <pre><code class="language-csharp">var request = new HttpRequestResult&lt;Data&gt;
+<h3>API Key Authentication</h3>
+<pre><code class="language-csharp">var request = new HttpRequestResult&lt;Data&gt;
 {
     RequestPath = &quot;https://api.example.com/data&quot;,
     RequestMethod = HttpMethod.Get,
     AuthenticationProvider = new ApiKeyAuthenticationProvider(&quot;X-API-Key&quot;, &quot;your-api-key-here&quot;)
 };
 </code></pre>
-                <h2>Caching Examples</h2>
-                <h3>Cache API Response</h3>
-                <pre><code class="language-csharp">var request = new HttpRequestResult&lt;WeatherData&gt;
+<h2>Caching Examples</h2>
+<h3>Cache API Response</h3>
+<pre><code class="language-csharp">var request = new HttpRequestResult&lt;WeatherData&gt;
 {
     RequestPath = &quot;https://api.weather.com/current/seattle&quot;,
     RequestMethod = HttpMethod.Get,
@@ -245,8 +203,8 @@ var result1 = await _httpService.HttpSendRequestResultAsync(request);
 // Second call within 30 minutes - returns cached data
 var result2 = await _httpService.HttpSendRequestResultAsync(request);
 </code></pre>
-                <h3>Different Cache Durations</h3>
-                <pre><code class="language-csharp">// Frequently changing data - short cache
+<h3>Different Cache Durations</h3>
+<pre><code class="language-csharp">// Frequently changing data - short cache
 var realtimeRequest = new HttpRequestResult&lt;StockPrice&gt;
 {
     RequestPath = &quot;https://api.stocks.com/price/MSFT&quot;,
@@ -260,9 +218,9 @@ var configRequest = new HttpRequestResult&lt;AppConfig&gt;
     CacheDurationMinutes = 1440 // 24 hours
 };
 </code></pre>
-                <h2>Error Handling</h2>
-                <h3>Handle Different Status Codes</h3>
-                <pre><code class="language-csharp">var result = await _httpService.HttpSendRequestResultAsync(request);
+<h2>Error Handling</h2>
+<h3>Handle Different Status Codes</h3>
+<pre><code class="language-csharp">var result = await _httpService.HttpSendRequestResultAsync(request);
 
 switch (result.StatusCode)
 {
@@ -270,26 +228,26 @@ switch (result.StatusCode)
         var data = result.ResponseResults;
         Console.WriteLine($&quot;Success: {data}&quot;);
         break;
-
+    
     case HttpStatusCode.NotFound:
         Console.WriteLine(&quot;Resource not found&quot;);
         break;
-
+    
     case HttpStatusCode.Unauthorized:
         Console.WriteLine(&quot;Authentication required&quot;);
         break;
-
+    
     case HttpStatusCode.BadRequest:
         Console.WriteLine($&quot;Bad request: {result.ResponseContent}&quot;);
         break;
-
+    
     default:
         Console.WriteLine($&quot;Error {result.StatusCode}: {result.ResponseContent}&quot;);
         break;
 }
 </code></pre>
-                <h3>Resilience with Automatic Retry</h3>
-                <pre><code class="language-csharp">// With resilience enabled, this will automatically retry on transient failures
+<h3>Resilience with Automatic Retry</h3>
+<pre><code class="language-csharp">// With resilience enabled, this will automatically retry on transient failures
 builder.Services.AddHttpClientUtility(options =&gt; {
     options.EnableResilience = true;
     options.ResilienceOptions.MaxRetryAttempts = 3;
@@ -299,9 +257,9 @@ builder.Services.AddHttpClientUtility(options =&gt; {
 // Request will retry up to 3 times with 2 second delay
 var result = await _httpService.HttpSendRequestResultAsync(request);
 </code></pre>
-                <h2>Advanced Examples</h2>
-                <h3>Custom Headers</h3>
-                <pre><code class="language-csharp">var request = new HttpRequestResult&lt;Data&gt;
+<h2>Advanced Examples</h2>
+<h3>Custom Headers</h3>
+<pre><code class="language-csharp">var request = new HttpRequestResult&lt;Data&gt;
 {
     RequestPath = &quot;https://api.example.com/data&quot;,
     RequestMethod = HttpMethod.Get,
@@ -314,8 +272,8 @@ var result = await _httpService.HttpSendRequestResultAsync(request);
     }
 };
 </code></pre>
-                <h3>Query String Parameters</h3>
-                <pre><code class="language-csharp">var queryParams = new QueryStringParametersList
+<h3>Query String Parameters</h3>
+<pre><code class="language-csharp">var queryParams = new QueryStringParametersList
 {
     { &quot;page&quot;, &quot;1&quot; },
     { &quot;pageSize&quot;, &quot;50&quot; },
@@ -329,8 +287,8 @@ var request = new HttpRequestResult&lt;PagedResult&lt;User&gt;&gt;
     RequestMethod = HttpMethod.Get
 };
 </code></pre>
-                <h3>Correlation ID for Distributed Tracing</h3>
-                <pre><code class="language-csharp">var request = new HttpRequestResult&lt;Data&gt;
+<h3>Correlation ID for Distributed Tracing</h3>
+<pre><code class="language-csharp">var request = new HttpRequestResult&lt;Data&gt;
 {
     RequestPath = &quot;https://api.example.com/data&quot;,
     RequestMethod = HttpMethod.Get,
@@ -340,8 +298,8 @@ var request = new HttpRequestResult&lt;PagedResult&lt;User&gt;&gt;
 var result = await _httpService.HttpSendRequestResultAsync(request);
 Console.WriteLine($&quot;Request tracked with ID: {result.CorrelationId}&quot;);
 </code></pre>
-                <h3>Concurrent Requests</h3>
-                <pre><code class="language-csharp">using WebSpark.HttpClientUtility.Concurrent;
+<h3>Concurrent Requests</h3>
+<pre><code class="language-csharp">using WebSpark.HttpClientUtility.Concurrent;
 
 var requests = new List&lt;HttpRequestResult&lt;Data&gt;&gt;
 {
@@ -357,9 +315,9 @@ foreach (var result in results)
     Console.WriteLine($&quot;Path: {result.RequestPath}, Success: {result.IsSuccessStatusCode}&quot;);
 }
 </code></pre>
-                <h2>Batch Execution Orchestration</h2>
-                <h3>Execute Environment x User x Request Matrix</h3>
-                <pre><code class="language-csharp">using WebSpark.HttpClientUtility.BatchExecution;
+<h2>Batch Execution Orchestration</h2>
+<h3>Execute Environment x User x Request Matrix</h3>
+<pre><code class="language-csharp">using WebSpark.HttpClientUtility.BatchExecution;
 
 services.AddHttpClientUtility(options =&gt;
 {
@@ -420,8 +378,8 @@ var result = await service.ExecuteAsync(config, resultSink: null, progress: prog
 
 Console.WriteLine($&quot;Success={result.Statistics.SuccessCount}, Failure={result.Statistics.FailureCount}&quot;);
 </code></pre>
-                <h3>Stream Per-Request Results to a Sink</h3>
-                <pre><code class="language-csharp">public sealed class ConsoleBatchSink : IBatchExecutionResultSink
+<h3>Stream Per-Request Results to a Sink</h3>
+<pre><code class="language-csharp">public sealed class ConsoleBatchSink : IBatchExecutionResultSink
 {
     public Task OnResultAsync(BatchExecutionItemResult result, CancellationToken ct = default)
     {
@@ -433,9 +391,9 @@ Console.WriteLine($&quot;Success={result.Statistics.SuccessCount}, Failure={resu
 var sink = new ConsoleBatchSink();
 var batchResult = await service.ExecuteAsync(config, sink, progress, cancellationToken);
 </code></pre>
-                <h2>Web Crawling Example</h2>
-                <h3>Basic Crawler Setup</h3>
-                <pre><code class="language-csharp">using WebSpark.HttpClientUtility.Crawler;
+<h2>Web Crawling Example</h2>
+<h3>Basic Crawler Setup</h3>
+<pre><code class="language-csharp">using WebSpark.HttpClientUtility.Crawler;
 
 var options = new CrawlerOptions
 {
@@ -456,8 +414,8 @@ crawler.PageCrawled += (sender, e) =&gt;
 
 await crawler.CrawlAsync(cancellationToken);
 </code></pre>
-                <h3>Crawler with Progress Updates</h3>
-                <pre><code class="language-csharp">var crawler = new SiteCrawler(options, _httpService, _logger);
+<h3>Crawler with Progress Updates</h3>
+<pre><code class="language-csharp">var crawler = new SiteCrawler(options, _httpService, _logger);
 
 crawler.CrawlProgress += (sender, progress) =&gt;
 {
@@ -467,9 +425,9 @@ crawler.CrawlProgress += (sender, progress) =&gt;
 
 await crawler.CrawlAsync(cancellationToken);
 </code></pre>
-                <h2>Testing Examples</h2>
-                <h3>Mock Successful Response</h3>
-                <pre><code class="language-csharp">[TestMethod]
+<h2>Testing Examples</h2>
+<h3>Mock Successful Response</h3>
+<pre><code class="language-csharp">[TestMethod]
 public async Task TestSuccessfulApiCall()
 {
     // Arrange
@@ -494,8 +452,8 @@ public async Task TestSuccessfulApiCall()
     Assert.AreEqual(expectedData.Name, result.Name);
 }
 </code></pre>
-                <h3>Mock Error Response</h3>
-                <pre><code class="language-csharp">[TestMethod]
+<h3>Mock Error Response</h3>
+<pre><code class="language-csharp">[TestMethod]
 public async Task TestApiError()
 {
     // Arrange
@@ -514,9 +472,9 @@ public async Task TestApiError()
     Assert.IsNull(result);
 }
 </code></pre>
-                <h2>Integration Examples</h2>
-                <h3>ASP.NET Core Controller</h3>
-                <pre><code class="language-csharp">[ApiController]
+<h2>Integration Examples</h2>
+<h3>ASP.NET Core Controller</h3>
+<pre><code class="language-csharp">[ApiController]
 [Route(&quot;api/[controller]&quot;)]
 public class WeatherController : ControllerBase
 {
@@ -548,8 +506,8 @@ public class WeatherController : ControllerBase
     }
 }
 </code></pre>
-                <h3>Background Service</h3>
-                <pre><code class="language-csharp">public class DataSyncService : BackgroundService
+<h3>Background Service</h3>
+<pre><code class="language-csharp">public class DataSyncService : BackgroundService
 {
     private readonly IHttpRequestResultService _httpService;
     private readonly ILogger&lt;DataSyncService&gt; _logger;
@@ -595,100 +553,64 @@ public class WeatherController : ControllerBase
     }
 }
 </code></pre>
-                <h2>Next Steps</h2>
-                <div class="cta-buttons">
-                    <a href="/api-reference/" class="button primary"
-                        >API Reference</a
-                    >
-                    <a href="/features/" class="button secondary"
-                        >View All Features</a
-                    >
-                </div>
-            </div>
-        </main>
+<h2>Next Steps</h2>
+<div class="cta-buttons">
+  <a href="/api-reference/" class="button primary">API Reference</a>
+  <a href="/features/" class="button secondary">View All Features</a>
+</div>
 
-        <footer class="site-footer">
-            <div class="container">
-                <div class="footer-content">
-                    <div class="footer-section">
-                        <h3>WebSpark.HttpClientUtility</h3>
-                        <p>Version 2.5.0</p>
-                    </div>
+    </div>
+  </main>
 
-                    <div class="footer-section">
-                        <h3>Links</h3>
-                        <ul class="footer-links">
-                            <li>
-                                <a
-                                    href="https://httpclientdecorator.makeboldspark.com/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    &#x1F680; Live Demo
-                                </a>
-                            </li>
+  <footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>WebSpark.HttpClientUtility</h3>
+        <p>Version 2.5.1</p>
+        
+      </div>
+      
+      <div class="footer-section">
+        <h3>Links</h3>
+        <ul class="footer-links">
+          
+          <li>
+            <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
+              GitHub
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.nuget.org/packages/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
+              NuGet
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility/issues" target="_blank" rel="noopener noreferrer">
+              Issues
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <p>&copy; 2025 <a href="https://markhazleton.com" target="_blank" rel="noopener noreferrer">Mark Hazleton</a></p>
+        <p>
+          <a href="https://httpclientutility.makeboldspark.com/">WebSpark.HttpClientUtility</a> —
+          built by <a href="https://markhazleton.com">Mark Hazleton</a> ·
+          <a href="https://makeboldsolutions.com">Make Bold Solutions</a>
+        </p>
+        <p>Licensed under MIT</p>
+      </div>
+    </div>
+  </div>
+</footer>
 
-                            <li>
-                                <a
-                                    href="https://github.com/markhazleton/WebSpark.HttpClientUtility"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    GitHub
-                                </a>
-                            </li>
 
-                            <li>
-                                <a
-                                    href="https://www.nuget.org/packages/WebSpark.HttpClientUtility"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    NuGet
-                                </a>
-                            </li>
-
-                            <li>
-                                <a
-                                    href="https://github.com/markhazleton/WebSpark.HttpClientUtility/issues"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    Issues
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="footer-section">
-                        <p>
-                            &copy; 2025
-                            <a
-                                href="https://markhazleton.com"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                >Mark Hazleton</a
-                            >
-                        </p>
-                        <p>
-                            <a
-                                href="https://httpclientutility.makeboldspark.com/"
-                                >WebSpark.HttpClientUtility</a
-                            >
-                            — built by
-                            <a href="https://markhazleton.com">Mark Hazleton</a>
-                            ·
-                            <a href="https://makeboldsolutions.com"
-                                >Make Bold Solutions</a
-                            >
-                        </p>
-                        <p>Licensed under MIT</p>
-                    </div>
-                </div>
-            </div>
-        </footer>
-
-        <!-- Scripts -->
-        <script src="../assets/js/prism.min.js" defer></script>
-    </body>
+  <!-- Scripts -->
+  <script src="../assets/js/prism.min.js" defer></script>
+</body>
 </html>

@@ -5,35 +5,28 @@ All notable changes to the WebSpark.HttpClientUtility project will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-### Added
-
-- Compatibility support for legacy resilience configuration aliases in `HttpRequestResultPollyOptions`
-  - `RetryDelaySeconds` now binds to `RetryDelay`
-  - `CircuitBreakerDurationSeconds` now binds to `CircuitBreakerDuration`
-- New harvested documentation scenarios:
-  - `src/pages/examples/httpclient-decorator-pattern-scenarios.md`
-  - `src/pages/examples/crawler-harvested-scenarios.md`
+## [2.5.1] - 2026-05-18
 
 ### Changed
 
-- Updated `README.md` and `documentation/GettingStarted.md` with TimeSpan and seconds-based resilience configuration examples
-- Updated examples index (`src/pages/examples.md`) to link harvested scenarios
+- Bumped `Microsoft.Extensions.Caching.Abstractions`, `Microsoft.Extensions.Caching.Memory`, `Microsoft.Extensions.Http` from `10.0.7` to `10.0.8`
+- Bumped `Microsoft.NET.ILLink.Tasks` from `10.0.7` to `10.0.8` across all projects
+- Bumped `Microsoft.SourceLink.GitHub` from `10.0.201`/`10.0.203` to `10.0.300`
+- Bumped `Microsoft.NET.Test.Sdk` from `18.4.0` to `18.5.1`
+- Bumped `MSTest.TestAdapter` and `MSTest.TestFramework` from `4.2.1` to `4.2.3`
+- Bumped `coverlet.collector` from `10.0.0` to `10.0.1`
+- Updated `PackageValidationBaselineVersion` to `2.5.0`
 
-### Verified
+### Removed
 
-- Added coverage for resilience config binding behavior in `WebSpark.HttpClientUtility.Test/ServiceCollectionExtensionsTests.cs`
-- Added regression coverage in `WebSpark.HttpClientUtility.Test/RequestResult/HttpRequestResultTests.cs`
-- Verified `WebSpark.HttpClientUtility.Test` passes across net8.0/net9.0/net10.0
+- `CsvHelper 33.1.0` from `WebSpark.HttpClientUtility.Crawler` — confirmed unused, no source references
+- `Markdig 1.2.0` from `WebSpark.HttpClientUtility.Crawler` — confirmed unused, no source references
+- `xunit.abstractions 2.0.3` from `WebSpark.HttpClientUtility.Testing` — confirmed unused, Testing package is framework-agnostic
 
-### Documentation
+### Security
 
-- Harvest traceability records added for completed specification work:
-  - `001-harvest-httpclient-ideas` (decision and adoption workflow codified)
-  - `003-split-nuget-packages` (base and crawler package split completed and operational)
-  - `004-batch-execution-orchestration` (batch orchestration capability delivered and validated)
-- Updated maintainer guidance to reflect current architecture state and remove outdated package-split planning status.
+- No vulnerabilities found (`dotnet list package --vulnerable --include-transitive` clean across all projects)
+- No npm vulnerabilities (`npm audit` clean, 0 of 174 packages affected)
 
 ## [2026-04-22] Archive run
 

@@ -1,138 +1,101 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Features | WebSpark.HttpClientUtility</title>
-        <meta
-            name="description"
-            content="Comprehensive features of WebSpark.HttpClientUtility including resilience, caching, telemetry, and web crawling."
-        />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Features | WebSpark.HttpClientUtility</title>
+  <meta name="description" content="Comprehensive features of WebSpark.HttpClientUtility including resilience, caching, telemetry, and web crawling.">
 
-        <!-- Open Graph -->
-        <meta property="og:title" content="Features" />
-        <meta
-            property="og:description"
-            content="Comprehensive features of WebSpark.HttpClientUtility including resilience, caching, telemetry, and web crawling."
-        />
-        <meta
-            property="og:url"
-            content="https://httpclientutility.makeboldspark.com/features/"
-        />
-        <meta property="og:type" content="website" />
+  <!-- Open Graph -->
+  <meta property="og:title" content="Features">
+  <meta property="og:description" content="Comprehensive features of WebSpark.HttpClientUtility including resilience, caching, telemetry, and web crawling.">
+  <meta property="og:url" content="https://httpclientutility.makeboldspark.com/features/">
+  <meta property="og:type" content="website">
 
-        <!-- Twitter Card -->
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content="Features" />
-        <meta
-            name="twitter:description"
-            content="Comprehensive features of WebSpark.HttpClientUtility including resilience, caching, telemetry, and web crawling."
-        />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Features">
+  <meta name="twitter:description" content="Comprehensive features of WebSpark.HttpClientUtility including resilience, caching, telemetry, and web crawling.">
 
-        <!-- Canonical -->
-        <link
-            rel="canonical"
-            href="https://httpclientutility.makeboldspark.com/features/"
-        />
+  <!-- Canonical -->
+  <link rel="canonical" href="https://httpclientutility.makeboldspark.com/features/">
 
-        <!-- Stylesheets -->
-        <link rel="stylesheet" href="../assets/css/main.css" />
-        <link rel="stylesheet" href="../assets/css/prism-tomorrow.css" />
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/prism-tomorrow.css">
 
-        <!-- Favicon -->
-        <link rel="icon" type="image/x-icon" href="../favicon.ico" />
-        <link rel="icon" type="image/png" sizes="32x32" href="../icon.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="../icon.png" />
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="../icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../icon.png">
 
-        <!-- Google tag (gtag.js) -->
-        <script
-            async
-            src="https://www.googletagmanager.com/gtag/js?id=G-RY77Z11S9E"
-        ></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag() {
-                dataLayer.push(arguments);
-            }
-            gtag("js", new Date());
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RY77Z11S9E"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
-            gtag("config", "G-RY77Z11S9E");
-        </script>
-    </head>
-    <body>
-        <header class="site-header">
-            <div class="container">
-                <div class="header-content">
-                    <div class="site-logo">
-                        <a href="../">WebSpark.HttpClientUtility</a>
-                    </div>
+    gtag('config', 'G-RY77Z11S9E');
+  </script>
+</head>
+<body>
+  <header class="site-header">
+  <div class="container">
+    <div class="header-content">
+      <div class="site-logo">
+        <a href="../">WebSpark.HttpClientUtility</a>
+      </div>
+      
+      <nav class="main-nav">
+        <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+        <label for="nav-toggle" class="nav-toggle-label">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+        
+        <ul class="nav-menu">
+          
+          <li class="nav-item">
+            <a href="../">Home</a>
+          </li>
+          
+          <li class="nav-item active">
+            <a href="../features/">Features</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../getting-started/">Getting Started</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../api-reference/">API Reference</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../examples/">Examples</a>
+          </li>
+          
+          <li class="nav-item">
+            <a href="../about/">About</a>
+          </li>
+          
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
 
-                    <nav class="main-nav">
-                        <input
-                            type="checkbox"
-                            id="nav-toggle"
-                            class="nav-toggle"
-                            aria-label="Toggle navigation"
-                        />
-                        <label for="nav-toggle" class="nav-toggle-label">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </label>
 
-                        <ul class="nav-menu">
-                            <li class="nav-item">
-                                <a href="../">Home</a>
-                            </li>
-
-                            <li class="nav-item active">
-                                <a href="../features/">Features</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="../getting-started/"
-                                    >Getting Started</a
-                                >
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="../api-reference/">API Reference</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="../examples/">Examples</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="../about/">About</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a
-                                    href="https://httpclientdecorator.makeboldspark.com/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    >&#x1F680; Live Demo</a
-                                >
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-        </header>
-
-        <main class="main-content">
-            <div class="container">
-                <h1>Features</h1>
-                <p>
-                    WebSpark.HttpClientUtility provides a comprehensive set of
-                    features designed to simplify HTTP client usage in .NET
-                    applications.
-                </p>
-                <h2>Core Features</h2>
-                <h3>🚀 Simple Service Registration</h3>
-                <p>One-line setup with fluent configuration:</p>
-                <pre><code class="language-csharp">// Basic setup
+  <main class="main-content">
+    <div class="container">
+      <h1>Features</h1>
+<p>WebSpark.HttpClientUtility provides a comprehensive set of features designed to simplify HTTP client usage in .NET applications.</p>
+<h2>Core Features</h2>
+<h3>🚀 Simple Service Registration</h3>
+<p>One-line setup with fluent configuration:</p>
+<pre><code class="language-csharp">// Basic setup
 services.AddHttpClientUtility();
 
 // With caching
@@ -150,42 +113,24 @@ services.AddHttpClientUtility(options =&gt; {
     options.ResilienceOptions.RetryDelay = TimeSpan.FromSeconds(2);
 });
 </code></pre>
-                <h3>🔄 Resilience with Polly Integration</h3>
-                <p>Built-in retry policies and circuit breakers:</p>
-                <ul>
-                    <li>
-                        <strong>Automatic Retry</strong>: Configurable retry
-                        attempts with exponential backoff
-                    </li>
-                    <li>
-                        <strong>Circuit Breaker</strong>: Prevents cascading
-                        failures
-                    </li>
-                    <li>
-                        <strong>Timeout Handling</strong>: Request-level timeout
-                        configuration
-                    </li>
-                    <li>
-                        <strong>Transient Fault Handling</strong>: Automatic
-                        retry on network errors
-                    </li>
-                </ul>
-                <p>Configuration options:</p>
-                <ul>
-                    <li><code>MaxRetryAttempts</code> (default: 3)</li>
-                    <li><code>RetryDelay</code> (default: 1 second)</li>
-                    <li>
-                        <code>CircuitBreakerThreshold</code> (default: 5
-                        failures)
-                    </li>
-                    <li>
-                        <code>CircuitBreakerDuration</code> (default: 30
-                        seconds)
-                    </li>
-                </ul>
-                <h3>💾 Response Caching</h3>
-                <p>Intelligent caching with configurable duration:</p>
-                <pre><code class="language-csharp">var request = new HttpRequestResult&lt;WeatherData&gt;
+<h3>🔄 Resilience with Polly Integration</h3>
+<p>Built-in retry policies and circuit breakers:</p>
+<ul>
+<li><strong>Automatic Retry</strong>: Configurable retry attempts with exponential backoff</li>
+<li><strong>Circuit Breaker</strong>: Prevents cascading failures</li>
+<li><strong>Timeout Handling</strong>: Request-level timeout configuration</li>
+<li><strong>Transient Fault Handling</strong>: Automatic retry on network errors</li>
+</ul>
+<p>Configuration options:</p>
+<ul>
+<li><code>MaxRetryAttempts</code> (default: 3)</li>
+<li><code>RetryDelay</code> (default: 1 second)</li>
+<li><code>CircuitBreakerThreshold</code> (default: 5 failures)</li>
+<li><code>CircuitBreakerDuration</code> (default: 30 seconds)</li>
+</ul>
+<h3>💾 Response Caching</h3>
+<p>Intelligent caching with configurable duration:</p>
+<pre><code class="language-csharp">var request = new HttpRequestResult&lt;WeatherData&gt;
 {
     RequestPath = &quot;https://api.example.com/weather&quot;,
     CacheDurationMinutes = 10 // Cache for 10 minutes
@@ -193,59 +138,31 @@ services.AddHttpClientUtility(options =&gt; {
 
 var result = await _httpService.HttpSendRequestResultAsync(request);
 </code></pre>
-                <p>Features:</p>
-                <ul>
-                    <li>
-                        <strong>Per-Request Configuration</strong>: Set cache
-                        duration per request
-                    </li>
-                    <li>
-                        <strong>Automatic Invalidation</strong>: Time-based
-                        cache expiration
-                    </li>
-                    <li>
-                        <strong>Memory Efficient</strong>: Uses
-                        <code>IMemoryCache</code> from
-                        Microsoft.Extensions.Caching
-                    </li>
-                    <li>
-                        <strong>Cache Keys</strong>: Based on request path for
-                        efficient lookup
-                    </li>
-                </ul>
-                <h3>📊 Telemetry &amp; Observability</h3>
-                <p>OpenTelemetry integration with comprehensive metrics:</p>
-                <pre><code class="language-csharp">services.AddWebSparkOpenTelemetry(tracerBuilder =&gt; {
+<p>Features:</p>
+<ul>
+<li><strong>Per-Request Configuration</strong>: Set cache duration per request</li>
+<li><strong>Automatic Invalidation</strong>: Time-based cache expiration</li>
+<li><strong>Memory Efficient</strong>: Uses <code>IMemoryCache</code> from Microsoft.Extensions.Caching</li>
+<li><strong>Cache Keys</strong>: Based on request path for efficient lookup</li>
+</ul>
+<h3>📊 Telemetry &amp; Observability</h3>
+<p>OpenTelemetry integration with comprehensive metrics:</p>
+<pre><code class="language-csharp">services.AddWebSparkOpenTelemetry(tracerBuilder =&gt; {
     tracerBuilder
         .AddOtlpExporter()
         .AddConsoleExporter();
 });
 </code></pre>
-                <p>Features:</p>
-                <ul>
-                    <li>
-                        <strong>Request Tracing</strong>: Track request duration
-                        and status
-                    </li>
-                    <li>
-                        <strong>Correlation IDs</strong>: Auto-generated for
-                        distributed tracing
-                    </li>
-                    <li>
-                        <strong>Metrics</strong>: Success rate, response time,
-                        error counts
-                    </li>
-                    <li>
-                        <strong>OTLP Support</strong>: Modern OpenTelemetry
-                        Protocol integration
-                    </li>
-                </ul>
-                <h3>🧩 Batch Execution Orchestration</h3>
-                <p>
-                    Execute environment x user x request combinations with
-                    progress and aggregate statistics:
-                </p>
-                <pre><code class="language-csharp">services.AddHttpClientUtility(options =&gt;
+<p>Features:</p>
+<ul>
+<li><strong>Request Tracing</strong>: Track request duration and status</li>
+<li><strong>Correlation IDs</strong>: Auto-generated for distributed tracing</li>
+<li><strong>Metrics</strong>: Success rate, response time, error counts</li>
+<li><strong>OTLP Support</strong>: Modern OpenTelemetry Protocol integration</li>
+</ul>
+<h3>🧩 Batch Execution Orchestration</h3>
+<p>Execute environment x user x request combinations with progress and aggregate statistics:</p>
+<pre><code class="language-csharp">services.AddHttpClientUtility(options =&gt;
 {
     options.EnableBatchExecution = true;
     options.EnableResilience = true;
@@ -253,38 +170,18 @@ var result = await _httpService.HttpSendRequestResultAsync(request);
 
 var result = await batchExecutionService.ExecuteAsync(configuration, resultSink, progress, cancellationToken);
 </code></pre>
-                <p>Features:</p>
-                <ul>
-                    <li>
-                        <strong>Combinatorial Expansion</strong>: Runs all
-                        environment, user, request, and iteration combinations
-                    </li>
-                    <li>
-                        <strong>Template Substitution</strong>: Applies
-                        <code>{key}</code> and `` tokens for per-user requests
-                    </li>
-                    <li>
-                        <strong>Concurrency Control</strong>: Semaphore-based
-                        max in-flight request throttling
-                    </li>
-                    <li>
-                        <strong>Progress Updates</strong>: Optional
-                        <code>IProgress&lt;BatchProgress&gt;</code> callback
-                        with running snapshots
-                    </li>
-                    <li>
-                        <strong>Streaming Results</strong>: Optional
-                        <code>IBatchExecutionResultSink</code> receives per-item
-                        outcomes as they complete
-                    </li>
-                    <li>
-                        <strong>Statistics &amp; Percentiles</strong>:
-                        Total/success/failure plus P50, P95, and P99 timings
-                    </li>
-                </ul>
-                <h3>🕷️ Web Crawling</h3>
-                <p>Full-featured web crawler with robots.txt support:</p>
-                <pre><code class="language-csharp">var options = new CrawlerOptions
+<p>Features:</p>
+<ul>
+<li><strong>Combinatorial Expansion</strong>: Runs all environment, user, request, and iteration combinations</li>
+<li><strong>Template Substitution</strong>: Applies <code>{key}</code> and `` tokens for per-user requests</li>
+<li><strong>Concurrency Control</strong>: Semaphore-based max in-flight request throttling</li>
+<li><strong>Progress Updates</strong>: Optional <code>IProgress&lt;BatchProgress&gt;</code> callback with running snapshots</li>
+<li><strong>Streaming Results</strong>: Optional <code>IBatchExecutionResultSink</code> receives per-item outcomes as they complete</li>
+<li><strong>Statistics &amp; Percentiles</strong>: Total/success/failure plus P50, P95, and P99 timings</li>
+</ul>
+<h3>🕷️ Web Crawling</h3>
+<p>Full-featured web crawler with robots.txt support:</p>
+<pre><code class="language-csharp">var options = new CrawlerOptions
 {
     BaseUrl = &quot;https://example.com&quot;,
     MaxDepth = 3,
@@ -296,32 +193,17 @@ var result = await batchExecutionService.ExecuteAsync(configuration, resultSink,
 var crawler = new SiteCrawler(options, httpService, logger);
 await crawler.CrawlAsync(cancellationToken);
 </code></pre>
-                <p>Features:</p>
-                <ul>
-                    <li>
-                        <strong>Robots.txt Parsing</strong>: Automatic
-                        compliance with robots.txt rules
-                    </li>
-                    <li>
-                        <strong>Depth Control</strong>: Limit crawl depth to
-                        prevent infinite loops
-                    </li>
-                    <li>
-                        <strong>Rate Limiting</strong>: Configurable delay
-                        between requests
-                    </li>
-                    <li>
-                        <strong>SignalR Integration</strong>: Real-time progress
-                        updates
-                    </li>
-                    <li>
-                        <strong>Concurrent Crawling</strong>: Parallel page
-                        processing
-                    </li>
-                </ul>
-                <h3>🔐 Authentication</h3>
-                <p>Multiple authentication providers built-in:</p>
-                <pre><code class="language-csharp">// Bearer Token
+<p>Features:</p>
+<ul>
+<li><strong>Robots.txt Parsing</strong>: Automatic compliance with robots.txt rules</li>
+<li><strong>Depth Control</strong>: Limit crawl depth to prevent infinite loops</li>
+<li><strong>Rate Limiting</strong>: Configurable delay between requests</li>
+<li><strong>SignalR Integration</strong>: Real-time progress updates</li>
+<li><strong>Concurrent Crawling</strong>: Parallel page processing</li>
+</ul>
+<h3>🔐 Authentication</h3>
+<p>Multiple authentication providers built-in:</p>
+<pre><code class="language-csharp">// Bearer Token
 var bearerAuth = new BearerTokenAuthenticationProvider(&quot;your-token&quot;);
 
 // Basic Auth
@@ -336,9 +218,9 @@ var request = new HttpRequestResult&lt;Data&gt;
     AuthenticationProvider = bearerAuth
 };
 </code></pre>
-                <h3>🧪 Testing Support</h3>
-                <p>Mock service for unit testing:</p>
-                <pre><code class="language-csharp">var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
+<h3>🧪 Testing Support</h3>
+<p>Mock service for unit testing:</p>
+<pre><code class="language-csharp">var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
 {
     Content = new StringContent(&quot;{\&quot;id\&quot;:1}&quot;, Encoding.UTF8, &quot;application/json&quot;)
 };
@@ -348,180 +230,104 @@ var result = await mockService.HttpSendRequestResultAsync(request);
 
 Assert.IsTrue(result.IsSuccessStatusCode);
 </code></pre>
-                <h3>🔧 Advanced Features</h3>
-                <h4>Object Pooling</h4>
-                <p>
-                    Efficient memory management with object pool pattern for
-                    high-throughput scenarios.
-                </p>
-                <h4>Fire-and-Forget Requests</h4>
-                <p>Background HTTP requests without waiting for responses.</p>
-                <h4>Concurrent Requests</h4>
-                <p>
-                    Execute multiple HTTP requests in parallel with automatic
-                    result aggregation.
-                </p>
-                <h4>Request/Response Streaming</h4>
-                <p>Support for streaming large files and real-time data.</p>
-                <h4>CURL Command Generation</h4>
-                <p>Save requests as CURL commands for debugging and sharing.</p>
-                <h2>Decorator Pattern Architecture</h2>
-                <p>
-                    The library uses a decorator pattern for composable
-                    features:
-                </p>
-                <ol>
-                    <li>
-                        <strong>Base Layer</strong>:
-                        <code>HttpRequestResultService</code> - Core HTTP
-                        functionality
-                    </li>
-                    <li>
-                        <strong>Cache Layer</strong>:
-                        <code>HttpRequestResultServiceCache</code> - Optional
-                        caching (wraps base)
-                    </li>
-                    <li>
-                        <strong>Resilience Layer</strong>:
-                        <code>HttpRequestResultServicePolly</code> - Optional
-                        Polly policies (wraps cache)
-                    </li>
-                    <li>
-                        <strong>Telemetry Layer</strong>:
-                        <code>HttpRequestResultServiceTelemetry</code> -
-                        Optional metrics (wraps resilience)
-                    </li>
-                </ol>
-                <p>This design allows you to:</p>
-                <ul>
-                    <li>Enable only the features you need</li>
-                    <li>Maintain clean separation of concerns</li>
-                    <li>Easy to test each layer independently</li>
-                    <li>Extend with custom decorators</li>
-                </ul>
-                <h2>Framework Support</h2>
-                <ul>
-                    <li>✅ .NET 8.0 (LTS - Long-Term Support)</li>
-                    <li>✅ .NET 9.0 (Latest)</li>
-                    <li>✅ .NET 10.0 (Latest)</li>
-                </ul>
-                <h2>Production Ready</h2>
-                <ul>
-                    <li>
-                        <strong>Comprehensive test coverage</strong>: Verified
-                        across .NET 8, .NET 9, and .NET 10
-                    </li>
-                    <li>
-                        <strong>Strong Naming</strong>: Assembly is signed for
-                        enterprise scenarios
-                    </li>
-                    <li>
-                        <strong>Nullable Reference Types</strong>: Full
-                        nullability annotations
-                    </li>
-                    <li>
-                        <strong>Code Analysis</strong>: Warning level 5 with
-                        .NET analyzers enabled
-                    </li>
-                    <li>
-                        <strong>Multi-Targeting</strong>: Supports .NET 8 LTS,
-                        .NET 9, and .NET 10
-                    </li>
-                </ul>
-                <h2>Next Steps</h2>
-                <div class="cta-buttons">
-                    <a href="/getting-started/" class="button primary"
-                        >Get Started</a
-                    >
-                    <a href="/examples/" class="button secondary"
-                        >View Examples</a
-                    >
-                </div>
-            </div>
-        </main>
+<h3>🔧 Advanced Features</h3>
+<h4>Object Pooling</h4>
+<p>Efficient memory management with object pool pattern for high-throughput scenarios.</p>
+<h4>Fire-and-Forget Requests</h4>
+<p>Background HTTP requests without waiting for responses.</p>
+<h4>Concurrent Requests</h4>
+<p>Execute multiple HTTP requests in parallel with automatic result aggregation.</p>
+<h4>Request/Response Streaming</h4>
+<p>Support for streaming large files and real-time data.</p>
+<h4>CURL Command Generation</h4>
+<p>Save requests as CURL commands for debugging and sharing.</p>
+<h2>Decorator Pattern Architecture</h2>
+<p>The library uses a decorator pattern for composable features:</p>
+<ol>
+<li><strong>Base Layer</strong>: <code>HttpRequestResultService</code> - Core HTTP functionality</li>
+<li><strong>Cache Layer</strong>: <code>HttpRequestResultServiceCache</code> - Optional caching (wraps base)</li>
+<li><strong>Resilience Layer</strong>: <code>HttpRequestResultServicePolly</code> - Optional Polly policies (wraps cache)</li>
+<li><strong>Telemetry Layer</strong>: <code>HttpRequestResultServiceTelemetry</code> - Optional metrics (wraps resilience)</li>
+</ol>
+<p>This design allows you to:</p>
+<ul>
+<li>Enable only the features you need</li>
+<li>Maintain clean separation of concerns</li>
+<li>Easy to test each layer independently</li>
+<li>Extend with custom decorators</li>
+</ul>
+<h2>Framework Support</h2>
+<ul>
+<li>✅ .NET 8.0 (LTS - Long-Term Support)</li>
+<li>✅ .NET 9.0 (Latest)</li>
+<li>✅ .NET 10.0 (Latest)</li>
+</ul>
+<h2>Production Ready</h2>
+<ul>
+<li><strong>Comprehensive test coverage</strong>: Verified across .NET 8, .NET 9, and .NET 10</li>
+<li><strong>Strong Naming</strong>: Assembly is signed for enterprise scenarios</li>
+<li><strong>Nullable Reference Types</strong>: Full nullability annotations</li>
+<li><strong>Code Analysis</strong>: Warning level 5 with .NET analyzers enabled</li>
+<li><strong>Multi-Targeting</strong>: Supports .NET 8 LTS, .NET 9, and .NET 10</li>
+</ul>
+<h2>Next Steps</h2>
+<div class="cta-buttons">
+  <a href="/getting-started/" class="button primary">Get Started</a>
+  <a href="/examples/" class="button secondary">View Examples</a>
+</div>
 
-        <footer class="site-footer">
-            <div class="container">
-                <div class="footer-content">
-                    <div class="footer-section">
-                        <h3>WebSpark.HttpClientUtility</h3>
-                        <p>Version 2.5.0</p>
-                    </div>
+    </div>
+  </main>
 
-                    <div class="footer-section">
-                        <h3>Links</h3>
-                        <ul class="footer-links">
-                            <li>
-                                <a
-                                    href="https://httpclientdecorator.makeboldspark.com/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    &#x1F680; Live Demo
-                                </a>
-                            </li>
+  <footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>WebSpark.HttpClientUtility</h3>
+        <p>Version 2.5.1</p>
+        
+      </div>
+      
+      <div class="footer-section">
+        <h3>Links</h3>
+        <ul class="footer-links">
+          
+          <li>
+            <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
+              GitHub
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.nuget.org/packages/WebSpark.HttpClientUtility" target="_blank" rel="noopener noreferrer">
+              NuGet
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://github.com/markhazleton/WebSpark.HttpClientUtility/issues" target="_blank" rel="noopener noreferrer">
+              Issues
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <p>&copy; 2025 <a href="https://markhazleton.com" target="_blank" rel="noopener noreferrer">Mark Hazleton</a></p>
+        <p>
+          <a href="https://httpclientutility.makeboldspark.com/">WebSpark.HttpClientUtility</a> —
+          built by <a href="https://markhazleton.com">Mark Hazleton</a> ·
+          <a href="https://makeboldsolutions.com">Make Bold Solutions</a>
+        </p>
+        <p>Licensed under MIT</p>
+      </div>
+    </div>
+  </div>
+</footer>
 
-                            <li>
-                                <a
-                                    href="https://github.com/markhazleton/WebSpark.HttpClientUtility"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    GitHub
-                                </a>
-                            </li>
 
-                            <li>
-                                <a
-                                    href="https://www.nuget.org/packages/WebSpark.HttpClientUtility"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    NuGet
-                                </a>
-                            </li>
-
-                            <li>
-                                <a
-                                    href="https://github.com/markhazleton/WebSpark.HttpClientUtility/issues"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    Issues
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="footer-section">
-                        <p>
-                            &copy; 2025
-                            <a
-                                href="https://markhazleton.com"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                >Mark Hazleton</a
-                            >
-                        </p>
-                        <p>
-                            <a
-                                href="https://httpclientutility.makeboldspark.com/"
-                                >WebSpark.HttpClientUtility</a
-                            >
-                            — built by
-                            <a href="https://markhazleton.com">Mark Hazleton</a>
-                            ·
-                            <a href="https://makeboldsolutions.com"
-                                >Make Bold Solutions</a
-                            >
-                        </p>
-                        <p>Licensed under MIT</p>
-                    </div>
-                </div>
-            </div>
-        </footer>
-
-        <!-- Scripts -->
-        <script src="../assets/js/prism.min.js" defer></script>
-    </body>
+  <!-- Scripts -->
+  <script src="../assets/js/prism.min.js" defer></script>
+</body>
 </html>

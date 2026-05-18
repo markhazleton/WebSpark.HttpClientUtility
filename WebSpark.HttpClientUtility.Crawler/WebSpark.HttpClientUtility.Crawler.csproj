@@ -28,6 +28,8 @@
 		<PackageTags>
 			web-crawler;crawler;web-scraping;site-crawler;sitemap;sitemap-generator;robots-txt;html-parser;htmlagilitypack;signalr;csv-export;link-extraction;seo;seo-audit;content-migration;dotnet;aspnetcore;net8;net9;net10</PackageTags>
 		<PackageReleaseNotes>
+			2.5.1 - Removed unused CsvHelper and Markdig package dependencies. Dependency maintenance
+			aligned with base package 2.5.1. Requires base package [2.5.1]. No API changes.
 			2.5.0 - Lockstep version bump for stability/maintenance base-package improvements.
 			Requires base package [2.5.0]. No crawler API breaking changes.
 			2.4.0 - Lockstep version bump aligned with tooling/docs/UI modernization cycle.
@@ -89,8 +91,6 @@
 
 		<!-- Crawler-Specific Dependencies -->
 		<PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
-		<PackageReference Include="Markdig" Version="1.2.0" />
-		<PackageReference Include="CsvHelper" Version="33.1.0" />
 
 		<!-- ASP.NET Core for SignalR -->
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
