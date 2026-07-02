@@ -100,6 +100,7 @@ jobs:
           name: test-results
           path: ./TestResults
           if-no-files-found: warn
+          retention-days: 1
 
       - name: Generate code coverage report
         uses: danielpalme/ReportGenerator-GitHub-Action@5.2.4
@@ -115,6 +116,7 @@ jobs:
           name: coverage-report
           path: ./CoverageReport
           if-no-files-found: warn
+          retention-days: 1
 
       - name: Pack base package
         run: dotnet pack WebSpark.HttpClientUtility/WebSpark.HttpClientUtility.csproj --configuration Release --no-build --output ./nupkg
@@ -139,6 +141,7 @@ jobs:
           name: nuget-packages
           path: ./nupkg
           if-no-files-found: error
+          retention-days: 1
 
       # Only publish on pushes to version tags, not PRs or branch pushes
       # Both packages are published atomically in the same step
